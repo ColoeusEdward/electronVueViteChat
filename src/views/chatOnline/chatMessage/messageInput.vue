@@ -2,8 +2,8 @@
  * @Author: 周楠
  * @Description:
  * @Date: 2023-02-08 17:39:25
- * @LastEditTime: 2023-03-08 15:45:26
- * @LastEditors: 周楠
+ * @LastEditTime: 2023-04-17 10:19:19
+ * @LastEditors: your name
 -->
 <template>
   <div
@@ -72,7 +72,7 @@
 
     if (!inputBox.hasfocus) {
       inputBox.focus();
-      window.getSelection().collapseToEnd();
+      window.getSelection()?.collapseToEnd();
     }
   };
   // 点击输入框的时候获取光标，以及光标位置

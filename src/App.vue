@@ -2,64 +2,81 @@
  * @Author: 周楠
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-03-06 15:11:42
- * @LastEditors: 周楠
+ * @LastEditTime: 2023-04-17 09:32:23
+ * @LastEditors: your name
 -->
 
 <template>
   <div
     id="app"
-    class="h-full flex bg-ele-white"
-  >
+    class="h-full flex flex-col bg-ele-white">
     <!-- 侧边栏总组件 -->
-    <navSider v-if="mainHeaderShow" />
+    <!-- <navSider v-if="mainHeaderShow" /> -->
 
-    <!-- 主页面 -->
-    <div class="flex-1 flex">
-      <router-view class="flex-1" />
-      <!-- 头部 -->
-      <mainHeader
-        v-if="mainHeaderShow"
-        class=""
-      />
-    </div>
+    <Home />
+    <!-- 窗口基础功能 ：关闭 最小化，最大化 -->
+    <!-- <div class="w-100px self-end flex justify-around items-center my-5px border-r">
+      <el-icon
+        size="18px"
+        @click="navBar('close')">
+        <Close />
+      </el-icon>
+      <el-icon
+        size="18px"
+        @click="navBar('big')">
+        <FullScreen />
+      </el-icon>
+      <el-icon
+        size="18px"
+        @click="navBar('mini')"
+        class="">
+        <Minus />
+      </el-icon>
+    </div> -->
+
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, onBeforeMount, onBeforeUnmount } from 'vue';
-  import mainHeader from './header/mainHeader.vue';
-  import navSider from './navSider/navSider.vue';
-  import bus from './utils/bus';
+import { ref, reactive, onBeforeMount, onBeforeUnmount } from 'vue';
+import mainHeader from './header/mainHeader.vue';
+import navSider from './navSider/navSider.vue';
+import bus from './utils/bus';
+import {NConfigProvider} from 'naive-ui'
+import Home from './views/Home/index';
+const mainHeaderShow = ref(true);
 
-  const mainHeaderShow = ref(true);
+onBeforeMount(() => {
+  bus.on('mainHeaderShow', settingMain);
+});
+onBeforeUnmount(() => {
+  bus.off('mainHeaderShow', settingMain);
+});
+// 窗口事件
+const navBar = (val: string) => {
+  console.log(window.ipc, 'window.ipc');
 
-  onBeforeMount(() => {
-    bus.on('mainHeaderShow', settingMain);
-  });
-  onBeforeUnmount(() => {
-    bus.off('mainHeaderShow', settingMain);
-  });
+  window.ipc.send('navBar', val);
+};
+const settingMain = (msg: any) => {
+  console.log(msg, 'msg');
 
-  const settingMain = (msg: any) => {
-    console.log(msg, 'msg');
-
-    mainHeaderShow.value = msg;
-  };
+  mainHeaderShow.value = msg;
+};
 </script>
 
 <style scoped>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+}
 
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
 
-  .logo.vue:hover {
-    filter: drop-shadow(0 0 2em #42b883aa);
-  }
+.logo.vue:hover {
+  filter: drop-shadow(0 0 2em #42b883aa);
+}
 </style>

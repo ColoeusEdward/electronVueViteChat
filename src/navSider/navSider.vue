@@ -2,8 +2,8 @@
  * @Author: 周楠
  * @Description:主侧边栏
  * @Date: 2023-01-04 16:41:47
- * @LastEditTime: 2023-01-06 10:17:39
- * @LastEditors: 周楠
+ * @LastEditTime: 2023-04-17 10:18:48
+ * @LastEditors: your name
 -->
 <template>
     <div class="w-52px h-full bg-ele-black-sider text-ele-white text-2xl flex flex-col ">
@@ -54,7 +54,7 @@ let navSider = reactive(
 
 
 
-let choiceNav = (item: object) => {
+let choiceNav = (item:any ) => {
     // 跳转页面
     router.push(item.path)
 }

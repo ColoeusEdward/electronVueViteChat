@@ -13,7 +13,8 @@
         "start:ect": "cross-env NODE_ENV=development electron ./output/build/main.js",
         "build:vue": "vue-tsc --noEmit && vite build",
         "build:tsc": "tsc -p tsconfig.e.json",
-        "build:all": "electron-builder --mac --windows",
+        "build:allold": "electron-builder --mac --windows",
+        "build:all": "electron-builder --windows",
         "build:mac": "electron-builder --mac",
         "build:win": "electron-builder --windows"
     },
@@ -22,20 +23,23 @@
         "@vueuse/electron": "^9.9.0",
         "element-plus": "^2.2.27",
         "mitt": "^3.0.0",
+        "naive-ui": "^2.34.3",
         "pinia": "^2.0.28",
         "sass": "^1.58.0",
         "tree-node-cli": "^1.6.0",
         "vue": "^3.2.45",
+        "vue-hook-svc": "^0.0.16",
         "vue-router": "^4.1.6"
     },
     "devDependencies": {
         "@types/vue-router": "^2.0.0",
         "@vitejs/plugin-vue": "^4.0.0",
+        "@vitejs/plugin-vue-jsx": "^3.0.1",
         "autoprefixer": "^10.4.13",
         "concurrently": "^7.6.0",
         "cross-env": "^7.0.3",
         "devtron": "^1.4.0",
-        "electron": "^22.0.0",
+        "electron": "^24.1.2",
         "electron-builder": "^23.6.0",
         "kill-port": "^2.0.1",
         "npm-run-all": "^4.1.5",
@@ -50,13 +54,13 @@
     },
     "build": {
         "appId": "com.lx000-website.electron-vue3-tpm-test",
-        "productName": "ZNNote",
+        "productName": "NewTop",
         "copyright": "Copyright © 2021 <your-name>",
         "directories": {
             "output": "output/app"
         },
         "win": {
-            "icon": "public/cccs.icns",
+            "icon": "public/faviconiot.ico",
             "target": [
                 "nsis",
                 "zip",

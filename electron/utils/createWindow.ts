@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author: 
  * @Description: electron窗口创建
  * @Date: 2022-12-27 11:45:09
  * @LastEditTime: 2023-02-03 10:17:50
- * @LastEditors: 周楠
+ * @LastEditors: 
  */
 import { BrowserWindow } from 'electron';
 import * as path from 'path';
@@ -24,7 +24,8 @@ function createWindow() {
     transparent: true, // * app 背景透明
     hasShadow: true, // * app 边框阴影
     show: false, // 启动窗口时隐藏,直到渲染进程加载完成「ready-to-show 监听事件」 再显示窗口,防止加载时闪烁
-    resizable: true, // 禁止手动修改窗口尺寸
+    resizable: false, // 禁止手动修改窗口尺寸
+    icon: './output/dist/faviconiot.ico', // 图标
     webPreferences: {
       // webSecurity:false,
       // 加载脚本
@@ -32,7 +33,8 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
-
+  Window.setFullScreen(true)
+  Window.setResizable(false)
   // 加载调试工具
   NODE_ENV === 'development' && Window.webContents.openDevTools();
 
@@ -45,6 +47,9 @@ function createWindow() {
   // * 主窗口加载外部链接
   // 开发环境,加载vite启动的vue项目地址
   if (NODE_ENV === 'development') Window.loadURL('http://localhost:3920/');
+  // else Window.loadURL(path.join(__dirname, "./output/dist/index.html"));
+  else Window.loadFile(`./output/dist/index.html`);
+  // else Window.loadURL('http://localhost:3920/');
 }
 // 导出模块
 export { createWindow };

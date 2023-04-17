@@ -2,8 +2,8 @@
  * @Author: 周楠
  * @Description:
  * @Date: 2023-01-31 14:23:05
- * @LastEditTime: 2023-03-08 15:49:14
- * @LastEditors: 周楠
+ * @LastEditTime: 2023-04-17 10:19:59
+ * @LastEditors: your name
 -->
 <!--
  * @Author: 周楠
@@ -161,7 +161,7 @@
     display?: string;
   }
 
-  const faceList = reactive([]);
+  const faceList:any = reactive([]);
   const chatMsg = ref('测试');
   const rangeOfInputBox = ref();
   const sendEmoji = ref('');
@@ -419,7 +419,7 @@
   };
 
   // 点击enter发送信息
-  const sendMsg = (val) => {
+  const sendMsg = (val:any) => {
     type val = {
       text: string;
       from: string;

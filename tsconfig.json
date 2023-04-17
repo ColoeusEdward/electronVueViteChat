@@ -6,6 +6,8 @@
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "resolveJsonModule": true,
     "isolatedModules": false,
     "esModuleInterop": true,
@@ -14,7 +16,7 @@
     "noEmit": true,
     "baseUrl": ".", // 新增
     "paths": { // 新增type/env.d.ts["src/*"],
-    "~/*": ["types/*"]
+    "~/*": ["types/*"],
   }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts", "src/main.js"],

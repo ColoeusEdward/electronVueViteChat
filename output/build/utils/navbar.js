@@ -32,7 +32,7 @@ function onNavbar() {
         } // 关闭窗口
         if (val == 'big') { // 全屏/取消全屏
             // 因为在createWindow.ts中禁用了修改窗口尺寸(resizable: false),这里先解除
-            window?.setResizable(true);
+            // window?.setResizable(false)
             // app.whenReady().then(() => {
             // let screenBounds: Rectangle = screen?.getPrimaryDisplay().bounds
             // unmaximize 还原到默认窗口

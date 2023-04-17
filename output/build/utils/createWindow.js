@@ -25,11 +25,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createWindow = void 0;
 /*
- * @Author: 周楠
+ * @Author:
  * @Description: electron窗口创建
  * @Date: 2022-12-27 11:45:09
  * @LastEditTime: 2023-02-03 10:17:50
- * @LastEditors: 周楠
+ * @LastEditors:
  */
 const electron_1 = require("electron");
 const path = __importStar(require("path"));
@@ -50,7 +50,8 @@ function createWindow() {
         transparent: true,
         hasShadow: true,
         show: false,
-        resizable: true,
+        resizable: false,
+        icon: './output/dist/faviconiot.ico',
         webPreferences: {
             // webSecurity:false,
             // 加载脚本
@@ -58,6 +59,8 @@ function createWindow() {
             nodeIntegration: true,
         },
     });
+    Window.setFullScreen(true);
+    Window.setResizable(false);
     // 加载调试工具
     NODE_ENV === 'development' && Window.webContents.openDevTools();
     // 由优雅写法
@@ -69,5 +72,9 @@ function createWindow() {
     // 开发环境,加载vite启动的vue项目地址
     if (NODE_ENV === 'development')
         Window.loadURL('http://localhost:3920/');
+    // else Window.loadURL(path.join(__dirname, "./output/dist/index.html"));
+    else
+        Window.loadFile(`./output/dist/index.html`);
+    // else Window.loadURL('http://localhost:3920/');
 }
 exports.createWindow = createWindow;

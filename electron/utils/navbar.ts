@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-01-04 10:36:42
  * @LastEditors: 周楠
  */
-import { BrowserWindow, ipcMain,screen,app } from "electron";
+import { BrowserWindow, ipcMain, screen, app } from "electron";
 import { Rectangle } from "electron/main";
 /**
 * @description 进程通讯 渲染进程点击顶部关闭,最小化...按钮时,传递 {val}参数,
@@ -30,26 +30,26 @@ export function onNavbar() {
         if (val == 'close') { window?.close() } // 关闭窗口
         if (val == 'big') { // 全屏/取消全屏
             // 因为在createWindow.ts中禁用了修改窗口尺寸(resizable: false),这里先解除
-            window?.setResizable(true)
+            // window?.setResizable(false)
             // app.whenReady().then(() => {
-                // let screenBounds: Rectangle = screen?.getPrimaryDisplay().bounds
+            // let screenBounds: Rectangle = screen?.getPrimaryDisplay().bounds
 
-                // unmaximize 还原到默认窗口
-                // maximize 最大化窗口
-                // isMaximized 判断窗口是否最大化
-                // if (window?.isMaximized()) {
-                //     console.log('还原到默认窗口');
+            // unmaximize 还原到默认窗口
+            // maximize 最大化窗口
+            // isMaximized 判断窗口是否最大化
+            // if (window?.isMaximized()) {
+            //     console.log('还原到默认窗口');
 
-                //     // 恢复默认窗口
-                //     animateToDefault(window, screenBounds)
-                // } else {
-                //     // 最大化窗口
-                //     animateToMaximized(window, screenBounds)
-                // }
-                window?.isMaximized() ? window?.unmaximize() : window?.maximize();
+            //     // 恢复默认窗口
+            //     animateToDefault(window, screenBounds)
+            // } else {
+            //     // 最大化窗口
+            //     animateToMaximized(window, screenBounds)
+            // }
+            window?.isMaximized() ? window?.unmaximize() : window?.maximize();
 
             // }).then(() => {
-                window?.setResizable(false)
+            window?.setResizable(false)
             // })
 
         }
