@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description: electron主进程
  * @Date: 2022-12-27 11:44:25
  * @LastEditTime: 2023-01-13 15:58:29
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { app, BrowserWindow, Menu } from "electron";
 // 创建窗口方法

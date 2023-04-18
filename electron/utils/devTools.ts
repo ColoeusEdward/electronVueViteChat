@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:是否开启调试工具
  * @Date: 2022-12-29 10:49:37
  * @LastEditTime: 2022-12-29 10:53:58
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { BrowserWindow, ipcMain } from "electron";
 

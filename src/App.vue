@@ -1,15 +1,15 @@
 <!--
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-04-17 09:32:23
+ * @LastEditTime: 2023-04-17 19:38:42
  * @LastEditors: your name
 -->
 
 <template>
-  <div
-    id="app"
-    class="h-full flex flex-col bg-ele-white">
+  <NConfigProvider :locale="zhCN" :theme-overrides="themeOverride" >
+    <div
+    class="h-[100vh] flex flex-col bg-ele-white">
     <!-- 侧边栏总组件 -->
     <!-- <navSider v-if="mainHeaderShow" /> -->
 
@@ -25,16 +25,17 @@
         size="18px"
         @click="navBar('big')">
         <FullScreen />
-      </el-icon>
-      <el-icon
-        size="18px"
-        @click="navBar('mini')"
-        class="">
-        <Minus />
-      </el-icon>
-    </div> -->
+        </el-icon>
+        <el-icon
+          size="18px"
+          @click="navBar('mini')"
+          class="">
+          <Minus />
+        </el-icon>
+      </div> -->
 
-  </div>
+    </div>
+  </NConfigProvider>
 </template>
 
 <script setup lang="ts">
@@ -42,8 +43,10 @@ import { ref, reactive, onBeforeMount, onBeforeUnmount } from 'vue';
 import mainHeader from './header/mainHeader.vue';
 import navSider from './navSider/navSider.vue';
 import bus from './utils/bus';
-import {NConfigProvider} from 'naive-ui'
+import { NConfigProvider,zhCN } from 'naive-ui'
 import Home from './views/Home/index';
+import {themeOverride} from '@/utils/theme';
+
 const mainHeaderShow = ref(true);
 
 onBeforeMount(() => {

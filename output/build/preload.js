@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*
- * @Author: 周楠
+ * @Author:
  * @Description:
  * @Date: 2022-12-27 13:45:11
  * @LastEditTime: 2023-01-10 09:49:49
- * @LastEditors: 周楠
+ * @LastEditors:
  */
 const electron_1 = require("electron");
 /**

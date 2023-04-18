@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onNavbar = void 0;
 /*
- * @Author: 周楠
+ * @Author:
  * @Description: 菜单栏设置窗口大小
  * @Date: 2022-12-28 14:30:15
  * @LastEditTime: 2023-01-04 10:36:42
- * @LastEditors: 周楠
+ * @LastEditors:
  */
 const electron_1 = require("electron");
 /**

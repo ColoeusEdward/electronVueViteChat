@@ -1,18 +1,17 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
  * @LastEditTime: 2023-01-13 17:43:43
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { createApp } from 'vue'
-import './style.css'
+import './style.scss'
 
 import App from './App.vue'
 import  router  from "./router/index";
 // import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import ElementPlus from 'element-plus'
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import { createPinia } from 'pinia'
 let app = createApp(App)
 const pinia = createPinia()

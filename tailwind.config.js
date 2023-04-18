@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2022-12-28 14:44:59
  * @LastEditTime: 2023-01-31 16:52:49
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],

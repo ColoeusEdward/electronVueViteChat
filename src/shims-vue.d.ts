@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2023-01-04 15:10:07
  * @LastEditTime: 2023-01-04 15:10:17
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 declare module '*.vue' {
     import type { DefineComponent } from 'vue'

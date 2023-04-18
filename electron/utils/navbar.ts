@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description: 菜单栏设置窗口大小
  * @Date: 2022-12-28 14:30:15
  * @LastEditTime: 2023-01-04 10:36:42
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { BrowserWindow, ipcMain, screen, app } from "electron";
 import { Rectangle } from "electron/main";

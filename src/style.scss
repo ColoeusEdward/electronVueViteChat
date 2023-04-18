@@ -1,0 +1,47 @@
+/* @tailwind base;
+@tailwind components; */
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+#app {
+  height: 100%;
+  --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.home-tab {
+  .n-tabs-pane-wrapper {
+    height: 100%;
+  }
+  .n-tabs-tab-pad {
+    width: 4px;
+  }
+  .n-tabs-nav--card-type.n-tabs-nav--top.n-tabs-nav {
+    background-image: url("./assets/PanelHead.png");
+    background-size: 100% 120%;
+    padding-top: 0.5rem;
+    /* padding-bottom: 4px; */
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

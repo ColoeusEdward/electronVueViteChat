@@ -1,9 +1,9 @@
 <!--
- * @Author: 周楠
+ * @Author:  
  * @Description:收藏
  * @Date: 2023-01-05 15:15:45
  * @LastEditTime: 2023-01-05 15:16:07
- * @LastEditors: 周楠
+ * @LastEditors:  
 -->
 <template>
  <div class='box'>收藏</div>

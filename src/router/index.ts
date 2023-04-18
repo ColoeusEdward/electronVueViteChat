@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2023-01-04 15:27:52
  * @LastEditTime: 2023-01-13 09:49:39
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { createRouter, createWebHashHistory } from "vue-router"
 import ChatOnline from '../views/chatOnline/chatOnline.vue';

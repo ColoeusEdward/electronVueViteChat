@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onCalendar = void 0;
 /*
- * @Author: 周楠
+ * @Author:
  * @Description:
  * @Date: 2023-01-12 17:12:24
  * @LastEditTime: 2023-01-13 14:05:13
- * @LastEditors: 周楠
+ * @LastEditors:
  */
 const electron_1 = require("electron");
 function onCalendar() {

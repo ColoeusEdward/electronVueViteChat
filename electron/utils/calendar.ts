@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description:
  * @Date: 2023-01-12 17:12:24
  * @LastEditTime: 2023-01-13 14:05:13
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { BrowserWindow, ipcMain } from "electron";
 import * as path from "path";

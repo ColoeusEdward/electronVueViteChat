@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createAppMenu = void 0;
 /*
- * @Author: 周楠
+ * @Author:
  * @Description: 菜单栏
  * @Date: 2022-12-29 10:01:20
  * @LastEditTime: 2022-12-29 10:06:40
- * @LastEditors: 周楠
+ * @LastEditors:
  */
 const electron_1 = require("electron");
 function createAppMenu() {

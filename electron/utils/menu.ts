@@ -1,9 +1,9 @@
 /*
- * @Author: 周楠
+ * @Author:  
  * @Description: 菜单栏
  * @Date: 2022-12-29 10:01:20
  * @LastEditTime: 2022-12-29 10:06:40
- * @LastEditors: 周楠
+ * @LastEditors:  
  */
 import { Menu } from 'electron'
 
