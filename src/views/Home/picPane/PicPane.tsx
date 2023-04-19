@@ -13,7 +13,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full px-2'}>
+        <div class={'w-full h-full px-2 flex flex-col'}>
           <MenuBtn />
           <DiameterDataChart />
         </div>

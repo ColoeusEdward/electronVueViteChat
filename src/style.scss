@@ -33,6 +33,12 @@ body {
     /* padding-bottom: 4px; */
   }
 }
+
+.btn-bg {
+  background-image: url("./assets/LineDspButton_inactive.png");
+  background-size: 100% 100%;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

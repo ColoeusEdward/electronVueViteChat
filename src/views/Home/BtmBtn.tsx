@@ -17,7 +17,7 @@ const TimeBlock = defineComponent({
     })
     return () => {
       return (
-        <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2'} style={{backgroundImage:`url(${activeImg})`,backgroundSize:'100% 100%',color:'#534d62'}} >
+        <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} >
           <span class={'text-2xl'}>{
             nowTime.value
           }</span>
@@ -32,18 +32,32 @@ const TimeBlock = defineComponent({
 export default defineComponent({
   name: 'BtmBtn',  //底部按钮栏
   setup(props) {
-    const maintainOption = ref<PopselectProps['options']>([
+    const maintainOption = [
+      { label: '配置', value: 'option' },
+      {label:'运行日志',value:'log'},
+      {label:'诊断程序',value:'diag'},
+      {label:'趋势图/打印机',value:'chartAndprint'},
+     { label: '关机', value: 'shutdown' },
+    ]
+    const productOption = [
+      {label:'产品表',value:'product'},
+      {label:'设定产品表',value:'setproduct'},
+    ]
+    const chartOption = [
+      {label:'开始',value:'start'},
+    ]
+    const maintainOption2 = ref<PopselectProps['options']>([
       { label: '配置', value: 'option' },
       { label: '关机', value: 'shutdown' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value) => {
       console.log(value)
     }
-    const popSelectList = ref<{option:PopselectProps['options'],name:string,icon?:JSX.Element}[]>([
-      {option:maintainOption.value,name:'维护',icon:<Tool />},
-      {option:maintainOption.value,name:'产品表',icon:<CandlestickChartRound />},
-      {option:maintainOption.value,name:'趋势图',icon:<AreaChartOutlined />},
-      {option:maintainOption.value,name:'屏幕打印', icon:<LocalPrintshopFilled />},
+    const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
+      { option: maintainOption, name: '维护', icon: <Tool /> },
+      { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
+      { option: chartOption, name: '趋势图', icon: <AreaChartOutlined /> },
+      { option: maintainOption2.value, name: '屏幕打印', icon: <LocalPrintshopFilled /> },
     ])
 
 
@@ -52,7 +66,7 @@ export default defineComponent({
         <div class={'w-full h-24 mt-auto  flex items-center  px-2'}>
           {popSelectList.value.map((item, index) => {
             return (
-              <PopBtnComp name={item.name} options={item.option} key={index}  onUpdateValue={handleOptClick} 
+              <PopBtnComp name={item.name} options={item.option} key={index} onUpdateValue={handleOptClick}
                 v-slots={{
                   icon: () => {
                     return item.icon

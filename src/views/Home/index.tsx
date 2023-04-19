@@ -1,10 +1,12 @@
 import { NTabs, NTabPane, } from "naive-ui";
-import { defineComponent, KeepAlive, ref } from "vue";
+import { defineComponent, KeepAlive, onUnmounted, ref } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
 import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
+import emptyAduio from '@/assets/empty_loop_for_js_performance.wav'
 // import { useSvc } from "./svc";
+//@ts-ignore
 
 export default defineComponent({
   name: 'Home',
@@ -19,16 +21,34 @@ export default defineComponent({
       width: '10vw', border: 'none', fontSize: '20px',
       borderBottom: '3px solid #58595a'
     }
+    const audio = new Audio(emptyAduio)
+    audio.loop = true
+    
 
     const handleTabChange = (value: string) => {
       curTabValue.value = value
     }
+    const handleBlur = () => {
+      audio.play()
+    }
+    const handleFocus = () => {
+      audio.pause()
+    }
+
+    window.addEventListener('blur',handleBlur)
+    window.addEventListener('focus',handleFocus)
+
+    onUnmounted(() => {
+      window.removeEventListener('blur',handleBlur)
+      window.removeEventListener('focus',handleFocus)
+    })
+    
 
     return () => {
       return (
         <div class={'w-full h-full flex flex-col  '}>
           {/* <KeepAlive> */}
-          <div class={'h-full flex'}>
+          <div class={'h-full flex overflow-hidden'}>
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} >
               <NTabPane displayDirective="show:lazy" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
                 <div class={' h-full'}>

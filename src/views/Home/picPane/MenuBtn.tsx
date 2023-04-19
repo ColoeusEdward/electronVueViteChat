@@ -49,14 +49,7 @@ export default defineComponent({
 
     const originMaintainOption: DropdownProps['options'] = addProp([
       {
-        label: '数据源', key: 'dataSource', children: [
-          { label: '直径1', key: 'diameter', },
-          { label: '热外径', key: 'heat', },
-          { label: '冷外径', key: 'cold', },
-          { label: '冷电容', key: 'coldCap', },   //电容只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
-          { label: '壁厚', key: 'wall', },
-          { label: '偏心', key: 'ecc', },
-        ]
+        label: '数据源', key: 'dataSource', children: store.dataSourceList
       },
     ])
     const maintainOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originMaintainOption)))
