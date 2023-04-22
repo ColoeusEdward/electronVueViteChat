@@ -15,6 +15,7 @@ const menu_1 = require("./utils/menu");
 const calendar_1 = require("./utils/calendar");
 // 是否开启调试工具
 const devTools_1 = require("./utils/devTools");
+const nt_1 = require("./utils/nt");
 // const remote = require('electron').remote;
 electron_1.app.on("ready", () => {
     (0, createWindow_1.createWindow)(); // 创建窗口
@@ -22,6 +23,7 @@ electron_1.app.on("ready", () => {
     electron_1.Menu.setApplicationMenu((0, menu_1.createAppMenu)());
     (0, navbar_1.onNavbar)();
     (0, calendar_1.onCalendar)();
+    (0, nt_1.onNT)();
     // 是否开启调试工具
     (0, devTools_1.onDevTools)();
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他打开的窗口，那么程序会重新创建一个窗口。

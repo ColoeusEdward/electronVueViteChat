@@ -13,6 +13,7 @@ import { createAppMenu } from './utils/menu';
 import { onCalendar } from "./utils/calendar";
 // 是否开启调试工具
 import { onDevTools } from "./utils/devTools";
+import { onNT } from "./utils/nt";
 // const remote = require('electron').remote;
 app.on("ready", () => {
 
@@ -21,6 +22,7 @@ app.on("ready", () => {
     Menu.setApplicationMenu(createAppMenu());
     onNavbar();
     onCalendar();
+    onNT()
     // 是否开启调试工具
     onDevTools();
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他打开的窗口，那么程序会重新创建一个窗口。

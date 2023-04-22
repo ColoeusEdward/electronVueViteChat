@@ -1,5 +1,20 @@
 import { defineStore } from "pinia" // 定义容器
 
+const rightRealTimeData: Record<string, any> = {
+  'diameter1-diameter1': {
+    label: '直径1',
+    value: 0.0048,
+    unit: 'mm',
+    // stand:[`公差: +0.00500 ${unit} / -0.00500 ${unit}`,`偏差: 0.00428 mm`,`X = 0.00522 mm Y = 0.00535 mm`,`椭圆度: 0.00072 mm`,`H = -0.02418 mm V = -0.04375 mm`,`标称值: 0.00150 mm`],            //标准值
+    get stand() {
+      return [`公差: +0.00500 ${this.unit} / -0.00500 ${this.unit}`, `偏差: 0.00428 ${this.unit}`, `X = 0.00522 ${this.unit} Y = 0.00535 ${this.unit}`, `椭圆度: 0.00072 ${this.unit}`, `H = -0.02418 ${this.unit} V = -0.04375 ${this.unit}`, `标称值: 0.00150 ${this.unit}`]
+    }
+  }
+}
+rightRealTimeData[`heat-heat`] = { ...rightRealTimeData['diameter1-diameter1'] }
+rightRealTimeData[`heat-heat`].label = `热外径`
+rightRealTimeData[`heat-heat`].value = 0.0055
+
 
 export const useRealTimeStore = defineStore('useRealtime', {
   /**
@@ -9,8 +24,16 @@ export const useRealTimeStore = defineStore('useRealtime', {
   */
   state: () => {
     return {
-      diameterData: <any[]>[],
-      rightRealTimeData: <any[]>[],
+      realData: <Record<string, any>>{
+        diameter1Data: <Record<string, any[]>>{
+          avg: [],
+          ellipse: [],
+          diameterX: [],
+          diameterY: []
+        },        //直径趋势折线图数据
+      }, //实时数据
+
+      rightRealTimeData: rightRealTimeData
     }
   },
   /**
@@ -38,12 +61,15 @@ export const useRealTimeStore = defineStore('useRealtime', {
       let now = new Date();
       let oneDay = 1000;
       let value = Math.random() * 1000;
-      if (this.diameterData.length > 1000) {
-        this.diameterData.shift();
-      }
-      this.diameterData.push(randomData());
+      Object.values(this.realData.diameter1Data).forEach((e: any) => {
+        if (e.length > 1000) {
+          e.shift();
+        }
+        e.push(randomData());
+      })
+
     },
-    
+
 
   }
 

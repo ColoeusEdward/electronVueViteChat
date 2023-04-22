@@ -5,6 +5,7 @@ import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import { useMain } from "@/store";
 import MenuBtn from "./MenuBtn";
 import DiameterDataChart from "./DiameterDataChart";
+import OutToleranceChart from "./outToleranceChart";
 export default defineComponent({
   name: 'PicPane',
   setup(props, ctx) {
@@ -15,7 +16,8 @@ export default defineComponent({
       return (
         <div class={'w-full h-full px-2 flex flex-col'}>
           <MenuBtn />
-          <DiameterDataChart />
+          {store.displayChart.key == 'dataChart' && <DiameterDataChart />}
+          {store.displayChart.key == 'outTolerance' && <OutToleranceChart />}
         </div>
       )
     }

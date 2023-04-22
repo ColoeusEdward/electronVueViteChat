@@ -1,4 +1,8 @@
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export { sleep }
+const isLowResolution = () => {
+  return screen.width <= 1440
+}
+
+export { sleep, isLowResolution }

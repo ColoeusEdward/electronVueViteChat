@@ -1,16 +1,22 @@
 import { NTabs, NTabPane, } from "naive-ui";
-import { defineComponent, KeepAlive, onUnmounted, ref } from "vue";
+import { defineComponent, KeepAlive, onMounted, onUnmounted, ref } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
 import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
 import emptyAduio from '@/assets/empty_loop_for_js_performance.wav'
+import { useMain } from "@/store";
+import { isLowResolution, sleep } from "@/utils/utils";
+import { useRealTimeStore } from "@/store/realtime";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
 export default defineComponent({
   name: 'Home',
   setup(props) {
+    const store = useMain()
+    const realtimeStore = useRealTimeStore()
+    let startFetch = true
     const activeStyle = {
       backgroundImage: `url(${activeImg})`,
       backgroundSize: 'cover',
@@ -23,26 +29,44 @@ export default defineComponent({
     }
     const audio = new Audio(emptyAduio)
     audio.loop = true
-    
+
 
     const handleTabChange = (value: string) => {
       curTabValue.value = value
     }
     const handleBlur = () => {
+      window.ipc.invoke('test').then((val) => {
+        console.log(`covvv`, val);
+      })
       audio.play()
     }
     const handleFocus = () => {
       audio.pause()
     }
+    const loopGetData = async () => {
+      while (startFetch) {
+        await sleep(1000)
+        realtimeStore.fetchDiameterData()
+      }
+    }
 
-    window.addEventListener('blur',handleBlur)
-    window.addEventListener('focus',handleFocus)
+
+    store.setIsLowRes(isLowResolution())
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('focus', handleFocus)
+
+    onMounted(() => {
+      loopGetData()
+
+
+    })
 
     onUnmounted(() => {
-      window.removeEventListener('blur',handleBlur)
-      window.removeEventListener('focus',handleFocus)
+      window.removeEventListener('blur', handleBlur)
+      window.removeEventListener('focus', handleFocus)
+      startFetch = false
     })
-    
+
 
     return () => {
       return (

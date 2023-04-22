@@ -1,13 +1,67 @@
 
 import { DropdownProps, NButton, NDropdown } from "naive-ui";
-import { defineComponent, ref, computed, watch, onUnmounted,  } from "vue";
+import { defineComponent, ref, computed, watch, onUnmounted, } from "vue";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useMain } from "@/store";
 import { storeToRefs } from "pinia";
+import { useRealTimeStore } from "@/store/realtime";
+
+const TopValue = defineComponent({
+  name: 'TopValue',
+  setup(props, ctx) {
+    const store = useMain()
+    const realtimeStore = useRealTimeStore()
+
+    const dataItem = computed(() => {
+      return realtimeStore.realData[`${store.dataSource.key}Data`] || {}
+    })
+    return () => {
+      let valueList = Object.keys(dataItem.value).map((key) => {
+        const value = (dataItem.value[key] && dataItem.value[key][0]) ? dataItem.value[key][dataItem.value[key].length - 1].value[1] : 0
+        let name = ''
+        let re = key.match(/(?:X|Y)$/)
+        if (re) {
+          name = re[0]
+        } else {
+          name = store.chineseMap[key]
+        }
+        return (
+          <div class={'flex flex-col text-lg font-semibold mr-[3vw] h-full items-center'}>
+            <span class={'h-1/2'} >{name}:</span>
+            <span class={'h-1/2'}>{value + ' mm'}</span>
+          </div>
+        )
+      })
+
+
+      if (store.displayChart.key == 'outTolerance') {
+        // let obj: Record<string, any> = {
+        //   'diameter1': (
+        //     <div class={'flex items-center h-full ml-[6vw]'}>
+        //       {valueList}
+        //     </div>
+        //   ),
+        //   'wall': (
+        //     <div class={'flex items-center'}></div>
+        //   )
+        // }
+        return <div class={'flex items-center h-full ml-[6vw]'}>
+          {valueList}
+        </div>
+
+      } else {
+        return <div class={'ml-[6vw] text-xl text-blue-700'}>{store.displayWay.label}</div>
+      }
+    }
+  },
+})
+
+
 export default defineComponent({
   name: 'MenuBtn',
   setup(props, ctx) {
     const store = useMain()
+    const realtimeStore = useRealTimeStore()
     const dropdownItemProp = {
       style: {
         fontSize: '1.2rem'
@@ -49,7 +103,14 @@ export default defineComponent({
 
     const originMaintainOption: DropdownProps['options'] = addProp([
       {
-        label: '数据源', key: 'dataSource', children: store.dataSourceList
+        label: '数据源', key: 'dataSource', children: [
+          { label: '直径1', key: 'diameter1', },
+          { label: '热外径', key: 'heat', },
+          { label: '冷外径', key: 'cold', },
+          { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+          { label: '壁厚', key: 'wall', },
+          { label: '偏心', key: 'ecc', },
+        ]
       },
     ])
     const maintainOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originMaintainOption)))
@@ -100,9 +161,9 @@ export default defineComponent({
       // }
       return opt
     })
-    const { dataSource,displayChart } = storeToRefs(store)
+    const { dataSource, displayChart } = storeToRefs(store)
     watch(dataSource, (nv) => {
-      if (nv.key == 'coldCap') {
+      if (nv.key == 'coldCap' || nv.key == 'wall') {
         store.setDisplayChart(displayOption.value![1])
         //@ts-ignore
         store.setDisplayWay(displayOption.value![2].children![0])
@@ -113,8 +174,8 @@ export default defineComponent({
         }
       }
     })
-    watch(displayChart,(nv) => {
-      if(nv.key == 'outTolerance') {
+    watch(displayChart, (nv) => {
+      if (nv.key == 'outTolerance') {
         zoneOption.value = []
       } else {
         if (zoneOption.value!.length == 0) {
@@ -145,7 +206,11 @@ export default defineComponent({
       }
     }
 
+
+
     return () => {
+
+
       return (
         <div class={'flex items-center'}>
           < NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'} renderLabel={renderLabel} nodeProps={nodeProps} >
@@ -154,10 +219,11 @@ export default defineComponent({
               <span class={'text-2xl'}>菜单</span>
             </NButton>
           </NDropdown >
-          <div class={'ml-2 text-xl w-32 '}>
+          <div class={'ml-2 text-xl w-32'}>
             {store.dataSource.label}
           </div>
-          <div class={'ml-[6vw] text-xl text-blue-700'}>{store.displayWay.label}</div>
+          <TopValue />
+          {/* {renderValueText()} */}
         </div>
       )
     }

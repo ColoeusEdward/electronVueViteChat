@@ -22,15 +22,18 @@
         "@element-plus/icons-vue": "^2.0.10",
         "@vueuse/electron": "^9.9.0",
         "echarts": "^5.4.2",
+        "electron-edge-js": "^23.0.0",
         "element-plus": "^2.2.27",
         "mitt": "^3.0.0",
         "naive-ui": "^2.34.3",
         "pinia": "^2.0.28",
         "sass": "^1.58.0",
+        "simple-keyboard": "^3.5.51",
         "tree-node-cli": "^1.6.0",
         "vue": "^3.2.45",
         "vue-hook-svc": "^0.0.16",
-        "vue-router": "^4.1.6"
+        "vue-router": "^4.1.6",
+        "vue3-slider": "^1.8.0"
     },
     "devDependencies": {
         "@types/vue-router": "^2.0.0",
@@ -48,7 +51,7 @@
         "concurrently": "^7.6.0",
         "cross-env": "^7.0.3",
         "devtron": "^1.4.0",
-        "electron": "^24.1.2",
+        "electron": "^23.2.4",
         "electron-builder": "^23.6.0",
         "kill-port": "^2.0.1",
         "npm-run-all": "^4.1.5",
@@ -69,7 +72,7 @@
             "output": "output/app"
         },
         "win": {
-            "icon": "public/faviconiot.ico",
+            "icon": "public/newtopIcon.png",
             "target": [
                 "nsis",
                 "zip",
@@ -79,7 +82,8 @@
         "files": [
             "!node_modules",
             "output/dist/**/*",
-            "output/build/**/*"
+            "output/build/**/*",
+            "resource/**/*"
         ],
         "mac": {
             "category": "public.app-category.utilities.test",
