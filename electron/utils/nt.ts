@@ -20,8 +20,13 @@ import * as path from 'path';
 * */
 
 const invoke = edge.func({
-  assemblyFile: path.resolve('resource/dll/electronedge.dll'),
+  assemblyFile: 'resource/dll/electronedge.dll',
   typeName: 'electronedge.Class1',
+  methodName: 'Invoke'
+})
+const invoke1 = edge.func({
+  assemblyFile: 'resource/dll/dlltest.dll',
+  typeName: 'dlltest.test',
   methodName: 'Invoke'
 })
 // const serialObj = edge.func({
@@ -42,6 +47,18 @@ export function onNT() {
         //   message: 'dll返回的内容为：' + val,
         //   type: 'success'
         // })
+      })
+    })
+  })
+  ipcMain.handle('test1', (event, val) => {
+    return new Promise((resolve, reject) => {
+      invoke1('这是自定义字符串', function (err, val) {
+        if (err) {
+          reject(err)
+          throw err
+        }
+        resolve('dll返回的内容为：' + val)
+
       })
     })
   })

@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-01-13 15:58:29
  * @LastEditors:  
  */
+process.env.EDGE_USE_CORECLR = '1'   //想要调用net core dll必须加上这一行
 import { app, BrowserWindow, Menu } from "electron";
 // 创建窗口方法
 import { createWindow } from "./utils/createWindow";
@@ -14,6 +15,7 @@ import { onCalendar } from "./utils/calendar";
 // 是否开启调试工具
 import { onDevTools } from "./utils/devTools";
 import { onNT } from "./utils/nt";
+
 // const remote = require('electron').remote;
 app.on("ready", () => {
 

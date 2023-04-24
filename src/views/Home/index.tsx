@@ -35,9 +35,12 @@ export default defineComponent({
       curTabValue.value = value
     }
     const handleBlur = () => {
-      window.ipc.invoke('test').then((val) => {
-        console.log(`covvv`, val);
+      window.ipc.invoke('test1').then((val) => {
+        console.log(`dll`, val);
       })
+      // window.ipc.invoke('serialize',{'fff':'ffggg'}).then((val) => {
+      //   console.log(`sdll`, val);
+      // })
       audio.play()
     }
     const handleFocus = () => {

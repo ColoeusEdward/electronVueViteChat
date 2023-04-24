@@ -9,6 +9,6 @@
         "sourceMap": false, // * 是否生成相应的 '.map' 文件
     },
     "include": [
-    "electron"
+        "electron",
     ] // * 指定需要包含的文件 (此处指定electron文件夹下所有文件)
 }

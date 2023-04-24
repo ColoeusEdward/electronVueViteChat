@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @LastEditTime: 2023-01-13 15:58:29
  * @LastEditors:
  */
+process.env.EDGE_USE_CORECLR = '1'; //想要调用net core dll必须加上这一行
 const electron_1 = require("electron");
 // 创建窗口方法
 const createWindow_1 = require("./utils/createWindow");
