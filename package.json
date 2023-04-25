@@ -75,8 +75,7 @@
             "icon": "public/newtopIcon.png",
             "target": [
                 "nsis",
-                "zip",
-                "7z"
+                "zip"
             ]
         },
         "files": [

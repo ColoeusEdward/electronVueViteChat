@@ -8,6 +8,7 @@
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 
+let eccangle = localStorage.getItem('eccangle') || 0
 let rightBlockDataMap: any[][] = localStorage.getItem('rightBlockDataMap') ? JSON.parse(localStorage.getItem('rightBlockDataMap') || '[]') : [
     [],
     [],
@@ -91,7 +92,7 @@ export const useMain = defineStore('useStore', {
                 avg: '平均值',
                 ellipse: '椭圆度'
             },
-            eccAngle:0                                      //偏心扭转值
+            eccAngle:eccangle                                      //偏心扭转值
         }
     },
     /**
@@ -134,6 +135,7 @@ export const useMain = defineStore('useStore', {
             this.isLowRes = value
         },
         setEccAngle(value: number) {
+            localStorage.setItem('eccangle',String(value))
             this.eccAngle = value
         }
 

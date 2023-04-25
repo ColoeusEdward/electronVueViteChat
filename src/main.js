@@ -19,7 +19,9 @@ const pinia = createPinia()
 //     app.component(key, component)
 // }
 
-app.use(router).use(pinia)
+app
+// .use(router)
+.use(pinia)
 // .use(ElementPlus, {
 //     locale: zhCn,
 //   })

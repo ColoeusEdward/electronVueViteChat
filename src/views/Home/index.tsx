@@ -8,6 +8,7 @@ import emptyAduio from '@/assets/empty_loop_for_js_performance.wav'
 import { useMain } from "@/store";
 import { isLowResolution, sleep } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
+import Trend from "./trend/Trend";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -76,25 +77,27 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col  '}>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
-            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} >
-              <NTabPane displayDirective="show:lazy" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
+            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} defaultValue={'pic'} >
+              <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
                   <PicPane />
                 </div>
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
-                Hey Jude
+              <NTabPane displayDirective="if" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
+                <div class={'h-full'}>
+                  <Trend />
+                </div>
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
                 七里香
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name="product" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'product' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="if" name="product" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'product' ? activeStyle : {} } }}>
                 Hey Jude
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name="event" tab="事件" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'event' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="if" name="event" tab="事件" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'event' ? activeStyle : {} } }}>
                 Hey Jude
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name="print" tab="打印机" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'print' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="if" name="print" tab="打印机" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'print' ? activeStyle : {} } }}>
                 Hey Jude
               </NTabPane>
             </NTabs>

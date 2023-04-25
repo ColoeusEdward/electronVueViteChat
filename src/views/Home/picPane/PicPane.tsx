@@ -5,7 +5,7 @@ import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import { useMain } from "@/store";
 import MenuBtn from "./MenuBtn";
 import DiameterDataChart from "./DiameterDataChart";
-import OutToleranceChart from "./outToleranceChart";
+import OutToleranceChart from "./OutToleranceChart";
 export default defineComponent({
   name: 'PicPane',
   setup(props, ctx) {

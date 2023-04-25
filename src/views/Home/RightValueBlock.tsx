@@ -131,7 +131,7 @@ export default defineComponent({
       while (startLoop) {
         await sleep(5000)
         let idx = curTabValue.value.slice(-1) as unknown as number
-        console.log("🚀 ~ file: RightValueBlock.tsx:134 ~ loopShow ~ idx:", idx)
+        // console.log("🚀 ~ file: RightValueBlock.tsx:134 ~ loopShow ~ idx:", idx)
         if (idx == arr.length) {
           idx = 1
         } else {
@@ -151,7 +151,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <NTabs type="card" animated size="large" barWidth={1148} value={curTabValue.value} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} >
+        <NTabs type="card" animated size="large" barWidth={1148} value={curTabValue.value} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'value1'} >
           <NTabPane displayDirective="show:lazy" name="value1" tab="value1" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
             <div class={' h-full px-2 flex flex-col'}>
               {new Array(6).fill({}).map((_, i) => {

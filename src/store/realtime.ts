@@ -1,4 +1,5 @@
 import { defineStore } from "pinia" // 定义容器
+import { useTrendStore } from "./trendStore"
 
 const rightRealTimeData: Record<string, any> = {
   'diameter1-diameter1': {
@@ -32,7 +33,7 @@ export const useRealTimeStore = defineStore('useRealtime', {
           diameterY: []
         },        //直径趋势折线图数据
       }, //实时数据
-
+      productLength: 0,                //产品累计长度
       rightRealTimeData: rightRealTimeData
     }
   },
@@ -62,14 +63,20 @@ export const useRealTimeStore = defineStore('useRealtime', {
       let oneDay = 1000;
       let value = Math.random() * 1000;
       Object.values(this.realData.diameter1Data).forEach((e: any) => {
-        if (e.length > 1000) {
-          e.shift();
-        }
+        // if (e.length > 1000) {
+        //   e.shift();
+        // }
         e.push(randomData());
       })
-
+      this.addProductLength()
     },
-
+    addProductLength() {
+      // const trendStore = useTrendStore()
+      // if(!trendStore.isFetching){
+      //   return
+      // }
+      this.productLength += 10
+    }
 
   }
 

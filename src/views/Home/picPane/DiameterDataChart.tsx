@@ -94,7 +94,7 @@ export default defineComponent({
             name: 'Fake Data',
             type: 'line',
             showSymbol: false,
-            data: realtimeStore.realData[`${store.dataSource.key}Data`]?.avg || [],
+            data: (realtimeStore.realData[`${store.dataSource.key}Data`]?.avg || []).slice(-store.timeZone.key*60),
             smooth: false,
           }
         ],
@@ -112,7 +112,7 @@ export default defineComponent({
       myChart.setOption({
         series: [
           {
-            data: nv[`${store.dataSource.key}Data`] ? nv[`${store.dataSource.key}Data`][store.displayWay.key] || [] : [],
+            data: nv[`${store.dataSource.key}Data`] ? nv[`${store.dataSource.key}Data`][store.displayWay.key].slice(-store.timeZone.key*60) || [] : [],
           }
         ]
       });
