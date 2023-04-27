@@ -5,8 +5,7 @@ import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useMain } from "@/store";
 import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
-import { useTrendStore } from "@/store/trendStore";
-import { capitalizeFirstLetter } from "@/utils/utils";
+import { useStatisticalStore } from "@/store/statistical";
 
 const TopValue = defineComponent({
   name: 'TopValue',
@@ -64,7 +63,7 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useMain()
     const realtimeStore = useRealTimeStore()
-    const trendStore = useTrendStore()
+    const statisticalStore = useStatisticalStore()
     const dropdownItemProp = {
       style: {
         fontSize: '1.2rem'
@@ -76,14 +75,14 @@ export default defineComponent({
       return list.map(e => {
         // e.props = Object.assign({}, dropdownItemProp)
         e.props = JSON.parse(JSON.stringify(dropdownItemProp))
-        if (e.key == 'end' || e.key == 'needYAll') {
+        if (e.key == 'onlineStatistical') {
           //@ts-ignore
           e.props!.style!.borderBottom = '1px solid #d9d9d9'
         }
-        if (e.key == 'timeZone') {
-          //@ts-ignore
-          e.props!.style!.borderTop = '1px solid #d9d9d9'
-        }
+        // if (e.key == 'timeZone') {
+        //   //@ts-ignore
+        //   e.props!.style!.borderTop = '1px solid #d9d9d9'
+        // }
         if (e.key == 'dataSource') {
           //@ts-ignore
           e.props!.style!.borderBottom = '1px solid #d9d9d9'
@@ -113,9 +112,8 @@ export default defineComponent({
       })
     }
     const originDisplayOption: DropdownProps['options'] = addProp([ //两种显示方式外形和数字显示, 显示方式是针对数字显示的选项
-      { label: '运行方式', key: 'needExecWay' },
-      { label: 'X轴全部', key: 'needXAll' },
-      { label: 'Y轴全部', key: 'needYAll' },
+      { label: '统计', key: 'statistical' },
+      { label: '在线统计', key: 'onlineStatistical' },
     ])
     const displayOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originDisplayOption)))
 
@@ -126,23 +124,20 @@ export default defineComponent({
           { label: '直径1', key: 'diameter1', },
           { label: '热外径', key: 'heat', },
           { label: '冷外径', key: 'cold', },
-          { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
           { label: '壁厚', key: 'wall', },
           { label: '偏心', key: 'ecc', },
           { label: '同心度', key: 'concentricity', },
-          { label: '角度', key: 'angle', },
-          { label: '速度', key: 'speed', },
+          { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+
         ]
       },
     ])
-    trendStore.setMenuMaintainOptions(originMaintainOption)
     const maintainOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originMaintainOption)))
 
     const originZoneOption: DropdownProps['options'] = addProp([
       {
-        label: '开始', key: 'start',
+        label: '显示数据', key: 'isShowData',
       },
-      { label: '结束', key: 'end' },
       // {
       //   label: '线宽', key: 'lineWidth', children: [
       //     { label: '线宽1', key: 'lineWidth1' },
@@ -157,29 +152,27 @@ export default defineComponent({
     const handleMenuSelect: DropdownProps['onSelect'] = (val, option) => {
       // console.log(val,option)
       let { key, label } = option
-      if (String(key).search('need') > -1) {
-        //@ts-ignore
-        trendStore[`changeNeed${String(key).split('need')[1]}`]()
-      }
+
       if (String(key).search('-') > -1) {
         let [parent, ckey] = String(key).split('-')
-        trendStore.addDataSource({ label: label, key: ckey, parent: parent })
+        statisticalStore.addDataSource({ label: label, key: ckey, parent: parent })
       }
       //@ts-ignore
       if (originMaintainOption![0].children.slice(3).some(e => e.key == key)) {
-        trendStore.addDataSource({ label: label, key: key, parent: 'dataSource' })
+        statisticalStore.addDataSource({ label: label, key: key, parent: 'dataSource' })
       }
-      if (key == 'start') {
-        trendStore.setIsFetching(true)
-      }
-      if (key == 'end') {
-        trendStore.setIsFetching(false)
-      }
+
       if (key == 'cleanAll') {
-        trendStore.cleanDataSource()
+        statisticalStore.cleanDataSource()
       }
-      if (String(key).search('lineWidth') > -1) {
-        trendStore.setLineWidth({ label: label, key: key})
+      if(key == 'onlineStatistical'){
+        statisticalStore.setIsOnline(true)
+      }
+      if(key == 'statistical'){
+        statisticalStore.setIsOnline(false)
+      }
+      if(key == 'isShowData'){
+        statisticalStore.changeIsShowData()
       }
     }
 
@@ -219,17 +212,10 @@ export default defineComponent({
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
       // console.log("🚀 ~ file: MenuBtn.tsx:204 ~ setup ~ option:", option)
-      if (trendStore.dataSourceList.some(e => (e.parent + '-' + e.key) == option.key || e.key == option.key)) {
+      if (statisticalStore.dataSourceList.some(e => (e.parent + '-' + e.key) == option.key || e.key == option.key)) {
         text += ' ✔️'
       }
-      //@ts-ignore
-      if (String(option.key).search('need') > -1 && trendStore[String(option.key)]) {
-        text += ' ✔️'
-      }
-      if ((option.key == 'start' && trendStore.isFetching) || (option.key == 'end' && !trendStore.isFetching)) {
-        text += '✔️'
-      }
-      if(String(option.key).search('lineWidth') > -1 && trendStore.lineWidth.key == option.key) {
+      if ((option.key == 'onlineStatistical' && statisticalStore.isOnline) || (option.key == 'statistical' && !statisticalStore.isOnline) || (option.key == 'isShowData' && statisticalStore.isShowData)) {
         text += '✔️'
       }
       // if (Object.values(store.$state).some(e => e.key == option.key)
@@ -265,7 +251,7 @@ export default defineComponent({
             </NButton>
           </NDropdown >
           <div class={'ml-2 text-xl w-[20vw]'}>
-            产品长度[m]:{trendStore.isFetching ? realtimeStore.productLength:'关'}
+      
           </div>
           {/* <TopValue /> */}
           {/* {renderValueText()} */}

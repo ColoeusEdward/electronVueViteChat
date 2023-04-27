@@ -20,8 +20,7 @@ export const useTrendStore = defineStore('useTrend', {
 
       isFetching: false,       //是否开始获取数据
 
-      displayChart: { label: '数字显示/趋势图', key: 'dataChart' },         //显示的图表类型
-      displayWay: { label: '平均值', key: 'avg' },                //显示的方式
+      menuMaintainOptions: <DropdownProps['options']>[]
     }
   },
   /**
@@ -38,10 +37,11 @@ export const useTrendStore = defineStore('useTrend', {
     //   this.dataSourceList = value;
     // },
     addDataSource(value: any) {
-      if (this.dataSourceList.length == 3) {
-        this.dataSourceList.shift();
-      }
+
       if (!this.dataSourceList.some(e => e.key == value.key && e.parent == value.parent)) {
+        if (this.dataSourceList.length == 3) {
+          this.dataSourceList.shift();
+        }
         this.dataSourceList.push(value);
         localStorage.setItem('trendDataSourceList', JSON.stringify(this.dataSourceList))
       }
@@ -65,14 +65,9 @@ export const useTrendStore = defineStore('useTrend', {
     setLineWidth(value: any) {
       this.lineWidth = value;
     },
-
-    setDisplayChart(value: any) {
-      this.displayChart = value;
-    },
-    setDisplayWay(value: any) {
-      this.displayWay = value;
-    },
-
+    setMenuMaintainOptions(value: any) {
+      this.menuMaintainOptions = value;
+    }
   }
 
 })

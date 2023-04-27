@@ -1,5 +1,5 @@
 import { } from "naive-ui";
-import { computed, defineComponent, onMounted, onUnmounted, watch } from "vue";
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, watch } from "vue";
 import * as echarts from 'echarts';
 import { useRealTimeStore } from "@/store/realtime";
 import { sleep } from "@/utils/utils";
@@ -21,7 +21,9 @@ export default defineComponent({
     const initEchart = () => {
       let ele = document.getElementById('DiameterDataChart')
       if (!ele) return
-      myChart = echarts.init(ele);
+      myChart = echarts.init(ele, undefined, {
+        useDirtyRect: true
+      });
 
 
       // 绘制图表
@@ -94,7 +96,7 @@ export default defineComponent({
             name: 'Fake Data',
             type: 'line',
             showSymbol: false,
-            data: (realtimeStore.realData[`${store.dataSource.key}Data`]?.avg || []).slice(-store.timeZone.key*60),
+            data: (realtimeStore.realData[`${store.dataSource.key}Data`]?.avg || []).slice(-store.timeZone.key * 60),
             smooth: false,
           }
         ],
@@ -106,19 +108,28 @@ export default defineComponent({
     }
 
 
-    const {realData} = storeToRefs(realtimeStore)
-    
-    watch(realData, (nv) => {
+    const { realData,productLength } = storeToRefs(realtimeStore)
+
+    watch(productLength, () => {
+      let nv = realData.value
+      if (!myChart) return
       myChart.setOption({
         series: [
           {
-            data: nv[`${store.dataSource.key}Data`] ? nv[`${store.dataSource.key}Data`][store.displayWay.key].slice(-store.timeZone.key*60) || [] : [],
+            data: nv[`${store.dataSource.key}Data`] ? nv[`${store.dataSource.key}Data`][store.displayWay.key].slice(-store.timeZone.key * 60) || [] : [],
           }
         ]
       });
-    },{deep:true})
+    })
     onMounted(() => {
-      initEchart()
+      setTimeout(() => {
+        initEchart()
+      }, 0);
+      // sleep(1000).then(() => {
+      // })
+      // nextTick(() => {
+      //   // initEchart()
+      // })
     })
     onUnmounted(() => {
       startFetch = false
@@ -127,7 +138,7 @@ export default defineComponent({
 
     return () => {
       let dataItem = realtimeStore.realData[`${store.dataSource.key}Data`]?.[store.displayWay.key] || []
-      const avgValue = dataItem.length > 0 ? dataItem[dataItem.length-1].value[1] : 0
+      const avgValue = dataItem.length > 0 ? dataItem[dataItem.length - 1].value[1] : 0
 
       return (
         <div class={'w-full h-full pt-2 shrink'}>

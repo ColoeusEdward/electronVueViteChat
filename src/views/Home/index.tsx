@@ -9,6 +9,7 @@ import { useMain } from "@/store";
 import { isLowResolution, sleep } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
 import Trend from "./trend/Trend";
+import Statistical from "./statistical/Statistical";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -89,7 +90,9 @@ export default defineComponent({
                 </div>
               </NTabPane>
               <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
-                七里香
+                <div class={'h-full'}>
+                  <Statistical />
+                </div>
               </NTabPane>
               <NTabPane displayDirective="if" name="product" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'product' ? activeStyle : {} } }}>
                 Hey Jude

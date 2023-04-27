@@ -1,10 +1,11 @@
 import { } from "naive-ui";
-import { defineComponent, reactive, ref, computed, onMounted, watch, PropType } from "vue";
+import { defineComponent, reactive, ref, computed, onMounted, watch, PropType, nextTick } from "vue";
 
 import { useRealTimeStore } from "@/store/realtime";
 import * as echarts from 'echarts';
 import { useTrendStore } from "@/store/trendStore";
 import { storeToRefs } from "pinia";
+import { sleep } from "@/utils/utils";
 
 export default defineComponent({
   name: 'TrandChartRow',
@@ -33,11 +34,14 @@ export default defineComponent({
     const initEchart = () => {
       let ele = document.getElementById('trendChart' + props.i)
       if (!ele) return
-      myChart = echarts.init(ele);
+      myChart = echarts.init(ele, undefined, {
+        useDirtyRect: true
+      });
 
       let option = {
         title: {
-          text: dataSourceItem.value?.label,
+          //@ts-ignore
+          text: dataSourceItem.value?.parent ? trendStore.menuMaintainOptions![0]!.children!.find(e => e.key == dataSourceItem.value?.parent).label + '-' + dataSourceItem.value?.label : dataSourceItem.value?.label,
           left: '48%'
         },
         // toolbox: {
@@ -116,16 +120,22 @@ export default defineComponent({
       // 绘制图表
       myChart.setOption(option);
     }
-    const { realData } = storeToRefs(realtimeStore)
+    const { realData, productLength } = storeToRefs(realtimeStore)
 
-    watch(realData, (nv) => {
-      if (count < 2) {
+    watch(productLength, () => {
+      if (!myChart) return
+      if (count < 1) {
         count++
         return
       }
       count = 0
-      let dataItem = realtimeStore.realData[`${dataSourceItem.value?.parent}Data`] || {}
+      let dataItem = realtimeStore.realData[`${dataSourceItem.value?.parent || dataSourceItem.value?.key}Data`] || {}
       myChart.setOption({
+        title: {
+          //@ts-ignore
+          text: dataSourceItem.value?.parent ? trendStore.menuMaintainOptions![0]!.children!.find(e => e.key == dataSourceItem.value?.parent).label + '-' + dataSourceItem.value?.label : dataSourceItem.value?.label,
+          left: '48%'
+        },
         series: {
           name: dataSourceItem.value?.label,
           type: 'line',
@@ -134,9 +144,11 @@ export default defineComponent({
           smooth: false,
         },
       });
-    }, { deep: true })
+    })
     onMounted(() => {
-      initEchart()
+      setTimeout(() => {
+        initEchart()
+      }, 0);
     })
     return () => {
       return (

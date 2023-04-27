@@ -164,15 +164,19 @@ export default defineComponent({
       // loopGetData()
     }
 
-    const { realData } = storeToRefs(realtimeStore)
-    watch(realData, (nv) => {
+    const { realData,productLength } = storeToRefs(realtimeStore)
+    watch(productLength, () => {
+      let nv = realData.value
+      if(!myChart) return
       myChart.setOption({
         series: buildSeries(nv)
       });
-    }, { deep: true })
+    })
 
     onMounted(() => {
-      initEchart()
+      setTimeout(() => {
+        initEchart()
+      }, 0);
     })
 
 

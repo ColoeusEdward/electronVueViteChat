@@ -8,4 +8,8 @@ function capitalizeFirstLetter(str:string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export { sleep, isLowResolution,capitalizeFirstLetter }
+const unique =(arr:[]) => {
+  return Array.from(new Set(arr))
+} 
+
+export { sleep, isLowResolution,capitalizeFirstLetter,unique }
