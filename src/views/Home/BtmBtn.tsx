@@ -5,6 +5,7 @@ import { Tool } from '@vicons/tabler'
 import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import activeImg from '@/assets/LineDspButton_inactive.png'
+import { useConfigStore } from "@/store/config";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -32,6 +33,8 @@ const TimeBlock = defineComponent({
 export default defineComponent({
   name: 'BtmBtn',  //底部按钮栏
   setup(props) {
+
+    const configStore = useConfigStore()
     const maintainOption = [
       { label: '配置', value: 'option' },
       {label:'运行日志',value:'log'},
@@ -51,7 +54,9 @@ export default defineComponent({
       { label: '关机', value: 'shutdown' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value) => {
-      console.log(value)
+      if(value==='option'){
+        configStore.setIsShowConfig(true)
+      }
     }
     const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },

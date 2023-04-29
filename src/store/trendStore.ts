@@ -20,7 +20,22 @@ export const useTrendStore = defineStore('useTrend', {
 
       isFetching: false,       //是否开始获取数据
 
-      menuMaintainOptions: <DropdownProps['options']>[]
+      menuMaintainOptions: <DropdownProps['options']>[
+      {
+        label: '数据源', key: 'dataSource', children: [
+          { label: '全部清除', key: 'cleanAll' },
+          { label: '直径1', key: 'diameter1', },
+          { label: '热外径', key: 'heat', },
+          { label: '冷外径', key: 'cold', },
+          { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+          { label: '壁厚', key: 'wall', },
+          { label: '偏心', key: 'ecc', },
+          { label: '同心度', key: 'concentricity', },
+          { label: '角度', key: 'angle', },
+          { label: '速度', key: 'speed', },
+        ]
+      },
+    ]
     }
   },
   /**

@@ -27,6 +27,12 @@ body {
   .n-tabs-pane-wrapper {
     height: 100%;
   }
+  .n-tabs-wrapper{
+    flex-wrap: wrap;
+    .n-tabs-tab-wrapper{
+      flex-grow: 1;
+    }
+  }
   .n-tabs-tab-pad {
     width: 4px;
   }
@@ -54,6 +60,20 @@ body {
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateX(20px);
+  opacity: 0;
+}
+
+.full-pop-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.full-pop-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.full-pop-enter-from,
+.full-pop-leave-to {
+  transform: scaleX(0);
   opacity: 0;
 }
 

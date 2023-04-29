@@ -1,5 +1,5 @@
 import { NTabs, NTabPane, } from "naive-ui";
-import { defineComponent, KeepAlive, onMounted, onUnmounted, ref } from "vue";
+import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
 import RightValueBlock from "./RightValueBlock";
@@ -10,6 +10,8 @@ import { isLowResolution, sleep } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
 import Trend from "./trend/Trend";
 import Statistical from "./statistical/Statistical";
+import Config from "./config/Config";
+import { useConfigStore } from "@/store/config";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -18,6 +20,7 @@ export default defineComponent({
   setup(props) {
     const store = useMain()
     const realtimeStore = useRealTimeStore()
+    const configStore = useConfigStore()
     let startFetch = true
     const activeStyle = {
       backgroundImage: `url(${activeImg})`,
@@ -75,7 +78,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full flex flex-col  '}>
+        <div class={'w-full h-full flex flex-col overflow-hidden'}>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} defaultValue={'pic'} >
@@ -109,7 +112,11 @@ export default defineComponent({
             </div>
           </div>
           {/* </KeepAlive> */}
+
           <BtmBtn />
+          <Transition name='full-pop'>
+            {configStore.isShowConfig && <Config />}
+          </Transition>
         </div>
       )
     }
