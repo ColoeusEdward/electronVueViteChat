@@ -188,10 +188,28 @@ export const S7SmartTCP = {
     return defaultFormFn(this)
   }
 }
+export const ModbusTCPSlave = {
+  itemList: <formListItem[]>[
+    { type: 'select', label: '设备接口', prop: 'DevInt', width: 6, rule: 'must' },
+    { type: 'select', label: '32位解码顺序', prop: 'LHpostion32', width: 6 },
 
+    { type: 'input', label: '采集周期', prop: 'AcquCycle', width: 6, rule: 'must' },
+    { type: 'switch', label: '透传使能', prop: 'Penetrate', width: 4, checkedValue: 1, uncheckedValue: 0 },
+    { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
+  ],
+  optionMap: <Record<string, { label: string, value: string }[]>>{
+    DevInt: ['NET'].map(e => ({ label: e, value: e })),
+    ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
+    ...commonMap
+  },
+  get defaultForm(): Record<string, string> {
+    return defaultFormFn(this)
+  }
+}
 
 const proto: Record<string, typeof ModbusTCPMaster> = {
   ModbusTCPMaster,
+  ModbusTCPSlave,
   DVPMaster,
   FatekFBs: DVPMaster,
   FinsHostLink: DVPMaster,

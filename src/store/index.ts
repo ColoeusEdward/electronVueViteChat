@@ -88,11 +88,14 @@ export const useMain = defineStore('useStore', {
             dataSourceList: addProp(dataSourceList),
             rightBlockDataMap: rightBlockDataMap,
 
-            chineseMap:<Record<string,string>> {
+            chineseMap: <Record<string, string>>{
                 avg: '平均值',
                 ellipse: '椭圆度'
             },
-            eccAngle:eccangle                                      //偏心扭转值
+            eccAngle: eccangle,                                      //偏心扭转值
+
+            db: <any>null,    //数据库实例
+            dbReq: <IDBOpenDBRequest | null>null  //数据库打开时返回的对象
         }
     },
     /**
@@ -135,8 +138,32 @@ export const useMain = defineStore('useStore', {
             this.isLowRes = value
         },
         setEccAngle(value: number) {
-            localStorage.setItem('eccangle',String(value))
+            localStorage.setItem('eccangle', String(value))
             this.eccAngle = value
+        },
+
+        initDb() {
+            let _this = this
+            let request = window.indexedDB.open('nt', 1);
+            var db
+            request.onupgradeneeded = function (event) {
+                //@ts-ignore
+                db = event.target?.result;
+                _this.db = db
+                var objectStore;
+                if (!db.objectStoreNames.contains('dataMap')) {
+                    objectStore = db.createObjectStore('dataMap', { keyPath: 'id' });
+                    objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                }
+            }
+            request.onsuccess = function (event) {
+                //@ts-ignore
+                db = event.target.result;
+                console.log('Database opened successfully'); 
+                _this.db = db
+            }
+            //@ts-ignore
+            this.dbReq = request
         }
 
     }

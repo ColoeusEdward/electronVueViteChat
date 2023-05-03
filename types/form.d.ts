@@ -1,4 +1,4 @@
-type connectForm  = {
+type commonForm  = {
   ProtoType?:string,
   Name?:string,
   id?:string,

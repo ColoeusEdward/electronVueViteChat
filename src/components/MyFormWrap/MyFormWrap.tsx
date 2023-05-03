@@ -1,5 +1,6 @@
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch } from "naive-ui";
-import { defineComponent, ref, PropType, onMounted } from "vue";
+import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
+import { defineComponent, ref, PropType, onMounted, computed } from "vue";
 
 export interface formListItem {
   type: string
@@ -11,7 +12,9 @@ export interface formListItem {
   width?: number
   rule?: string
   checkedValue?: string,
-  uncheckedValue?: string
+  uncheckedValue?: string,
+  disabled?: boolean,
+  placement?: Placement
 }
 export const MyFormWrap = defineComponent({
   name: 'MyFormWrap',
@@ -22,7 +25,10 @@ export const MyFormWrap = defineComponent({
     submitFn: Function,
     hideBtn: Boolean,
     optionMap: Object as PropType<Record<string, SelectProps['options']>>,
-    btnStyleStr: String
+    btnStyleStr: String,
+    loading: Boolean,
+    hasAddMore: Boolean,  //是否有连续添加开关
+    isAddMore: Boolean       //连续添加开关状态
   },
   setup(props, ctx) {
     const formRef = ref<InstanceType<typeof NForm>>()
@@ -47,7 +53,12 @@ export const MyFormWrap = defineComponent({
       await validForm()
       propSubmit && propSubmit({ ...props.form })
     }
-
+    const isAddMoreUpdate = (val: boolean) => {
+      ctx.emit('update:isAddMore', val)
+    }
+    const hasAddMore = computed(() => {
+      return props.hasAddMore
+    })
     onMounted(() => {
       buildRule()
     })
@@ -55,21 +66,21 @@ export const MyFormWrap = defineComponent({
     const renderSwitch = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <NSwitch v-model:value={form[item.prop]} size={'large'} checkedValue={item.checkedValue || true} uncheckedValue={item.uncheckedValue || false} />
+          <NSwitch v-model:value={form[item.prop]} size={'large'} checkedValue={item.checkedValue || true} uncheckedValue={item.uncheckedValue || false} disabled={item.disabled} />
         </NFormItem>
       )
     }
     const renderInput = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} />
+          <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} />
         </NFormItem>
       )
     }
     const renderSelect = (form: typeof props.form, item: formListItem, optionMap: Record<string, any>) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <NSelect filterable v-model:value={form[item.prop]} options={optionMap[item.prop]} size={'large'} />
+          <NSelect filterable v-model:value={form[item.prop]} options={optionMap[item.prop]} size={'large'} placement={item.placement} disabled={item.disabled} />
         </NFormItem>
       )
     }
@@ -102,8 +113,15 @@ export const MyFormWrap = defineComponent({
             [<div style={{ display: 'flex' }} class={'invisible w-full'}>
               <NButton style="width:100px;height:40px;margin-left:auto;" type="primary" size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
             </div>,
-            <div class={'flex w-full absolute bottom-0'}>
-              <NButton style={"width:100px;height:40px;margin-left:auto;" + (props.btnStyleStr || '')} type="primary" size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
+            <div class={'flex w-full absolute bottom-0 items-center'}>
+              <div class={'mr-4 ml-auto mb-2'} >
+                {props.hasAddMore && [
+                  <span class={'mr-2 align-middle text-lg'}>连续添加</span>,
+                  <NSwitch value={props.isAddMore} size={'large'} checkedValue={true} uncheckedValue={false} onUpdateValue={isAddMoreUpdate}  ></NSwitch>
+                ]}
+              </div>
+
+              <NButton style={"width:100px;height:40px;" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
             </div>]
           }
         </div>

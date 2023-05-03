@@ -2,19 +2,20 @@
  * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-04-17 19:38:42
+ * @LastEditTime: 2023-04-29 09:41:41
  * @LastEditors: your name
 -->
 
 <template>
-  <NConfigProvider :locale="zhCN" :theme-overrides="themeOverride" >
+  <NConfigProvider :locale="zhCN" :theme-overrides="themeOverride">
     <div
-    class="h-[100vh] flex flex-col bg-ele-white overflow-hidden">
-    
+      class="h-[100vh] flex flex-col bg-ele-white overflow-hidden">
+
     <!-- 侧边栏总组件 -->
     <!-- <navSider v-if="mainHeaderShow" /> -->
-
-    <Home />
+    <n-message-provider>
+      <Home />
+    </n-message-provider>
     <!-- 窗口基础功能 ：关闭 最小化，最大化 -->
     <!-- <div class="w-100px self-end flex justify-around items-center my-5px border-r">
       <el-icon
@@ -26,14 +27,14 @@
         size="18px"
         @click="navBar('big')">
         <FullScreen />
-        </el-icon>
-        <el-icon
-          size="18px"
-          @click="navBar('mini')"
-          class="">
-          <Minus />
-        </el-icon>
-      </div> -->
+          </el-icon>
+          <el-icon
+            size="18px"
+            @click="navBar('mini')"
+            class="">
+            <Minus />
+          </el-icon>
+        </div> -->
 
     </div>
   </NConfigProvider>
@@ -44,9 +45,9 @@ import { ref, reactive, onBeforeMount, onBeforeUnmount } from 'vue';
 import mainHeader from './header/mainHeader.vue';
 import navSider from './navSider/navSider.vue';
 import bus from './utils/bus';
-import { NConfigProvider,zhCN } from 'naive-ui'
+import { NConfigProvider, zhCN, NMessageProvider } from 'naive-ui'
 import Home from './views/Home/index';
-import {themeOverride} from '@/utils/theme';
+import { themeOverride } from '@/utils/theme';
 
 const mainHeaderShow = ref(true);
 

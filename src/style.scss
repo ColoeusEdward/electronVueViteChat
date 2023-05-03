@@ -27,9 +27,9 @@ body {
   .n-tabs-pane-wrapper {
     height: 100%;
   }
-  .n-tabs-wrapper{
+  .n-tabs-wrapper {
     flex-wrap: wrap;
-    .n-tabs-tab-wrapper{
+    .n-tabs-tab-wrapper {
       flex-grow: 1;
     }
   }
@@ -42,6 +42,19 @@ body {
     padding-top: 0.5rem;
     /* padding-bottom: 4px; */
   }
+  &.no-bg {
+    .n-tabs-nav--card-type.n-tabs-nav--top.n-tabs-nav {
+      background-image: none;
+      border-bottom: 2px solid #ccc;
+    }
+  }
+}
+
+.bar-tab {
+  //带底部边条的标签
+  // .n-tabs-nav-scroll-wrapper {
+  //   border-bottom:2px solid #ccc;
+  // }
 }
 
 .btn-bg {

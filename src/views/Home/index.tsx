@@ -21,6 +21,7 @@ export default defineComponent({
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const configStore = useConfigStore()
+    store.initDb()
     let startFetch = true
     const activeStyle = {
       backgroundImage: `url(${activeImg})`,

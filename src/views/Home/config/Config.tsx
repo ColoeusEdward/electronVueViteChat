@@ -1,14 +1,15 @@
 import { useConfigStore } from "@/store/config";
-import { NButton, NTabs, NTabPane, NIcon } from "naive-ui";
+import { NButton, NTabs, NTabPane, NIcon, useMessage } from "naive-ui";
 import { defineComponent, ref } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import TabActiveImg from '@/assets/PnlBtnActive.png'
 import Connect from "./Connect";
+import DataConfig from "./dataConfig/DataConfig";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
     const configStore = useConfigStore()
-
+    const msg = useMessage()
 
     const activeStyle = {
       backgroundImage: `url(${TabActiveImg})`,
@@ -24,7 +25,7 @@ export default defineComponent({
       configStore.setIsShowConfig(false)
     }
     const confirm = () => {
-
+      msg.success('应用成功')
     }
 
     const handleTabChange = (value: string) => {
@@ -44,7 +45,7 @@ export default defineComponent({
               </NTabPane>
               <NTabPane displayDirective="show:lazy" name={"data"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'data' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
-
+                  <DataConfig />
                 </div>
               </NTabPane>
 
