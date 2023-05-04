@@ -239,6 +239,8 @@ export default defineComponent({
       let form = ctx.attrs.form as commonForm
       return form.Code
     }, (val) => {
+      if(!val)
+        return
       let item = optionMap.Code?.find(e => e.value == val)
       let form = ctx.attrs.form as commonForm
       form.Remark = ((item?.label as string).split('-')[1])
@@ -246,7 +248,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <MyFormWrap optionMap={finalOptionMap.value} itemList={finalItemList.value} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} hasAddMore={true} loading={loading.value} v-model:isAddMore={isAddMore.value} />
+        <MyFormWrap optionMap={finalOptionMap.value} itemList={finalItemList.value} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} hasAddMore={!(ctx.attrs.form as commonForm).id} loading={loading.value} v-model:isAddMore={isAddMore.value} />
       )
     }
   }

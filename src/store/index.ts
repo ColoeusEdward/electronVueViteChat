@@ -144,7 +144,7 @@ export const useMain = defineStore('useStore', {
 
         initDb() {
             let _this = this
-            let request = window.indexedDB.open('nt', 1);
+            let request = window.indexedDB.open('nt', 5);
             var db
             request.onupgradeneeded = function (event) {
                 //@ts-ignore
@@ -154,12 +154,28 @@ export const useMain = defineStore('useStore', {
                 if (!db.objectStoreNames.contains('dataMap')) {
                     objectStore = db.createObjectStore('dataMap', { keyPath: 'id' });
                     objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+
                 }
+                if (!db.objectStoreNames.contains('realTimeData')) {
+                    objectStore = db.createObjectStore('realTimeData', { keyPath: 'id' });
+                    objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                }
+                if (!db.objectStoreNames.contains('watchData')) {
+                    objectStore = db.createObjectStore('watchData', { keyPath: 'id' });
+                    objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                }
+                if (!db.objectStoreNames.contains('alarmData')) {
+                    objectStore = db.createObjectStore('alarmData', { keyPath: 'id' });
+                    objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                    objectStore.createIndex('CondiId', 'CondiId', { unique: false });
+                }
+                // objectStore = event.target?.transaction.objectStore('alarmData');
+                // objectStore.createIndex('CondiId', 'CondiId', { unique: false });
             }
             request.onsuccess = function (event) {
                 //@ts-ignore
                 db = event.target.result;
-                console.log('Database opened successfully'); 
+                console.log('Database opened successfully');
                 _this.db = db
             }
             //@ts-ignore

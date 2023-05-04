@@ -2,6 +2,9 @@ import { NTabPane, NTabs } from "naive-ui";
 import { defineComponent, ref } from "vue";
 import TabActiveImg from '@/assets/PnlBtnActive.png'
 import DataMap from "./DataMap";
+import RealTimeData from "./RealTimeData";
+import WatchData from "./WatchData";
+import AlarmData from "./AlarmData";
 export default defineComponent({
   name: 'ModbusTCPSlave',
   setup(props, ctx) {
@@ -37,17 +40,17 @@ export default defineComponent({
             </NTabPane> */}
             <NTabPane displayDirective="show:lazy" name={"realTime"} tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'realTime' ? activeStyle : {} } }}>
               <div class={' h-full shrink'}>
-
+                <RealTimeData curTabValue={curTabValue.value} />
               </div>
             </NTabPane>
             <NTabPane displayDirective="show:lazy" name={"watchData"} tab="监控数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'watchData' ? activeStyle : {} } }}>
               <div class={' h-full shrink'}>
-
+                <WatchData curTabValue={curTabValue.value} />
               </div>
             </NTabPane>
             <NTabPane displayDirective="show:lazy" name={"alarmData"} tab="报警数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'alarmData' ? activeStyle : {} } }}>
               <div class={' h-full shrink'}>
-
+                <AlarmData curTabValue={curTabValue.value} />
               </div>
             </NTabPane>
           </NTabs>

@@ -1,6 +1,6 @@
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
-import { defineComponent, ref, PropType, onMounted, computed } from "vue";
+import { defineComponent, ref, PropType, onMounted, computed,defineExpose } from "vue";
 
 export interface formListItem {
   type: string
@@ -15,6 +15,9 @@ export interface formListItem {
   uncheckedValue?: string,
   disabled?: boolean,
   placement?: Placement
+}
+export type MyFormWrapIns = {
+  submit: Function
 }
 export const MyFormWrap = defineComponent({
   name: 'MyFormWrap',
@@ -59,6 +62,12 @@ export const MyFormWrap = defineComponent({
     const hasAddMore = computed(() => {
       return props.hasAddMore
     })
+
+    ctx.expose({
+      submit
+    }as MyFormWrapIns)
+
+
     onMounted(() => {
       buildRule()
     })
@@ -84,8 +93,7 @@ export const MyFormWrap = defineComponent({
         </NFormItem>
       )
     }
-    return () => {
-
+    return (context:any) => {
 
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
         const obj: Record<string, any> = {
