@@ -97,7 +97,7 @@ const ValueRow = defineComponent({
           <div class={'flex items-center w-full h-1/4 pt-1'}>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standLeft} ><img class={'m-auto h-1/2'} src={lefticon}></img></div>
             <div class={'h-full w-full shrink btn-bg mx-2 flex items-center justify-center'}>
-              <span class={`font-semibold ${store.isLowRes ? '' : 'text-base'}`}>{data.value.stand ? data.value.stand[curStandIdx.value] : ' '}</span>
+              <span class={` font-semibold ${store.isLowRes ? ' text-xs' : 'text-base '}`}>{data.value.stand ? data.value.stand[curStandIdx.value] : ' '}</span>
             </div>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standRight} ><img class={'m-auto  h-1/2'} src={righticon}></img></div>
           </div>

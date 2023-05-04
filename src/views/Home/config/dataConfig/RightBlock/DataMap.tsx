@@ -113,7 +113,7 @@ export default defineComponent({
             </Teleport>
           }
 
-          <NDataTable striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} v-model:checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
+          <NDataTable flexHeight={true} class={'h-full'} striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} v-model:checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
           </NDataTable>
 
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#dataMapTableCon'} trapFocus={false} height={'26vh'} blockScroll={false}>

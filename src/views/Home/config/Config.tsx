@@ -52,24 +52,24 @@ export default defineComponent({
             </NTabs>
           </div>
 
-          <div class={'w-full h-20 flex justify-end items-center mt-auto'}>
+          <div class={'w-full h-20 flex justify-end items-center mt-auto shrink-0'}>
             <NButton secondary strong={true} onClick={cancel} type="primary" size={'large'} class={'h-16 w-[20vw] shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
               v-slots={{
-                icon: () => {
-                  return <NIcon class={'text-3xl'}>
-                    {ctx.slots.icon && ctx.slots.icon()}
-                  </NIcon>
-                }
+                // icon: () => {
+                //   return <NIcon class={'text-3xl'}>
+                //     {ctx.slots.icon && ctx.slots.icon()}
+                //   </NIcon>
+                // }
               }} >
               <span class={'text-2xl ml-2'}>取消</span>
             </NButton>
             <NButton secondary strong={true} onClick={confirm} type="primary" size={'large'} class={'h-16 w-[20vw]  shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
               v-slots={{
-                icon: () => {
-                  return <NIcon class={'text-3xl'}>
-                    {ctx.slots.icon && ctx.slots.icon()}
-                  </NIcon>
-                }
+                // icon: () => {
+                //   return <NIcon class={'text-3xl'}>
+                //     {ctx.slots.icon && ctx.slots.icon()}
+                //   </NIcon>
+                // }
               }} >
               <span class={'text-2xl ml-2'}>应用</span>
             </NButton>

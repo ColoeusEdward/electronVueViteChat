@@ -14,7 +14,7 @@ export default defineComponent({
         <NPopselect {...pop}  trigger="click"  size={'large'} class={'text-2xl'}
             nodeProps={(option) => {
               return {
-                class: 'w-[12vw]',
+                class: 'w-[16vw]',
                 style: {
                   fontSize: '1.2rem'
                 }

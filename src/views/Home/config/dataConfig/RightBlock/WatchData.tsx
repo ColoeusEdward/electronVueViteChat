@@ -141,7 +141,7 @@ export default defineComponent({
             <WatchDataTop />
           </div>
 
-          <NDataTable class={'h-full shrink'} striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
+          <NDataTable flexHeight={true} class={'h-full shrink'} striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
           </NDataTable>
 
 

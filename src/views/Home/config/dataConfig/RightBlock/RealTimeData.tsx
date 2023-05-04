@@ -135,7 +135,7 @@ export default defineComponent({
             </Teleport>
           }
 
-          <NDataTable striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
+          <NDataTable flexHeight={true} class={'h-full'} striped columns={colList} bordered={false} singleLine={false} data={tdata.value} rowProps={buildRowProp} checkedRowKeys={rowKeyList.value} rowKey={buildRowKey} size={'large'} >
           </NDataTable>
 
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#realTimeDataTableCon'} trapFocus={false} height={'100%'} blockScroll={false}>
