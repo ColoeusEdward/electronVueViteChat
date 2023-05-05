@@ -101,11 +101,17 @@ export default defineComponent({
     }
     const delRow = (rowData: any) => {
       tdata.value.splice(tdata.value.findIndex((e) => e.id == rowData.id), 1)
+      if (rowData.id == rowKeyList.value![0]) {
+        rowKeyList.value = [tdata.value[0].id]
+        rowList.value = [tdata.value[0]]
+        ctx.emit('update:rowList', rowList.value)
+      }
     }
     const saveCondi = () => {
       configStore.setAlarmCondiData(tdata.value)
       msg.success('保存成功')
     }
+
 
     const curCondi = computed(() => {
       let item = rowList.value[0]

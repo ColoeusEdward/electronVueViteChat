@@ -45,7 +45,7 @@ export default defineComponent({
 
     }
     const addRow = () => {
-      if (!codiRowList.value || (codiRowList.value && !codiRowList.value[0])) {
+      if (!codiRowList.value || (codiRowList.value && !codiRowList.value[0]?.Code)) {
         msg.warning('请选择一个条件')
         return
       }
