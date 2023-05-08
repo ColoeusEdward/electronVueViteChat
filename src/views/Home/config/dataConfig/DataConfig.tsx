@@ -5,6 +5,7 @@ import { useDataConfigPartStore } from "./dataConfigPartStore";
 import LeftTable from "./LeftTable";
 import Common from "./RightBlock/Common";
 import ModbusTCPSlave from "./RightBlock/ModbusTCPSlave";
+import OPCUA from "./RightBlock/OPCUA";
 
 export default defineComponent({
   name: 'DataConfig',
@@ -13,6 +14,8 @@ export default defineComponent({
     const store = useMain()
     let obj: Record<string, any> = {
       ModbusTCPSlave: <ModbusTCPSlave />,
+      OPCUAClient: <OPCUA />,
+      OPCUAServer: <OPCUA />
     }
     return () => {
 

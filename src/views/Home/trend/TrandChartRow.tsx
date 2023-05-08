@@ -113,7 +113,8 @@ export default defineComponent({
         },
         grid: {
           right: '2%',
-          left: '10%'
+          left: '10%',
+          top:'30px'
         }
       }
 

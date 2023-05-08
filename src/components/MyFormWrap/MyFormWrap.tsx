@@ -1,6 +1,6 @@
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
-import { defineComponent, ref, PropType, onMounted, computed,defineExpose } from "vue";
+import { defineComponent, ref, PropType, onMounted, computed, defineExpose } from "vue";
 
 export interface formListItem {
   type: string
@@ -10,7 +10,7 @@ export interface formListItem {
   inputType?: InputProps['type']
   row?: number
   width?: number
-  rule?: string
+  rule?: string | string[]
   checkedValue?: string,
   uncheckedValue?: string,
   disabled?: boolean,
@@ -31,7 +31,12 @@ export const MyFormWrap = defineComponent({
     btnStyleStr: String,
     loading: Boolean,
     hasAddMore: Boolean,  //是否有连续添加开关
-    isAddMore: Boolean       //连续添加开关状态
+    isAddMore: Boolean,       //连续添加开关状态
+    needBtmSpace: {
+      type: Boolean,
+      default: true
+    },     //是否需要底部占位
+    saveText:String
   },
   setup(props, ctx) {
     const formRef = ref<InstanceType<typeof NForm>>()
@@ -44,7 +49,12 @@ export const MyFormWrap = defineComponent({
       let baseRule = props.rule ? Object.assign(props.rule, defaultRule) : defaultRule
       let ruleOfProp: Record<string, any> = {}
       props.itemList?.forEach((e) => {
-        e.rule && (ruleOfProp[e.prop] = baseRule[e.rule])
+        if (!e.rule) return
+        if (Array.isArray(e.rule)) {
+          ruleOfProp[e.prop] = e.rule.map(ee => baseRule[ee])
+        } else {
+          ruleOfProp[e.prop] = baseRule[e.rule]
+        }
       })
       finalRule.value = ruleOfProp
     }
@@ -65,7 +75,7 @@ export const MyFormWrap = defineComponent({
 
     ctx.expose({
       submit
-    }as MyFormWrapIns)
+    } as MyFormWrapIns)
 
 
     onMounted(() => {
@@ -93,7 +103,7 @@ export const MyFormWrap = defineComponent({
         </NFormItem>
       )
     }
-    return (context:any) => {
+    return (context: any) => {
 
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
         const obj: Record<string, any> = {
@@ -111,16 +121,16 @@ export const MyFormWrap = defineComponent({
       }
 
       return (
-        <div class={'w-full h-full'}>
+        <div class={'w-full h-full relative'}>
           <NForm model={props.form} ref={formRef} rules={finalRule.value} size="medium" labelPlacement="left" >
             <NGrid xGap={12} yGap={2}>
               {renderComp(props.itemList, props.form || {}, props.optionMap || {})}
             </NGrid>
           </NForm>
           {!props.hideBtn &&
-            [<div style={{ display: 'flex' }} class={'invisible w-full'}>
+            [props.needBtmSpace ? <div style={{ display: 'flex' }} class={'invisible w-full'}>
               <NButton style="width:100px;height:40px;margin-left:auto;" type="primary" size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
-            </div>,
+            </div> : '',
             <div class={'flex w-full absolute bottom-0 items-center'}>
               <div class={'mr-4 ml-auto mb-2'} >
                 {props.hasAddMore && [
@@ -129,7 +139,7 @@ export const MyFormWrap = defineComponent({
                 ]}
               </div>
 
-              <NButton style={"width:100px;height:40px;" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
+              <NButton style={"width:100px;height:40px;" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
             </div>]
           }
         </div>

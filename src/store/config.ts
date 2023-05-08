@@ -6,7 +6,8 @@ type connectConfig = {
 }
 type dataConfig = {
   histConfig: Record<string, string>,
-  alarmCondiList: Record<string, string>[]
+  alarmCondiList: Record<string, string>[],
+  OPCUATopForm: Record<string, string>,
 }
 
 const localConnect = JSON.parse(localStorage.getItem('connect') || 'null') || {
@@ -16,6 +17,7 @@ const localConnect = JSON.parse(localStorage.getItem('connect') || 'null') || {
 const localDataConfig = JSON.parse(localStorage.getItem('dataConfig') || 'null') || {
   histConfig: <Record<string, string>>{},
   alarmCoodiList: <Record<string, string>[]>[],
+  OPCUATopForm: <Record<string, string>>{},
 }
 
 export const useConfigStore = defineStore('config', {
@@ -84,6 +86,10 @@ export const useConfigStore = defineStore('config', {
     // },
     setHistConfig(value: Record<string, string>) {
       this.dataConfig.histConfig = value
+      this.saveDataConfig()
+    },
+    setOPCUATopForm(value: Record<string, string>) {
+      this.dataConfig.OPCUATopForm = value
       this.saveDataConfig()
     }
 

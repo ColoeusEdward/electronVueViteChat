@@ -27,7 +27,7 @@ const invoke = edge.func({
 const invoke1 = edge.func({
   assemblyFile: 'resource/dll/dlltest.dll',
   typeName: 'dlltest.test',
-  methodName: 'Invoke' 
+  methodName: 'Invoke'
 })
 // const serialObj = edge.func({
 //   assemblyFile:path.resolve('resource/dll/Newtonsoft.Json.dll'),
@@ -57,10 +57,16 @@ export function onNT() {
           reject(err)
           throw err
         }
+
         resolve('dll返回的内容为： ' + val)
 
       })
     })
+  })
+
+  ipcMain.handle('keyboard', (event, val) => {
+    const exec = require('child_process').exec
+    exec('osk.exe')
   })
 
   // ipcMain.handle('serialize', (event, val) => {

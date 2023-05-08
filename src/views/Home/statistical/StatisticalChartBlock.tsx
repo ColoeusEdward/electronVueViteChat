@@ -118,7 +118,12 @@ export default defineComponent({
           splitLine: {
             show: true
           },
-          boundaryGap: ['5%', '5%'],
+          max: function (value: any) {
+            return value.max + 50
+          },
+          min: function (value: any) {
+            return value.min - 50
+          },
         },
         yAxis: [{
           type: 'value',
