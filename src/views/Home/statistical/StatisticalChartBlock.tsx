@@ -43,12 +43,14 @@ export default defineComponent({
     const conHW = computed(() => {
       return height.value + 'px ' + width.value + 'px'
     })
+    let originDataList:number[] = []
 
     const buildBarData = (dataItem: any) => {
-      let list = (dataItem[dataSourceItem.value?.key || 'no'] || []).slice(-3600).map((e: any) => e.value[1])
-      let xlist = unique(list).sort((a: any, b: any) => {
-        return b - a
+      let list = (dataItem[dataSourceItem.value?.key || 'no'] || []).slice(-3600).map((e: any) => e.value[1]).sort((a: any, b: any) => {
+        return a-b
       })
+      originDataList = list
+      let xlist = unique(list)
       let obj: Record<number, number> = {}
       list.forEach((e: number, i: number) => {
         obj[e] ? obj[e]++ : obj[e] = 1
@@ -60,13 +62,26 @@ export default defineComponent({
       return res
     }
 
-    const buildLineData = (bardata: ReturnType<typeof buildBarData>) => {
+    const buildLineData = (bardata: ReturnType<typeof buildBarData>) => {  //正态分布曲线
+      let xlist = bardata.map(e=>e[0])
       let total = 0
-      bardata.forEach((e: any) => {
-        total += e[1]
+    
+      originDataList.forEach((e: any) => {
+        total += e
       })
-      return bardata.map(e => {
-        return [e[0], (e[1] / total * 100).toFixed(2)]
+      let mean = total / originDataList.length  //平均值
+
+      let variance = 0    //方差
+      originDataList.forEach((e: any) => {
+        variance += (e - mean) * (e - mean)
+      })
+      variance /= originDataList.length;
+      let stdDev = Math.sqrt(variance);   //标准差
+
+      return xlist.map((e,i) => {
+        let y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * (Math.exp(-(e - mean) * (e - mean) / (2 * stdDev * stdDev)));
+        
+        return [e, Number((y*100))]
       })
     }
 
@@ -127,7 +142,7 @@ export default defineComponent({
         },
         yAxis: [{
           type: 'value',
-          name: '占比',
+          name: '概率',
           // max: function (value: any) {
           //   return value.max + 1
           // },
@@ -174,7 +189,7 @@ export default defineComponent({
           type: 'line',
           showSymbol: false,
           data: buildLineData(bardata),
-          smooth: false,
+          smooth: true,
         }, {
           name: 'count',
           type: 'bar',
@@ -182,6 +197,7 @@ export default defineComponent({
           showSymbol: false,
           data: bardata,
           smooth: false,
+          barWidth: 6,
           markLine: {
             symbol: 'none',
             lineStyle: {
@@ -238,7 +254,7 @@ export default defineComponent({
             type: 'line',
             showSymbol: false,
             data: buildLineData(bardata),
-            smooth: false,
+            smooth: true,
           }
           , {
             name: 'count',

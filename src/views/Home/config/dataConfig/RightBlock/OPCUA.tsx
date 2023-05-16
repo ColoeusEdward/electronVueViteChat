@@ -189,6 +189,7 @@ const OPCUATable = defineComponent({
         <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#OPCUATableCon'} trapFocus={false} height={'26vh'} blockScroll={false}>
           <NDrawerContent title={''}>
             <children children={
+              //@ts-ignore, form 会直接透传到子组件myformWrap中
               <DataMapAutoForm form={form.value} getFn={getTData} v-model:show={formShow.value} />
             }  >
 
