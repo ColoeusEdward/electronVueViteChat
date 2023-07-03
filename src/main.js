@@ -13,6 +13,7 @@ import  router  from "./router/index";
 // import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
+import drag from "v-drag"
 let app = createApp(App)
 const pinia = createPinia()
 // for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -22,6 +23,7 @@ const pinia = createPinia()
 app
 // .use(router)
 .use(pinia)
+.use(drag)
 // .use(ElementPlus, {
 //     locale: zhCn,
 //   })

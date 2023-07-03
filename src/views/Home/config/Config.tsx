@@ -7,11 +7,13 @@ import Connect from "./Connect";
 import DataConfig from "./dataConfig/DataConfig";
 import KeyBorad from "@/components/KeyBoard/KeyBorad";
 import { KeyboardAltRound } from "@vicons/material";
+import { useMain } from "@/store";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
     const configStore = useConfigStore()
     const msg = useMessage()
+    const store = useMain()
 
     const activeStyle = {
       backgroundImage: `url(${TabActiveImg})`,
@@ -35,7 +37,8 @@ export default defineComponent({
     }
 
     const invokeKeyBoard = () => {
-      window.ipc.invoke('keyboard')
+      // window.ipc.invoke('keyboard')
+      store.setGlobalKeyBoardShow(true)
     }
     onMounted(() => {
       // console.log(`config mounted`,);

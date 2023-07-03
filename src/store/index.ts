@@ -95,7 +95,10 @@ export const useMain = defineStore('useStore', {
             eccAngle: eccangle,                                      //偏心扭转值
 
             db: <any>null,    //数据库实例
-            dbReq: <IDBOpenDBRequest | null>null  //数据库打开时返回的对象
+            dbReq: <IDBOpenDBRequest | null>null,  //数据库打开时返回的对象
+
+            lastFocusedInput: <HTMLInputElement | null>null,
+            globalKeyBoardShow: false
         }
     },
     /**
@@ -184,6 +187,13 @@ export const useMain = defineStore('useStore', {
             }
             //@ts-ignore
             this.dbReq = request
+        },
+
+        setLastFocusedInput(value: any) {
+            this.lastFocusedInput = value
+        },
+        setGlobalKeyBoardShow(value: boolean) {
+            this.globalKeyBoardShow = value
         }
 
     }

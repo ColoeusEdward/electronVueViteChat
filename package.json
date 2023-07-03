@@ -33,6 +33,7 @@
         "simple-keyboard": "^3.5.51",
         "tree-node-cli": "^1.6.0",
         "uuid": "^9.0.0",
+        "v-drag": "^3.0.9",
         "vue": "^3.2.45",
         "vue-hook-svc": "^0.0.16",
         "vue-router": "^4.1.6",

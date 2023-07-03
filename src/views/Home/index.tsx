@@ -12,6 +12,7 @@ import Trend from "./trend/Trend";
 import Statistical from "./statistical/Statistical";
 import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
+import GlobalKeyBoard from "./GlobalKeyBoard";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -58,28 +59,36 @@ export default defineComponent({
         realtimeStore.fetchDiameterData()
       }
     }
+    const handleAllInputFocuse = (event: any) => {
+      if (event.target?.tagName === 'INPUT') {
+        store.setLastFocusedInput(event.target)
+        console.log("🚀 ~ file: index.tsx:64 ~ handleAllInputFocuse ~ event.target:", event.target)
+        // lastFocusedInput = event.target;
+      }
 
+    }
 
     store.setIsLowRes(isLowResolution())
     window.addEventListener('blur', handleBlur)
     window.addEventListener('focus', handleFocus)
+    document.addEventListener('focusin', handleAllInputFocuse);
 
     onMounted(() => {
       loopGetData()
-
 
     })
 
     onUnmounted(() => {
       window.removeEventListener('blur', handleBlur)
       window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('focusin', handleAllInputFocuse)
       startFetch = false
     })
 
 
     return () => {
       return (
-        <div class={'w-full h-full flex flex-col overflow-hidden'}>
+        <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} defaultValue={'pic'} >
@@ -113,7 +122,7 @@ export default defineComponent({
             </div>
           </div>
           {/* </KeepAlive> */}
-
+          <GlobalKeyBoard />
           <BtmBtn />
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}

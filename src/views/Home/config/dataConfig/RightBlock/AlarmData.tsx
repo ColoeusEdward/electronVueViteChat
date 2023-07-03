@@ -127,7 +127,7 @@ export default defineComponent({
             curTabValue.value == 'alarmData' && isMount.value && <Teleport to="#dataConfigRightBlock">
               <div class={'w-[10vw] h-12 z-20 absolute flex justify-end items-center top-1 right-0 pr-2'}>
                 <NButton size={'large'} class={'mr-2'} onClick={addRow} >新增</NButton>
-                <NPopconfirm placement="bottom" title=""
+                <NPopconfirm placement="bottom" 
                   v-slots={{
                     default: () => {
                       return <div>确定删除?</div>
@@ -154,7 +154,7 @@ export default defineComponent({
 
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#alarmDataTableCon'} trapFocus={false} height={'100%'} blockScroll={false}>
             <NDrawerContent title={''}>
-              <RealTimeDataAdd v-model:show={formShow.value} onConfirm={confirm} getFn={getTData} realTimeData={tdata.value} tableName={'alarmData'} beforeAddFn={addCondiId} />
+              <RealTimeDataAdd v-model:show={formShow.value}  getFn={getTData} realTimeData={tdata.value} tableName={'alarmData'} beforeAddFn={addCondiId} />
             </NDrawerContent>
           </NDrawer>
         </div>
