@@ -14,7 +14,7 @@ export const useStatisticalStore = defineStore('statistical', {
     return {
       dataSourceList: <{ label: string, key: string, parent: string }[]>localDataSourceList,       //菜单选中的数据源
 
-      isOnline: false,             //是否启用在线统计
+      isOnline: true,             //是否启用在线统计
       isShowData: true            //是否显示底部数据
     }
   },
@@ -32,12 +32,19 @@ export const useStatisticalStore = defineStore('statistical', {
     //   this.dataSourceList = value;
     // },
     addDataSource(value: any) {
+      // debugger
+    console.log("🚀 ~ file: statistical.ts:35 ~ addDataSource ~ value:", value)
 
       if (!this.dataSourceList.some(e => e.key == value.key && e.parent == value.parent)) {
         if (this.dataSourceList.length == 4) {
           this.dataSourceList.shift();
         }
         this.dataSourceList.push(value);
+        localStorage.setItem('statisticalDataSourceList', JSON.stringify(this.dataSourceList))
+      } else {  //数据源已经存在就取消选中
+        let idx = this.dataSourceList.findIndex(e => (e.key == value.key) && (e.parent == value.parent))
+        console.log("🚀 ~ file: statistical.ts:44 ~ addDataSource ~ idx:", idx)
+        this.dataSourceList.splice(idx, 1);
         localStorage.setItem('statisticalDataSourceList', JSON.stringify(this.dataSourceList))
       }
     },

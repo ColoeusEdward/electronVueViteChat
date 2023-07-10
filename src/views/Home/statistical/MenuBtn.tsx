@@ -112,8 +112,8 @@ export default defineComponent({
       })
     }
     const originDisplayOption: DropdownProps['options'] = addProp([ //两种显示方式外形和数字显示, 显示方式是针对数字显示的选项
-      { label: '统计', key: 'statistical' },
-      { label: '在线统计', key: 'onlineStatistical' },
+      { label: '静态数据', key: 'statistical' },
+      { label: '自动刷新', key: 'onlineStatistical' },
     ])
     const displayOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originDisplayOption)))
 

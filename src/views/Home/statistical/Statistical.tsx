@@ -12,12 +12,15 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useMain()
     const staticalStore = useStatisticalStore()
+    const dataSourceList = computed(() => {
+      return staticalStore.dataSourceList
+    })
     return () => {
       return (
         <div class={'w-full h-full px-2 flex flex-col'}>
           <MenuBtn />
           <div class={'w-full h-full shrink flex flex-wrap flex-col mt-2'}>
-            {staticalStore.dataSourceList.map((e, i) => {
+            {dataSourceList.value.map((e, i) => {
               return (
                 <StatisticalChartBlock dataSourceItem={e} key={i} i={i} listNum={staticalStore.dataSourceList.length} />
                 // <div >

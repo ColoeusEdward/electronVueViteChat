@@ -26,11 +26,12 @@ export const useRealTimeStore = defineStore('useRealtime', {
   state: () => {
     return {
       realData: <Record<string, any>>{
-        diameter1Data: <Record<string, any[]>>{
+        diameter1Data: <Record<string, any[] | object>>{
           avg: [],
           ellipse: [],
           diameterX: [],
-          diameterY: []
+          diameterY: [],
+          spc: {}
         },        //直径趋势折线图数据
       }, //实时数据
       productLength: 0,                //产品累计长度
@@ -66,7 +67,8 @@ export const useRealTimeStore = defineStore('useRealtime', {
         // if (e.length > 1000) {
         //   e.shift();
         // }
-        e.push(randomData());
+        if (Array.isArray(e))
+          e.push(randomData());
       })
       this.addProductLength()
     },

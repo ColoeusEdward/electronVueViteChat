@@ -9,6 +9,8 @@ import { sleep, unique } from "@/utils/utils";
 import { useStatisticalStore } from "@/store/statistical";
 import { useElementSize } from '@vueuse/core'
 import { Parachute } from "@vicons/tabler";
+import classNames from 'classnames';
+import SpcDataBlock from "./SpcDataBlock";
 
 export default defineComponent({
   name: 'StatisticalChartBlock',
@@ -43,11 +45,11 @@ export default defineComponent({
     const conHW = computed(() => {
       return height.value + 'px ' + width.value + 'px'
     })
-    let originDataList:number[] = []
+    let originDataList: number[] = []
 
     const buildBarData = (dataItem: any) => {
       let list = (dataItem[dataSourceItem.value?.key || 'no'] || []).slice(-3600).map((e: any) => e.value[1]).sort((a: any, b: any) => {
-        return a-b
+        return a - b
       })
       originDataList = list
       let xlist = unique(list)
@@ -63,9 +65,9 @@ export default defineComponent({
     }
 
     const buildLineData = (bardata: ReturnType<typeof buildBarData>) => {  //正态分布曲线
-      let xlist = bardata.map(e=>e[0])
+      let xlist = bardata.map(e => e[0])
       let total = 0
-    
+
       originDataList.forEach((e: any) => {
         total += e
       })
@@ -78,10 +80,10 @@ export default defineComponent({
       variance /= originDataList.length;
       let stdDev = Math.sqrt(variance);   //标准差
 
-      return xlist.map((e,i) => {
+      return xlist.map((e, i) => {
         let y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * (Math.exp(-(e - mean) * (e - mean) / (2 * stdDev * stdDev)));
-        
-        return [e, Number((y*100))]
+
+        return [e, Number((y * 100))]
       })
     }
 
@@ -221,7 +223,8 @@ export default defineComponent({
         }],
         grid: {
           right: '10%',
-          left: '10%'
+          left: '10%',
+          bottom: "24px",
         }
       }
 
@@ -275,11 +278,19 @@ export default defineComponent({
       }, 0);
     })
     return () => {
+      const btmBlock = staticalStore.isShowData ? <SpcDataBlock dataItem={dataItem} /> : ""
+
       return (
         <div class={'h-full  mb-1 mr-1 shrink ' + (listNum.value == 1 ? '  w-full' : ' basis-52')} style={{ minWidth: `calc(50% - 4px)`, minHeight: `calc(50% - 4px)`, ...(listNum.value! > 2 ? { width: `calc(50% - 4px)` } : {}) }} >
-          <div ref={(e) => { conRef.value = e as HTMLElement }} class={'w-full h-full'} id={'statisticalChart' + props.i} >
-
+          <div class={'w-full h-full'}>
+            <div ref={(e) => { conRef.value = e as HTMLElement }} class={'w-full ' + classNames({
+              'h-3/5': staticalStore.isShowData,
+              'h-full': !staticalStore.isShowData
+            })} id={'statisticalChart' + props.i} >
+            </div>
+            {btmBlock}
           </div>
+
         </div>
       )
     }

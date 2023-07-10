@@ -7,6 +7,7 @@
  */
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
+//修改store代码需要重启项目才生效
 
 let eccangle = localStorage.getItem('eccangle') || 0
 let rightBlockDataMap: any[][] = localStorage.getItem('rightBlockDataMap') ? JSON.parse(localStorage.getItem('rightBlockDataMap') || '[]') : [
@@ -159,7 +160,7 @@ export const useMain = defineStore('useStore', {
                     objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
 
                 }
-                if (!db.objectStoreNames.contains('realTimeData')) {
+                if (!db.objectStoreNames.contains('realTimeData')) {  //这里的realTimeData指的是数据通道里的实时数据表
                     objectStore = db.createObjectStore('realTimeData', { keyPath: 'id' });
                     objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
                 }
