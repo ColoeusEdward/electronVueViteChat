@@ -34,6 +34,8 @@ const invoke1 = edge.func({
 //   typeName: 'Newtonsoft.Json.JsonConvert',
 //   methodName: 'SerializeObject'
 // })
+let lastKeyBoardProcess: any = null
+
 export function onNT() {
   ipcMain.handle('test', (event, val) => {
     return new Promise((resolve, reject) => {
@@ -65,8 +67,14 @@ export function onNT() {
   })
 
   ipcMain.handle('keyboard', (event, val) => {
-    const exec = require('child_process').exec
-    exec('osk.exe')
+    if (lastKeyBoardProcess) {
+      console.log("🚀 ~ file: nt.ts:71 ~ ipcMain.handle ~ lastKeyBoardProcess.pid:", lastKeyBoardProcess.pid)
+      process.kill(lastKeyBoardProcess.pid)
+    }
+    const exec = require('child_process').spawn
+    // exec('osk.exe')
+    let exPath = path.resolve('resource/Numpad_1.7.1/Numpad_1.7.1.exe')
+    lastKeyBoardProcess = exec(exPath)
   })
 
   // ipcMain.handle('serialize', (event, val) => {

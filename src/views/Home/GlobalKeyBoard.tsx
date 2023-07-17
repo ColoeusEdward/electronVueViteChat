@@ -3,6 +3,7 @@ import { defineComponent, onMounted, onUnmounted, watch, ref, Transition, Telepo
 import { useMain } from "@/store";
 import Keyboard from "simple-keyboard";
 import "simple-keyboard/build/css/index.css";
+import { simulateKeyPress } from "@/utils/utils";
 
 type InputType = InstanceType<typeof NInputNumber> | null
 export default defineComponent({
@@ -37,16 +38,24 @@ export default defineComponent({
       // keyboardIns.setInput(String(num))
     }
     const onKeyPress = (button: string) => {
+      console.log("🚀 ~ file: GlobalKeyBoard.tsx:41 ~ onKeyPress ~ button:", button)
       if (button == '{enter}') {
         // angle.value = Number(keyBoardAngle.value)
         // store.setEccAngle(angle.value)
         // store.setGlobalKeyBoardShow(false
+        if (store.lastFocusedInput) {
+          store.lastFocusedInput.focus()
+          nextTick(() => {
+            let str = String(keyBoardAngle.value)
+            for (let i = 0; i < str.length; i++) {
+              const keyCode = str.charCodeAt(i)
+              simulateKeyPress(keyCode)
+            }
+            // simulateKeyPress(),
+            resetVal()
+          })
 
-        store.lastFocusedInput && (
-          store.lastFocusedInput.value = String(keyBoardAngle.value),
-          resetVal()
-          // store.lastFocusedInput.focus()
-        )
+        }
       }
       if (button == '0' && keyBoardAngle.value == 0) {  //该组件有个bug,开头狂按0会正常写入组件内部, 需要手动清空
         keyboardIns.clearInput()
@@ -84,11 +93,10 @@ export default defineComponent({
           // maxLength: 3,
           layout: {
             default: [
-              '1 2 3',
-              '4 5 6',
-              '7 8 9',
-              ' 0 {reset}',
-              '{bksp} {esc} {enter}'
+              '1 2 3 {esc}',
+              '4 5 6 {reset}',
+              '7 8 9 {bksp}',
+              '. 0 - {enter}',
             ]
           },
           onChange: input => onChange(input),
@@ -105,7 +113,7 @@ export default defineComponent({
           {
             isMounted.value && <Teleport to="#indexCon">
               <Transition name='slide-fade'>
-                <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-20 right-[16vh] w-[26vh] h-[36vh] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
+                <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-20  w-[32vh] h-[36vh] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
                   <div class={'w-full h-14 border border-solid border-gray-600 rounded-md p-2 bg-white global-keyboard-value'}>
                     {keyBoardAngle.value}
                   </div>

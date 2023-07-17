@@ -122,7 +122,7 @@ export default defineComponent({
             </div>
           </div>
           {/* </KeepAlive> */}
-          <GlobalKeyBoard />
+          {/* <GlobalKeyBoard /> */}
           <BtmBtn />
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}

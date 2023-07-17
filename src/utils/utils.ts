@@ -11,5 +11,10 @@ function capitalizeFirstLetter(str:string) {
 const unique =(arr:[]) => {
   return Array.from(new Set(arr))
 } 
+// Simulate key press event
+const  simulateKeyPress = (keyCode:number)=> {
+  const event = new KeyboardEvent('keydown', { keyCode: keyCode });
+  document.dispatchEvent(event);
+}
 
-export { sleep, isLowResolution,capitalizeFirstLetter,unique }
+export { sleep, isLowResolution,capitalizeFirstLetter,unique,simulateKeyPress }

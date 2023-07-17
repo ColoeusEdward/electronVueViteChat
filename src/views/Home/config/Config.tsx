@@ -37,8 +37,8 @@ export default defineComponent({
     }
 
     const invokeKeyBoard = () => {
-      // window.ipc.invoke('keyboard')
-      store.setGlobalKeyBoardShow(true)
+      window.ipc.invoke('keyboard')
+      // store.setGlobalKeyBoardShow(true)
     }
     onMounted(() => {
       // console.log(`config mounted`,);
