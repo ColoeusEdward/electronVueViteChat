@@ -187,7 +187,7 @@ export default defineComponent({
 
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
-      if (Object.values(store.$state).some(e => e.key == option.key)
+      if (Object.values(store.$state).filter(e => e).some(e => e.key == option.key)
         || (option.key == 'toleranceBar' && store.isTorBar)) {
         // return option.label as VNodeChild
         text += ' ✔️'

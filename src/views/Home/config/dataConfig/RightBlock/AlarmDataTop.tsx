@@ -91,7 +91,7 @@ export default defineComponent({
     }
     const getCondi = () => {
       tdata.value = JSON.parse(JSON.stringify(configStore.dataConfig.alarmCondiList || []))
-      rowKeyList.value = [tdata.value[0].id]
+      rowKeyList.value = [tdata.value[0]?.id]
       rowList.value = [tdata.value[0]]
       ctx.emit('update:rowList', rowList.value)
     }

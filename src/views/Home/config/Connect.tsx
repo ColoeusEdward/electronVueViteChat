@@ -38,7 +38,7 @@ export default defineComponent({
     ]
 
     const tdata = computed(() => {
-      if (configStore.connect.data[0].ProtoType == 'Modbus-TCP-Slave') {
+      if (configStore.connect.data[0]?.ProtoType == 'Modbus-TCP-Slave') {
         return configStore.connect.data
       }
 
