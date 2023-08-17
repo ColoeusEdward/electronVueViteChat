@@ -8,6 +8,7 @@ import DataConfig from "./dataConfig/DataConfig";
 import KeyBorad from "@/components/KeyBoard/KeyBorad";
 import { KeyboardAltRound } from "@vicons/material";
 import { useMain } from "@/store";
+import ConnectDevice from "./connectDevice";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -60,11 +61,16 @@ export default defineComponent({
                   <DataConfig />
                 </div>
               </NTabPane>
+              <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
+                <div class={' h-full '}>
+                  <ConnectDevice />
+                </div>
+              </NTabPane>
 
             </NTabs>
           </div>
 
-          <div class={'fixed left-2 bottom-6'}>
+          <div class={'fixed left-2 bottom-6'} title={'虚拟键盘'}>
             <NButton circle type={'success'} v-slots={{
               icon: () => {
                 return <NIcon><KeyboardAltRound /></NIcon>

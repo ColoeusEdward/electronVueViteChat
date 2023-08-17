@@ -10,7 +10,7 @@ export const useDataConfigPartStore = defineStore('dataConfigPart', {
 
   state: () => {
     return {
-      checkedRowItem:<Record<string,string>|null> null
+      checkedRowItem:<Record<string,string>|null> null      //左侧选中的协议
     }
   },
   /**

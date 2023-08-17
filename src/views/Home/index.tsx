@@ -62,7 +62,7 @@ export default defineComponent({
     const handleAllInputFocuse = (event: any) => {
       if (event.target?.tagName === 'INPUT') {
         store.setLastFocusedInput(event.target)
-        console.log("🚀 ~ file: index.tsx:64 ~ handleAllInputFocuse ~ event.target:", event.target)
+        // console.log("🚀 ~ file: index.tsx:64 ~ handleAllInputFocuse ~ event.target:", event.target)
         // lastFocusedInput = event.target;
       }
 

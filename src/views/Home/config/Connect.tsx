@@ -37,7 +37,7 @@ export default defineComponent({
       },
     ]
 
-    const tdata = computed(() => {
+    const tdata = computed(() => {  //返回时把Modbus-TCP-Slave 协议提到第一位
       if (configStore.connect.data[0]?.ProtoType == 'Modbus-TCP-Slave') {
         return configStore.connect.data
       }
@@ -63,6 +63,7 @@ export default defineComponent({
 
             <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#tableCon'} trapFocus={false} height={'30vh'} blockScroll={false}>
               <NDrawerContent title={''}>
+                {/*@ts-ignore*/}
                 <ConnectForm form={form.value} v-model:show={formShow.value} />
               </NDrawerContent>
             </NDrawer>

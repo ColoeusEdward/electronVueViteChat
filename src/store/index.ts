@@ -148,7 +148,7 @@ export const useMain = defineStore('useStore', {
 
         initDb() {
             let _this = this
-            let request = window.indexedDB.open('nt', 6);
+            let request = window.indexedDB.open('nt', 7);
             var db
             request.onupgradeneeded = function (event) {
                 //@ts-ignore
@@ -176,6 +176,10 @@ export const useMain = defineStore('useStore', {
                 if (!db.objectStoreNames.contains('OPCUA')) {
                     objectStore = db.createObjectStore('OPCUA', { keyPath: 'id' });
                     objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                }
+                if (!db.objectStoreNames.contains('connectDev')) {
+                    objectStore = db.createObjectStore('connectDev', { keyPath: 'id' });
+                    // objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
                 }
                 // objectStore = event.target?.transaction.objectStore('alarmData');
                 // objectStore.createIndex('CondiId', 'CondiId', { unique: false });

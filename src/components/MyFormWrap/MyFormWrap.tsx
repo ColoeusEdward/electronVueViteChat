@@ -14,7 +14,8 @@ export interface formListItem {
   checkedValue?: string,
   uncheckedValue?: string,
   disabled?: boolean,
-  placement?: Placement
+  placement?: Placement,
+  suffix?:() => JSX.Element
 }
 export type MyFormWrapIns = {
   submit: Function
@@ -92,7 +93,9 @@ export const MyFormWrap = defineComponent({
     const renderInput = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} />
+          <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
+            suffix:item.suffix
+          }} />
         </NFormItem>
       )
     }

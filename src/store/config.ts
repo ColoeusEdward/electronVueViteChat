@@ -1,9 +1,10 @@
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
-
+import { v4 as uuidv4 } from 'uuid';
 type connectConfig = {
   data: Record<string, string>[]
 }
+type connectDev = connectConfig
 type dataConfig = {
   histConfig: Record<string, string>,
   alarmCondiList: Record<string, string>[],
@@ -11,6 +12,9 @@ type dataConfig = {
 }
 
 const localConnect = JSON.parse(localStorage.getItem('connect') || 'null') || {
+  data: <Record<string, string>[]>[],
+}
+const localConnectDev = JSON.parse(localStorage.getItem('connectDev') || 'null') || {
   data: <Record<string, string>[]>[],
 }
 
@@ -31,7 +35,8 @@ export const useConfigStore = defineStore('config', {
     return {
       isShowConfig: false,
       connect: localConnect as connectConfig,
-      dataConfig: localDataConfig as dataConfig
+      dataConfig: localDataConfig as dataConfig,
+      connectDev: localConnectDev as connectDev,
     }
   },
   /**
@@ -72,6 +77,10 @@ export const useConfigStore = defineStore('config', {
       this.dataConfig.alarmCondiList = value
       this.saveDataConfig()
     },
+    // addConnectDevData(row: Record<string, string>) {
+    //   this.connectDev.data.push(row)
+    //   this.saveConnectDev()
+    // }
     // addAlarmCondiData(row: Record<string, string>) {
     //   this.dataConfig.alarmCondiList.push(row)
     //   this.saveDataConfig()
