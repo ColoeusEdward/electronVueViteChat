@@ -13,6 +13,7 @@ import Statistical from "./statistical/Statistical";
 import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
+import ProductLine from "./productLine";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -107,8 +108,10 @@ export default defineComponent({
                   <Statistical />
                 </div>
               </NTabPane>
-              <NTabPane displayDirective="if" name="product" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'product' ? activeStyle : {} } }}>
-                Hey Jude
+              <NTabPane displayDirective="if" name="productLine" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'productLine' ? activeStyle : {} } }}>
+                <div class={'h-full'}>
+                  <ProductLine />
+                </div>
               </NTabPane>
               <NTabPane displayDirective="if" name="event" tab="事件" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'event' ? activeStyle : {} } }}>
                 Hey Jude

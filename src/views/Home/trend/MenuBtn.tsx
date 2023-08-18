@@ -7,6 +7,8 @@ import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
 import { useTrendStore } from "@/store/trendStore";
 import { capitalizeFirstLetter } from "@/utils/utils";
+import niotLogo from '@/assets/login_logos.png';
+
 
 const TopValue = defineComponent({
   name: 'TopValue',
@@ -252,6 +254,10 @@ export default defineComponent({
           </NDropdown >
           <div class={'ml-2 text-xl w-[20vw]'}>
             产品长度[m]:{trendStore.isFetching ? realtimeStore.productLength:'关'}
+          </div>
+
+          <div class='ml-auto h-16' >
+            <img class={'h-full'} src={niotLogo} />
           </div>
           {/* <TopValue /> */}
           {/* {renderValueText()} */}

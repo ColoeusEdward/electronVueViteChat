@@ -5,6 +5,8 @@ import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useMain } from "@/store";
 import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
+import niotLogo from '@/assets/login_logos.png';
+
 
 const TopValue = defineComponent({
   name: 'TopValue',
@@ -223,6 +225,10 @@ export default defineComponent({
             {store.dataSource.label}
           </div>
           <TopValue />
+
+          <div class='ml-auto  h-16' >
+            <img class={'h-full'} src={niotLogo} />
+          </div>
           {/* {renderValueText()} */}
         </div>
       )

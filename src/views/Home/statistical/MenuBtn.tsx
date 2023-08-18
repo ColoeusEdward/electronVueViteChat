@@ -6,6 +6,7 @@ import { useMain } from "@/store";
 import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
 import { useStatisticalStore } from "@/store/statistical";
+import niotLogo from '@/assets/login_logos.png';
 
 const TopValue = defineComponent({
   name: 'TopValue',
@@ -165,13 +166,13 @@ export default defineComponent({
       if (key == 'cleanAll') {
         statisticalStore.cleanDataSource()
       }
-      if(key == 'onlineStatistical'){
+      if (key == 'onlineStatistical') {
         statisticalStore.setIsOnline(true)
       }
-      if(key == 'statistical'){
+      if (key == 'statistical') {
         statisticalStore.setIsOnline(false)
       }
-      if(key == 'isShowData'){
+      if (key == 'isShowData') {
         statisticalStore.changeIsShowData()
       }
     }
@@ -251,7 +252,10 @@ export default defineComponent({
             </NButton>
           </NDropdown >
           <div class={'ml-2 text-xl w-[20vw]'}>
-      
+
+          </div>
+          <div class='ml-auto  h-16' >
+            <img class={'h-full'} src={niotLogo} />
           </div>
           {/* <TopValue /> */}
           {/* {renderValueText()} */}
