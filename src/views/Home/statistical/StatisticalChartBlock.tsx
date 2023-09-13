@@ -7,7 +7,7 @@ import { useTrendStore } from "@/store/trendStore";
 import { storeToRefs } from "pinia";
 import { sleep, unique } from "@/utils/utils";
 import { useStatisticalStore } from "@/store/statistical";
-import { useElementSize } from '@vueuse/core'
+import { MaybeComputedElementRef, MaybeElement, useElementSize } from '@vueuse/core'
 import { Parachute } from "@vicons/tabler";
 import classNames from 'classnames';
 import SpcDataBlock from "./SpcDataBlock";
@@ -41,7 +41,7 @@ export default defineComponent({
       return props.dataSourceItem
     })
     let dataItem = realtimeStore.realData[`${dataSourceItem.value?.parent}Data`] || {}
-    const { height, width } = useElementSize(conRef)
+    const { height, width } = useElementSize(conRef as any)
     const conHW = computed(() => {
       return height.value + 'px ' + width.value + 'px'
     })

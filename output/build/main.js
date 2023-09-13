@@ -12,16 +12,19 @@ const electron_1 = require("electron");
 // 创建窗口方法
 const createWindow_1 = require("./utils/createWindow");
 const navbar_1 = require("./utils/navbar");
-const menu_1 = require("./utils/menu");
 const calendar_1 = require("./utils/calendar");
 // 是否开启调试工具
 const devTools_1 = require("./utils/devTools");
 const nt_1 = require("./utils/nt");
+const proto_1 = require("./utils/proto");
+const shortcut_1 = require("./utils/shortcut");
 // const remote = require('electron').remote;
 electron_1.app.on("ready", () => {
+    (0, proto_1.createProto)();
     (0, createWindow_1.createWindow)(); // 创建窗口
+    (0, shortcut_1.createShortcut)();
     // 设置菜单栏
-    electron_1.Menu.setApplicationMenu((0, menu_1.createAppMenu)());
+    electron_1.Menu.setApplicationMenu(null);
     (0, navbar_1.onNavbar)();
     (0, calendar_1.onCalendar)();
     (0, nt_1.onNT)();

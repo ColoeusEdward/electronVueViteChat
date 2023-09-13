@@ -50,6 +50,37 @@ function createWindow() {
   // else Window.loadURL(path.join(__dirname, "./output/dist/index.html"));
   else Window.loadFile(`./output/dist/index.html`);
   // else Window.loadURL('http://localhost:3920/');
+
+  setOpHandler(Window)
+
+}
+
+//实现新窗口打开自动最大化
+const setOpHandler = (window: BrowserWindow) => {
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    let freescreen = url.search('preview') == -1
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        frame: true,
+        show: false,
+        maximizable: true,
+        fullscreenable: freescreen,
+        fullscreen: freescreen,
+        webPreferences: {
+          // webSecurity:false,
+          // 加载脚本
+          preload: path.join(__dirname, '..', 'preload.js'),
+          nodeIntegration: true,
+        },
+      }
+    }
+  })
+  window.webContents.on('did-create-window', (win: BrowserWindow) => {
+    win.once('ready-to-show', () => win.maximize())
+    setOpHandler(win)
+  }
+  )
 }
 // 导出模块
 export { createWindow };

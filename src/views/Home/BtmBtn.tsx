@@ -37,26 +37,38 @@ export default defineComponent({
     const configStore = useConfigStore()
     const maintainOption = [
       { label: '配置', value: 'option' },
-      {label:'运行日志',value:'log'},
-      {label:'诊断程序',value:'diag'},
-      {label:'趋势图/打印机',value:'chartAndprint'},
-     { label: '关机', value: 'shutdown' },
+      { label: '运行日志', value: 'log' },
+      { label: '诊断程序', value: 'diag' },
+      { label: '趋势图/打印机', value: 'chartAndprint' },
+      { label: '关机', value: 'shutdown' },
+      { label: 'test', value: 'datav' },
+      // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [
-      {label:'产品表',value:'product'},
-      {label:'设定产品表',value:'setproduct'},
+      { label: '产品表', value: 'product' },
+      { label: '设定产品表', value: 'setproduct' },
     ]
     const chartOption = [
-      {label:'开始',value:'start'},
+      { label: '开始', value: 'start' },
     ]
     const maintainOption2 = ref<PopselectProps['options']>([
       { label: '配置', value: 'option' },
       { label: '关机', value: 'shutdown' },
     ])
-    const handleOptClick: PopselectProps['onUpdate:value'] = (value) => {
-      if(value==='option'){
-        configStore.setIsShowConfig(true)
+    const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
+      let valueMap: Record<string, () => void> = {
+        option: () => {
+          configStore.setIsShowConfig(true)
+        },
+        datav: () => {
+          window.open('datav/index.html')
+        },
+        // devTool: () => {
+        //   window.ipc.send('devTools','open')
+        // }
       }
+      valueMap[value] && valueMap[value]()
+      
     }
     const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },

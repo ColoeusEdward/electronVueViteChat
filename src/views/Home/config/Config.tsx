@@ -9,6 +9,7 @@ import KeyBorad from "@/components/KeyBoard/KeyBorad";
 import { KeyboardAltRound } from "@vicons/material";
 import { useMain } from "@/store";
 import ConnectDevice from "./connectDevice";
+import ConfigComp from "./configComp";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -64,6 +65,11 @@ export default defineComponent({
               <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <ConnectDevice />
+                </div>
+              </NTabPane>
+              <NTabPane displayDirective="show:lazy" name={"configComp"} tab="test" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'configComp' ? activeStyle : {} } }}>
+                <div class={' h-full '}>
+                  <ConfigComp />
                 </div>
               </NTabPane>
 

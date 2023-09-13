@@ -15,13 +15,16 @@ import { onCalendar } from "./utils/calendar";
 // 是否开启调试工具
 import { onDevTools } from "./utils/devTools";
 import { onNT } from "./utils/nt";
+import { createProto } from "./utils/proto";
+import { createShortcut } from "./utils/shortcut";
 
 // const remote = require('electron').remote;
 app.on("ready", () => {
-
+    createProto()
     createWindow(); // 创建窗口
+    createShortcut()
     // 设置菜单栏
-    Menu.setApplicationMenu(createAppMenu());
+    Menu.setApplicationMenu(null);
     onNavbar();
     onCalendar();
     onNT()

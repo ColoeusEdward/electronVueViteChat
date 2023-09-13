@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-01-29 15:34:32
  * @LastEditors:  
  */
+import { watchOnce } from "@vueuse/core";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 //修改store代码需要重启项目才生效
@@ -99,14 +100,21 @@ export const useMain = defineStore('useStore', {
             dbReq: <IDBOpenDBRequest | null>null,  //数据库打开时返回的对象
 
             lastFocusedInput: <HTMLInputElement | null>null,
-            globalKeyBoardShow: false
+            globalKeyBoardShow: false,
+
         }
     },
     /**
      * 用来封装计算属性 有缓存功能  类似于computed
      */
     getters: {
-
+        getDbPromise(): Promise<any> {
+            return new Promise((resolve, reject) => {
+                watchOnce(() => this.db, (db) => {
+                    resolve(db)
+                })
+            })
+        }
     },
     /**
      * 编辑业务逻辑  类似于methods
@@ -148,7 +156,7 @@ export const useMain = defineStore('useStore', {
 
         initDb() {
             let _this = this
-            let request = window.indexedDB.open('nt', 7);
+            let request = window.indexedDB.open('nt', 8);
             var db
             request.onupgradeneeded = function (event) {
                 //@ts-ignore
@@ -179,6 +187,10 @@ export const useMain = defineStore('useStore', {
                 }
                 if (!db.objectStoreNames.contains('connectDev')) {
                     objectStore = db.createObjectStore('connectDev', { keyPath: 'id' });
+                    // objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
+                }
+                if (!db.objectStoreNames.contains('datav')) {
+                    objectStore = db.createObjectStore('datav', { keyPath: 'id' });
                     // objectStore.createIndex('ProtoType', 'ProtoType', { unique: false });
                 }
                 // objectStore = event.target?.transaction.objectStore('alarmData');

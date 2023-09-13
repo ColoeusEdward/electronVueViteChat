@@ -2,7 +2,7 @@
  * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-04-29 09:41:41
+ * @LastEditTime: 2023-09-11 14:45:16
  * @LastEditors: your name
 -->
 
@@ -48,8 +48,11 @@ import bus from './utils/bus';
 import { NConfigProvider, zhCN, NMessageProvider } from 'naive-ui'
 import Home from './views/Home/index';
 import { themeOverride } from '@/utils/theme';
+import { rootPathKey } from '@/utils/enum';
+import { useToolStore } from '@/store/tool';
 
 const mainHeaderShow = ref(true);
+const toolStore = useToolStore();
 
 onBeforeMount(() => {
   bus.on('mainHeaderShow', settingMain);
@@ -68,6 +71,29 @@ const settingMain = (msg: any) => {
 
   mainHeaderShow.value = msg;
 };
+const saveRootPath = () => {
+  window.ipc.invoke('getRootPath').then((res: any) => {
+    console.log(res, 'res',import.meta.env);
+    let url = ''
+    const envMap:Record<string, () => void> = {
+      'development': () => {
+        url = `${res}/../..`
+      },
+      'default': () => {
+        url = `${res}/../..`
+      }
+    }
+    envMap[import.meta.env.MODE] ? envMap[import.meta.env.MODE]() :envMap.default() 
+    toolStore.setRootPath(url)
+    try {
+      localStorage.setItem(rootPathKey, url)
+    }catch (error) {
+      console.error(error)
+    }
+    console.log("🚀 ~ file: App.vue:88 ~ window.ipc.invoke ~ url:", url)
+  });
+}
+saveRootPath()
 </script>
 
 <style scoped>

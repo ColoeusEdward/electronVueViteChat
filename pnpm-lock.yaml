@@ -65,6 +65,9 @@ dependencies:
   vue3-slider:
     specifier: ^1.8.0
     version: 1.8.0(vue@3.2.45)
+  webtopo-svg-edit:
+    specifier: ^0.0.10
+    version: 0.0.10(typescript@4.9.3)
 
 devDependencies:
   '@types/vue-router':
@@ -1338,6 +1341,10 @@ packages:
     resolution: {integrity: sha512-ltexLD/Bzwr1tDskQQFi88L4akbn8zFLIFIc00vFkH3G4hNEHruuJVcJuJTeUXLxms9dSon+cHSCmfFThnowFQ==}
     dev: true
 
+  /ace-builds@1.24.1:
+    resolution: {integrity: sha512-TLcxMxiTRX5Eq9bBVSd/bTJlanCBULiv/IULLohJDDaCAfcpZKJBVSd4OWfN/j2c2jCLc+jhpNWGELiJZw3wPw==}
+    dev: false
+
   /acorn-node@1.8.2:
     resolution: {integrity: sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A==}
     dependencies:
@@ -1388,6 +1395,10 @@ packages:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
     dev: true
+
+  /animate.css@4.1.1:
+    resolution: {integrity: sha512-+mRmCTv6SbCmtYJCN4faJMNFVNN5EuCTTprDTAo7YzIGji2KADmakjVA3+8mVDkZ2Bf09vayB35lSQIex2+QaQ==}
+    dev: false
 
   /ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -3684,6 +3695,14 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /resize-detector@0.3.0:
+    resolution: {integrity: sha512-R/tCuvuOHQ8o2boRP6vgx8hXCCy87H1eY9V5imBYeVNyNVpuL9ciReSccLj2gDcax9+2weXy3bc8Vv+NRXeEvQ==}
+    dev: false
+
+  /resize-observer-polyfill@1.5.1:
+    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
+    dev: false
+
   /resolve-alpn@1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
 
@@ -4460,6 +4479,23 @@ packages:
       vue: 3.2.45
     dev: false
 
+  /vue-echarts@6.6.1(echarts@5.4.2)(vue@3.2.45):
+    resolution: {integrity: sha512-EpreTzlNeJ+eaUn0AhXEmKJk98xJGecgTqAdyZovoXWnhTxnlW2HuBM0ei3y8rLw1JCUabf8/sYvxjlr8SzBKQ==}
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.5
+      echarts: ^5.4.1
+      vue: ^2.6.12 || ^3.1.1
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      echarts: 5.4.2
+      resize-detector: 0.3.0
+      vue: 3.2.45
+      vue-demi: 0.13.11(vue@3.2.45)
+    dev: false
+
   /vue-hook-svc@0.0.16(vue@3.2.45):
     resolution: {integrity: sha512-cP9yKmUY8SGAxIiuUIIfy8hlavxYtBqlx86Xssk71e2OB8CVjBkORAgjVDbKeKOl1S8fQSLIN0/D2JEZjl0Tlg==}
     peerDependencies:
@@ -4498,6 +4534,17 @@ packages:
       '@volar/vue-typescript': 1.0.11
       typescript: 4.9.3
     dev: true
+
+  /vue3-ace-editor@2.2.3(ace-builds@1.24.1)(vue@3.2.45):
+    resolution: {integrity: sha512-CkbiZSgIraZCBRa5egRqxDFUow5b949aHMcVgjce09O1n1TIJ8wVR++9mWg6F7lNWH47DkYSu0lwB6OocxUJ7g==}
+    peerDependencies:
+      ace-builds: '*'
+      vue: ^3
+    dependencies:
+      ace-builds: 1.24.1
+      resize-observer-polyfill: 1.5.1
+      vue: 3.2.45
+    dev: false
 
   /vue3-slider@1.8.0(vue@3.2.45):
     resolution: {integrity: sha512-JzYEEnDiCPHrmpQaHCRaMNg7yZtydY+cbzb+uissRzN3p5+pV5WtIpfYl7nyYZ2hRJzJineZJCq8WvPdRXWGMQ==}
@@ -4554,6 +4601,24 @@ packages:
   /webpack-virtual-modules@0.5.0:
     resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
     dev: true
+
+  /webtopo-svg-edit@0.0.10(typescript@4.9.3):
+    resolution: {integrity: sha512-n/e8XEKdYQSPQYQT7ZYlLKmz6z3OMem6d36pKUmOlAbb1dLiZpR2gTw/wipyaYDK+PJF68cDshh5FkOZJwx17w==}
+    requiresBuild: true
+    dependencies:
+      ace-builds: 1.24.1
+      animate.css: 4.1.1
+      echarts: 5.4.2
+      element-plus: 2.2.27(vue@3.2.45)
+      pinia: 2.0.28(typescript@4.9.3)(vue@3.2.45)
+      vue: 3.2.45
+      vue-echarts: 6.6.1(echarts@5.4.2)(vue@3.2.45)
+      vue-router: 4.1.6(vue@3.2.45)
+      vue3-ace-editor: 2.2.3(ace-builds@1.24.1)(vue@3.2.45)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - typescript
+    dev: false
 
   /which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}

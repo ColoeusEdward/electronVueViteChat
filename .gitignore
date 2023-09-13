@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 output
+public/datav
 
 # Editor directories and files
 .vscode/*
