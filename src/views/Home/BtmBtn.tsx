@@ -41,7 +41,7 @@ export default defineComponent({
       { label: '诊断程序', value: 'diag' },
       { label: '趋势图/打印机', value: 'chartAndprint' },
       { label: '关机', value: 'shutdown' },
-      { label: 'test', value: 'datav' },
+      { label: '组态test', value: 'datav' },
       // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [

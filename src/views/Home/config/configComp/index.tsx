@@ -1,10 +1,12 @@
 import { useToolStore } from "@/store/tool";
+import { PUBLISH_PROJECT_KEY } from "@/utils/enum";
 import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { NButton, useMessage } from "naive-ui";
-import { defineComponent, nextTick, ref, Transition } from "vue";
+import { defineComponent, nextTick, onMounted, ref, Transition } from "vue";
 //@ts-ignore
 import { WebtopoSvgEdit, WebtopoSvgPreview } from 'webtopo-svg-edit';
 import 'webtopo-svg-edit/dist/style.css'
+//@ts-ignore
 
 //@ts-ignore
 // import goViewLib from '@/components/goView/goViewLib.umd.cjs';
@@ -20,7 +22,10 @@ export default defineComponent({
     const previewShow = ref<boolean>(false)
     const dataModel = ref<object | null>(null)
     const toolStore = useToolStore()
+    const configAny = ref<HTMLIFrameElement|null>(null)
     dataModel.value = getLocalStorage(configCompStorageKey)
+    const previewId = getLocalStorage(PUBLISH_PROJECT_KEY)
+    const isMounted = ref(false)
     const handleReturn = () => {
 
     }
@@ -31,23 +36,30 @@ export default defineComponent({
       })
     }
     const handleSave = (res: any) => {
-      console.log("🚀 ~ file: index.tsx:22 ~ handleSave ~ res:", res)
       setLocalStorage(configCompStorageKey, res)
       msg.success('保存成功')
     }
     const closePreview = () => {
       previewShow.value = false
     }
-
-
+    // console.log( `imgurl: `,path.resolve(`mygo:///${toolStore.getRootPath}`))
+    onMounted(() => {
+      // console.log(`configAny`,configAny.value?.contentWindow);
+      isMounted.value = true
+      configAny.value && (configAny.value.contentWindow!.ipc = window.ipc)
+    })
 
     return () => {
       return (
         <div class={'w-full h-full relative'}>
-          <img class={'w-full h-full'}
+          {
+            <iframe class={'w-full h-full'} src={`/datav/index.html#/chart/preview/${previewId}`} ref={configAny} ></iframe>
+          }
+          {/* <div class={'w-full h-full '} style={{backgroundImage:`url(mygo:///${toolStore.getRootPath}/resource/pic/project/Snipaste_2023-09-07_10-12-34.png)`}}></div> */}
+          {/* <div class={'w-full h-full '} style={{backgroundImage:`url(mygo:///D:/Software/Neon.png)`}}></div> */}
+          {/* <img class={'w-full h-full'}
             src={`mygo:///${toolStore.getRootPath}/resource\\pic\\project/Snipaste_2023-09-07_10-12-34.png`}
-            // src={pic}
-          />
+          /> */}
           {/* <ChartEditor /> */}
           {/* <WebtopoSvgEdit dataModel={JSON.stringify(dataModel.value)} onOnReturn={handleReturn} onOnPreview={handlePreview} onOnSave={handleSave} />
           <Transition name='full-pop'>

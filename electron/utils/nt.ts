@@ -79,8 +79,10 @@ export function onNT() {
   })
 
   ipcMain.handle('getRootPath', (event, val) => {
-    console.log('获取根目录中')
-    return app.getAppPath()
+    let paths = app.getAppPath()
+    const definitelyPosix = paths.split(path.sep).join(path.posix.sep);
+    console.log("🚀 ~ 获取根目录中 file: nt.ts:84 ~ ipcMain.handle ~ paths:", definitelyPosix)
+    return definitelyPosix
   })
 
   ipcMain.handle('closeWin', (event, val) => {
@@ -92,8 +94,17 @@ export function onNT() {
   })
 
   ipcMain.handle('savePreviewPic', (event, val) => {
+    // const window: Electron.BrowserWindow | null = BrowserWindow.fromWebContents(event.sender)
     const bufferData = Buffer.from(val.blob);
     const filePath = rootPath + `/resource/pic/project/${val.name}`
+    if (val.oldName) {
+      const oldFilePath = rootPath + `/resource/pic/project/${val.oldName}`
+      fs.rm(oldFilePath, (err) => {
+        if (err) {
+          console.error('Error saving PNG file:', err);
+        }
+      })
+    }
     return new Promise((resolve, reject) => {
       fs.writeFile(filePath, bufferData, (err) => {
         if (err) {
@@ -101,13 +112,84 @@ export function onNT() {
           resolve(false)
         } else {
           console.log('PNG file saved successfully!');
-          webFrame.clearCache()
+          // window?.webContents.session.clearCache()
           resolve(true)
         }
       })
     })
 
   })
+
+  ipcMain.handle('savePic', (event, val) => {
+    // const window: Electron.BrowserWindow | null = BrowserWindow.fromWebContents(event.sender)
+    const bufferData = Buffer.from(val.blob);
+    const savePath = val.path || '/resource/pic/project'
+    const filePath = rootPath + `${savePath}/${val.name}`
+    if (val.oldName) {
+      const oldFilePath = rootPath + `${savePath}/${val.oldName}`
+      fs.rm(oldFilePath, (err) => {
+        if (err) {
+          console.error('Error saving PNG file:', err);
+        }
+      })
+    }
+    return new Promise((resolve, reject) => {
+      fs.writeFile(filePath, bufferData, (err) => {
+        if (err) {
+          console.error('Error saving PNG file:', err);
+          resolve(false)
+        } else {
+          console.log('PNG file saved successfully!');
+          // window?.webContents.session.clearCache()
+          resolve(true)
+        }
+      })
+    })
+
+  })
+
+  ipcMain.handle('delPic', (event, val) => {
+    const savePath = val.path || '/resource/pic/project'
+    let filePath = rootPath + `${savePath}/${val.name}`
+    if (val.fullPath) {
+      filePath = val.fullPath.replace('mygo:///', '')
+      // console.log("🚀 ~ file: nt.ts:156 ~ ipcMain.handle ~ filePath:", filePath)
+    }
+    return new Promise((resolve, reject) => {
+      fs.rm(filePath, (err) => {
+        if (err) {
+          console.error('Error delete PNG file:', err);
+          resolve(false)
+        }
+        resolve(true)
+      })
+    })
+  })
+
+  ipcMain.handle('readCustomPicList', (event, val) => {
+    const savePath = '/resource/pic/custom'
+    let filePath = 'mygo:///' + rootPath + `${savePath}`
+
+    return new Promise((resolve, reject) => {
+      fs.readdir(filePath, (err, files) => {
+        if (err) {
+          console.error('Error delete PNG file:', err);
+          resolve(false)
+        }
+        resolve(files)
+      })
+    })
+  })
+
+  ipcMain.handle('fakeData', (event, val) => {
+    let num = Math.random()*1000
+
+    return new Promise((resolve, reject) => {
+      resolve(num)
+    })
+  })
+
+
 
   // ipcMain.handle('serialize', (event, val) => {
   //   return new Promise((resolve,reject) => {

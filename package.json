@@ -17,7 +17,7 @@
         "build:all": "electron-builder --windows",
         "build:mac": "electron-builder --mac",
         "build:win": "electron-builder --windows",
-        "dld": "curl -O https://meamoe.one/record/temp/goviewDist.zip && mv goviewDist.zip public/datav && cd public/datav && 7z x -y goviewDist.zip && rm goviewDist.zip && echo download_datav_file"
+        "dld": "curl --socks5-hostname localhost:7890 -O https://meamoe.one/record/temp/goviewDist.zip && mv goviewDist.zip public/datav && cd public/datav && 7z x -y goviewDist.zip && rm goviewDist.zip && echo download_datav_file"
     },
     "dependencies": {
         "@element-plus/icons-vue": "^2.0.10",
@@ -43,7 +43,6 @@
         "webtopo-svg-edit": "^0.0.10"
     },
     "devDependencies": {
-        "@types/vue-router": "^2.0.0",
         "@vicons/antd": "^0.12.0",
         "@vicons/carbon": "^0.12.0",
         "@vicons/fa": "^0.12.0",
