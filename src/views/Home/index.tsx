@@ -1,4 +1,4 @@
-import { NTabs, NTabPane, } from "naive-ui";
+import { NTabs, NTabPane, useMessage, } from "naive-ui";
 import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
@@ -14,6 +14,7 @@ import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
+import { ActualResult } from "~/me";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -23,6 +24,7 @@ export default defineComponent({
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const configStore = useConfigStore()
+    window.$message = useMessage()
     store.initDb()
     let startFetch = true
     const activeStyle = {
@@ -43,9 +45,9 @@ export default defineComponent({
       curTabValue.value = value
     }
     const handleBlur = () => {
-      window.ipc.invoke('test1').then((val) => {
-        console.log(`dll`, val);
-      })
+      // window.ipc.invoke('test1').then((val) => {
+      //   console.log(`dll`, val);
+      // })
       // window.ipc.invoke('serialize',{'fff':'ffggg'}).then((val) => {
       //   console.log(`sdll`, val);
       // })
@@ -68,6 +70,14 @@ export default defineComponent({
       }
 
     }
+    const startSpcSys = () => {
+      window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
+        window.spcJsBind.startSpcSystem().then(function (actualResult:ActualResult) {
+          console.info(actualResult);
+        });
+      })
+    }
+    startSpcSys()
 
     store.setIsLowRes(isLowResolution())
     window.addEventListener('blur', handleBlur)

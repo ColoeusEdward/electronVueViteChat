@@ -7,6 +7,8 @@
         "module": "commonjs", // * 指定使用模块: 'commonjs', 'amd', 'system', 'umd' or 'es2015'
         "baseUrl": ".",
         "sourceMap": false, // * 是否生成相应的 '.map' 文件
+        "types": [
+        ]
     },
     "include": [
         "electron",

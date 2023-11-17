@@ -2,7 +2,7 @@
  * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-09-11 14:45:16
+ * @LastEditTime: 2023-11-15 08:25:38
  * @LastEditors: your name
 -->
 
@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
 const navBar = (val: string) => {
   console.log(window.ipc, 'window.ipc');
 
-  window.ipc.send('navBar', val);
+  // window.ipc.send('navBar', val);
 };
 const settingMain = (msg: any) => {
   console.log(msg, 'msg');
@@ -93,7 +93,7 @@ const saveRootPath = () => {
     console.log("🚀 ~ file: App.vue:88 ~ window.ipc.invoke ~ url:", url)
   });
 }
-saveRootPath()
+// saveRootPath()
 </script>
 
 <style scoped>

@@ -12,7 +12,7 @@ export default defineComponent({
     return () => {
       return (
         <NPopselect {...pop}  trigger="click"  size={'large'} class={'text-2xl'}
-            nodeProps={(option) => {
+            nodeProps={(option:any) => {
               return {
                 class: 'w-[16vw]',
                 style: {

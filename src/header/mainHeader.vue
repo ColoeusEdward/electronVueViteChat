@@ -2,8 +2,8 @@
  * @Author:  
  * @Description:
  * @Date: 2022-12-28 14:39:55
- * @LastEditTime: 2023-01-31 15:58:31
- * @LastEditors:  
+ * @LastEditTime: 2023-11-15 08:28:54
+ * @LastEditors: your name
 -->
 <template>
   <div
@@ -55,16 +55,16 @@
   const navBar = (val: string) => {
     console.log(window.ipc, 'window.ipc');
 
-    window.ipc.send('navBar', val);
+    // window.ipc.send('navBar', val);
   };
   // 是否开启开发者工具
   const devTools = () => {
     if (devToolsOpen.value) {
       window.ipc.send('devTools', 'close');
-      devToolsOpen.value = false;
+      // devToolsOpen.value = false;
     } else {
       window.ipc.send('devTools', 'open');
-      devToolsOpen.value = true;
+      // devToolsOpen.value = true;
     }
   };
 </script>

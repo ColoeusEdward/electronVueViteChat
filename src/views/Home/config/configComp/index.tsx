@@ -46,7 +46,7 @@ export default defineComponent({
     onMounted(() => {
       // console.log(`configAny`,configAny.value?.contentWindow);
       isMounted.value = true
-      configAny.value && (configAny.value.contentWindow!.ipc = window.ipc)
+      // configAny.value && (configAny.value.contentWindow!.ipc = window.ipc)
     })
 
     return () => {

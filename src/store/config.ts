@@ -1,6 +1,7 @@
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
+import { SysConfigEntity } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -37,6 +38,9 @@ export const useConfigStore = defineStore('config', {
       connect: localConnect as connectConfig,
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
+
+      sysConfig: {} as Record<string, string>,
+      originSysConfig:[] as SysConfigEntity[]
     }
   },
   /**
@@ -100,6 +104,12 @@ export const useConfigStore = defineStore('config', {
     setOPCUATopForm(value: Record<string, string>) {
       this.dataConfig.OPCUATopForm = value
       this.saveDataConfig()
+    },
+    setSysConfig(value: Record<string, string>) {
+      this.sysConfig = value
+    },
+    setOriginSysConfig(value: SysConfigEntity[]){
+      this.originSysConfig = value
     }
 
   }
