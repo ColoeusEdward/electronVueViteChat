@@ -12,6 +12,7 @@ import ConnectDevice from "./connectDevice";
 import ConfigComp from "./configComp";
 import SysConfig from "./sysConfig";
 import DevConfig from "./devConfig";
+import DataCofigNew from "./dataCofigNew";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -52,7 +53,7 @@ export default defineComponent({
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
 
-          <div class={'h-full w-full shrink'} style={{height:'calc(100% - 80px)'}}>
+          <div class={'h-full w-full shrink'} style={{ height: 'calc(100% - 80px)' }}>
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
               <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
@@ -64,21 +65,26 @@ export default defineComponent({
                   <DevConfig />
                 </div>
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
+                <div class={' h-full shrink'}>
+                  <DataCofigNew />
+                </div>
+              </NTabPane>
+              {/* <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <Connect />
                 </div>
-              </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"data"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'data' ? activeStyle : {} } }}>
+              </NTabPane> */}
+              {/* <NTabPane displayDirective="show:lazy" name={"data"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'data' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <DataConfig />
                 </div>
-              </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
+              </NTabPane> */}
+              {/* <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <ConnectDevice />
                 </div>
-              </NTabPane>
+              </NTabPane> */}
               {/* <NTabPane displayDirective="show:lazy" name={"configComp"} tab="test" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'configComp' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <ConfigComp />

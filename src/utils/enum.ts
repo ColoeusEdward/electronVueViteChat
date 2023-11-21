@@ -2,6 +2,40 @@ const rootPathKey = 'rootPath'
 //发布localstorage key
 const PUBLISH_PROJECT_KEY = 'publishProject'
 
+enum callFnName {
+  getState = "getState",
+  getSysConfigs = "getSysConfigs",
+  saveSysConfigs = "saveSysConfigs",
+  showDirSelect = "showDirSelect",
+  getPrinterList = "getPrinterList",
+  getDeviceConfigs = "getDeviceConfigs",
+  saveDeviceConfig = "saveDeviceConfig",
+  deleteDeviceConfig = "deleteDeviceConfig",
+  getSupportDevices = "getSupportDevices",
+  getCategoryNodes = "getCategoryNodes",
+  saveCategoryNode = "saveCategoryNode",
+  deleteCategoryNode = "deleteCategoryNode",
+  getCategoryDatas = "getCategoryDatas",
+  saveCategoryData = "saveCategoryData",
+  deleteCategoryData = "deleteCategoryData",
+  getDataConfigs = "getDataConfigs",
+  saveDataConfig = "saveDataConfig",
+  deleteDataConfig = "deleteDataConfig",
+  initDataConfig = "initDataConfig",
+  getFormulaConfigs = "getFormulaConfigs",
+  getFormulaDatas = "getFormulaDatas",
+  deleteFormulaConfig = "deleteFormulaConfig",
+  getProductStatistics = "getProductStatistics",
+  getProductLogs = "getProductLogs",
+  deleteProductHistory = "deleteProductHistory",
+  getSerialNos = "getSerialNos",
+  saveSerialNo = "saveSerialNo",
+  deleteSerialNo = "deleteSerialNo",
+  getNewSerialNo = "getNewSerialNo",
+  getFullCollectPoints = "getFullCollectPoints",
+  getCpkData = "getCpkData",
+}
+
 export {
-  rootPathKey,PUBLISH_PROJECT_KEY
+  rootPathKey, PUBLISH_PROJECT_KEY,callFnName
 }

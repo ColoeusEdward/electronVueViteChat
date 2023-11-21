@@ -1,29 +1,33 @@
+import { useElementBounding } from "@vueuse/core";
 import { NDataTable } from "naive-ui";
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 
 export default defineComponent({
   name: 'MyNTable',
   setup(props, ctx) {
+
     const otherProp = computed(() => {
       return ctx.attrs
     })
     const data = reactive({
-      maxHeight: ''
+      maxHeight: '',
     })
     const MyNTableConRef = ref<HTMLDivElement>()
-    const getMaxHeight = () => {
-      if (MyNTableConRef.value) {
-        data.maxHeight = MyNTableConRef.value.offsetHeight+''
-      }
-    }
+    const {height} = useElementBounding(MyNTableConRef)
+    // const getMaxHeight = () => {
+    //   if (MyNTableConRef.value) {
+    //     data.maxHeight = MyNTableConRef.value.offsetHeight+''
+    //     console.log("🚀 ~ file: index.tsx:17 ~ getMaxHeight ~ data.maxHeight:", data.maxHeight)
+    //   }
+    // }
     onMounted(() => {
       // console.log(MyNTableConRef.value)
-      getMaxHeight()
+      // getMaxHeight()
     })
     return () => {
       return (
         <div class={'w-full h-full'} ref={MyNTableConRef}>
-          <NDataTable bordered={false} maxHeight={data.maxHeight} striped singleLine={false} {...otherProp.value} size={'large'} >
+          <NDataTable  bordered={false} maxHeight={height.value} striped singleLine={false} {...otherProp.value} size={'large'} >
           </NDataTable>
         </div>
       )

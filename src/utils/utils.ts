@@ -1,5 +1,6 @@
 import { useConfigStore } from "@/store/config";
 import { ActualResult } from "~/me";
+import { v4 as uuidv4 } from 'uuid';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -27,8 +28,19 @@ const getLocalStorage = (key: string) => {
 }
 export { sleep, isLowResolution, capitalizeFirstLetter, unique, simulateKeyPress, setLocalStorage, getLocalStorage }
 
+export const ajaxPromiseAll = <T extends Array<any>,>(list: any) => {
+  return new Promise<T>((resolve, reject) => {
+    return Promise.all(list).then(res => {
+      resolve(res as T);
+    }).catch(err => {
+      reject(err);
+    })
+  })
+}
 
-
+export const generateUUID = () => {
+  return uuidv4()
+}
 
 export const listenAltF5 = (cb: Function) => {
   document.addEventListener('keydown', function (event) {

@@ -10,9 +10,9 @@ const resultProcess = (res: ActualResult) => {
   }
 }
 
-export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult> | string) => {
-  if(typeof cb === 'string') {
-    cb = window.spcJsBind[cb]()
+export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult> | string, data?: any) => {
+  if (typeof cb === 'string') {
+    cb = data ? window.spcJsBind[cb](data) : window.spcJsBind[cb]()
   }
   return window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
     if (typeof cb === 'function') {
@@ -54,7 +54,7 @@ export const getSysConfig = () => {
       })
       configStore.setOriginSysConfig(list)
       configStore.setSysConfig(data)
-      console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
+      // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
       return new Promise((resolve, reject) => {
         resolve(data)
       })

@@ -1,4 +1,5 @@
-import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar } from "naive-ui";
+import classNames from "classnames";
+import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
 import { defineComponent, ref, PropType, onMounted, computed, defineExpose } from "vue";
 
@@ -19,7 +20,8 @@ export interface formListItem {
   style?: Record<string, string>,
   defaultValue?: string | number | boolean,
   text?: string,
-  renderComp?: () => JSX.Element   //自由渲染内容
+  renderComp?: () => JSX.Element,   //自由渲染内容
+  radioList: { value: string|number, label: string }[]
 }
 export type MyFormWrapIns = {
   submit: Function
@@ -41,7 +43,9 @@ export const MyFormWrap = defineComponent({
       type: Boolean,
       default: true
     },     //是否需要底部占位
-    saveText: String
+    saveText: String,
+    noLargeBtn: Boolean,
+    renderToBtn: Function as PropType<() => JSX.Element>   //自由渲染按钮内容
   },
   setup(props, ctx) {
     const formRef = ref<InstanceType<typeof NForm>>()
@@ -67,9 +71,10 @@ export const MyFormWrap = defineComponent({
     const validForm = () => {
       return formRef.value?.validate()
     }
-    const submit = async (propSubmit: typeof props.submitFn) => {
-      await validForm()
-      propSubmit && propSubmit({ ...props.form })
+    const submit = (propSubmit: typeof props.submitFn) => {
+      return validForm().then(() => {
+        propSubmit && propSubmit({ ...props.form })
+      })
     }
     const isAddMoreUpdate = (val: boolean) => {
       ctx.emit('update:isAddMore', val)
@@ -86,7 +91,19 @@ export const MyFormWrap = defineComponent({
     onMounted(() => {
       buildRule()
     })
-
+    const renderRadio = (form: typeof props.form, item: formListItem) => {
+      return (
+        <NFormItem label={item.label} path={item.prop}>
+          <NRadioGroup v-model:value={form[item.prop]} size={'large'} disabled={item.disabled}>
+            {item.radioList?.map((e: any) => (
+              <NRadioButton  value={e.value} key={e.value}>
+                {e.label}
+              </NRadioButton>
+            ))}
+          </NRadioGroup>
+        </NFormItem>
+      )
+    }
     const renderSwitch = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
@@ -95,6 +112,7 @@ export const MyFormWrap = defineComponent({
       )
     }
     const renderInput = (form: typeof props.form, item: formListItem) => {
+      typeof form[item.prop] === 'number' && (form[item.prop] = form[item.prop] + "")
       return (
         <NFormItem label={item.label} path={item.prop}>
           <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
@@ -136,7 +154,8 @@ export const MyFormWrap = defineComponent({
           switch: renderSwitch,
           divider: renderDivider,
           text: renderText,
-          free: renderFreeComp
+          free: renderFreeComp,
+          radio: renderRadio
         }
         return itemList?.map((item) => {
           return (
@@ -161,12 +180,12 @@ export const MyFormWrap = defineComponent({
             <div class={'flex w-auto absolute right-0 bottom-0 items-center z-[500]'}>
               <div class={'mr-4 ml-auto mb-2'} >
                 {props.hasAddMore && [
-                  <span class={'mr-2 align-middle text-lg'}>连续添加</span>,
+                  <span class={'mr-2 align-middle text-md'}>连续添加</span>,
                   <NSwitch value={props.isAddMore} size={'large'} checkedValue={true} uncheckedValue={false} onUpdateValue={isAddMoreUpdate}  ></NSwitch>
                 ]}
               </div>
-
-              <NButton class={'my-large-btn'} style={"" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
+              {props.renderToBtn && props.renderToBtn()}
+              <NButton class={classNames({ 'my-large-btn': !props.noLargeBtn })} style={"" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
             </div>]
           }
         </div>
