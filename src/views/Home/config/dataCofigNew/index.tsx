@@ -5,9 +5,12 @@ import { ajaxPromiseAll, sleep } from "@/utils/utils";
 import classNames from "classnames";
 import { NButton, NPopconfirm, NScrollbar, NSwitch, NTree, SelectProps, TreeProps, useMessage } from "naive-ui";
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, reactive, Transition } from "vue";
-import { CategoryDataEntity, CategoryNodeEntity, DeviceConfigEntity } from "~/me";
+import { CategoryDataEntity, CategoryNodeEntity, DataConfigEntity, DeviceConfigEntity, } from "~/me";
 import { categoryClassList, limitRadioList } from "./enum";
 import { useDataCfgInnerDataStore } from "./innerData";
+import { isCategoryDataEntity, isCategoryNodeEntity } from '@/utils/typeUtil'
+import ConfigRight from "./ConfigRight";
+
 
 export default defineComponent({
   name: 'DataCofigNew',
@@ -15,24 +18,35 @@ export default defineComponent({
     const innerData = useDataCfgInnerDataStore()
     innerData.cleanSelectItem()
     const msg = useMessage()
-    const allList = [] as (CategoryNodeEntity | CategoryDataEntity)[]
+    let allList = [] as (CategoryNodeEntity | CategoryDataEntity)[]
     const treeCfg = reactive({
       data: [] as TreeProps['data'],
       showLine: true,
       selectedKeys: innerData.selectKey,
       nodeProps: (info: { option: CategoryNodeEntity | CategoryDataEntity }) => {
+        let key = getEntityKeyAndName(info.option)
         return {
-          class: classNames({ ' bg-[#f3f3f5]': info.option.GId == innerData.selectKey[0] }),
+          class: classNames({ ' bg-[#f3f3f5] border border-solid border-blue-200 ': key == innerData.selectKey[0] }),
         }
       },
       onUpdateSelectedKeys: (keys: string[]) => {
-        let item = allList.find(e => e.GId == keys[0])
+        let item = allList.find(e => e.GId == keys[0].split('*')[0])
         item && innerData.setSelectItem({ ...item })
+        item && innerData.setSelectKey([getEntityKeyAndName(item)])
         !innerData.isAddGroup && innerData.setEditShow(false)
       }
     })
+    const getEntityKeyAndName = (item: CategoryNodeEntity | CategoryDataEntity) => {
+      let name = ''
+      if (isCategoryDataEntity(item))
+        name = item.DataName
+      if (isCategoryNodeEntity(item))
+        name = item.NodeName
+      return item.GId + '*' + name
+    }
     const createTree = ([nodeList, dataList]: [CategoryNodeEntity[], CategoryDataEntity[]]) => {
-      allList.push(...[...nodeList, ...dataList])
+      // allList.push(...[...nodeList, ...dataList])
+      allList = [...nodeList, ...dataList]
       let dataMap: Record<string, CategoryDataEntity[]> = {}
       dataList.forEach(e => {
         if (!dataMap[e.CategoryNodeId]) {
@@ -45,12 +59,12 @@ export default defineComponent({
         return {
           ...e,
           label: e.NodeName,
-          key: e.GId,
+          key: getEntityKeyAndName(e),//为了确保树形组件能够正确刷新, key都要加上名字
           children: dataMap[e.GId] ? dataMap[e.GId].map(e => {
             return {
               ...e,
               label: e.DataName,
-              key: e.GId
+              key: getEntityKeyAndName(e)
             }
           }) : []
         }
@@ -59,17 +73,20 @@ export default defineComponent({
       return res
     }
     const getTreeData = () => {
-      treeCfg.data = []
+      // treeCfg.data = []
       innerData.cleanSelectItem()
-      allList.splice(-0)
+      // allList.splice(-0)
+      allList = []
       ajaxPromiseAll<[CategoryNodeEntity[], CategoryDataEntity[]]>([callSpc(callFnName.getCategoryNodes), callSpc(callFnName.getCategoryDatas)]).then((e) => {
         treeCfg.data = createTree(e)
+
         console.log("🚀 ~ file: index.tsx:67 ~ ajaxPromiseAll<[CategoryNodeEntity[],CategoryDataEntity[]]> ~ treeCfg.data:", treeCfg.data)
       })
     }
     innerData.setGetTreeDataFn(getTreeData)
     getTreeData()
     const addGroup = () => {
+      innerData.setIsMemberAddMore(false)
       innerData.setEditShow(false)
       nextTick(() => {
         innerData.setIsEdit(false)
@@ -83,6 +100,7 @@ export default defineComponent({
         msg.warning('请选择一行分组')
         return
       }
+      innerData.setIsMemberAddMore(false)
       innerData.setEditShow(false)
       nextTick(() => {
         innerData.setIsEdit(false)
@@ -93,6 +111,7 @@ export default defineComponent({
     }
     const editItem = () => {
       innerData.setEditShow(false)
+      innerData.setIsMemberAddMore(false)
       if (!innerData.selectItem) {
         msg.warning('请选择一行数据')
         return
@@ -109,7 +128,14 @@ export default defineComponent({
         msg.warning('请选择一行数据')
         return
       }
+      let freezeSelectItem = {...innerData.selectItem}
       callSpc(innerData.isGroup ? callFnName.deleteCategoryNode : callFnName.deleteCategoryData, innerData.selectItem).then(() => {
+        if(innerData.isGroup){
+          callSpc(callFnName.getDataConfigs).then((list:DataConfigEntity[]) => {   //连带删除 dataConfig
+            let item = list.find(e => e.CategoryNodeId == freezeSelectItem.GId)
+            item && callSpc(callFnName.deleteDataConfig,item)
+          })
+        }
         getTreeData()
       })
     }
@@ -152,7 +178,7 @@ export default defineComponent({
                 <div class={'mt-2 px-2 relative'}>
                   <Transition name='full-pop'>
                     {(innerData.groupShow && !innerData.isMemberAddMore) && <GroupForm />}
-                    
+
                   </Transition>
                   <Transition name='full-pop'>
                     {(innerData.memberShow || innerData.isMemberAddMore) && <MemberForm />}
@@ -166,7 +192,7 @@ export default defineComponent({
             </div>
           </div>
           <div class={'w-1/2 h-full '}>
-
+            {innerData.selectItem && <ConfigRight />}
           </div>
         </div>
       )
@@ -240,14 +266,14 @@ const MemberForm = defineComponent({
       btnStyleStr: `margin-right: 8px;margin-bottom:8px;`,
       renderToBtn: () => {
         return (
-          <NButton class={'mr-3 relative mb-2'} onClick={cancel} size={'large'} >取消</NButton>
+          <NButton class={'mr-3 relative mb-2 '} onClick={cancel} size={'large'} >取消</NButton>
         )
       },
       submitFn: (form: CategoryDataEntity) => {
         !form.CategoryNodeId && (form.CategoryNodeId = selectItemFreeze!.GId)
         callSpc(callFnName.saveCategoryData, form).then((res: number) => {
           innerData.getTreeDataFn()
-            if (!innerData.isMemberAddMore) {
+          if (!innerData.isMemberAddMore) {
             innerData.setEditShow(false)
             // formCfg.form = {...form}
           }

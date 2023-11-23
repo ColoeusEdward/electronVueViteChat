@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton } from "naive-ui";
+import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
 import { defineComponent, ref, PropType, onMounted, computed, defineExpose } from "vue";
 
@@ -21,10 +21,14 @@ export interface formListItem {
   defaultValue?: string | number | boolean,
   text?: string,
   renderComp?: () => JSX.Element,   //自由渲染内容
-  radioList: { value: string|number, label: string }[]
+  radioList: { value: string | number, label: string }[],
+  min?: number,
+  max?: number,
+  radioType?: 'btn' | 'def'
 }
 export type MyFormWrapIns = {
-  submit: Function
+  submit: Function,
+  resetValid:Function
 }
 export const MyFormWrap = defineComponent({
   name: 'MyFormWrap',
@@ -53,6 +57,9 @@ export const MyFormWrap = defineComponent({
     const defaultRule: FormRules = {
       must: { required: true, message: '请输入该项', trigger: 'blur' },
     }
+    const pform = computed(() => {
+      return props.form
+    })
 
     const buildRule = () => {
       let baseRule = props.rule ? Object.assign(props.rule, defaultRule) : defaultRule
@@ -71,6 +78,9 @@ export const MyFormWrap = defineComponent({
     const validForm = () => {
       return formRef.value?.validate()
     }
+    const resetValid = () => {
+      formRef.value?.restoreValidation()
+    }
     const submit = (propSubmit: typeof props.submitFn) => {
       return validForm().then(() => {
         propSubmit && propSubmit({ ...props.form })
@@ -84,7 +94,8 @@ export const MyFormWrap = defineComponent({
     })
 
     ctx.expose({
-      submit
+      submit,
+      resetValid
     } as MyFormWrapIns)
 
 
@@ -92,14 +103,22 @@ export const MyFormWrap = defineComponent({
       buildRule()
     })
     const renderRadio = (form: typeof props.form, item: formListItem) => {
+      let radioMap = {
+        btn: item.radioList?.map((e: any) => (
+          <NRadioButton value={e.value} key={e.value}>
+            {e.label}
+          </NRadioButton>
+        )),
+        def: item.radioList?.map((e: any) => (
+          <NRadio value={e.value} key={e.value}>
+            {e.label}
+          </NRadio>
+        ))
+      }
       return (
         <NFormItem label={item.label} path={item.prop}>
           <NRadioGroup v-model:value={form[item.prop]} size={'large'} disabled={item.disabled}>
-            {item.radioList?.map((e: any) => (
-              <NRadioButton  value={e.value} key={e.value}>
-                {e.label}
-              </NRadioButton>
-            ))}
+            {item.radioType ? radioMap[item.radioType] : radioMap.btn}
           </NRadioGroup>
         </NFormItem>
       )
@@ -116,6 +135,16 @@ export const MyFormWrap = defineComponent({
       return (
         <NFormItem label={item.label} path={item.prop}>
           <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
+            suffix: typeof item.suffix === 'function' ? item.suffix : () => item.suffix
+          }} />
+        </NFormItem>
+      )
+    }
+    const renderNumInput = (form: typeof props.form, item: formListItem) => {
+      // typeof form[item.prop] === 'string' && (form[item.prop] = Number(form[item.prop]))
+      return (
+        <NFormItem label={item.label} path={item.prop}>
+          <NInputNumber size={'large'} min={item.min} max={item.max} v-model:value={form[item.prop]} placeholder="" clearable rows={item.row || 3} disabled={item.disabled} v-slots={{
             suffix: typeof item.suffix === 'function' ? item.suffix : () => item.suffix
           }} />
         </NFormItem>
@@ -155,7 +184,8 @@ export const MyFormWrap = defineComponent({
           divider: renderDivider,
           text: renderText,
           free: renderFreeComp,
-          radio: renderRadio
+          radio: renderRadio,
+          numInput: renderNumInput
         }
         return itemList?.map((item) => {
           return (
@@ -170,7 +200,7 @@ export const MyFormWrap = defineComponent({
         <div class={'w-full h-full  '}>
           <NForm model={props.form} ref={formRef} rules={finalRule.value} size="medium" labelPlacement="left" >
             <NGrid xGap={12} yGap={2}>
-              {renderComp(props.itemList, props.form || {}, props.optionMap || {})}
+              {renderComp(props.itemList, pform.value || {}, props.optionMap || {})}
             </NGrid>
           </NForm>
           {!props.hideBtn &&

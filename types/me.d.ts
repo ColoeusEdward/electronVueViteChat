@@ -29,13 +29,13 @@ type DriverInfo = {
   // addressTypeDefaultData: DriverAddressType
 }
 
-type DriverConnectType = ConnectTcpModel|ConnectComModel
+type DriverConnectType = ConnectTcpModel | ConnectComModel
 type DriverAddressType = ModbusAddressModel
 
 type SysConfigEntity = {  //原始ActualResult
-  Name:string
-  Value:string
-  CreateTime:string
+  Name: string
+  Value: string
+  CreateTime: string
 }
 
 type DeviceConfigEntity = {
@@ -72,7 +72,7 @@ type ConnectComModel = {
 }
 
 type ModbusAddressModel = {
-  Id?:string;          //前端生成并使用的ID
+  Id?: string;          //前端生成并使用的ID
   DataName: string;
   SlaveId?: number;
   Area: string;
@@ -98,4 +98,18 @@ type CategoryDataEntity = {
   Class: string;
   Limit: number;
   CreateTime: string;
+}
+
+type  DataConfigEntity = {
+  GId?: string;
+  CategoryNodeId?: string;
+  Name: string;
+  DataType: number;
+  Unit: string;
+  SortNum: number;
+  Precision: number;
+  Unilateral: number;
+  AlarmType: number;
+  State: number;
+  CreateTime?: string;
 }
