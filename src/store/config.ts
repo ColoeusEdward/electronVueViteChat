@@ -35,6 +35,7 @@ export const useConfigStore = defineStore('config', {
   state: () => {
     return {
       isShowConfig: false,
+      productHistoryShow:false,
       connect: localConnect as connectConfig,
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
@@ -110,6 +111,9 @@ export const useConfigStore = defineStore('config', {
     },
     setOriginSysConfig(value: SysConfigEntity[]){
       this.originSysConfig = value
+    },
+    setProductHistoryShow(value: boolean){
+      this.productHistoryShow = value
     }
 
   }

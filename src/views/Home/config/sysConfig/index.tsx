@@ -6,6 +6,7 @@ import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { ActualResult } from "~/me";
 import { formDivideStyle, optionMap } from "./enum";
+import SerialNoRule from "./SerialNoRule";
 
 export default defineComponent({
   name: 'SysConfig',
@@ -60,6 +61,10 @@ export default defineComponent({
         { type: 'text', },
         { type: 'switch', label: '打印统计数据', prop: 'EnablePrintStati', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
         { type: 'select', label: '使用的打印机', prop: 'ReportPrinter', width: 12 },
+        { type: 'divider', label: '编码规则', width: 24 },
+        { type: 'free', label: '编码规则', renderComp:() => {
+          return <SerialNoRule />
+        }, width: 24 },
 
         { type: 'divider', label: '其他配置', width: 24 },
         { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },

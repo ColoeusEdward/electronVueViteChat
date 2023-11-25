@@ -80,7 +80,7 @@ export default defineComponent({
       ajaxPromiseAll<[CategoryNodeEntity[], CategoryDataEntity[]]>([callSpc(callFnName.getCategoryNodes), callSpc(callFnName.getCategoryDatas)]).then((e) => {
         treeCfg.data = createTree(e)
 
-        console.log("🚀 ~ file: index.tsx:67 ~ ajaxPromiseAll<[CategoryNodeEntity[],CategoryDataEntity[]]> ~ treeCfg.data:", treeCfg.data)
+        // console.log("🚀 ~ file: index.tsx:67 ~ ajaxPromiseAll<[CategoryNodeEntity[],CategoryDataEntity[]]> ~ treeCfg.data:", treeCfg.data)
       })
     }
     innerData.setGetTreeDataFn(getTreeData)
@@ -139,6 +139,11 @@ export default defineComponent({
         getTreeData()
       })
     }
+    const initDatConfig = () => {
+      callSpc(callFnName.initDataConfig).then(() => {
+        getTreeData()
+      })
+    }
 
     onMounted(() => {
       innerData.setIsMemberAddMore(false)
@@ -162,7 +167,7 @@ export default defineComponent({
 
 
               {/* absolute right-2 top-2 */}
-              <div class={' h-full w-[440px] pt-2 ml-2'}>
+              <div class={' h-full w-[440px] pt-2 ml-2 relative'}>
                 <div class={'flex justify-end '}>
                   <NButton class={'mr-2 mb-2'} onClick={addGroup} >添加分组</NButton>
                   <NButton class={'mr-2 mb-2'} v-show={innerData.isGroup} onClick={addData} >添加成员</NButton>
@@ -174,6 +179,9 @@ export default defineComponent({
                   }}>
                     确认删除吗?
                   </NPopconfirm>
+                </div>
+                <div class={'absolute bottom-2 right-2'}>
+                  <NButton size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
                 </div>
                 <div class={'mt-2 px-2 relative'}>
                   <Transition name='full-pop'>

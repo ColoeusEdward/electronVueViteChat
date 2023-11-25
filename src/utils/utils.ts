@@ -1,6 +1,8 @@
 import { useConfigStore } from "@/store/config";
 import { ActualResult } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
+import { callSpc } from "./call";
+import { callFnName } from "./enum";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -46,6 +48,8 @@ export const listenAltF5 = (cb: Function) => {
   document.addEventListener('keydown', function (event) {
     if (event.altKey && event.key === 'F5') {
       cb()
+      // callSpc(callFnName.closeSpcSystem).then(() => {
+      // })
     }
   })
 }

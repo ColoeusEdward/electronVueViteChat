@@ -113,3 +113,53 @@ type  DataConfigEntity = {
   State: number;
   CreateTime?: string;
 }
+
+type SerialNoEntity = {
+  GId?: string;
+  FieldType: number;
+  Format: string;
+  LastValue?: string;
+  SortNum: number;
+  UpdateTime?: string;
+}
+
+type FormulaConfigEntity = {
+  GId?: string;
+  PN: string;
+  Note: string;
+  Active: number;
+  CreateTime?: string;
+}
+
+type FormulaDataEntity = {
+  GId?: string;
+  DataId?: string;
+  FormulaId?: string;
+  Standard: number;
+  UpperTol: number;
+  LowerTol: number;
+  CreateTime?: string;
+}
+
+type ProductHistoryEntity = {
+  GId?: string;
+  ProductNo: string;
+  PN: string;
+  Note: string;
+  StartTime: string;
+  EndTime: string;
+  Operator: string;
+  ExcelPath: string;
+  PdfPath: string;
+}
+
+type ProductLogEntity = {
+  GId?: string;
+  ProductNo: string;
+  Operater: string;
+  LogType: string;
+  LogOption: string;
+  LogDetail: string;
+  Length?: number;
+  CreateTime: string;
+}

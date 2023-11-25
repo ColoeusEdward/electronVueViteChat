@@ -13,6 +13,8 @@ import ConfigComp from "./configComp";
 import SysConfig from "./sysConfig";
 import DevConfig from "./devConfig";
 import DataCofigNew from "./dataCofigNew";
+import FormulaConfig from "./FormulaConfig";
+import AbsBottomBtn from "@/components/AbsBottomBtn";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -70,6 +72,11 @@ export default defineComponent({
                   <DataCofigNew />
                 </div>
               </NTabPane>
+              <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
+                <div class={' h-full shrink'}>
+                  <FormulaConfig />
+                </div>
+              </NTabPane>
               {/* <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <Connect />
@@ -108,28 +115,8 @@ export default defineComponent({
             <KeyBorad />
           </div> */}
 
-          <div class={'w-full h-20 flex justify-end items-center mt-auto shrink-0 border-0 border-t border-solid border-gray-200 '}>
-            <NButton secondary strong={true} onClick={cancel} type="primary" size={'large'} class={'h-16 w-[20vw] shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
-              v-slots={{
-                // icon: () => {
-                //   return <NIcon class={'text-3xl'}>
-                //     {ctx.slots.icon && ctx.slots.icon()}
-                //   </NIcon>
-                // }
-              }} >
-              <span class={'text-2xl ml-2'}>返回</span>
-            </NButton>
-            {/* <NButton secondary strong={true} onClick={confirm} type="primary" size={'large'} class={'h-16 w-[20vw]  shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
-              v-slots={{
-                // icon: () => {
-                //   return <NIcon class={'text-3xl'}>
-                //     {ctx.slots.icon && ctx.slots.icon()}
-                //   </NIcon>
-                // }
-              }} >
-              <span class={'text-2xl ml-2'}>应用</span>
-            </NButton> */}
-          </div>
+          <AbsBottomBtn cancelFn={cancel} />
+
         </div>
       )
     }

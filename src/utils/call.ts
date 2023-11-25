@@ -10,11 +10,16 @@ const resultProcess = (res: ActualResult) => {
   }
 }
 
-export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult> | string, data?: any) => {
-  if (typeof cb === 'string') {
-    cb = data ? window.spcJsBind[cb](data) : window.spcJsBind[cb]()
-  }
+export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult> | string, data?: any, multi: boolean = false) => {  //multi:是否支持多个参数
+
   return window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
+    if (typeof cb === 'string') {
+      if (data) {
+        cb = multi ? window.spcJsBind[cb](...data) : window.spcJsBind[cb](data)
+      } else {
+        cb = window.spcJsBind[cb]()
+      }
+    }
     if (typeof cb === 'function') {
       return cb()
     } else {
@@ -22,6 +27,9 @@ export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult
     }
   }).then((res: ActualResult) => {
     return resultProcess(res)
+  }).catch((err: any) => {
+    console.error(err)
+    window.$message.error(err)
   })
 }
 

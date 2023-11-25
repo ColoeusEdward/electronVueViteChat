@@ -34,8 +34,14 @@ enum callFnName {
   getNewSerialNo = "getNewSerialNo",
   getFullCollectPoints = "getFullCollectPoints",
   getCpkData = "getCpkData",
+  startSpcSystem = 'startSpcSystem',
+  closeApp = 'closeApp',
+  showDevTools = 'showDevTools',
+  closeSpcSystem = `closeSpcSystem`,
+  startCollect = `startCollect`,
+  saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys'
 }
 
 export {
-  rootPathKey, PUBLISH_PROJECT_KEY,callFnName
+  rootPathKey, PUBLISH_PROJECT_KEY, callFnName
 }

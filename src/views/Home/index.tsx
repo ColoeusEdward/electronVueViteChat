@@ -15,6 +15,10 @@ import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
 import { ActualResult } from "~/me";
+import { callFnName } from "@/utils/enum";
+import { callSpc } from "@/utils/call";
+import { watchOnce } from "@vueuse/core";
+import ProductHistory from "./product/productHistory";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -71,13 +75,15 @@ export default defineComponent({
 
     }
     const startSpcSys = () => {
-      window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
-        window.spcJsBind.startSpcSystem().then(function (actualResult:ActualResult) {
-          console.info(actualResult);
-        });
+      callSpc(callFnName.startSpcSystem).then((res: ActualResult) => {
+        console.log("🚀 ~ file: index.tsx:78 ~ startSpcSys ~ res:", res)
       })
+      // window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
+      //   window.spcJsBind.startSpcSystem().then(function (actualResult:ActualResult) {
+      //     console.info(actualResult);
+      //   });
+      // })
     }
-    startSpcSys()
 
     store.setIsLowRes(isLowResolution())
     window.addEventListener('blur', handleBlur)
@@ -86,9 +92,14 @@ export default defineComponent({
 
     onMounted(() => {
       loopGetData()
+      sleep(1000).then(() => {
+        if (window.CefSharp) {
+          startSpcSys()
+        }
+      })
+
 
     })
-
     onUnmounted(() => {
       window.removeEventListener('blur', handleBlur)
       window.removeEventListener('focus', handleFocus)
@@ -139,6 +150,9 @@ export default defineComponent({
           <BtmBtn />
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}
+          </Transition>
+          <Transition name='full-pop'>
+            {configStore.productHistoryShow && <ProductHistory />}
           </Transition>
         </div>
       )

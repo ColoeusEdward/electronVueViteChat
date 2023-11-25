@@ -6,6 +6,8 @@ import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled } from '
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useConfigStore } from "@/store/config";
+import { callSpc } from "@/utils/call";
+import { callFnName } from "@/utils/enum";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -45,8 +47,8 @@ export default defineComponent({
       // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [
-      { label: '产品表', value: 'product' },
-      { label: '设定产品表', value: 'setproduct' },
+      { label: '产品历史记录', value: 'productHistory' },
+      // { label: '设定产品表', value: 'setproduct' },
     ]
     const chartOption = [
       { label: '开始', value: 'start' },
@@ -63,6 +65,13 @@ export default defineComponent({
         datav: () => {
           window.open('datav/index.html')
         },
+        shutdown:() => {
+          callSpc(callFnName.closeApp).then(() => {
+          })
+        },
+        productHistory:() => {
+          configStore.setProductHistoryShow(true)
+        }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
         // }

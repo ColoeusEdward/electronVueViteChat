@@ -7,6 +7,7 @@ import { CategoryDataEntity, CategoryNodeEntity, DataConfigEntity } from "~/me";
 import { isCategoryDataEntity, isCategoryNodeEntity } from "@/utils/typeUtil";
 import { AlarmTypeList, dataTypeEnumList, defaultDataConfigForm, UnilateralList } from "./enum";
 import { useDataCfgInnerDataStore } from "./innerData";
+import { ajaxPromiseAll } from "@/utils/utils";
 
 export default defineComponent({
   name: 'ConfigRight',
@@ -25,14 +26,14 @@ export default defineComponent({
         { type: "numInput", label: "排序", prop: "SortNum", min: 0, width: 24 },
         { type: "numInput", label: "精度", prop: "Precision", min: 0, width: 24 },
         { type: 'divider', label: '数据范围', width: 24 },
-        { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList,  width: 24 },
+        { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 24 },
         { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 24 },
         { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 24 },
-        { type: 'switch', label: '启用状态', prop: 'State',checkedValue:1,uncheckedValue:0, width: 24 }, //0,1
+        { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 24 }, //0,1
 
       ] as formListItem[],
       hideBtn: false,
-      noLargeBtn: true,
+      noLargeBtn: false,
       btnStyleStr: `margin-right: 8px;margin-bottom:8px;`,
 
       submitFn: (form: DataConfigEntity) => {
@@ -51,6 +52,8 @@ export default defineComponent({
     const getForm = (selectItem?: typeof innerData.selectItem) => {
       let item = selectItem || innerData.selectItem
       if (!item) return
+      // ajaxPromiseAll<[DataConfigEntity[], CategoryNodeEntity[]]>([,
+      //   callSpc(callFnName.getCategoryNodes)])
       callSpc(callFnName.getDataConfigs).then((list: DataConfigEntity[]) => {
         console.log("🚀 ~ file: ConfigRight.tsx:44 ~ callSpc ~ list:", list)
         let res = {} as DataConfigEntity | undefined
@@ -63,8 +66,24 @@ export default defineComponent({
           res && (formCfg.form = { ...res })
         }
         console.log("🚀 ~ file: ConfigRight.tsx:63 ~ callSpc ~ res:", res)
-        if (!res) {
-          formCfg.form = { ...defaultDataConfigForm } as DataConfigEntity
+        if (!res) //没找到dataConfg,form就设为默认值
+          return callSpc(callFnName.getCategoryNodes)
+        else
+          return new Promise((resolve) => {
+            resolve(false)
+          })
+      }).then((nodeList:CategoryNodeEntity[]|false) => {
+        if (nodeList === false) return
+        let node = {} as CategoryNodeEntity | undefined | null
+        if (isCategoryDataEntity(item!)) {
+          let cid = item.CategoryNodeId
+          node = nodeList.find(e => e.GId == cid)
+        } else {
+          node = item
+        }
+        formCfg.form = { ...defaultDataConfigForm } as DataConfigEntity
+        if (node) {
+          formCfg.form.Name = node.NodeName   //自动把节点的名字同步到config上
         }
       })
     }

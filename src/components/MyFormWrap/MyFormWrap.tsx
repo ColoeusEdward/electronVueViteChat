@@ -21,7 +21,7 @@ export interface formListItem {
   defaultValue?: string | number | boolean,
   text?: string,
   renderComp?: () => JSX.Element,   //自由渲染内容
-  radioList: { value: string | number, label: string }[],
+  radioList?: { value: string | number, label: string }[],
   min?: number,
   max?: number,
   radioType?: 'btn' | 'def'
