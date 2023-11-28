@@ -80,8 +80,8 @@ export default defineComponent({
     }
     getTData()
 
+    
     const confirm = (list: Record<string, string>[]) => {
-
 
     }
     const buildRowProp = (rowData: any, index: number) => {
@@ -148,7 +148,7 @@ export default defineComponent({
 
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#watchDataTableCon'} trapFocus={false} height={'100%'} blockScroll={false}>
             <NDrawerContent title={''}>
-              <RealTimeDataAdd v-model:show={formShow.value} onConfirm={confirm} getFn={getTData} realTimeData={tdata.value} tableName={'watchData'} />
+              <RealTimeDataAdd v-model:show={formShow.value}  getFn={getTData} realTimeData={tdata.value} tableName={'watchData'} />
             </NDrawerContent>
           </NDrawer>
         </div>

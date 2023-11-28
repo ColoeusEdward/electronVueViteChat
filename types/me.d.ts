@@ -163,3 +163,26 @@ type ProductLogEntity = {
   Length?: number;
   CreateTime: string;
 }
+
+type ProductStatisticEntity = {
+  GId?: string;
+  ProductNo: string;
+  Name: string;
+  Unit: string;
+  Standard: number;
+  USL: number;
+  LSL: number;
+  Average: number;
+  Max: number;
+  Min: number;
+  StdDeviation: number;
+  Ca: number;
+  Cp: number;
+  Cpk: number;
+}
+
+type CollectPointModel = {
+  Intime: Date;
+  Index: number;
+  Value: number;
+}

@@ -140,7 +140,7 @@ export default defineComponent({
 
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#realTimeDataTableCon'} trapFocus={false} height={'100%'} blockScroll={false}>
             <NDrawerContent title={''}>
-              <RealTimeDataAdd v-model:show={formShow.value} onConfirm={confirm} getFn={getTData} realTimeData={tdata.value} />
+              <RealTimeDataAdd v-model:show={formShow.value}  getFn={getTData} realTimeData={tdata.value} />
             </NDrawerContent>
           </NDrawer>
         </div>

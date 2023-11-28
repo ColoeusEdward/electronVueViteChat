@@ -71,28 +71,28 @@ const settingMain = (msg: any) => {
 
   mainHeaderShow.value = msg;
 };
-const saveRootPath = () => {
-  window.ipc.invoke('getRootPath').then((res: any) => {
-    console.log(res, 'res',import.meta.env);
-    let url = ''
-    const envMap:Record<string, () => void> = {
-      'development': () => {
-        url = `${res}/../..`
-      },
-      'default': () => {
-        url = `${res}/../..`
-      }
-    }
-    envMap[import.meta.env.MODE] ? envMap[import.meta.env.MODE]() :envMap.default() 
-    toolStore.setRootPath(url)
-    try {
-      localStorage.setItem(rootPathKey, url)
-    }catch (error) {
-      console.error(error)
-    }
-    console.log("🚀 ~ file: App.vue:88 ~ window.ipc.invoke ~ url:", url)
-  });
-}
+// const saveRootPath = () => {
+//   window.ipc.invoke('getRootPath').then((res: any) => {
+//     console.log(res, 'res',import.meta.env);
+//     let url = ''
+//     const envMap:Record<string, () => void> = {
+//       'development': () => {
+//         url = `${res}/../..`
+//       },
+//       'default': () => {
+//         url = `${res}/../..`
+//       }
+//     }
+//     envMap[import.meta.env.MODE] ? envMap[import.meta.env.MODE]() :envMap.default() 
+//     toolStore.setRootPath(url)
+//     try {
+//       localStorage.setItem(rootPathKey, url)
+//     }catch (error) {
+//       console.error(error)
+//     }
+//     console.log("🚀 ~ file: App.vue:88 ~ window.ipc.invoke ~ url:", url)
+//   });
+// }
 // saveRootPath()
 </script>
 

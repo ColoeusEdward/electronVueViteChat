@@ -36,6 +36,7 @@ export const useConfigStore = defineStore('config', {
     return {
       isShowConfig: false,
       productHistoryShow:false,
+      productLogShow:false,
       connect: localConnect as connectConfig,
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
@@ -114,6 +115,9 @@ export const useConfigStore = defineStore('config', {
     },
     setProductHistoryShow(value: boolean){
       this.productHistoryShow = value
+    },
+    setProductLogShow(value: boolean){
+      this.productLogShow = value
     }
 
   }

@@ -42,12 +42,13 @@ export default defineComponent({
       { label: '运行日志', value: 'log' },
       { label: '诊断程序', value: 'diag' },
       { label: '趋势图/打印机', value: 'chartAndprint' },
-      { label: '关机', value: 'shutdown' },
+      { label: '退出', value: 'shutdown' },
       // { label: '组态test', value: 'datav' },
       // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [
       { label: '产品历史记录', value: 'productHistory' },
+      // { label: '产品日志', value: 'productLog' },
       // { label: '设定产品表', value: 'setproduct' },
     ]
     const chartOption = [
@@ -65,25 +66,29 @@ export default defineComponent({
         datav: () => {
           window.open('datav/index.html')
         },
-        shutdown:() => {
+        shutdown: () => {
           callSpc(callFnName.closeApp).then(() => {
           })
         },
-        productHistory:() => {
+        productHistory: () => {
           configStore.setProductHistoryShow(true)
+        },
+        productLog: () => {
+          configStore.setProductLogShow(true)
+
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
         // }
       }
       valueMap[value] && valueMap[value]()
-      
+
     }
     const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },
       { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
-      { option: chartOption, name: '趋势图', icon: <AreaChartOutlined /> },
-      { option: maintainOption2.value, name: '屏幕打印', icon: <LocalPrintshopFilled /> },
+      { option: chartOption, name: 'test', icon: <AreaChartOutlined /> },
+      { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     ])
 
 

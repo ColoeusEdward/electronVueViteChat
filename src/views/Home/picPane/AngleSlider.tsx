@@ -86,6 +86,7 @@ export default defineComponent({
       return (
         <div class={'absolute right-4 bottom-8 h-[10vh] w-[10vh] flex flex-col items-center justify-center'}>
           <span class={'text-lg font-medium mb-2'}>扭转</span>
+          {/* @ts-ignore */}
           <Slider v-model={angle.value} color="#456e9c" track-color="#FEFEFE" orientation={'circular'} max={359} min={0} onDragEnd={handleDragEnd} />
 
           <span class={'absolute top-1/2 left-1/2  -ml-8 w-16 h-8 flex items-center justify-center text-lg font-medium shadow-md rounded-lg cursor-pointer border-0 border-t border-solid border-t-gray-200'} onClick={valueClick} >{angle.value + '°'}</span>

@@ -17,8 +17,8 @@ import ProductLine from "./productLine";
 import { ActualResult } from "~/me";
 import { callFnName } from "@/utils/enum";
 import { callSpc } from "@/utils/call";
-import { watchOnce } from "@vueuse/core";
 import ProductHistory from "./product/productHistory";
+import Curcev from "./curcev";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -36,7 +36,7 @@ export default defineComponent({
       backgroundSize: 'cover',
       color: '#fff'
     }
-    const curTabValue = ref('pic')
+    const curTabValue = ref('curcev')
     const commonStyle = {
       width: '10vw', border: 'none', fontSize: '20px',
       borderBottom: '3px solid #58595a'
@@ -76,7 +76,7 @@ export default defineComponent({
     }
     const startSpcSys = () => {
       callSpc(callFnName.startSpcSystem).then((res: ActualResult) => {
-        console.log("🚀 ~ file: index.tsx:78 ~ startSpcSys ~ res:", res)
+        console.log(`startSpcSystem `,);
       })
       // window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
       //   window.spcJsBind.startSpcSystem().then(function (actualResult:ActualResult) {
@@ -113,13 +113,18 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
-            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-2/3'} onUpdateValue={handleTabChange} defaultValue={'pic'} >
-              <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
+            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
+              <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
+                <div class={' h-full'}>
+                  <Curcev />
+                </div>
+              </NTabPane>
+              {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
                   <PicPane />
                 </div>
-              </NTabPane>
-              <NTabPane displayDirective="if" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
+              </NTabPane> */}
+              {/* <NTabPane displayDirective="if" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
                 <div class={'h-full'}>
                   <Trend />
                 </div>
@@ -128,8 +133,8 @@ export default defineComponent({
                 <div class={'h-full'}>
                   <Statistical />
                 </div>
-              </NTabPane>
-              <NTabPane displayDirective="if" name="productLine" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'productLine' ? activeStyle : {} } }}>
+              </NTabPane> */}
+              {/* <NTabPane displayDirective="if" name="productLine" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'productLine' ? activeStyle : {} } }}>
                 <div class={'h-full'}>
                   <ProductLine />
                 </div>
@@ -139,11 +144,11 @@ export default defineComponent({
               </NTabPane>
               <NTabPane displayDirective="if" name="print" tab="打印机" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'print' ? activeStyle : {} } }}>
                 Hey Jude
-              </NTabPane>
+              </NTabPane> */}
             </NTabs>
-            <div class={'w-1/3'}>
+            {/* <div class={'w-1/3'}>
               <RightValueBlock />
-            </div>
+            </div> */}
           </div>
           {/* </KeepAlive> */}
           {/* <GlobalKeyBoard /> */}
@@ -154,6 +159,9 @@ export default defineComponent({
           <Transition name='full-pop'>
             {configStore.productHistoryShow && <ProductHistory />}
           </Transition>
+          {/* <Transition name='full-pop'>
+            {configStore.productLogShow && <ProductLog />}
+          </Transition> */}
         </div>
       )
     }

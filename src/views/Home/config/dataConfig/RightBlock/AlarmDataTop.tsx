@@ -50,7 +50,7 @@ export default defineComponent({
       },
       {
         key: 'op', title: '操作', width: 160, render(row) {
-          return <TableOpCol e delFn={() => { delRow(row) }} />
+          return <TableOpCol delFn={() => { delRow(row) }} />
         }
       },
     ]

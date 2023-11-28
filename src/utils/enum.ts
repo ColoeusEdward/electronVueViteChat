@@ -39,7 +39,7 @@ enum callFnName {
   showDevTools = 'showDevTools',
   closeSpcSystem = `closeSpcSystem`,
   startCollect = `startCollect`,
-  saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys'
+  saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys',stopCollect="stopCollect"
 }
 
 export {

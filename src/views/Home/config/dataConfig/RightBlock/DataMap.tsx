@@ -119,7 +119,9 @@ export default defineComponent({
           <NDrawer v-model:show={formShow.value} placement={'bottom'} to={'#dataMapTableCon'} trapFocus={false} height={'26vh'} blockScroll={false}>
             <NDrawerContent title={''}>
               {
+                // @ts-ignore
                 dataConfigPartStore.checkedRowItem?.ProtoType == 'Modbus-TCP-Slave' ? <DataMapForm form={form.value} v-model:show={formShow.value} getFn={getTData} /> :
+                // @ts-ignore
                 <DataMapAutoForm form={form.value} v-model:show={formShow.value} getFn={getTData} />
               }
             </NDrawerContent>

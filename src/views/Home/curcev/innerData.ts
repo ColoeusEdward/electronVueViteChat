@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
-import { ProductHistoryEntity } from "~/me";
 
 
-export const useProductHistoryInnerDataStore = defineStore('ProductHistoryInnerData', {
+export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   /**
    * 存储全局状态
    * 1.必须是箭头函数: 为了在服务器端渲染的时候避免交叉请求导致数据状态污染
@@ -10,9 +9,7 @@ export const useProductHistoryInnerDataStore = defineStore('ProductHistoryInnerD
   */
   state: () => {
     return {
-      curRow: null as ProductHistoryEntity | null,
-      curRowKey: [] as string[],
-      
+      isGetting: false, //是否开始采集
     }
   },
   /**
@@ -25,12 +22,8 @@ export const useProductHistoryInnerDataStore = defineStore('ProductHistoryInnerD
    * 编辑业务逻辑  类似于methods
    */
   actions: {
-    setCurRow(row: ProductHistoryEntity | null) {
-      this.curRow = row
-    },
-    setCurRowKey(key: string[]) {
-      this.curRowKey = key
-    },
-    
+    setIsGetting(val: boolean) {
+      this.isGetting = val
+    }
   }
 })

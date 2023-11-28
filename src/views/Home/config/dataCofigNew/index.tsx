@@ -141,6 +141,7 @@ export default defineComponent({
     }
     const initDatConfig = () => {
       callSpc(callFnName.initDataConfig).then(() => {
+        msg.success('初始化完毕')
         getTreeData()
       })
     }
