@@ -1,4 +1,4 @@
-import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, useMessage } from "naive-ui";
+import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, NTooltip, useMessage } from "naive-ui";
 import { computed, defineComponent, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
@@ -6,7 +6,7 @@ import { callFnName } from "@/utils/enum";
 import { CollectPointModel, CpkModel, DataConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
-import { PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
+import { InfoOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import CurcevChartRow from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
@@ -173,11 +173,11 @@ export default defineComponent({
               </NButton>
             </NDropdown > */}
             <div class='ml-auto  h-16' >
-              <NSpace>
+              {/* <NSpace>
                 {nextShow.value && <NButton onClick={nextPage} size={'large'} >上一页</NButton>}
                 {prevShow.value && <NButton onClick={prevPage} size={'large'} >下一页</NButton>}
 
-              </NSpace>
+              </NSpace> */}
               <img class={'h-full'} src={niotLogo} />
 
             </div>
@@ -192,7 +192,14 @@ export default defineComponent({
                 </span>
                 <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span>
               </div>
-              <div class={' grow p-2 h-full flex flex-col'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
+              <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
+                <div class={'absolute top-2 right-2'}>
+                  <NTooltip v-slots={{
+                    trigger: () => <NIcon class={'text-lg'}><InfoOutlined /></NIcon>
+                  }}>
+                      CPK需要等待采集一段时间才会有数据
+                  </NTooltip>
+                </div>
                 <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{innerData.curDataCfgEntity?.Unit}</span>
               </div>
             </div>

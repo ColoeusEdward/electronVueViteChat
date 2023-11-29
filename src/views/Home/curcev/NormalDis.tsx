@@ -16,11 +16,11 @@ export default defineComponent({
         }
       })
     })
-    const handleSelect = (val:string) => {
-    getNorDis(val)
+    const handleSelect = (val: string) => {
+      getNorDis(val)
     }
-    const getNorDis = (id:string) => {
-      callSpc(callFnName.getNormalDistribution,id).then((res:DistanceModelType) => {
+    const getNorDis = (id: string) => {
+      callSpc(callFnName.getNormalDistribution, innerData.curDataCfgEntity?.GId).then((res: DistanceModelType) => {
         console.log("🚀 ~ file: NormalDis.tsx:18 ~ getNorDis ~ res:", res)
       })
     }
@@ -28,9 +28,10 @@ export default defineComponent({
     return () => {
       return (
         <div class={''}>
-          <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
-            <NButton>正态分布</NButton>
-          </NDropdown>
+          {/* <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
+            
+          </NDropdown> */}
+          <NButton onClick={getNorDis} >正态分布</NButton>
         </div>
       )
     }

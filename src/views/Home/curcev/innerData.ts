@@ -25,7 +25,8 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
         name: string;
         title: string;
         value: string;
-      } | null  //当前主屏展示的cpk 选项option
+      } | null,  //当前主屏展示的cpk 选项option
+      normalDisShow:false,
     }
   },
   /**
@@ -66,6 +67,9 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       value: string;
     } | null) {
       this.curCpkKey = val
+    },
+    setNormalDisShow(val:boolean){
+      this.normalDisShow = val
     }
   }
 })
