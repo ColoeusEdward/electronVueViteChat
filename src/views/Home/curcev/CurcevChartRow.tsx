@@ -30,14 +30,12 @@ export default defineComponent({
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
     const innerData = useCurcevInnerDataStore()
-    const realtimeStore = useRealTimeStore()
-    const trendStore = useTrendStore()
+
     let myChart: echarts.ECharts
     let unit = `mm`
     const dataSourceItem = computed(() => {
       return props.dataSourceItem
     })
-    let dataItem = realtimeStore.realData[`${dataSourceItem.value?.parent}Data`] || {}
     const initEchart = () => {
       let ele = document.getElementById('trendChart' + props.i)
       if (!ele) return
@@ -127,16 +125,19 @@ export default defineComponent({
       // 绘制图表
       myChart.setOption(option);
     }
-    const { realData, productLength } = storeToRefs(realtimeStore)
 
     const loopGet = () => {
       if (!myChart || !innerData.isGetting || !props.dataConfig) return
-      callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId).then((res: CollectPointModel[]) => {
+      callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
-        let list = res.slice(-innerData.maxDataNum).map(e => {
+        // res.slice(-innerData.maxDataNum)
+        if (props.i == 0) {
+          innerData.setCurDataLength(res.length)
+        }
+        let list = res.map(e => {
           return [e.Intime, e.Value]
         })
-        myChart.setOption({
+        let opt = {
           title: {
             //@ts-ignore
             text: props.dataConfig?.Name,
@@ -148,8 +149,12 @@ export default defineComponent({
             showSymbol: false,
             data: list,
             smooth: false,
+            // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
-        });
+        }
+            // console.log("🚀 ~ file: CurcevChartRow.tsx:153 ~ callSpc ~ res.length:", res.length)
+            // console.log("🚀 ~ file: CurcevChartRow.tsx:155 ~ callSpc ~ opt:", opt.series.sampling)
+        myChart.setOption(opt);
         return sleep(1000)
       }).then(() => {
         loopGet()

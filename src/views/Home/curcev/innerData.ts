@@ -13,7 +13,10 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   state: () => {
     return {
       isGetting: false, //是否开始采集
-      maxDataNum: typeof localMaxDataNum == 'number' ? localMaxDataNum : 100000 //最大显示数据量
+      maxDataNum: typeof localMaxDataNum == 'number' ? localMaxDataNum : 100000, //最大显示数据量
+      startTime:Date.now(),
+      samplingNum:1000, //降采样临界数据量
+      curDataLength:0
     }
   },
   /**
@@ -32,6 +35,12 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     setMaxDataNum(val: number) {
       this.maxDataNum = val
       setLocalStorage(maxDataNumLocalKey, val)
+    },
+    setStartTime(val: number) {
+      this.startTime = val
+    },
+    setCurDataLength(val: number) {
+      this.curDataLength = val
     }
   }
 })

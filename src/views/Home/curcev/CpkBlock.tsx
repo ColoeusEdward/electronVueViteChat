@@ -60,9 +60,9 @@ export default defineComponent({
           {
             commonData.show && 
             <NScrollbar>
-              <NSpace>
+              <NSpace size={4}>
                 {modelList.value.map((e) => {
-                  return <div class={'p-2 hover:bg-gray-100'} title={e.title} >
+                  return <div class={'p-2 hover:bg-gray-100 shadow-md rounded-md'} title={e.title} >
                     <div>{e.name}</div>
                     <div class={'w-fit border border-solid border-gray-600 rounded-sm px-1'}  >{e.value}</div>
                   </div>

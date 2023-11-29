@@ -1,4 +1,4 @@
-import { NButton, NDropdown, NIcon, NInput, NInputNumber, NSpace, useMessage } from "naive-ui";
+import { NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, useMessage } from "naive-ui";
 import { computed, defineComponent, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
@@ -36,21 +36,22 @@ export default defineComponent({
       })
     }
     const startCollect = () => {
-      if (commonData.cfgDataList.length == 0) {
-        getAllActiveConfigData()
-      }
-      callSpc(callFnName.startCollect).then(() => {
+      refresh().then(() => {
+        return callSpc(callFnName.startCollect)
       })
-      innerData.setIsGetting(true)
+        .then(() => {
+          innerData.setIsGetting(true)
+
+        })
     }
     const stopCollect = () => {
       callSpc(callFnName.stopCollect).then(() => {
+        innerData.setIsGetting(false)
       })
-      innerData.setIsGetting(false)
     }
     const refresh = () => {
-      getAllActiveConfigData().then(() => {
-        msg.success('配置已刷新')
+      return getAllActiveConfigData().then(() => {
+        // msg.success('配置已刷新')
       })
     }
     const nextPage = () => {
@@ -66,14 +67,14 @@ export default defineComponent({
       return commonData.curPage > 0
     })
     onMounted(() => {
-      getAllActiveConfigData()
+      // getAllActiveConfigData()
     })
     return () => {
       return (
         <div class={'w-full h-full pt-2 shrink flex flex-col relative'}>
           {/* <CpkBlock /> */}
           <div class={'flex pl-2'}>
-            <NSpace>
+            <NSpace align={'center'}>
               <div></div>
               {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
@@ -85,13 +86,18 @@ export default defineComponent({
               }
               <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
               <div class={'flex items-center'} >
+                <span class={'text-md w-fit mr-2'}>起始时间点</span>
+                <NDatePicker v-model:value={innerData.startTime} type={'datetime'} />
+              </div>
+
+              {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2'}>最大显示数据量</span>
-                <NInputNumber value={innerData.maxDataNum} onUpdateValue={(val:number) => {
+                <NInputNumber value={innerData.maxDataNum} style={{width:'120px'}} onUpdateValue={(val: number) => {
                   innerData.setMaxDataNum(val)
                 }} showButton={false} v-slots={{
                   'suffix': () => <span class={'text-md'}>条</span>
                 }} ></NInputNumber>
-              </div>
+              </div> */}
             </NSpace>
 
             {/* < NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'}  nodeProps={commonData.dropDowmProps} >

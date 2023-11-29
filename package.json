@@ -12,7 +12,7 @@
         "start": "kill-port 3920 && concurrently -k \"vite\" \"wait-on tcp:3920 && npm-run-all watch\"",
         "watch": "tsc-watch --noClear -p tsconfig.e.json --onSuccess \"npm-run-all start:ect\"",
         "start:ect": "cross-env NODE_ENV=development electron ./output/build/main.js",
-        "build:vue": "vue-tsc --noEmit && vite build ",
+        "build:vue": "vue-tsc --noEmit && vite build && cd ./output/dist && cp index.html D:/NTCode/NTSPC_CEF/NT.SPC/NT.SPC/wwwroot && echo 复制完成",
         "build:tsc": "tsc -p tsconfig.e.json",
         "build:allold": "electron-builder --mac --windows",
         "build:all": "electron-builder --windows",

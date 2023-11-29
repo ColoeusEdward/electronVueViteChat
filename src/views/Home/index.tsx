@@ -91,7 +91,7 @@ export default defineComponent({
     document.addEventListener('focusin', handleAllInputFocuse);
 
     onMounted(() => {
-      loopGetData()
+      // loopGetData()
       sleep(1000).then(() => {
         if (window.CefSharp) {
           startSpcSys()
