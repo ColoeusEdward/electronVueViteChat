@@ -24,7 +24,7 @@ export default defineComponent({
     }
 
     const loopGet = () => {
-      if (!innerData.isGetting || !commonData.show || !props.dataConfig) return
+      if (!innerData.isGetting  || !props.dataConfig) return
       callSpc(callFnName.getCpkData, props.dataConfig.GId).then((res: CpkModel) => {
         commonData.cpkdata = res
         innerData.setCurCpk(res)
@@ -50,7 +50,7 @@ export default defineComponent({
       }
       return list
     })
-    watch(() => innerData.isGetting && commonData.show, (val) => {
+    watch(() => innerData.isGetting, (val) => {
       if (val) {
         loopGet()
       }

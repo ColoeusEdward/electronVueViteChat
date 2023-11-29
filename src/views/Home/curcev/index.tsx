@@ -58,9 +58,9 @@ export default defineComponent({
         innerData.setIsGetting(false)
       })
     }
-    const refresh = () => {
+    const refresh = (e?:any) => {
       return getAllActiveConfigData().then(() => {
-        // msg.success('配置已刷新')
+        e && msg.success('配置已刷新')
       })
     }
     const nextPage = () => {
@@ -193,13 +193,13 @@ export default defineComponent({
                 <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span>
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
-                <div class={'absolute top-2 right-2'}>
+                {/* <div class={'absolute top-2 right-2'}>
                   <NTooltip v-slots={{
                     trigger: () => <NIcon class={'text-lg'}><InfoOutlined /></NIcon>
                   }}>
                       CPK需要等待采集一段时间才会有数据
                   </NTooltip>
-                </div>
+                </div> */}
                 <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{innerData.curDataCfgEntity?.Unit}</span>
               </div>
             </div>
