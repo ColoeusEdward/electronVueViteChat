@@ -1,7 +1,7 @@
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { NButton, NDropdown } from "naive-ui";
-import { computed, defineComponent } from "vue";
+import { NButton, NDropdown, NSpace } from "naive-ui";
+import { computed, defineComponent, Transition } from "vue";
 import { useCurcevInnerDataStore } from "./innerData";
 
 export default defineComponent({
@@ -23,8 +23,13 @@ export default defineComponent({
       callSpc(callFnName.getNormalDistribution, innerData.curDataCfgEntity?.GId).then((res: DistanceModelType) => {
         console.log("🚀 ~ file: NormalDis.tsx:18 ~ getNorDis ~ res:", res)
       })
+      innerData.setNormalDisShow(true)
+      innerData.setIsGetting(false)
     }
-
+    const back = () => {
+      innerData.setNormalDisShow(false)
+      innerData.setIsGetting(true)
+    }
     return () => {
       return (
         <div class={''}>
@@ -32,6 +37,19 @@ export default defineComponent({
             
           </NDropdown> */}
           <NButton onClick={getNorDis} >正态分布</NButton>
+          <Transition name={'full-pop'}>
+            {
+              innerData.normalDisShow && <div class={' absolute w-full h-full bg-white top-0 left-0 z-10'}>
+                <div class={'px-2 pt-2'}>
+                  <NSpace>
+                    <NButton class={'my-large-btn'} size={'large'} onClick={back} >返回</NButton>
+                  </NSpace>
+                </div>
+              </div>
+            }
+
+          </Transition>
+
         </div>
       )
     }
