@@ -10,6 +10,7 @@ import { useCurcevInnerDataStore } from "./innerData";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { CollectPointModel, DataConfigEntity } from "~/me";
+import CpkBlock from "./CpkBlock";
 
 export default defineComponent({
   name: 'CurcevChartRow',
@@ -119,7 +120,7 @@ export default defineComponent({
         grid: {
           right: '2%',
           left: '7%',
-          top:'30px'
+          top: '30px'
         }
       }
 
@@ -130,10 +131,10 @@ export default defineComponent({
 
     const loopGet = () => {
       if (!myChart || !innerData.isGetting || !props.dataConfig) return
-      callSpc(callFnName.getFullCollectPoints,props.dataConfig.GId).then((res: CollectPointModel[]) => {
+      callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId).then((res: CollectPointModel[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
-        let list = res.map(e => {
-          return [e.Intime,e.Value]
+        let list = res.slice(-innerData.maxDataNum).map(e => {
+          return [e.Intime, e.Value]
         })
         myChart.setOption({
           title: {
@@ -145,7 +146,7 @@ export default defineComponent({
             name: props.dataConfig?.Name,
             type: 'line',
             showSymbol: false,
-            data:list,
+            data: list,
             smooth: false,
           },
         });
@@ -155,8 +156,8 @@ export default defineComponent({
       })
     }
 
-    watch(() => innerData.isGetting,(val) => {
-      if(val){
+    watch(() => innerData.isGetting, (val) => {
+      if (val) {
         loopGet()
       }
     })
@@ -191,8 +192,10 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'h-1/3 shrink mt-2'} id={'trendChart' + props.i} >
-
+        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'}>
+          <CpkBlock dataConfig={props.dataConfig} />
+          <div class={' h-full w-full '} id={'trendChart' + props.i} >
+          </div>
         </div>
       )
     }

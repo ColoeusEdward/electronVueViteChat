@@ -1,6 +1,9 @@
+import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { defineStore } from "pinia";
+import { maxDataNumLocalKey } from "./enum";
 
-
+let localMaxDataNum = getLocalStorage(maxDataNumLocalKey)
+console.log("🚀 ~ file: innerData.ts:6 ~ localMaxDataNum:", localMaxDataNum,typeof localMaxDataNum == 'number' )
 export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   /**
    * 存储全局状态
@@ -10,6 +13,7 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   state: () => {
     return {
       isGetting: false, //是否开始采集
+      maxDataNum: typeof localMaxDataNum == 'number' ? localMaxDataNum : 100000 //最大显示数据量
     }
   },
   /**
@@ -24,6 +28,10 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   actions: {
     setIsGetting(val: boolean) {
       this.isGetting = val
+    },
+    setMaxDataNum(val: number) {
+      this.maxDataNum = val
+      setLocalStorage(maxDataNumLocalKey, val)
     }
   }
 })

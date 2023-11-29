@@ -186,3 +186,18 @@ type CollectPointModel = {
   Index: number;
   Value: number;
 }
+
+type CpkModel = {
+  Std: number;
+  Usl: number;
+  Lsl: number;
+  Avg: number;
+  Max: number;
+  Min: number;
+  Sd: number;
+  Ca: number;
+  Cp: number;
+  Cpk: number;
+  CpkU: number;
+  CpkL: number;
+}

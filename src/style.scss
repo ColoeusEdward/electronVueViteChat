@@ -32,6 +32,11 @@ body {
   font-size: 22px;
 }
 
+.left-side-ani{
+  
+  transition: left 0.3s ease;
+}
+
 .home-tab {
   .n-tabs-pane-wrapper {
     height: 100%;

@@ -1,5 +1,5 @@
-import { NButton, NDropdown, NIcon, NSpace, useMessage } from "naive-ui";
-import { defineComponent, reactive } from "vue";
+import { NButton, NDropdown, NIcon, NInput, NInputNumber, NSpace, useMessage } from "naive-ui";
+import { computed, defineComponent, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
@@ -8,6 +8,7 @@ import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
 import { PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import CurcevChartRow from "./CurcevChartRow";
+import CpkBlock from "./CpkBlock";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -18,6 +19,8 @@ export default defineComponent({
     const msg = useMessage()
     const commonData = reactive({
       cfgDataList: [] as DataConfigEntity[],
+      curPage: 0,
+      pageSize: 3,
       dropDowmProps: () => {
         return {
           style: {
@@ -32,7 +35,6 @@ export default defineComponent({
         commonData.cfgDataList = list
       })
     }
-    getAllActiveConfigData()
     const startCollect = () => {
       if (commonData.cfgDataList.length == 0) {
         getAllActiveConfigData()
@@ -51,9 +53,25 @@ export default defineComponent({
         msg.success('配置已刷新')
       })
     }
+    const nextPage = () => {
+
+    }
+    const prevPage = () => {
+
+    }
+    const nextShow = computed(() => {
+      return (commonData.curPage + 1) * commonData.pageSize < commonData.cfgDataList.length
+    })
+    const prevShow = computed(() => {
+      return commonData.curPage > 0
+    })
+    onMounted(() => {
+      getAllActiveConfigData()
+    })
     return () => {
       return (
-        <div class={'w-full h-full pt-2 shrink flex flex-col'}>
+        <div class={'w-full h-full pt-2 shrink flex flex-col relative'}>
+          {/* <CpkBlock /> */}
           <div class={'flex pl-2'}>
             <NSpace>
               <div></div>
@@ -66,6 +84,14 @@ export default defineComponent({
                 }} onClick={startCollect} >开始采集</NButton>
               }
               <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
+              <div class={'flex items-center'} >
+                <span class={'text-md w-fit mr-2'}>最大显示数据量</span>
+                <NInputNumber value={innerData.maxDataNum} onUpdateValue={(val:number) => {
+                  innerData.setMaxDataNum(val)
+                }} showButton={false} v-slots={{
+                  'suffix': () => <span class={'text-md'}>条</span>
+                }} ></NInputNumber>
+              </div>
             </NSpace>
 
             {/* < NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'}  nodeProps={commonData.dropDowmProps} >
@@ -75,12 +101,18 @@ export default defineComponent({
               </NButton>
             </NDropdown > */}
             <div class='ml-auto  h-16' >
+              <NSpace>
+                {nextShow.value && <NButton onClick={nextPage} size={'large'} >上一页</NButton>}
+                {prevShow.value && <NButton onClick={prevPage} size={'large'} >下一页</NButton>}
+
+              </NSpace>
               <img class={'h-full'} src={niotLogo} />
+
             </div>
           </div>
           <div class={'h-full pb-2 overflow-hidden flex-shrink'}>
             <div class={'w-full h-full'}>
-              {commonData.cfgDataList.map((e: DataConfigEntity, i) => {
+              {commonData.cfgDataList.slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize).map((e: DataConfigEntity, i) => {
                 return <CurcevChartRow i={i} dataSourceItem={{
                   "label": "直径(平均值)",
                   "key": "avg",
