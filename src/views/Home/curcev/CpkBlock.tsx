@@ -27,10 +27,14 @@ export default defineComponent({
       if (!innerData.isGetting || !commonData.show || !props.dataConfig) return
       callSpc(callFnName.getCpkData, props.dataConfig.GId).then((res: CpkModel) => {
         commonData.cpkdata = res
-        return sleep(10000)
+        innerData.setCurCpk(res)
+        return sleep(5000)
       }).then(() => {
         loopGet()
       })
+    }
+    const cpkChoose= (item:typeof modelList.value[0]) => {
+      innerData.setCurCpkKey(item)
     }
     const modelList = computed(() => {
       let list = Object.keys(commonData.cpkdata).map((e: string) => {
@@ -41,6 +45,9 @@ export default defineComponent({
           value: commonData.cpkdata[ee].toFixed(3)
         }
       })
+      if(!innerData.curCpkKey) {
+        innerData.setCurCpkKey(list[0])
+      }
       return list
     })
     watch(() => innerData.isGetting && commonData.show, (val) => {
@@ -60,9 +67,9 @@ export default defineComponent({
           {
             commonData.show && 
             <NScrollbar>
-              <NSpace size={4}>
+              <NSpace >
                 {modelList.value.map((e) => {
-                  return <div class={'p-2 hover:bg-gray-100 shadow-md rounded-md'} title={e.title} >
+                  return <div class={'p-2 hover:bg-gray-100 shadow-md rounded-md'} onClick={() => {cpkChoose(e)}} title={e.title} >
                     <div>{e.name}</div>
                     <div class={'w-fit border border-solid border-gray-600 rounded-sm px-1'}  >{e.value}</div>
                   </div>

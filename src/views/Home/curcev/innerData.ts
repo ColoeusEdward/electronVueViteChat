@@ -1,9 +1,10 @@
 import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { defineStore } from "pinia";
+import { CpkModel, DataConfigEntity } from "~/me";
 import { maxDataNumLocalKey } from "./enum";
 
 let localMaxDataNum = getLocalStorage(maxDataNumLocalKey)
-console.log("🚀 ~ file: innerData.ts:6 ~ localMaxDataNum:", localMaxDataNum,typeof localMaxDataNum == 'number' )
+console.log("🚀 ~ file: innerData.ts:6 ~ localMaxDataNum:", localMaxDataNum, typeof localMaxDataNum == 'number')
 export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   /**
    * 存储全局状态
@@ -14,9 +15,17 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     return {
       isGetting: false, //是否开始采集
       maxDataNum: typeof localMaxDataNum == 'number' ? localMaxDataNum : 100000, //最大显示数据量
-      startTime:Date.now(),
-      samplingNum:1000, //降采样临界数据量
-      curDataLength:0
+      startTime: Date.now(),
+      samplingNum: 1000, //降采样临界数据量
+      curDataLength: 0,
+      dataCfgList: [] as DataConfigEntity[],
+      curDataCfgEntity: null as DataConfigEntity | null | undefined, //当前数据源实体
+      curCpk: null as CpkModel | null,
+      curCpkKey: null as {
+        name: string;
+        title: string;
+        value: string;
+      } | null  //当前主屏展示的cpk 选项option
     }
   },
   /**
@@ -41,6 +50,22 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     },
     setCurDataLength(val: number) {
       this.curDataLength = val
+    },
+    setDataCfgList(val: DataConfigEntity[]) {
+      this.dataCfgList = val
+    },
+    setCurDataCfgEntity(val: DataConfigEntity | null | undefined) {
+      this.curDataCfgEntity = val
+    },
+    setCurCpk(val: CpkModel | null) {
+      this.curCpk = val
+    },
+    setCurCpkKey(val: {
+      name: string;
+      title: string;
+      value: string;
+    } | null) {
+      this.curCpkKey = val
     }
   }
 })

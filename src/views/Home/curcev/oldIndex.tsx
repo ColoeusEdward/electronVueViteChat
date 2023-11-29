@@ -3,7 +3,7 @@ import { computed, defineComponent, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { CollectPointModel, CpkModel, DataConfigEntity } from "~/me";
+import { CollectPointModel, DataConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
 import { PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
@@ -12,14 +12,12 @@ import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
 import { menuIdSplit, menuOptList, menuPropEnum } from "./enum";
 import { sleep } from "@/utils/utils";
-import { useMain } from "@/store";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
 
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
-    const store = useMain()
     innerData.isGetting = false
     const msg = useMessage()
     const commonData = reactive({
@@ -39,7 +37,7 @@ export default defineComponent({
         let list = res.filter((e: DataConfigEntity) => e.State == 1)
         commonData.cfgDataList = list
         innerData.setDataCfgList(list)
-        if (!innerData.curDataCfgEntity) {
+        if(!innerData.curDataCfgEntity){
           innerData.setCurDataCfgEntity(list[0])
         }
       })
@@ -75,55 +73,7 @@ export default defineComponent({
     const prevShow = computed(() => {
       return commonData.curPage > 0
     })
-    const menuOpt = computed(() => {
-      let opt = menuOptList
-      let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
-      sitem && (sitem.children = commonData.cfgDataList.map(e => {
-        return {
-          label: e.Name,
-          key: menuPropEnum.dataSource + menuIdSplit + e.GId,
-          trueKey: e.GId
-        }
-      }))
-
-      return opt
-    })
-    const handleSelect = (key: string) => {
-      let type = key.split(menuIdSplit)[0]
-      let trueKey = key.split(menuIdSplit)[1]
-      if (type == menuPropEnum.dataSource) {
-        let item = commonData.cfgDataList.find(e => e.GId == trueKey)
-        innerData.setCurDataCfgEntity(item)
-      }
-    }
-    const renderLabel: DropdownProps['renderLabel'] = (option) => {
-      let text = option.label
-      if (option.trueKey && innerData.curDataCfgEntity?.GId == option.trueKey) {
-        text += ' ✔️'
-      }
-
-      return (
-        <span>{text}</span>
-      )
-    }
-    const nodeProps = () => {
-      return {
-        style: {
-          minWidth: '14vh'
-        }
-      }
-    }
-    const curShowCpkValue = computed(
-      () => {
-        if (!innerData.curCpk) return 0
-        if (innerData.curCpkKey) {
-          let key = innerData.curCpkKey.name as keyof CpkModel
-          return innerData.curCpk[key]
-        } else {
-          return innerData.curCpk?.Avg
-        }
-      }
-    )
+    
     onMounted(() => {
       sleep(50).then(() => {
         refresh()
@@ -136,10 +86,6 @@ export default defineComponent({
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>
               <div></div>
-              <NDropdown options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
-                <NButton strong={true} type="primary" secondary size={'large'} class={'h-12 w-28 shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}>   <span class={'text-2xl'}>菜单</span>
-                </NButton>
-              </NDropdown>
               {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>
@@ -182,28 +128,9 @@ export default defineComponent({
 
             </div>
           </div>
-          <div class={'h-1/2 pb-2 px-2 relative'}>
-            {innerData.curDataCfgEntity && <CpkBlock dataConfig={innerData.curDataCfgEntity} />}
-
-            <div class={'h-full border-1 border-solid border-[#e4e4e5] shadow-inner flex'}>
-              <div class={'w-full h-full shrink py-1 px-2 flex justify-end items-center relative'}>
-                <span class={'absolute top-2 right-2 text-blue-500 text-lg'}>
-                  {innerData.curCpkKey?.title}
-                </span>
-                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span>
-              </div>
-              <div class={' grow p-2 h-full flex flex-col'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
-                <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{innerData.curDataCfgEntity?.Unit}</span>
-              </div>
-            </div>
-          </div>
-          {
-            innerData.curDataCfgEntity &&
-            <CurcevChartRow height="50%" i={0} dataConfig={innerData.curDataCfgEntity} />
-          }
 
 
-          {/* <div class={'h-full pb-2 overflow-hidden flex-shrink'}>
+          <div class={'h-full pb-2 overflow-hidden flex-shrink'}>
             <div class={'w-full h-full'}>
               {commonData.cfgDataList.slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize).map((e: DataConfigEntity, i) => {
                 return <CurcevChartRow i={i} dataSourceItem={{
@@ -213,7 +140,7 @@ export default defineComponent({
                 }} dataConfig={e} />
               })}
             </div>
-          </div> */}
+          </div>
         </div>
       )
     }

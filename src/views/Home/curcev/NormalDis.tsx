@@ -1,15 +1,36 @@
-import {  } from "naive-ui";
-import { defineComponent } from "vue";
+import { callSpc } from "@/utils/call";
+import { callFnName } from "@/utils/enum";
+import { NButton, NDropdown } from "naive-ui";
+import { computed, defineComponent } from "vue";
+import { useCurcevInnerDataStore } from "./innerData";
 
 export default defineComponent({
   name: 'NormalDis', //正态分布曲线
-  setup(props,ctx) {
-
+  setup(props, ctx) {
+    const innerData = useCurcevInnerDataStore()
+    const opt = computed(() => {
+      return innerData.dataCfgList.map(e => {
+        return {
+          label: e.Name,
+          key: e.GId
+        }
+      })
+    })
+    const handleSelect = (val:string) => {
+    getNorDis(val)
+    }
+    const getNorDis = (id:string) => {
+      callSpc(callFnName.getNormalDistribution,id).then((res:DistanceModelType) => {
+        console.log("🚀 ~ file: NormalDis.tsx:18 ~ getNorDis ~ res:", res)
+      })
+    }
 
     return () => {
       return (
-        <div class={'w-full h-full'}>
-         
+        <div class={''}>
+          <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
+            <NButton>正态分布</NButton>
+          </NDropdown>
         </div>
       )
     }

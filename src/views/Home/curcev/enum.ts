@@ -1,3 +1,5 @@
+import { DropdownProps } from "naive-ui";
+
 export const menuOpt = [
   {label:''}
 ]
@@ -18,3 +20,11 @@ export const cpkModelPropName = {
   CpkU: "上限边过程能力指数",
   CpkL: "下限边过程能力指数",
 };
+
+export const menuOptList:DropdownProps['options'] = [
+  {label:'数据源',key:'dataSource',children:[]}
+]
+export const menuPropEnum = {
+  dataSource:'dataSource'
+}
+export const menuIdSplit = '*'

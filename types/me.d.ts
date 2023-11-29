@@ -201,3 +201,13 @@ type CpkModel = {
   CpkU: number;
   CpkL: number;
 }
+
+type DistributionModel = {
+  Std: number;
+  Usl: number;
+  Lsl: number;
+  NdX: number[];
+  NdY: number[];
+  GaussX: number[];
+  GaussY: number[];
+}

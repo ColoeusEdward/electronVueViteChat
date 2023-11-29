@@ -25,7 +25,8 @@ export default defineComponent({
     },
     i: {
       type: Number
-    }
+    },
+    height:String
   },
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
@@ -152,8 +153,6 @@ export default defineComponent({
             // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }
-            // console.log("🚀 ~ file: CurcevChartRow.tsx:153 ~ callSpc ~ res.length:", res.length)
-            // console.log("🚀 ~ file: CurcevChartRow.tsx:155 ~ callSpc ~ opt:", opt.series.sampling)
         myChart.setOption(opt);
         return sleep(1000)
       }).then(() => {
@@ -197,8 +196,8 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'}>
-          <CpkBlock dataConfig={props.dataConfig} />
+        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'} style={{...(props.height?{height: props.height}:{})}} >
+          {/* <CpkBlock dataConfig={props.dataConfig} /> */}
           <div class={' h-full w-full '} id={'trendChart' + props.i} >
           </div>
         </div>
