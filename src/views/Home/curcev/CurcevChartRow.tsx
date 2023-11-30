@@ -85,10 +85,10 @@ export default defineComponent({
         yAxis: {
           type: 'value',
           max: function (value: any) {
-            return value.max
+            return value.max.toFixed(3)
           },
           min: function (value: any) {
-            return value.min
+            return value.min.toFixed(3)
           },
           // boundaryGap: ['10%', '10%'],
           splitLine: {

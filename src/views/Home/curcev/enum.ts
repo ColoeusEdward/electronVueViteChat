@@ -28,3 +28,5 @@ export const menuPropEnum = {
   dataSource:'dataSource'
 }
 export const menuIdSplit = '*'
+
+export const nornameDisChartId='normalDisChart'
