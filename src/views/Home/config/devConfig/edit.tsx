@@ -32,7 +32,7 @@ export default defineComponent({
       optionMap: {} as Record<string, SelectProps['options']>,
       itemList: [
         { type: 'input', label: '设备名称', prop: 'Name', width: 12, rule: ['must'] },
-        { type: 'select', label: '设备驱动', prop: 'DriverName', width: 12, rule: ['must'] },
+        { type: 'select', label: '设备驱动', prop: 'DriverName', width: 12, rule: ['must'], disabled: innerData.isEdit },
         {
           type: 'free', width: 24, renderComp: () => {
             return (

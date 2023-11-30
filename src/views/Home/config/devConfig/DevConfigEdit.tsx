@@ -38,7 +38,7 @@ export default defineComponent({
       })
     })
     watch(innerData.addressDataList , (val) => {
-      console.log("🚀 ~ file: DevConfigEdit.tsx:39 ~ watch ~ val:", val)
+      // console.log("🚀 ~ file: DevConfigEdit.tsx:39 ~ watch ~ val:", val)
       if (isMouted) {
         innerData.setAddressStrOfDevConfigForm(JSON.stringify(val))
       }

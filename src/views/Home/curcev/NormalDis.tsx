@@ -24,11 +24,11 @@ export default defineComponent({
         console.log("🚀 ~ file: NormalDis.tsx:18 ~ getNorDis ~ res:", res)
       })
       innerData.setNormalDisShow(true)
-      innerData.setIsGetting(false)
+      // innerData.setIsGetting(false)
     }
     const back = () => {
       innerData.setNormalDisShow(false)
-      innerData.setIsGetting(true)
+      // innerData.setIsGetting(true)
     }
     return () => {
       return (

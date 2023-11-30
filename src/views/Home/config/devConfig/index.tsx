@@ -1,6 +1,6 @@
 import LargeBtnIcon from "@/components/LargeBtnIcon";
 import { callSpc } from "@/utils/call";
-import { AddOutlined, DeleteForeverFilled, EditFilled, KeyboardReturnRound } from "@vicons/material";
+import { AddOutlined, CloseOutlined, DeleteForeverFilled, EditFilled, KeyboardReturnRound } from "@vicons/material";
 import { NButton, NDataTable, NIcon, NPopconfirm, useMessage } from "naive-ui";
 import { defineComponent, reactive, Transition } from "vue";
 import { DeviceConfigEntity } from "~/me";
@@ -9,11 +9,13 @@ import Edit from "./Edit";
 import { devStateList } from "./enum";
 import MyNTable from "@/components/MyNTable";
 import { callFnName } from "@/utils/enum";
+import { useDataCfgInnerDataStore } from "../dataCofigNew/innerData";
 
 export default defineComponent({
   name: 'DevConfig',
   setup(props, ctx) {
     const innerData = useDevCfgInnerData()
+    const dataConfigInnerData = useDataCfgInnerDataStore()
     const msg = useMessage()
     const tableCfg = reactive({
       colList: [
@@ -87,6 +89,9 @@ export default defineComponent({
         getTableData()
       })
     }
+    const close = () => {
+      dataConfigInnerData.setDevCfgShow(false)
+    }
 
     return () => {
       return (
@@ -95,12 +100,12 @@ export default defineComponent({
             <NButton class={' ml-3 my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><AddOutlined /></LargeBtnIcon>} type="primary" size={'large'} onClick={addDev}>添加设备</NButton>
             <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><EditFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={editDev}>编辑设备</NButton>
             <NPopconfirm onPositiveClick={delDev} placement={'bottom'} v-slots={{
-              trigger: () => <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} type="primary" size={'large'} >删除设备</NButton>
+              trigger: () => <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} type="error" size={'large'} >删除设备</NButton>
             }}>
               确认删除吗?
             </NPopconfirm>
             {/* <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={delDev}>删除设备</NButton> */}
-            {/* <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><KeyboardReturnRound /></LargeBtnIcon>} type="" size={'large'} onClick={addDev}>返回</NButton> */}
+            <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><CloseOutlined /></LargeBtnIcon>} type="" size={'large'} onClick={close}>关闭</NButton>
           </div>
           <div class={'relative h-full flex-shrink'} style={{ height: 'calc(100% - 60px)' }}>
             {/* <NDataTable bordered={false} maxHeight={''} striped singleLine={false} columns={tableCfg.colList} data={tableCfg.data} size={'large'} >

@@ -19,6 +19,7 @@ import { callFnName } from "@/utils/enum";
 import { callSpc } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
 import Curcev from "./curcev";
+import FormulaConfig from "./config/FormulaConfig";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -158,6 +159,9 @@ export default defineComponent({
           </Transition>
           <Transition name='full-pop'>
             {configStore.productHistoryShow && <ProductHistory />}
+          </Transition>
+          <Transition name='full-pop'>
+            {configStore.formulaCfgShow && <FormulaConfig />}
           </Transition>
           {/* <Transition name='full-pop'>
             {configStore.productLogShow && <ProductLog />}

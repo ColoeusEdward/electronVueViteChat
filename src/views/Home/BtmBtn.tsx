@@ -52,7 +52,7 @@ export default defineComponent({
       // { label: '设定产品表', value: 'setproduct' },
     ]
     const chartOption = [
-      { label: '开始', value: 'start' },
+      { label: '配方配置', value: 'formulaCfg' },
     ]
     const maintainOption2 = ref<PopselectProps['options']>([
       { label: '配置', value: 'option' },
@@ -75,7 +75,9 @@ export default defineComponent({
         },
         productLog: () => {
           configStore.setProductLogShow(true)
-
+        },
+        formulaCfg: () => {
+          configStore.setFormulaCfgShow(true)
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
@@ -87,7 +89,7 @@ export default defineComponent({
     const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },
       { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
-      { option: chartOption, name: 'test', icon: <AreaChartOutlined /> },
+      { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
       { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     ])
 

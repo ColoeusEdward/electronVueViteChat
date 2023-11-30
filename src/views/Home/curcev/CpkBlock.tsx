@@ -71,8 +71,8 @@ export default defineComponent({
           <NScrollbar>
               <NSpace >
                 {modelList.value.map((e) => {
-                  return <div class={'p-2 hover:bg-gray-100 shadow-md rounded-md'} onClick={() => {cpkChoose(e)}} title={e.title} >
-                    <div>{e.name}</div>
+                  return <div class={'p-2 hover:bg-gray-100 shadow-md rounded-md'} onClick={() => {cpkChoose(e)}} title={e.name} >
+                    <div>{e.title}</div>
                     <div class={'w-fit border border-solid border-gray-600 rounded-sm px-1'}  >{e.value}</div>
                   </div>
                 })}

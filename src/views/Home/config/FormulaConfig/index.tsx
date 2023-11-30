@@ -1,4 +1,6 @@
+import AbsBottomBtn from "@/components/AbsBottomBtn";
 import MyNTable from "@/components/MyNTable";
+import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { RefreshOutlined } from "@vicons/material";
@@ -14,6 +16,7 @@ export default defineComponent({
   name: 'FormulaConfig',  //配方配置
   setup(props, ctx) {
     const innerData = useFormulaCfgInnerDataStore()
+    const configStore = useConfigStore()
     const msg = useMessage()
     const commonData = reactive({
       filterText: ''
@@ -83,53 +86,64 @@ export default defineComponent({
         getTbData()
       })
     }
+    const cancel = () => {
+      configStore.setFormulaCfgShow(false)
+    }
     return () => {
       return (
-        <div class={'w-full h-full flex flex-col'}>
-          <div class={'flex-shrink-0'}>
-            <NDivider titlePlacement="left">生产信息</NDivider>
-            <div class={'flex w-full'}>
-              <NSpace align={'center'} class={' w-full'}>
-                <span class={'flex-shrink-0 p-2 '}  >当前启用配方</span>
-                <NInput size={'large'}  placeholder={''} value={activeRow.value?.PN} ></NInput>
-                <NInput size={'large'} placeholder={'请输入线材型号进行筛选'} clearable v-model:value={commonData.filterText} ></NInput>
-                {/* <NButton size={'large'}  >查询配方</NButton> */}
-              </NSpace>
-              {/* <NButton class={'ml-auto mr-2'} size={'large'}> 添加配方</NButton>
+        <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
+          <div class={'flex-shrink flex h-full w-full'}>
+            <div class={'w-full h-full flex flex-col'}>
+              <div class={'flex-shrink-0'}>
+                <NDivider titlePlacement="left">生产信息</NDivider>
+                <div class={'flex w-full'}>
+                  <NSpace align={'center'} class={' w-full'}>
+                    <span class={'flex-shrink-0 p-2 '}  >当前启用配方</span>
+                    <NInput size={'large'} placeholder={''} value={activeRow.value?.PN} ></NInput>
+                    <NInput size={'large'} placeholder={'请输入线材型号进行筛选'} clearable v-model:value={commonData.filterText} ></NInput>
+                    {/* <NButton size={'large'}  >查询配方</NButton> */}
+                  </NSpace>
+                  {/* <NButton class={'ml-auto mr-2'} size={'large'}> 添加配方</NButton>
               <NButton class={'ml-auto mr-2'} type={'primary'} size={'large'}> 应用配方</NButton>
               <NButton class={'ml-auto mr-2'} type={'error'} size={'large'}> 删除配方</NButton> */}
 
-            </div>
-            <NDivider titlePlacement="left">产品配方</NDivider>
-          </div>
-          <div class={'h-full flex-shrink flex'}>
-            <div class={'w-2/5 relative'}>
-              <NSpace class={'pl-2 pb-2'}>
-              <NButton class={' '} size={'large'} onClick={addForm} > 添加配方</NButton>
+                </div>
+                <NDivider titlePlacement="left">产品配方</NDivider>
+              </div>
+              <div class={'h-full flex-shrink flex'}>
+                <div class={'w-2/5 relative'}>
+                  <NSpace class={'pl-2 pb-2'}>
+                    <NButton class={' '} size={'large'} onClick={addForm} > 添加配方</NButton>
 
-                <NButton class={' '} type={'primary'} size={'large'} onClick={changeActiveRow} > 应用配方</NButton>
-                <NPopconfirm onPositiveClick={delForm} placement={'bottom'} v-slots={{
-                  trigger: () => <NButton class={' '} type={'error'} size={'large'} > 删除配方</NButton>
-                }}>
-                  确认删除吗?
-                </NPopconfirm>
-              </NSpace>
-              {/* @ts-ignore */}
-              <MyNTable v-model:checkedRowKeys={innerData.curRowKey} {...tableCfg} data={ftdata.value} ></MyNTable>
-              <Transition name={'full-pop'}>
-                <AddForm v-show={innerData.addFormShow} />
-              </Transition>
-              <div class={"absolute top-0 right-0 "} title={'刷新'}>
-                <NButton onClick={() => { getTbData() }} circle v-slots={{
-                  icon: () => <NIcon><RefreshOutlined /></NIcon>
-                }}  ></NButton>
+                    <NButton class={' '} type={'primary'} size={'large'} onClick={changeActiveRow} > 应用配方</NButton>
+                    <NPopconfirm onPositiveClick={delForm} placement={'bottom'} v-slots={{
+                      trigger: () => <NButton class={' '} type={'error'} size={'large'} > 删除配方</NButton>
+                    }}>
+                      确认删除吗?
+                    </NPopconfirm>
+                  </NSpace>
+                  {/* @ts-ignore */}
+                  <MyNTable v-model:checkedRowKeys={innerData.curRowKey} {...tableCfg} data={ftdata.value} ></MyNTable>
+                  <Transition name={'full-pop'}>
+                    <AddForm v-show={innerData.addFormShow} />
+                  </Transition>
+                  <div class={"absolute top-0 right-0 "} title={'刷新'}>
+                    <NButton onClick={() => { getTbData() }} circle v-slots={{
+                      icon: () => <NIcon><RefreshOutlined /></NIcon>
+                    }}  ></NButton>
+                  </div>
+                </div>
+                <div class={'w-3/5'}>
+                  <FormulaDataList v-show={innerData.curRow} />
+                </div>
               </div>
             </div>
-            <div class={'w-3/5'}>
-              <FormulaDataList v-show={innerData.curRow} />
-            </div>
           </div>
+
+          <AbsBottomBtn cancelFn={cancel} />
+
         </div>
+
       )
     }
   }

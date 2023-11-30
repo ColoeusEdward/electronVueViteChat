@@ -1,6 +1,6 @@
 import { useConfigStore } from "@/store/config";
 import { NButton, NTabs, NTabPane, NIcon, useMessage } from "naive-ui";
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import TabActiveImg from '@/assets/PnlBtnActive.png'
 import Connect from "./Connect";
@@ -15,10 +15,13 @@ import DevConfig from "./devConfig";
 import DataCofigNew from "./dataCofigNew";
 import FormulaConfig from "./FormulaConfig";
 import AbsBottomBtn from "@/components/AbsBottomBtn";
+import { useDataCfgInnerDataStore } from "./dataCofigNew/innerData";
+import DataCfgOut from "./dataCfgOut";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const dataCfgInnerData = useDataCfgInnerDataStore()
     const msg = useMessage()
     const store = useMain()
 
@@ -47,6 +50,9 @@ export default defineComponent({
       // window.ipc.invoke('keyboard')
       // store.setGlobalKeyBoardShow(true)
     }
+    const btmBtnShow = computed(() => {
+      return !dataCfgInnerData.devCfgShow
+    })
     onMounted(() => {
       // console.log(`config mounted`,);
     })
@@ -62,21 +68,26 @@ export default defineComponent({
                   <SysConfig />
                 </div>
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
+              {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <DevConfig />
                 </div>
-              </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
+              </NTabPane> */}
+              <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据采集" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <DataCofigNew />
                 </div>
               </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
+              <NTabPane displayDirective="show:lazy" name={"dataCfgOut"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataCfgOut' ? activeStyle : {} } }}>
+                <div class={' h-full shrink'}>
+                  <DataCfgOut />
+                </div>
+              </NTabPane>
+              {/* <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <FormulaConfig />
                 </div>
-              </NTabPane>
+              </NTabPane> */}
               {/* <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <Connect />
@@ -115,7 +126,7 @@ export default defineComponent({
             <KeyBorad />
           </div> */}
 
-          <AbsBottomBtn cancelFn={cancel} />
+          {btmBtnShow.value && <AbsBottomBtn cancelFn={cancel} />}
 
         </div>
       )

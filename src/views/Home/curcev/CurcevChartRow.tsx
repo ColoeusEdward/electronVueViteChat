@@ -133,7 +133,9 @@ export default defineComponent({
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
         // res.slice(-innerData.maxDataNum)
         if (props.i == 0) {
-          innerData.setCurDataLength(res.length)
+          let length = res.length
+          innerData.setCurDataLength(length)
+          res[length-1] && innerData.setCurNewVal(res[length-1].Value)
         }
         let list = res.map(e => {
           return [e.Intime, e.Value]

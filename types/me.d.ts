@@ -93,11 +93,13 @@ type CategoryNodeEntity = {
 type CategoryDataEntity = {
   GId: string;
   CategoryNodeId: string;
+  NodeName?:string;
   DeviceName: string;
   DataName: string;
   Class: string;
   Limit: number;
   CreateTime: string;
+  ComposeName?:string;
 }
 
 type  DataConfigEntity = {
@@ -110,6 +112,7 @@ type  DataConfigEntity = {
   Precision: number;
   Unilateral: number;
   AlarmType: number;
+  Distance: number;
   State: number;
   CreateTime?: string;
 }

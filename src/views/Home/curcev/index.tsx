@@ -187,10 +187,26 @@ export default defineComponent({
 
             <div class={'h-full border-1 border-solid border-[#e4e4e5] shadow-inner flex'}>
               <div class={'w-full h-full shrink py-1 px-2 flex justify-end items-center relative'}>
-                <span class={'absolute top-2 right-2 text-blue-500 text-lg'}>
-                  {innerData.curCpkKey?.title}
-                </span>
-                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span>
+                <div class={'absolute top-2 right-2  text-lg'}>
+                  {/* {innerData.curCpkKey?.title} */}
+                  <NSpace>
+                    <div>
+                      <span class={'text-gray-500 mr-2'}>上限</span>
+                      <span class={"text-blue-500"}>{innerData.curCpk?.Usl.toFixed(4)}</span>
+                    </div>
+                    <div>
+                      <span class={'text-gray-500 mr-2'}>下限</span>
+                      <span class={"text-blue-500"}>{innerData.curCpk?.Lsl.toFixed(4)}</span>
+                    </div>
+                    <div>
+                      <span class={'text-gray-500 mr-2'}>标准值</span>
+                      <span class={"text-blue-500"}>{innerData.curCpk?.Std.toFixed(4)}</span>
+                    </div>
+                  </NSpace>
+                </div>
+                {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
+                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{innerData.curNewVal.toFixed(6)}</span>
+
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
                 {/* <div class={'absolute top-2 right-2'}>

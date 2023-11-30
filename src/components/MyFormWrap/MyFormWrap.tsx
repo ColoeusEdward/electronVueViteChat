@@ -207,7 +207,7 @@ export const MyFormWrap = defineComponent({
             [props.needBtmSpace ? <div style={{ display: 'flex' }} class={'invisible w-full'}>
               <NButton style="width:100px;height:40px;margin-left:auto;" type="primary" size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>提交</NButton>
             </div> : '',
-            <div class={'flex w-auto absolute right-0 bottom-0 items-center z-[500]'}>
+            <div class={'flex w-auto absolute right-0 bottom-0 items-center z-20'}>
               <div class={'mr-4 ml-auto mb-2'} >
                 {props.hasAddMore && [
                   <span class={'mr-2 align-middle text-md'}>连续添加</span>,

@@ -1,6 +1,6 @@
 import { DataConfigEntity } from "~/me";
 
-const categoryClassObj: Record<string, string> = {
+export const categoryClassObj: Record<string, string> = {
   "Value": "数据值",
   "Std": "规格标准值",
   "Usl": "规格上限",
@@ -33,7 +33,7 @@ enum DataTypeEnum {
   OnlyRecord = 7,
   Alarm = 8,
 }
-const dataTypeEnumNameList = [
+export const dataTypeEnumNameList = [
   "曲线",
   "仅展示",
   "计米",
@@ -50,22 +50,28 @@ export const dataTypeEnumList = DataTypeEnumKeyList.slice(0, DataTypeEnumKeyList
     value: Number(e)
   }
 })
-
-export const UnilateralList = ['标准', '没有下偏差', '没有上偏差'].map((e, i) => {
+export const UnilateralNameList = ['标准', '没有下偏差', '没有上偏差']
+export const UnilateralList = UnilateralNameList.map((e, i) => {
+  return {
+    label: e,
+    value: i
+  }
+})
+export const AlarmTypeNameList = ['离散点', '上升沿', '下降沿']
+export const AlarmTypeList = AlarmTypeNameList.map((e, i) => {
   return {
     label: e,
     value: i
   }
 })
 
-export const AlarmTypeList = ['离散点', '上升沿', '下降沿'].map((e, i) => {
+export const limitList = ['只读', '只写', '读写']
+export const limitRadioList = limitList.map((e, i) => {
   return {
     label: e,
     value: i
   }
 })
-
-export const limitRadioList = [{ label: "只读", value: 0 }, { label: "只写", value: 1 }, { label: "读写", value: 2 }]
 
 export const defaultDataConfigForm: DataConfigEntity = {
   State: 0,
@@ -76,4 +82,5 @@ export const defaultDataConfigForm: DataConfigEntity = {
   SortNum: 1,
   Precision: 0,
   DataType: 1,
+  Distance:0
 }

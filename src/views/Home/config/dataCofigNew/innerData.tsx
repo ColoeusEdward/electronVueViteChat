@@ -16,7 +16,16 @@ export const useDataCfgInnerDataStore = defineStore('DataCfgInnerData', {
       editShow: false,
       getTreeDataFn: () => { },
       isAddGroup: false ,  //是否是添加分组
-      isMemberAddMore:false
+      isMemberAddMore:false,
+
+      curCDataRow: null as CategoryDataEntity | null,
+      curCDataRowKey: [] as string[],
+      curGroupData:[] as CategoryNodeEntity[],
+      isMemberEdit:false,
+      memberEditShow:false,
+      getCDataFn: () => {},
+
+      devCfgShow:false,
     }
   },
   /**
@@ -72,7 +81,33 @@ export const useDataCfgInnerDataStore = defineStore('DataCfgInnerData', {
     },
     setIsMemberAddMore(val: boolean) {
       this.isMemberAddMore = val
-    }
+    },
 
+    setCurCDataRow(val: CategoryDataEntity | null) {
+      this.curCDataRow = val
+    },
+    setCurCDataRowKey(val: string[]) {
+      this.curCDataRowKey = val
+    },
+    cleanCurCDataRow() {
+      this.curCDataRow = null
+      this.curCDataRowKey = []
+    },
+
+    setDevCfgShow(val:boolean){
+      this.devCfgShow = val
+    },
+    setCurGroupData(val:CategoryNodeEntity[]){
+      this.curGroupData = val
+    },
+    setIsMemberEdit(val:boolean){
+      this.isMemberEdit = val
+    },
+    setMemberEditShow(val:boolean){
+      this.memberEditShow = val
+    },
+    setGetCDataFn(val: () => void) {
+      this.getCDataFn = val
+    },
   }
 })

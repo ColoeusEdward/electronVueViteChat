@@ -4,9 +4,13 @@ import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 
 export default defineComponent({
   name: 'MyNTable',
+  // props:{
+  //   tbData:Object
+  // },
   setup(props, ctx) {
 
     const otherProp = computed(() => {
+      // return props.tbData ? props.tbData : ctx.attrs
       return ctx.attrs
     })
     const data = reactive({
