@@ -91,7 +91,7 @@ const ValueRow = defineComponent({
             {/* {renderAddOrDel()} */}
           </div>
           <div class={'flex items-end w-full  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
-            <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-3'}>
+            <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-3 value-number'}>
               <span class={'text-6xl font-semibold text-[#003a62]'} >{props.data?.value.toFixed(8)  || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >

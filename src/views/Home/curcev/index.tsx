@@ -239,7 +239,7 @@ export default defineComponent({
                   </NSpace>
                 </div>
                 {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '12rem' : '14rem' }} >{innerData.curNewVal.toFixed(6)}</span>
+                <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{innerData.curNewVal.toFixed(6)}</span>
 
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
