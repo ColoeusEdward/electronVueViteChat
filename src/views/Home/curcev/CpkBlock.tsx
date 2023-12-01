@@ -23,15 +23,15 @@ export default defineComponent({
       commonData.show = !commonData.show
     }
     const getCpk = () => {
-      if (!props.dataConfig) return
-      return callSpc(callFnName.getCpkData, props.dataConfig.GId).then((res: CpkModel) => {
+      if (!innerData.curDataCfgEntity) return
+      return callSpc(callFnName.getCpkData, innerData.curDataCfgEntity?.GId).then((res: CpkModel) => {
         commonData.cpkdata = res
         innerData.setCurCpk(res)
       })
     }
     innerData.setGetCpkFn(getCpk)
     const loopGet = () => {
-      if (!innerData.isGetting  || !props.dataConfig) return
+      if (!innerData.isGetting) return
       getCpk().then(() => {
         return sleep(5000)
       }).then(() => {
