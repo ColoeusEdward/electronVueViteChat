@@ -109,6 +109,7 @@ export default defineComponent({
       if (type == menuPropEnum.dataSource) {
         let item = commonData.cfgDataList.find(e => e.GId == trueKey)
         innerData.setCurDataCfgEntity(item)
+        innerData.getCpkFn()
       }
     }
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
@@ -128,17 +129,17 @@ export default defineComponent({
         }
       }
     }
-    const curShowCpkValue = computed(
-      () => {
-        if (!innerData.curCpk) return 0
-        if (innerData.curCpkKey) {
-          let key = innerData.curCpkKey.name as keyof CpkModel
-          return innerData.curCpk[key]
-        } else {
-          return innerData.curCpk?.Avg
-        }
-      }
-    )
+    // const curShowCpkValue = computed(
+    //   () => {
+    //     if (!innerData.curCpk) return 0
+    //     if (innerData.curCpkKey) {
+    //       let key = innerData.curCpkKey.name as keyof CpkModel
+    //       return innerData.curCpk[key]
+    //     } else {
+    //       return innerData.curCpk?.Avg
+    //     }
+    //   }
+    // )
     onMounted(() => {
       sleep(50).then(() => {
         refresh()
