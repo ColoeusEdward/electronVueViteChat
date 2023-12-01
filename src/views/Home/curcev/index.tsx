@@ -1,5 +1,5 @@
 import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, NTooltip, useMessage } from "naive-ui";
-import { computed, defineComponent, nextTick, onMounted, reactive } from "vue";
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
@@ -20,19 +20,12 @@ export default defineComponent({
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
     const store = useMain()
-    innerData.isGetting = false
+    // innerData.isGetting = false
     const msg = useMessage()
     const commonData = reactive({
       cfgDataList: [] as DataConfigEntity[],
       curPage: 0,
       pageSize: 3,
-      dropDowmProps: () => {
-        return {
-          style: {
-            minWidth: '14vh'
-          }
-        }
-      }
     })
     const getSysCfg = () => {
       callSpc(callFnName.getSysConfigs).then((res: SysConfigEntity[]) => {
@@ -58,7 +51,7 @@ export default defineComponent({
       })
     }
     const startCollect = () => {
-      refresh().then(() => {
+      return refresh().then(() => {
         return callSpc(callFnName.startCollect)
       })
         .then((res: string) => {
@@ -70,10 +63,12 @@ export default defineComponent({
         })
     }
     const stopCollect = () => {
-      callSpc(callFnName.stopCollect).then(() => {
+      return callSpc(callFnName.stopCollect).then(() => {
         innerData.setIsGetting(false)
       })
     }
+    innerData.setStartColFn(startCollect)
+    innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
       getSysCfg()
       return getAllActiveConfigData().then(() => {
@@ -145,14 +140,19 @@ export default defineComponent({
     //     }
     //   }
     // )
+
     onMounted(() => {
+
       sleep(500).then(() => {
         return refresh()
       })
     })
+    onBeforeUnmount(() => {
+      innerData.addReMounted()
+    })
     return () => {
       return (
-        <div class={'w-full h-full pt-2 shrink flex flex-col relative'}>
+        <div class={'w-full h-full shrink flex flex-col relative'}>
           {/* <CpkBlock /> */}
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>

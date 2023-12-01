@@ -20,6 +20,7 @@ import { callSpc } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
 import Curcev from "./curcev";
 import FormulaConfig from "./config/FormulaConfig";
+import MultiCurcev from "./multiCurcev";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -119,6 +120,11 @@ export default defineComponent({
               <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
                   <Curcev />
+                </div>
+              </NTabPane>
+              <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
+                <div class={'h-full'}>
+                  <MultiCurcev />
                 </div>
               </NTabPane>
               {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>

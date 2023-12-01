@@ -1,10 +1,9 @@
-import { getLocalStorage, setLocalStorage } from "@/utils/utils";
+import { getLocalStorage, setLocalStorage, sleep } from "@/utils/utils";
 import { defineStore } from "pinia";
 import { CpkModel, DataConfigEntity, SysConfigEntity } from "~/me";
 import { maxDataNumLocalKey } from "./enum";
 
 let localMaxDataNum = getLocalStorage(maxDataNumLocalKey)
-console.log("🚀 ~ file: innerData.ts:6 ~ localMaxDataNum:", localMaxDataNum, typeof localMaxDataNum == 'number')
 export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   /**
    * 存储全局状态
@@ -30,7 +29,11 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       curNewVal:0,      //当前最新实时值
       curProductCode:'',
       sysConfig:{} as SysConfigEntity[],
-      getCpkFn: () => {},
+      getCpkFn: () => new Promise(() => {}),
+      startColFn:() => {},
+      stopColFn:() => {},
+      reMountedCount:0,     //组件重新挂载的计数, 用来区分是否还是之前的组件
+      gettingChangeCount:0,   //采集开关变化次数, 也是用来判断开关的快速变化
     }
   },
   /**
@@ -45,6 +48,12 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   actions: {
     setIsGetting(val: boolean) {
       this.isGetting = val
+      if(!val){
+        this.addGettingChangeCount()
+      }
+      if(val){
+        this.loopGetCpk(this.gettingChangeCount)
+      }
     },
     setMaxDataNum(val: number) {
       this.maxDataNum = val
@@ -84,8 +93,31 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     setSysConfig(val:SysConfigEntity[]){
       this.sysConfig = val
     },
-    setGetCpkFn(val: () => {}) {
+    setGetCpkFn(val: () => Promise<any>) {
       this.getCpkFn = val
+    },
+    setStartColFn(val: () => {}) {
+      this.startColFn = val
+    },
+    setStopColFn(val: () => {}) {
+      this.stopColFn = val
+    },
+    addReMounted(){
+      this.reMountedCount++;
+    },
+    addGettingChangeCount(){
+      this.gettingChangeCount++;
+    },
+    loopGetCpk(getCount:number){
+      if (!this.isGetting || getCount != this.gettingChangeCount) {
+        // console.log(`老loopGetCpk 被消灭`,);
+        return
+      }
+      this.getCpkFn().then(() => {
+        return sleep(5000)
+      }).then(() => {
+        this.loopGetCpk(getCount)
+      })
     }
   }
 })

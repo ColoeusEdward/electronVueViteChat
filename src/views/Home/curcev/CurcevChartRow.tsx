@@ -15,6 +15,7 @@ import CpkBlock from "./CpkBlock";
 export default defineComponent({
   name: 'CurcevChartRow',
   props: {
+    chartId:String,
     dataConfig: Object as PropType<DataConfigEntity>,
     dataSourceItem: {
       type: Object as PropType<{
@@ -31,14 +32,15 @@ export default defineComponent({
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
     const innerData = useCurcevInnerDataStore()
-
+    let thisReMountedCount = innerData.reMountedCount
+    // console.log("🚀 ~ file: CurcevChartRow.tsx:36 ~ setup ~ thisReMountedCount:", thisReMountedCount)
     let myChart: echarts.ECharts
     let unit = `mm`
     const dataSourceItem = computed(() => {
       return props.dataSourceItem
     })
     const initEchart = () => {
-      let ele = document.getElementById('trendChart' + props.i)
+      let ele = document.getElementById((props.chartId||'trendChart') + props.i)
       if (!ele) return
       myChart = echarts.init(ele, undefined, {
         useDirtyRect: true
@@ -128,8 +130,9 @@ export default defineComponent({
     }
 
     const loopGet = () => {
-      if (!myChart || !innerData.isGetting || !props.dataConfig) return
-      callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
+      if (!myChart || !innerData.isGetting || !props.dataConfig || thisReMountedCount != innerData.reMountedCount) return
+      // callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
+      callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId).then((res: CollectPointModel[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
         // res.slice(-innerData.maxDataNum)
         if (props.i == 0) {
@@ -195,13 +198,16 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         initEchart()
+        if(innerData.isGetting){
+          loopGet()
+        }
       }, 0);
     })
     return () => {
       return (
         <div class={'h-1/3 shrink mt-2 overflow-hidden relative'} style={{...(props.height?{height: props.height}:{})}} >
           {/* <CpkBlock dataConfig={props.dataConfig} /> */}
-          <div class={' h-full w-full '} id={'trendChart' + props.i} >
+          <div class={' h-full w-full '} id={(props.chartId||'trendChart') + props.i} >
           </div>
         </div>
       )

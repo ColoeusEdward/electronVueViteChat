@@ -3,7 +3,7 @@ import { callFnName } from "@/utils/enum";
 import { sleep } from "@/utils/utils";
 import classNames from "classnames";
 import { NInput, NScrollbar, NSpace } from "naive-ui";
-import { computed, defineComponent, PropType, reactive, watch } from "vue";
+import { computed, defineComponent, onMounted, PropType, reactive, watch } from "vue";
 import { CollectPointModel, DataConfigEntity, CpkModel } from "~/me";
 import { cpkModelPropName } from "./enum";
 import { useCurcevInnerDataStore } from "./innerData";
@@ -15,6 +15,7 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
+    const thisReMountedCount = innerData.reMountedCount
     const commonData = reactive({
       show: false,
       cpkdata: {} as CpkModel
@@ -25,20 +26,20 @@ export default defineComponent({
     const getCpk = () => {
       if (!innerData.curDataCfgEntity) return
       return callSpc(callFnName.getCpkData, innerData.curDataCfgEntity?.GId).then((res: CpkModel) => {
-        console.log("🚀 ~ file: CpkBlock.tsx:28 ~ returncallSpc ~ res:", res)
+        // console.log("🚀 ~ file: CpkBlock.tsx:28 ~ returncallSpc ~ res:", res)
         commonData.cpkdata = res
         innerData.setCurCpk(res)
       })
     }
     innerData.setGetCpkFn(getCpk)
-    const loopGet = () => {
-      if (!innerData.isGetting) return
-      getCpk().then(() => {
-        return sleep(5000)
-      }).then(() => {
-        loopGet()
-      })
-    }
+    // const loopGet = () => {
+    //   if (!innerData.isGetting) return
+    //   getCpk().then(() => {
+    //     return sleep(5000)
+    //   }).then(() => {
+    //     loopGet()
+    //   })
+    // }
     const cpkChoose= (item:typeof modelList.value[0]) => {
       innerData.setCurCpkKey(item)
     }
@@ -56,11 +57,12 @@ export default defineComponent({
       }
       return list
     })
-    watch(() => innerData.isGetting, (val) => {
-      if (val) {
-        loopGet()
-      }
-    })
+    // watch(() => innerData.isGetting, (val) => {
+    //   if (val) {
+    //     loopGet()
+    //   }
+    // })
+
 
     return () => {
       return (
