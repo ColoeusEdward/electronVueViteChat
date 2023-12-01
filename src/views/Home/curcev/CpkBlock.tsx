@@ -22,12 +22,17 @@ export default defineComponent({
     const showSide = () => {
       commonData.show = !commonData.show
     }
-
-    const loopGet = () => {
-      if (!innerData.isGetting  || !props.dataConfig) return
-      callSpc(callFnName.getCpkData, props.dataConfig.GId).then((res: CpkModel) => {
+    const getCpk = () => {
+      if (!props.dataConfig) return
+      return callSpc(callFnName.getCpkData, props.dataConfig.GId).then((res: CpkModel) => {
         commonData.cpkdata = res
         innerData.setCurCpk(res)
+      })
+    }
+    innerData.setGetCpkFn(getCpk)
+    const loopGet = () => {
+      if (!innerData.isGetting  || !props.dataConfig) return
+      getCpk().then(() => {
         return sleep(5000)
       }).then(() => {
         loopGet()

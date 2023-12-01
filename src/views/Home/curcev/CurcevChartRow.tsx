@@ -156,7 +156,8 @@ export default defineComponent({
           },
         }
         myChart.setOption(opt);
-        return sleep(1000)
+        let time = innerData.sysConfig.find(e=>e.Name=='ColloctInterval')?.Value
+        return sleep(time ? Number(time) : 1000)
       }).then(() => {
         loopGet()
       })

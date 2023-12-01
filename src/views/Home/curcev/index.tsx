@@ -3,10 +3,10 @@ import { computed, defineComponent, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { CollectPointModel, CpkModel, DataConfigEntity } from "~/me";
+import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
-import { InfoOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
+import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import CurcevChartRow from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
@@ -34,6 +34,13 @@ export default defineComponent({
         }
       }
     })
+    const getSysCfg = () => {
+      callSpc(callFnName.getSysConfigs).then((res: SysConfigEntity[]) => {
+        // console.log("🚀 ~ file: index.tsx:39 ~ callSpc ~ res:", res)
+        innerData.setSysConfig(res)
+      })
+    }
+    getSysCfg()
     const getAllActiveConfigData = () => {
       return callSpc(callFnName.getDataConfigs).then((res: DataConfigEntity[]) => {
         let list = res.filter((e: DataConfigEntity) => e.State == 1)
@@ -48,8 +55,11 @@ export default defineComponent({
       refresh().then(() => {
         return callSpc(callFnName.startCollect)
       })
-        .then(() => {
-          innerData.setIsGetting(true)
+        .then((res: string) => {
+          if (res) {
+            innerData.setCurProductCode(res)
+            innerData.setIsGetting(true)
+          }
 
         })
     }
@@ -58,10 +68,15 @@ export default defineComponent({
         innerData.setIsGetting(false)
       })
     }
-    const refresh = (e?:any) => {
+    const refresh = (e?: any) => {
+      getSysCfg()
       return getAllActiveConfigData().then(() => {
         e && msg.success('配置已刷新')
+        innerData.getCpkFn()
       })
+    }
+    const clearCollect = () => {
+      callSpc(callFnName.clearCollect)
     }
     const nextPage = () => {
 
@@ -148,7 +163,15 @@ export default defineComponent({
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={startCollect} >开始采集</NButton>
               }
+              
               <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
+              <NButton type={'warning'} size={'large'} v-slots={{
+                  icon: () => <NIcon><LayersClearOutlined /></NIcon>
+                }} onClick={clearCollect} >清空数据</NButton>
+              {/* <div class={'flex items-center'} >
+                <span class={'text-md w-fit mr-2 flex-shrink-0 '}>产品编号</span>
+                <NInput placeholder={''} style={"width: 430px"} value={innerData.curProductCode}></NInput>
+              </div> */}
               <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2'}>起始时间点</span>
                 <NDatePicker v-model:value={innerData.startTime} type={'datetime'} />
@@ -190,6 +213,11 @@ export default defineComponent({
                 <div class={'absolute top-2 right-2  text-lg'}>
                   {/* {innerData.curCpkKey?.title} */}
                   <NSpace>
+                    <div class={'mr-4'}>
+                      <span class={'text-gray-500 mr-2'}>产品编号</span>
+                      <span class={"text-blue-500"}>{innerData.curProductCode}</span>
+
+                    </div>
                     <div>
                       <span class={'text-gray-500 mr-2'}>上限</span>
                       <span class={"text-blue-500"}>{innerData.curCpk?.Usl.toFixed(4)}</span>
@@ -205,7 +233,7 @@ export default defineComponent({
                   </NSpace>
                 </div>
                 {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{innerData.curNewVal.toFixed(6)}</span>
+                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '14rem' }} >{innerData.curNewVal.toFixed(6)}</span>
 
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>

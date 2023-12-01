@@ -114,6 +114,7 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
+            <div class={'w-2/3'}>
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
               <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
@@ -147,9 +148,11 @@ export default defineComponent({
                 Hey Jude
               </NTabPane> */}
             </NTabs>
-            {/* <div class={'w-1/3'}>
+            </div>
+            
+            <div class={'w-1/3'}>
               <RightValueBlock />
-            </div> */}
+            </div>
           </div>
           {/* </KeepAlive> */}
           {/* <GlobalKeyBoard /> */}

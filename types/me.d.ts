@@ -19,7 +19,7 @@ type ActualResult = {
   IsSuccess: boolean,
   Message: string,
   OpCode: number,
-  Value: object
+  Value: object|string
 }
 
 type DriverInfo = {

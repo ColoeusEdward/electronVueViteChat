@@ -1,6 +1,6 @@
 import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { defineStore } from "pinia";
-import { CpkModel, DataConfigEntity } from "~/me";
+import { CpkModel, DataConfigEntity, SysConfigEntity } from "~/me";
 import { maxDataNumLocalKey } from "./enum";
 
 let localMaxDataNum = getLocalStorage(maxDataNumLocalKey)
@@ -28,6 +28,9 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       } | null,  //当前主屏展示的cpk 选项option
       normalDisShow:false,
       curNewVal:0,      //当前最新实时值
+      curProductCode:'',
+      sysConfig:{} as SysConfigEntity[],
+      getCpkFn: () => {},
     }
   },
   /**
@@ -74,6 +77,15 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     },
     setCurNewVal(val:number){
       this.curNewVal = val
+    },
+    setCurProductCode(val:string){
+      this.curProductCode = val
+    },
+    setSysConfig(val:SysConfigEntity[]){
+      this.sysConfig = val
+    },
+    setGetCpkFn(val: () => {}) {
+      this.getCpkFn = val
     }
   }
 })
