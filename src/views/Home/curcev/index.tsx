@@ -1,5 +1,5 @@
 import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, NTooltip, useMessage } from "naive-ui";
-import { computed, defineComponent, onMounted, reactive } from "vue";
+import { computed, defineComponent, nextTick, onMounted, reactive } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
@@ -43,11 +43,17 @@ export default defineComponent({
     getSysCfg()
     const getAllActiveConfigData = () => {
       return callSpc(callFnName.getDataConfigs).then((res: DataConfigEntity[]) => {
+        if (res.length == 0) {
+          return sleep(500).then(() => refresh())
+        }
         let list = res.filter((e: DataConfigEntity) => e.State == 1)
         commonData.cfgDataList = list
         innerData.setDataCfgList(list)
         if (!innerData.curDataCfgEntity) {
           innerData.setCurDataCfgEntity(list[0])
+          nextTick(() => {
+            innerData.getCpkFn()
+          })
         }
       })
     }
@@ -72,7 +78,6 @@ export default defineComponent({
       getSysCfg()
       return getAllActiveConfigData().then(() => {
         e && msg.success('配置已刷新')
-        innerData.getCpkFn()
       })
     }
     const clearCollect = () => {
@@ -141,8 +146,8 @@ export default defineComponent({
     //   }
     // )
     onMounted(() => {
-      sleep(50).then(() => {
-        refresh()
+      sleep(500).then(() => {
+        return refresh()
       })
     })
     return () => {
@@ -164,19 +169,19 @@ export default defineComponent({
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={startCollect} >开始采集</NButton>
               }
-              
+
               <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
               <NButton type={'warning'} size={'large'} v-slots={{
-                  icon: () => <NIcon><LayersClearOutlined /></NIcon>
-                }} onClick={clearCollect} >清空数据</NButton>
+                icon: () => <NIcon><LayersClearOutlined /></NIcon>
+              }} onClick={clearCollect} >清空数据</NButton>
               {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2 flex-shrink-0 '}>产品编号</span>
                 <NInput placeholder={''} style={"width: 430px"} value={innerData.curProductCode}></NInput>
               </div> */}
-              <div class={'flex items-center'} >
+              {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2'}>起始时间点</span>
                 <NDatePicker v-model:value={innerData.startTime} type={'datetime'} />
-              </div>
+              </div> */}
 
               <NormalDis />
 
@@ -234,7 +239,7 @@ export default defineComponent({
                   </NSpace>
                 </div>
                 {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '14rem' }} >{innerData.curNewVal.toFixed(6)}</span>
+                <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '12rem' : '14rem' }} >{innerData.curNewVal.toFixed(6)}</span>
 
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>

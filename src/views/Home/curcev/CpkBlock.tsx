@@ -25,6 +25,7 @@ export default defineComponent({
     const getCpk = () => {
       if (!innerData.curDataCfgEntity) return
       return callSpc(callFnName.getCpkData, innerData.curDataCfgEntity?.GId).then((res: CpkModel) => {
+        console.log("🚀 ~ file: CpkBlock.tsx:28 ~ returncallSpc ~ res:", res)
         commonData.cpkdata = res
         innerData.setCurCpk(res)
       })
