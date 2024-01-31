@@ -45,7 +45,7 @@ export default defineComponent({
     }
     const audio = new Audio(emptyAduio)
     audio.loop = true
-
+    window.frontFn = {}
 
     const handleTabChange = (value: string) => {
       curTabValue.value = value

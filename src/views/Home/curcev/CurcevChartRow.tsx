@@ -11,7 +11,11 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { CollectPointModel, DataConfigEntity } from "~/me";
 import CpkBlock from "./CpkBlock";
+import { useConfigStore } from "@/store/config";
 
+export type CurcevChartRowIns = {
+  getChartIns: Function,
+}
 export default defineComponent({
   name: 'CurcevChartRow',
   props: {
@@ -27,11 +31,12 @@ export default defineComponent({
     i: {
       type: Number
     },
-    height:String
+    height:String,
   },
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
     const innerData = useCurcevInnerDataStore()
+    // const configStore = useConfigStore()
     let thisReMountedCount = innerData.reMountedCount
     // console.log("🚀 ~ file: CurcevChartRow.tsx:36 ~ setup ~ thisReMountedCount:", thisReMountedCount)
     let myChart: echarts.ECharts
@@ -47,6 +52,7 @@ export default defineComponent({
       });
 
       let option = {
+        animation:false,
         title: {
           //@ts-ignore
           text: '',
@@ -134,7 +140,8 @@ export default defineComponent({
       // callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
       callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId).then((res: CollectPointModel[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
-        // res.slice(-innerData.maxDataNum)
+        let maxCount = innerData.sysConfig.find(e=>e.Name=='MaxPonitNum')?.Value
+        maxCount && (res = res.slice(-maxCount))
         if (props.i == 0) {
           let length = res.length
           innerData.setCurDataLength(length)
@@ -143,6 +150,7 @@ export default defineComponent({
         let list = res.map(e => {
           return [e.Intime, e.Value]
         })
+        // console.log("🚀 ~ list ~ list:", list.length)
         let opt = {
           title: {
             //@ts-ignore
@@ -155,23 +163,28 @@ export default defineComponent({
             showSymbol: false,
             data: list,
             smooth: false,
-            // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
+            ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }
         myChart.setOption(opt);
-        let time = innerData.sysConfig.find(e=>e.Name=='ColloctInterval')?.Value
+        let time = innerData.sysConfig.find(e=>e.Name=='RefreshInterval')?.Value
         return sleep(time ? Number(time) : 1000)
       }).then(() => {
         loopGet()
       })
     }
-
+    const getChartIns = () => {
+      return myChart
+    }
     watch(() => innerData.isGetting, (val) => {
       if (val) {
         loopGet()
       }
     })
 
+    ctx.expose({
+      getChartIns,
+    } as CurcevChartRowIns)
     // watch(productLength, () => {
     //   if (!myChart || !innerData.isGetting) return
     //   if (count < 1) {

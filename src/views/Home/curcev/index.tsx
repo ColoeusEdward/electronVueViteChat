@@ -1,5 +1,5 @@
 import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, NTooltip, useMessage } from "naive-ui";
-import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive } from "vue";
+import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref } from "vue";
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
@@ -7,10 +7,10 @@ import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, SysConfigE
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
 import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
-import CurcevChartRow from "./CurcevChartRow";
+import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
-import { menuIdSplit, menuOptList, menuPropEnum } from "./enum";
+import { frontFnNameEnum, menuIdSplit, menuOptList, menuPropEnum } from "./enum";
 import { sleep } from "@/utils/utils";
 import { useMain } from "@/store";
 
@@ -22,6 +22,7 @@ export default defineComponent({
     const store = useMain()
     // innerData.isGetting = false
     const msg = useMessage()
+    const chartRef = ref<ComponentPublicInstance<{},CurcevChartRowIns>|null>(null)
     const commonData = reactive({
       cfgDataList: [] as DataConfigEntity[],
       curPage: 0,
@@ -67,6 +68,14 @@ export default defineComponent({
         innerData.setIsGetting(false)
       })
     }
+    const testFn = () => {
+      console.log(`testfnfffff`,);
+    }
+    window.frontFn[frontFnNameEnum.startCollect] = startCollect
+    window.frontFn[frontFnNameEnum.stopCollect] = stopCollect
+    window.frontFn[frontFnNameEnum.testFn] = testFn
+    
+
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
@@ -84,6 +93,11 @@ export default defineComponent({
     const prevPage = () => {
 
     }
+    const mainFixNum = computed(() => {
+      // innerData.dataCfgList.
+      let val = innerData.curDataCfgEntity?.Precision
+      return Number(val)
+    })
     const nextShow = computed(() => {
       return (commonData.curPage + 1) * commonData.pageSize < commonData.cfgDataList.length
     })
@@ -111,6 +125,18 @@ export default defineComponent({
         innerData.setCurDataCfgEntity(item)
         innerData.getCpkFn()
       }
+      if(type == menuPropEnum.uploadLineShot){
+        getLineShot()
+      }
+    }
+    const getLineShot = () => {
+      let chartIns = chartRef.value?.getChartIns()
+      let picInfo = chartIns.getDataURL({
+        type: 'png',
+        pixelRatio: 1.5, //放大两倍下载，之后压缩到同等大小展示。解决生成图片在移动端模糊问题
+        backgroundColor: '#fff'
+      })
+      // console.log("🚀 ~ getLineShot ~ picInfo:", picInfo)
     }
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
@@ -140,10 +166,11 @@ export default defineComponent({
     //     }
     //   }
     // )
-
+    console.log(`curcev create`,);
     onMounted(() => {
 
       sleep(500).then(() => {
+        
         return refresh()
       })
     })
@@ -239,7 +266,7 @@ export default defineComponent({
                   </NSpace>
                 </div>
                 {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{innerData.curNewVal.toFixed(6)}</span>
+                <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{innerData.curNewVal.toFixed(mainFixNum.value)}</span>
 
               </div>
               <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
@@ -256,7 +283,7 @@ export default defineComponent({
           </div>
           {
             innerData.curDataCfgEntity &&
-            <CurcevChartRow height="50%" i={0} dataConfig={innerData.curDataCfgEntity} />
+            <CurcevChartRow height="50%" i={0} dataConfig={innerData.curDataCfgEntity} ref={chartRef} />
           }
 
 

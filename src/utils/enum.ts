@@ -40,7 +40,8 @@ enum callFnName {
   closeSpcSystem = `closeSpcSystem`,
   startCollect = `startCollect`,
   saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys',stopCollect="stopCollect",
-  getSpanCollectPoints = `getSpanCollectPoints`,getNormalDistribution='getNormalDistribution',clearCollect='clearCollect'
+  getSpanCollectPoints = `getSpanCollectPoints`,getNormalDistribution='getNormalDistribution',clearCollect='clearCollect',
+  getFFT = `getFFT`
 }
 
 export {

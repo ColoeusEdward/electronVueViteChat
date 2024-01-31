@@ -41,12 +41,12 @@ export default defineComponent({
         { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
         { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
         { type: 'input', label: '报警信号间隔', prop: 'AlarmInterval', width: 12, suffix: 'ms' },
-        { type: 'input', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, },
+        { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12,checkedValue: '1', uncheckedValue: '0', },
         { type: 'divider', label: '统计报表', width: 24 },
         { type: 'switch', label: '导出实时数据', prop: 'EnableExportReal', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
-        { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
+        // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
         { type: 'switch', label: '导出趋势曲线', prop: 'EnableExportStati', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, suffix: 'ms' },
-        { type: 'select', label: '曲线文件类型', prop: 'ExportStatiType', width: 12 },
+        // { type: 'select', label: '曲线文件类型', prop: 'ExportStatiType', width: 12 },
         {
           type: 'input', label: '导出路径', prop: 'ExportPath', width: 12, suffix: () => {
             return <label onClick={() => {
@@ -68,6 +68,9 @@ export default defineComponent({
 
         { type: 'divider', label: '其他配置', width: 24 },
         { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
+        // { type: 'free', label: '激活码', renderComp:() => {
+        //   return <SerialNoRule />
+        // }, width: 12 },
         { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'True', width: 12, suffix: 'ms' },
         { type: 'text', label: '软件版本', prop: 'Version', text: '1.0.0', width: 24 },
 

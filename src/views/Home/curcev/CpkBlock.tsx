@@ -66,16 +66,13 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={classNames('h-full w-[350px] absolute  bg-white rounded-md shadow-md border border-solid border-gray-200 p-2 left-side-ani z-20', { '-left-[350px] ': !commonData.show, 'left-0': commonData.show })}>
-          <div class={'absolute top-1/2 -mt-[42px] -right-7 rounded-md shadow-md border border-solid bg-white border-gray-200 p-2 hover:bg-gray-100 cursor-pointer'} onClick={showSide} >
+        <div class={classNames('h-full w-[350px] absolute hidden  bg-white rounded-md shadow-md border border-solid border-gray-200 p-2 left-side-ani z-20', { '-left-[350px] ': !commonData.show, 'left-0': commonData.show })}>
+          {/* <div class={'absolute top-1/2 -mt-[42px] -right-7 rounded-md shadow-md border border-solid bg-white border-gray-200 p-2 hover:bg-gray-100 cursor-pointer'} onClick={showSide} >
             C<br />
             P<br />
             K<br />
           </div>
-          {/* {
-            commonData.show && 
-            
-          } */}
+       
           <NScrollbar>
               <NSpace >
                 {modelList.value.map((e) => {
@@ -85,7 +82,7 @@ export default defineComponent({
                   </div>
                 })}
               </NSpace>
-            </NScrollbar>
+            </NScrollbar> */}
 
         </div>
       )

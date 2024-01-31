@@ -22,11 +22,19 @@ export const cpkModelPropName = {
 };
 
 export const menuOptList:DropdownProps['options'] = [
-  {label:'数据源',key:'dataSource',children:[]}
+  {label:'数据源',key:'dataSource',children:[]},
+  {label:'上传当前曲线图',key:'uploadLineShot'}
 ]
 export const menuPropEnum = {
-  dataSource:'dataSource'
+  dataSource:'dataSource',
+  uploadLineShot:'uploadLineShot'
 }
 export const menuIdSplit = '*'
 
 export const nornameDisChartId='normalDisChart'
+
+export const frontFnNameEnum = {
+  startCollect:'startCollect',
+  stopCollect:'stopCollect',
+  testFn:'testFn',
+}

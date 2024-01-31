@@ -46,6 +46,7 @@ export default defineComponent({
         useDirtyRect: true
       });
       let option = {
+        animation:false,
         tooltip: {
           trigger: 'axis',
           axisPointer: {

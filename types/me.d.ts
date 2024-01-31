@@ -11,7 +11,8 @@ declare global {
     ipc: import("electron").IpcRenderer;
     CefSharp: any,
     spcJsBind: any,
-    $message: MessageApiInjection
+    $message: MessageApiInjection,
+    frontFn: Record<string,Function>
   }
 }
 

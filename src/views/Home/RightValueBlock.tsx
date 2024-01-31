@@ -25,6 +25,10 @@ const ValueRow = defineComponent({
     y: {
       type: Number,
       required: true
+    },
+    fixNum:{
+      type:Number,
+      default:8
     }
   },
   setup(props, ctx) {
@@ -92,7 +96,7 @@ const ValueRow = defineComponent({
           </div>
           <div class={'flex items-end w-full  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
             <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-3 value-number'}>
-              <span class={classNames(' font-semibold text-[#003a62]',{'text-4xl':store.isLowRes,' text-6xl':!store.isLowRes})} >{props.data?.value.toFixed(8)  || ''}</span>
+              <span class={classNames(' font-semibold text-[#003a62]',{'text-4xl':store.isLowRes,' text-6xl':!store.isLowRes})} >{props.data?.value.toFixed(props.fixNum)  || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >
               <span class={'mb-2'}>{props.data?.unit || '  '}</span>
@@ -138,7 +142,20 @@ export default defineComponent({
           unit: curCevInnerData.curDataCfgEntity?.Unit
         }
       })
-      return list
+      let sortList = [] as typeof list
+      let tempList = ['Avg','Sd','Max','Min','Ca','Cp','Cpk']
+      list.forEach(e => {
+        let idx = tempList.findIndex(e1 => e1 == e.label)
+        if(idx > -1){
+          sortList[idx] = e
+        }
+      })
+          console.log("🚀 ~ cpkList ~ sortList:", sortList)
+          return sortList
+    })
+    const fixNumRef = computed(() => {
+      let val = curCevInnerData.sysConfig.find(e => e.Name == 'Precision')?.Value
+      return Number(val)
     })
     const handleTabChange = (value: string) => {
       curTabValue.value = value
@@ -173,7 +190,7 @@ export default defineComponent({
             <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
               {/* <NScrollbar> */}
                 {cpkList.value.map((e, i) => {
-                  return <ValueRow key={i} x={0} y={i} data={e} />
+                  return <ValueRow key={i} x={0} y={i} data={e} fixNum={fixNumRef.value} />
                 })}
               {/* </NScrollbar> */}
 
