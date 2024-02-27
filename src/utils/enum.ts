@@ -41,7 +41,7 @@ enum callFnName {
   startCollect = `startCollect`,
   saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys',stopCollect="stopCollect",
   getSpanCollectPoints = `getSpanCollectPoints`,getNormalDistribution='getNormalDistribution',clearCollect='clearCollect',
-  getFFT = `getFFT`
+  getFFT = `getFFT`,showKeyBoard=`showKeyBoard`,initKeyboardConfig=`initKeyboardConfig`
 }
 
 export {

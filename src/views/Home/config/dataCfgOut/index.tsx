@@ -108,6 +108,13 @@ export default defineComponent({
         getTableData()
       })
     }
+    const initDatConfig = () => {
+      callSpc(callFnName.initDataConfig).then(() => {
+        msg.success('初始化完毕')
+        // getTreeData()
+        getTableData()
+      })
+    }
 
     return () => {
       return (
@@ -121,6 +128,7 @@ export default defineComponent({
               }}>
                 确认删除吗?
               </NPopconfirm>
+              <NButton class={'my-large-btn'} style={{width: '220px'}}  size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
             </NSpace>
           </div>
           <div class={'flex-shrink h-full w-full relative'}>

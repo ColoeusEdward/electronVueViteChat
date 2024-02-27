@@ -14,9 +14,9 @@ import CDataRight from "./CDataRight";
 import DevConfig from "../devConfig";
 import DetailRigth from "./DetailRigth";
 
-
+//数据采集
 export default defineComponent({
-  name: 'DataCofigNew',
+  name: 'DataCofigNew', 
   setup(props, ctx) {
     const innerData = useDataCfgInnerDataStore()
     innerData.cleanSelectItem()
@@ -202,7 +202,7 @@ export default defineComponent({
                   <div class={'absolute bottom-2 right-2'}>
                     <NSpace vertical align={'end'}>
                       <NButton size={'large'} type={'primary'} onClick={() => { innerData.setDevCfgShow(true) }} >设备配置</NButton>
-                      <NButton size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
+                      {/* <NButton size={'large'} onClick={initDatConfig} >初始化数据配置</NButton> */}
                     </NSpace>
 
                   </div>

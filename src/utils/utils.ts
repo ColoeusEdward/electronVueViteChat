@@ -54,4 +54,8 @@ export const listenAltF5 = (cb: Function) => {
   })
 }
 
+export const showKeyBoard = () => {
+  callSpc(callFnName.showKeyBoard).then(() => {
+  })
+}
 

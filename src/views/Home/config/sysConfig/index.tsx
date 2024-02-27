@@ -1,10 +1,13 @@
 import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
 import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
+import { callFnName } from "@/utils/enum";
+import { showKeyBoard } from "@/utils/utils";
 import { NButton, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { ActualResult } from "~/me";
+import AcCode from "./AcCode";
 import { formDivideStyle, optionMap } from "./enum";
 import SerialNoRule from "./SerialNoRule";
 
@@ -67,10 +70,10 @@ export default defineComponent({
         }, width: 24 },
 
         { type: 'divider', label: '其他配置', width: 24 },
-        { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
-        // { type: 'free', label: '激活码', renderComp:() => {
-        //   return <SerialNoRule />
-        // }, width: 12 },
+        // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
+        { type: 'free', label: '激活码', renderComp:() => {
+          return <AcCode v-model:value={cfgData.value.Cdkey} />
+        }, width: 12 },
         { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'True', width: 12, suffix: 'ms' },
         { type: 'text', label: '软件版本', prop: 'Version', text: '1.0.0', width: 24 },
 
@@ -114,10 +117,15 @@ export default defineComponent({
     getPrinter()
 
 
-
-
+    watch(() => cfgData.value.InputType,(val) => {
+      if(val=="True"){
+        showKeyBoard()
+      }
+    })
 
     onMounted(() => {
+    // callSpc(callFnName.initKeyboardConfig)
+      
     })
     //height:50px;width:20vw;font-size:22px
     // class={'relative -right-2'} tertiary size={'small'} onClick={() => {

@@ -40,6 +40,9 @@ export default defineComponent({
       // innerData.setIsGetting(true)
     }
     const initChart = () => {
+      let xMin = commonData.disData.NdX[0]*0.99
+      let xMax = commonData.disData.NdX[commonData.disData.NdX.length - 1]*1.01
+
       let ele = document.getElementById(nornameDisChartId)
       if (!ele) return
       myChart = echarts.init(ele, undefined, {
@@ -76,12 +79,8 @@ export default defineComponent({
             splitLine: {
               show: true
             },
-            max: function (value: any) {
-              return value.max*1.01
-            },
-            min: function (value: any) {
-              return value.min*0.99
-            },
+            max: xMax,
+            min: xMin,
           }
         ],
         yAxis: [

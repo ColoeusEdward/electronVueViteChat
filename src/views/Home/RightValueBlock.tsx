@@ -143,14 +143,14 @@ export default defineComponent({
         }
       })
       let sortList = [] as typeof list
-      let tempList = ['Avg','Sd','Max','Min','Ca','Cp','Cpk']
+      let tempList = ['Avg','Max','Min','Sd','Ca','Cp','Cpk']
       list.forEach(e => {
         let idx = tempList.findIndex(e1 => e1 == e.label)
         if(idx > -1){
           sortList[idx] = e
         }
       })
-          console.log("🚀 ~ cpkList ~ sortList:", sortList)
+          // console.log("🚀 ~ cpkList ~ sortList:", sortList)
           return sortList
     })
     const fixNumRef = computed(() => {

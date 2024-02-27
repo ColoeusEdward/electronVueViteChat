@@ -1,4 +1,4 @@
-import { NTabs, NTabPane, useMessage, } from "naive-ui";
+import { NTabs, NTabPane, useMessage, NIcon, } from "naive-ui";
 import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
@@ -6,7 +6,7 @@ import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
 import emptyAduio from '@/assets/empty_loop_for_js_performance.wav'
 import { useMain } from "@/store";
-import { isLowResolution, sleep } from "@/utils/utils";
+import { isLowResolution, showKeyBoard, sleep } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
 import Trend from "./trend/Trend";
 import Statistical from "./statistical/Statistical";
@@ -21,6 +21,8 @@ import ProductHistory from "./product/productHistory";
 import Curcev from "./curcev";
 import FormulaConfig from "./config/FormulaConfig";
 import MultiCurcev from "./multiCurcev";
+import classNames from "classnames";
+import { KeyboardAltOutlined } from "@vicons/material";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -76,9 +78,14 @@ export default defineComponent({
       }
 
     }
+    const keyboradInit = () => {
+      callSpc(callFnName.initKeyboardConfig).then((res: ActualResult) => {
+      })
+    }
     const startSpcSys = () => {
       callSpc(callFnName.startSpcSystem).then((res: ActualResult) => {
         console.log(`startSpcSystem `,);
+        keyboradInit()
       })
       // window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
       //   window.spcJsBind.startSpcSystem().then(function (actualResult:ActualResult) {
@@ -112,7 +119,12 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
+        <div class={'w-full h-full flex flex-col overflow-hidden relative'} id={'indexCon'}>
+          <div class={classNames('h-10 w-10 bottom-[2vh] left-0 absolute   bg-green-600  rounded-full shadow-md border border-solid border-gray-200  z-20 hover:bg-green-500 cursor-pointer ')} onClick={showKeyBoard}>
+            <div class={'w-full h-full flex justify-center items-center relative bottom-[1px]'}>
+              <NIcon class={'text-white text-2xl'}><KeyboardAltOutlined/></NIcon>
+            </div>
+          </div>
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
             <div class={'w-2/3'}>

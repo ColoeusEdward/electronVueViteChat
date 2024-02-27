@@ -23,6 +23,10 @@ export const optionMap:Record<string, any> = {
     }
   }),
   ReportPrinter:[]
+
+
+
+  
 }
 
 export const serialNoFormDefault:SerialNoEntity = {
