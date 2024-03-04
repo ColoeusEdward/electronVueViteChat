@@ -14,7 +14,8 @@ export const useSysCfgInnerDataStore = defineStore('SysCfgInnerData', {
       curRowKey: [] as string[],
       addFormShow:false,
       tableLength:0,
-      getTbDataFn:() => {}
+      getTbDataFn:() => {},
+      regState:false, //注册状态
     }
   },
   /**
@@ -45,6 +46,9 @@ export const useSysCfgInnerDataStore = defineStore('SysCfgInnerData', {
     },
     setGetTbDataFn(val:() => void){
       this.getTbDataFn = val
+    },
+    setRegState(val:boolean){
+      this.regState = val
     }
 
   }

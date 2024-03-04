@@ -2,7 +2,7 @@
  * @Author:  
  * @Description:
  * @Date: 2022-12-27 10:33:58
- * @LastEditTime: 2023-11-15 08:25:38
+ * @LastEditTime: 2024-03-02 15:12:12
  * @LastEditors: your name
 -->
 
@@ -14,7 +14,9 @@
     <!-- 侧边栏总组件 -->
     <!-- <navSider v-if="mainHeaderShow" /> -->
     <n-message-provider>
-      <Home />
+      <RouterView>
+      </RouterView>
+      <!-- <Home /> -->
     </n-message-provider>
     <!-- 窗口基础功能 ：关闭 最小化，最大化 -->
     <!-- <div class="w-100px self-end flex justify-around items-center my-5px border-r">

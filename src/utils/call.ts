@@ -2,6 +2,7 @@ import { useConfigStore } from "@/store/config"
 import { ActualResult, SysConfigEntity } from "~/me"
 
 const resultProcess = (res: ActualResult) => {
+  // console.log("🚀 ~ resultProcess ~ res:", res)
   if (res.OpCode == 200) {
     return res.Value
   } else {

@@ -107,6 +107,29 @@ body {
   opacity: 0;
 }
 
+.simple-keyboard.hg-theme-default.myTheme {
+  // border: 5px solid rgb(255, 0, 0, 0.7);
+  // border-radius: 10px;
+  // margin: 10px;
+  // width: calc(100% - 20px);
+}
+
+.simple-keyboard.hg-layout-default .hg-button.backspace-style {
+  // background: rgb(255, 0, 0, 0.7);
+  // color: white;
+  // width:120px;
+  flex-grow: 0;
+  padding: 0 8px;
+}
+
+.simple-keyboard{
+  .my-theme{
+    .backspace-style{
+      width:100px;
+    }
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

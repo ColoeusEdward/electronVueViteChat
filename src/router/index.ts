@@ -13,11 +13,16 @@ import { createRouter, createWebHashHistory } from "vue-router"
 // import Calendar from "../views/calendar/calendar.vue";
 // import Meeting from '../views/calendar/Meeting.vue'
 import * as path from 'path';
+import Home from "@/views/Home";
+import KeyBoardPage from "@/views/Home/KeyBoardPage";
 const routes = [
     {
         path: '/',
-        // component: ChatOnline
-        redirect: '/chatOnline'
+        component: Home
+    },
+    {
+      path: '/keyboard',
+      component: KeyBoardPage
     },
     
 ]

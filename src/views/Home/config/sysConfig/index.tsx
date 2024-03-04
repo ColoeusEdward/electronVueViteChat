@@ -3,7 +3,7 @@ import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { showKeyBoard } from "@/utils/utils";
-import { NButton, NScrollbar, NTag, useMessage } from "naive-ui";
+import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { ActualResult } from "~/me";
@@ -44,7 +44,7 @@ export default defineComponent({
         { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
         { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
         { type: 'input', label: '报警信号间隔', prop: 'AlarmInterval', width: 12, suffix: 'ms' },
-        { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12,checkedValue: '1', uncheckedValue: '0', },
+        { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, checkedValue: '1', uncheckedValue: '0', },
         { type: 'divider', label: '统计报表', width: 24 },
         { type: 'switch', label: '导出实时数据', prop: 'EnableExportReal', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
         // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
@@ -65,15 +65,19 @@ export default defineComponent({
         { type: 'switch', label: '打印统计数据', prop: 'EnablePrintStati', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
         { type: 'select', label: '使用的打印机', prop: 'ReportPrinter', width: 12 },
         { type: 'divider', label: '编码规则', width: 24 },
-        { type: 'free', label: '编码规则', renderComp:() => {
-          return <SerialNoRule />
-        }, width: 24 },
+        {
+          type: 'free', label: '编码规则', renderComp: () => {
+            return <SerialNoRule />
+          }, width: 24
+        },
 
         { type: 'divider', label: '其他配置', width: 24 },
         // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
-        { type: 'free', label: '激活码', renderComp:() => {
-          return <AcCode v-model:value={cfgData.value.Cdkey} />
-        }, width: 12 },
+        {
+          type: 'free', label: '激活码', renderComp: () => {
+            return <AcCode v-model:value={cfgData.value.Cdkey} />
+          }, width: 12
+        },
         { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'True', width: 12, suffix: 'ms' },
         { type: 'text', label: '软件版本', prop: 'Version', text: '1.0.0', width: 24 },
 
@@ -96,13 +100,13 @@ export default defineComponent({
         })
       })
       callSpc(window.spcJsBind.saveSysConfigs([...oriSysConfig]))
-      .then((e:number) => {
-        if(e>0){
-          msg.success('保存成功')
-        }
-      }).finally(() => {
-        loading.value = false
-      })
+        .then((e: number) => {
+          if (e > 0) {
+            msg.success('保存成功')
+          }
+        }).finally(() => {
+          loading.value = false
+        })
     }
     const getPrinter = () => {
       getPrinterList().then(e => {
@@ -117,15 +121,15 @@ export default defineComponent({
     getPrinter()
 
 
-    watch(() => cfgData.value.InputType,(val) => {
-      if(val=="True"){
+    watch(() => cfgData.value.InputType, (val) => {
+      if (val == "True") {
         showKeyBoard()
       }
     })
 
     onMounted(() => {
-    // callSpc(callFnName.initKeyboardConfig)
-      
+      // callSpc(callFnName.initKeyboardConfig)
+
     })
     //height:50px;width:20vw;font-size:22px
     // class={'relative -right-2'} tertiary size={'small'} onClick={() => {

@@ -11,8 +11,9 @@ import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
 import { frontFnNameEnum, menuIdSplit, menuOptList, menuPropEnum } from "./enum";
-import { sleep } from "@/utils/utils";
+import { getRegState, sleep } from "@/utils/utils";
 import { useMain } from "@/store";
+import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -138,6 +139,8 @@ export default defineComponent({
       })
       // console.log("🚀 ~ getLineShot ~ picInfo:", picInfo)
     }
+    
+    getRegState() 
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
       if (option.trueKey && innerData.curDataCfgEntity?.GId == option.trueKey) {

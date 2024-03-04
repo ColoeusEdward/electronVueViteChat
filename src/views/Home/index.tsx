@@ -23,6 +23,7 @@ import FormulaConfig from "./config/FormulaConfig";
 import MultiCurcev from "./multiCurcev";
 import classNames from "classnames";
 import { KeyboardAltOutlined } from "@vicons/material";
+import GlobalKeyBoard2 from "./GlobalKeyBoard2";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -120,11 +121,7 @@ export default defineComponent({
     return () => {
       return (
         <div class={'w-full h-full flex flex-col overflow-hidden relative'} id={'indexCon'}>
-          <div class={classNames('h-10 w-10 bottom-[2vh] left-0 absolute   bg-green-600  rounded-full shadow-md border border-solid border-gray-200  z-20 hover:bg-green-500 cursor-pointer ')} onClick={showKeyBoard}>
-            <div class={'w-full h-full flex justify-center items-center relative bottom-[1px]'}>
-              <NIcon class={'text-white text-2xl'}><KeyboardAltOutlined/></NIcon>
-            </div>
-          </div>
+          <GlobalKeyBoard2 />
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>
             <div class={'w-2/3'}>

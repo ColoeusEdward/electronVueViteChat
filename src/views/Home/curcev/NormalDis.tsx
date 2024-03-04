@@ -191,10 +191,20 @@ export default defineComponent({
       };
       myChart.setOption(option);
     }
+    const loopRefresh = () => {
+      if (innerData.normalDisShow) {
+        getNorDis()
+        sleep(10000).then(() => {
+          loopRefresh()
+        })
+      }
+    }
+    
     watch(() => innerData.normalDisShow, (val) => {
       if (val) {
         nextTick(() => {
-          getNorDis()
+          // getNorDis()
+          loopRefresh()
         })
         // sleep(50).then(() => {
         //   initChart()

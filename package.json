@@ -13,7 +13,7 @@
         "watch": "tsc-watch --noClear -p tsconfig.e.json --onSuccess \"npm-run-all start:ect\"",
         "start:ect": "cross-env NODE_ENV=development electron ./output/build/main.js",
         "build:vue": "vue-tsc --noEmit && vite build && cd ./output/dist && cp index.html D:/NTCode/NTSPC_CEF/NT.SPC/NT.SPC/wwwroot && echo 复制完成",
-        "build:vuePure":"vue-tsc --noEmit && vite build",
+        "build:vuePure": "vue-tsc --noEmit && vite build",
         "build:tsc": "tsc -p tsconfig.e.json",
         "build:allold": "electron-builder --mac --windows",
         "build:all": "electron-builder --windows",
@@ -40,6 +40,7 @@
         "v-drag": "^3.0.9",
         "vue": "^3.2.45",
         "vue-hook-svc": "^0.0.16",
+        "vue-keyboard-virtual-next": "^1.0.4",
         "vue-router": "^4.1.6",
         "vue3-slider": "^1.8.0",
         "webtopo-svg-edit": "^0.0.10"
