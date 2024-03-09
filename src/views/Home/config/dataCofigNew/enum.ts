@@ -23,7 +23,7 @@ export const categoryClassList = Object.keys(categoryClassObj).map(e => {
 })
 
 
-enum DataTypeEnum {
+export enum DataTypeEnum {
   Chart = 1,
   OnlyShow = 2,
   Length = 3,
@@ -32,6 +32,7 @@ enum DataTypeEnum {
   Shaft = 6,
   OnlyRecord = 7,
   Alarm = 8,
+  FFT = 9,
 }
 export const dataTypeEnumNameList = [
   "曲线",
@@ -42,6 +43,7 @@ export const dataTypeEnumNameList = [
   "清零并换轴",
   "仅记录",
   "报警",
+  "FFT",
 ];
 let DataTypeEnumKeyList = Object.keys(DataTypeEnum)
 export const dataTypeEnumList = DataTypeEnumKeyList.slice(0, DataTypeEnumKeyList.length / 2).map((e, i) => {

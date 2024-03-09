@@ -5,6 +5,7 @@ import { callSpc } from "./call";
 import { callFnName } from "./enum";
 import { useSysCfgInnerDataStore } from "@/views/Home/config/sysConfig/innderData";
 import { useMain } from "@/store";
+import { Ref } from "vue";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -73,7 +74,7 @@ export const getRegState = () => { //获取注册状态
     }
   })
 }
-export const focusToInput = (store:ReturnType<typeof useMain>) => {
+export const focusToInput = (store: ReturnType<typeof useMain>) => {
   return sleep(50).then(() => {
     if (store.lastFocusedInput) {
       store.lastFocusedInput.focus()
@@ -82,16 +83,26 @@ export const focusToInput = (store:ReturnType<typeof useMain>) => {
   })
 }
 
-export const  isSingleLetter = (str:string) => {
+export const isSingleLetter = (str: string) => {
   return /^[A-Za-z]$/.test(str);
 }
 
 //main是shift这种按键，sec是普通按键
-export const multiPressKey = (main:number,sec:number) => {
+export const multiPressKey = (main: number, sec: number) => {
   callSpc(callFnName.keyDown, main).then(() => {
     return callSpc(callFnName.keyPress, sec)
   }).then(() => {
     return callSpc(callFnName.keyUp, main)
+  })
+}
+
+export const loopGet = (fn: () => Promise<any>, ms: number, isGettingRef: Ref<boolean>) => {
+  fn().then(() => {
+    return sleep(ms)
+  }).then(() => {
+    if (isGettingRef.value) {
+      loopGet(fn,ms,isGettingRef)
+    }
   })
 }
 

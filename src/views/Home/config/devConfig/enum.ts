@@ -81,6 +81,13 @@ driverInfo[`Modbus Tcp Client`] = {
   addressType: 'ModbusAddressModel',
   // addressTypeDefaultData:defaultModbusAddressModel
 }
+driverInfo[`Test FFTC lient`] = {
+  connectType: 'ConnectTcpModel',
+  addressType: 'ModbusAddressModel',
+  // connectType: 'ConnectFFTModel',
+  // addressType: 'ModbusAddressModel',
+  
+}
 
 export enum propNameEnum {
   Host = 'Host',

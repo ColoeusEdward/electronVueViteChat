@@ -9,7 +9,7 @@
 <template>
   <NConfigProvider :locale="zhCN" :theme-overrides="themeOverride">
     <div
-      class="h-[100vh] flex flex-col bg-ele-white overflow-hidden">
+      class="h-[100vh] flex flex-col bg-ele-white overflow-hidden ">
 
     <!-- 侧边栏总组件 -->
     <!-- <navSider v-if="mainHeaderShow" /> -->

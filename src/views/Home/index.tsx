@@ -120,7 +120,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full flex flex-col overflow-hidden relative'} id={'indexCon'}>
+        <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           <GlobalKeyBoard2 />
           {/* <KeepAlive> */}
           <div class={'h-full flex overflow-hidden'}>

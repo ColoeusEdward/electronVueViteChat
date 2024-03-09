@@ -12,7 +12,7 @@ import { AlarmTypeNameList, dataTypeEnumList, dataTypeEnumNameList, UnilateralNa
 import { useDataCfgOutInnerDataStore } from "./innerData";
 
 export default defineComponent({
-  name: 'DataCfgOut',
+  name: 'DataCfgOut',  //数据配置
   setup(props, ctx) {
     const innerData = useDataCfgOutInnerDataStore()
     const msg = useMessage()

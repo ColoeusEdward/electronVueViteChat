@@ -206,6 +206,15 @@ type CpkModel = {
   CpkL: number;
 }
 
+type FFTModel = {
+  Values: number[];
+  Frequency: number;
+  Ffrequencys: number[];
+  Fcounts: number[];
+  Famplitudes: number[];
+  Fphases: number[];
+}
+
 type DistributionModel = {
   Std: number;
   Usl: number;

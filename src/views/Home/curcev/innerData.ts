@@ -26,6 +26,7 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
         value: string;
       } | null,  //当前主屏展示的cpk 选项option
       normalDisShow:false,
+      fftShow:false,
       curNewVal:0,      //当前最新实时值
       curProductCode:'',
       sysConfig:{} as SysConfigEntity[],
@@ -118,6 +119,9 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       }).then(() => {
         this.loopGetCpk(getCount)
       })
+    },
+    setFftShow(val:boolean){
+      this.fftShow = val
     }
   }
 })

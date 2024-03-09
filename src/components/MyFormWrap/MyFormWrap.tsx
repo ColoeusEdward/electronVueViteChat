@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
-import { defineComponent, ref, PropType, onMounted, computed, defineExpose } from "vue";
+import { defineComponent, ref, PropType, onMounted, computed, defineExpose, Ref } from "vue";
 
 export interface formListItem {
   type: string
@@ -24,7 +24,8 @@ export interface formListItem {
   radioList?: { value: string | number, label: string }[],
   min?: number,
   max?: number,
-  radioType?: 'btn' | 'def'
+  radioType?: 'btn' | 'def',
+  hide?: boolean
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -190,7 +191,7 @@ export const MyFormWrap = defineComponent({
         return itemList?.map((item) => {
           return (
             <NGi span={item.width || 12}>
-              {obj[item.type] && obj[item.type](form, item, optionMap)}
+              {(!item.hide) && obj[item.type] && obj[item.type](form, item, optionMap)}
             </NGi>
           )
         }) || []

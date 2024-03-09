@@ -94,6 +94,9 @@ export default defineComponent({
           callSpc(callFnName.keyPress, keyCodeMap.TAB)
         })
       }
+      if (button == '{shift}') {
+        callSpc(callFnName.keyPress, keyCodeMap.SHIFT)
+      }
       if (button == '0' && keyBoardAngle.value == 0) {  //该组件有个bug,开头狂按0会正常写入组件内部, 需要手动清空
         keyboardIns.clearInput()
       }
@@ -140,14 +143,14 @@ export default defineComponent({
           layout: {
             'default': [
               '` 1 2 3 4 5 6 7 8 9 0 - = {bksp}',
-              '{tab} q w e r t y u i o p [ ] \\',
+              'q w e r t y u i o p [ ] \\',
               '{lock} a s d f g h j k l ; \' {enter}',
               '{shift} z x c v b n m , . / {shift}',
               '.com {space} {bksp2}'
             ],
             'lock': [
               '~ ! @ # $ % ^ & * ( ) _ + {bksp}',
-              '{tab} Q W E R T Y U I O P { } |',
+              'Q W E R T Y U I O P { } |',
               '{lock} A S D F G H J K L : " {enter}',
               '{shift} Z X C V B N M < > ? {shift}',
               '.com {space} {bksp2}'
@@ -171,9 +174,10 @@ export default defineComponent({
       return (
         <div class={'absolute right-4 bottom-8 h-[10vh] w-[10vh] flex flex-col items-center justify-center'} onMousedown={(e) => { e.preventDefault() }} >
           {
-            isMounted.value && <Teleport to="#indexCon">
+            isMounted.value && 
+            // <Teleport to="#indexCon">
               <Transition name='slide-fade'>
-                <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-20 p-1 pt-0 bg-[#ececec] rounded-md   w-[68vh] h-[440px] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
+                <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md   w-[68vh] h-[440px] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
                   <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'}>
                     {keyBoardAngle.value}
                   </div>
@@ -181,7 +185,7 @@ export default defineComponent({
                   <div class={'simple-keyboard w-full h-full shrink'}></div>
                 </div>
               </Transition>
-            </Teleport>
+            // </Teleport>
           }
 
 

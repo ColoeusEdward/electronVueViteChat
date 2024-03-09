@@ -3,7 +3,7 @@ import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeU
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, SysConfigEntity } from "~/me";
+import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, FFTModel, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useCurcevInnerDataStore } from "./innerData";
 import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
@@ -11,9 +11,10 @@ import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
 import { frontFnNameEnum, menuIdSplit, menuOptList, menuPropEnum } from "./enum";
-import { getRegState, sleep } from "@/utils/utils";
+import { getRegState, loopGet, sleep } from "@/utils/utils";
 import { useMain } from "@/store";
 import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
+import FFT from "./FFT";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -29,6 +30,7 @@ export default defineComponent({
       curPage: 0,
       pageSize: 3,
     })
+   
     const getSysCfg = () => {
       callSpc(callFnName.getSysConfigs).then((res: SysConfigEntity[]) => {
         // console.log("🚀 ~ file: index.tsx:39 ~ callSpc ~ res:", res)
@@ -141,6 +143,7 @@ export default defineComponent({
     }
     
     getRegState() 
+   
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
       if (option.trueKey && innerData.curDataCfgEntity?.GId == option.trueKey) {
@@ -214,6 +217,7 @@ export default defineComponent({
               </div> */}
 
               <NormalDis />
+              <FFT />
 
               {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2'}>最大显示数据量</span>

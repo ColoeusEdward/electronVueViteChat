@@ -32,6 +32,7 @@ export const menuPropEnum = {
 export const menuIdSplit = '*'
 
 export const nornameDisChartId='normalDisChart'
+export const fftChartId='fftChart'
 
 export const frontFnNameEnum = {
   startCollect:'startCollect',

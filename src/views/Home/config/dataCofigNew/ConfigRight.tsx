@@ -5,7 +5,7 @@ import { NButton, SelectProps, useMessage } from "naive-ui";
 import { defineComponent, reactive, ref, watch } from "vue";
 import { CategoryDataEntity, CategoryNodeEntity, DataConfigEntity } from "~/me";
 import { isCategoryDataEntity, isCategoryNodeEntity } from "@/utils/typeUtil";
-import { AlarmTypeList, dataTypeEnumList, defaultDataConfigForm, UnilateralList } from "./enum";
+import { AlarmTypeList, DataTypeEnum, dataTypeEnumList, defaultDataConfigForm, UnilateralList } from "./enum";
 import { useDataCfgInnerDataStore } from "./innerData";
 import { ajaxPromiseAll } from "@/utils/utils";
 import { useDataCfgOutInnerDataStore } from "../dataCfgOut/innerData";
@@ -17,6 +17,10 @@ export default defineComponent({
     const dataCfgOutInnerData = useDataCfgOutInnerDataStore()
     const msg = useMessage()
     const myFormRef = ref<MyFormWrapIns>()
+    const UnilateralHide = ref(false)
+    const AlarmTypeHide = ref(false)
+    const UnilateralItem = { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 12,hide:UnilateralHide }
+    const AlarmTypeItem = { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 12,hide:AlarmTypeHide }
     const formCfg = reactive({
       form: dataCfgOutInnerData.isEdit ? {...dataCfgOutInnerData.curRow} as DataConfigEntity : {...defaultDataConfigForm} as DataConfigEntity,
       optionMap: {
@@ -24,16 +28,15 @@ export default defineComponent({
       itemList: [
         { type: 'divider', label: '数据设定', width: 24 },
         { type: "input", label: "名称", prop: "Name", rule: 'must', width: 12 },
-        { type: "input", label: "单位", prop: "Unit", rule: 'must', width: 12 },
+        { type: "input", label: "单位", prop: "Unit",  width: 12 },
         { type: "numInput", label: "排序", prop: "SortNum", min: 0, width: 8 },
         { type: "numInput", label: "精度", prop: "Precision", min: 0, width: 8 },
         { type: "select", label: "所属节点", prop: "CategoryNodeId", rule: 'must', width: 8 },
         { type: 'divider', label: '数据范围', width: 24 },
         { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 12 },
-        { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 12 },
-        { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 12 },
         { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
-
+        UnilateralItem,
+        AlarmTypeItem,
       ] as formListItem[],
       hideBtn: false,
       noLargeBtn: false,
@@ -62,6 +65,26 @@ export default defineComponent({
     const cancel = () => {
       dataCfgOutInnerData.setEditShow(false)
     }
+    watch(() => formCfg.form.DataType, (val) => {
+      switch (val) {
+        case DataTypeEnum.Chart:{
+          UnilateralHide.value = false
+          AlarmTypeHide.value = false
+          break;
+        }
+        case DataTypeEnum.Alarm:{
+          UnilateralHide.value = true
+          AlarmTypeHide.value = false
+          break;
+        }
+        default:{
+          UnilateralHide.value = true
+          AlarmTypeHide.value = true
+        }
+      }
+    },{
+      immediate: true
+    })
     const getForm = (selectItem?: typeof innerData.selectItem) => {
       let item = selectItem || innerData.selectItem
       if (!item) return
