@@ -45,6 +45,10 @@ export default defineComponent({
     }
     const onKeyPress = (button: string) => {
       console.log("🚀 ~ file: GlobalKeyBoard.tsx:41 ~ onKeyPress ~ button:", button)
+      if(button == `{bksp}`){
+        keyBoardAngle.value = String(keyBoardAngle.value).slice(0, -1)
+        return
+      }
       if (button == '{enter}') {
         // angle.value = Number(keyBoardAngle.value)
         // store.setEccAngle(angle.value)
@@ -75,12 +79,13 @@ export default defineComponent({
           // simulateKeyPress(),
           resetVal()
         })
-
+        return
       }
       if (button == '{bksp2}') {
         focusToInput(store).then(() => {
           callSpc(callFnName.keyPress, keyCodeMap.BACKSPACE)
         })
+        return
       }
       if (button == '{lock}') {
         commonData.isCapLock = !commonData.isCapLock
@@ -88,18 +93,21 @@ export default defineComponent({
           layoutName: commonData.isCapLock ? 'lock' : 'default'
         })
         callSpc(callFnName.keyPress, keyCodeMap.CAPSLOCK)
+        return
       }
       if (button == '{tab}') {
         focusToInput(store).then(() => {
           callSpc(callFnName.keyPress, keyCodeMap.TAB)
         })
+        return
       }
       if (button == '{shift}') {
         callSpc(callFnName.keyPress, keyCodeMap.SHIFT)
+        return
       }
-      if (button == '0' && keyBoardAngle.value == 0) {  //该组件有个bug,开头狂按0会正常写入组件内部, 需要手动清空
-        keyboardIns.clearInput()
-      }
+      // if (button == '0' && keyBoardAngle.value == 0) {  //该组件有个bug,开头狂按0会正常写入组件内部, 需要手动清空
+      //   keyboardIns.clearInput()
+      // }
 
       // if (button == '{bksp}') {
       //   focusToInput(store).then(() => {
