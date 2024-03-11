@@ -97,6 +97,7 @@ export default defineComponent({
       sleep(10).then(() => {
         innerData.setIsEdit(true)
         innerData.setEditShow(true)
+        //唤起ConfigRight组件
       })
     }
     const del = () => {

@@ -19,22 +19,31 @@ export default defineComponent({
     const myFormRef = ref<MyFormWrapIns>()
     const UnilateralHide = ref(false)
     const AlarmTypeHide = ref(false)
-    const UnilateralItem = { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 12,hide:UnilateralHide }
-    const AlarmTypeItem = { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 12,hide:AlarmTypeHide }
+    const UnilateralItem = { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 12, hide: UnilateralHide }
+    const AlarmTypeItem = { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 12, hide: AlarmTypeHide }
     const formCfg = reactive({
-      form: dataCfgOutInnerData.isEdit ? {...dataCfgOutInnerData.curRow} as DataConfigEntity : {...defaultDataConfigForm} as DataConfigEntity,
+      form: dataCfgOutInnerData.isEdit ? { ...dataCfgOutInnerData.curRow } as DataConfigEntity : { ...defaultDataConfigForm } as DataConfigEntity,
       optionMap: {
       } as Record<string, SelectProps['options']>,
       itemList: [
-        { type: 'divider', label: '数据设定', width: 24 },
-        { type: "input", label: "名称", prop: "Name", rule: 'must', width: 12 },
-        { type: "input", label: "单位", prop: "Unit",  width: 12 },
-        { type: "numInput", label: "排序", prop: "SortNum", min: 0, width: 8 },
-        { type: "numInput", label: "精度", prop: "Precision", min: 0, width: 8 },
-        { type: "select", label: "所属节点", prop: "CategoryNodeId", rule: 'must', width: 8 },
-        { type: 'divider', label: '数据范围', width: 24 },
-        { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 12 },
-        { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
+        {
+          type: 'shadowBox', label: '', width: 24, childCompList: [
+            { type: 'divider', label: '数据设定', width: 24 },
+            { type: "input", label: "名称", prop: "Name", rule: 'must', width: 12 },
+            { type: "input", label: "单位", prop: "Unit", width: 12 },
+            { type: "numInput", label: "排序", prop: "SortNum", min: 0, width: 8 },
+            { type: "numInput", label: "精度", prop: "Precision", min: 0, width: 8 },
+            { type: "select", label: "所属节点", prop: "CategoryNodeId", rule: 'must', width: 8 },
+          ]
+        },
+        {
+          type: 'shadowBox', label: '', width: 24, childCompList: [
+            { type: 'divider', label: '数据范围', width: 24 },
+            { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 12 },
+            { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
+          ]
+        },
+
         UnilateralItem,
         AlarmTypeItem,
       ] as formListItem[],
@@ -67,22 +76,22 @@ export default defineComponent({
     }
     watch(() => formCfg.form.DataType, (val) => {
       switch (val) {
-        case DataTypeEnum.Chart:{
+        case DataTypeEnum.Chart: {
           UnilateralHide.value = false
           AlarmTypeHide.value = false
           break;
         }
-        case DataTypeEnum.Alarm:{
+        case DataTypeEnum.Alarm: {
           UnilateralHide.value = true
           AlarmTypeHide.value = false
           break;
         }
-        default:{
+        default: {
           UnilateralHide.value = true
           AlarmTypeHide.value = true
         }
       }
-    },{
+    }, {
       immediate: true
     })
     const getForm = (selectItem?: typeof innerData.selectItem) => {
@@ -108,7 +117,7 @@ export default defineComponent({
           return new Promise((resolve) => {
             resolve(false)
           })
-      }).then((nodeList:CategoryNodeEntity[]|false) => {
+      }).then((nodeList: CategoryNodeEntity[] | false) => {
         if (nodeList === false) return
         let node = {} as CategoryNodeEntity | undefined | null
         if (isCategoryDataEntity(item!)) {
