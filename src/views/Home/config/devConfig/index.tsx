@@ -1,7 +1,7 @@
 import LargeBtnIcon from "@/components/LargeBtnIcon";
 import { callSpc } from "@/utils/call";
 import { AddOutlined, CloseOutlined, DeleteForeverFilled, EditFilled, KeyboardReturnRound } from "@vicons/material";
-import { NButton, NDataTable, NIcon, NPopconfirm, useMessage } from "naive-ui";
+import { NButton, NDataTable, NDivider, NIcon, NPopconfirm, useMessage } from "naive-ui";
 import { defineComponent, reactive, Transition } from "vue";
 import { DeviceConfigEntity } from "~/me";
 import { useDevCfgInnerData } from "./innerData";
@@ -96,7 +96,11 @@ export default defineComponent({
     return () => {
       return (
         <div class={'w-full h-full flex-col'}>
+
           <div class={'flex flex-shrink-0 justify-start items-center p-2 pt-0 border-0 border-b border-solid border-b-gray-200'}>
+          <div class={'text-[26px] font-semibold'} >
+            设备配置
+          </div>
             <NButton class={' ml-3 my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><AddOutlined /></LargeBtnIcon>} type="primary" size={'large'} onClick={addDev}>添加设备</NButton>
             <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><EditFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={editDev}>编辑设备</NButton>
             <NPopconfirm onPositiveClick={delDev} placement={'bottom'} v-slots={{
@@ -106,6 +110,10 @@ export default defineComponent({
             </NPopconfirm>
             {/* <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={delDev}>删除设备</NButton> */}
             <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><CloseOutlined /></LargeBtnIcon>} type="" size={'large'} onClick={close}>关闭</NButton>
+            
+            {/* <NDivider titlePlacement="left" class={'large-label-size'}  >
+              设备配置
+            </NDivider> */}
           </div>
           <div class={'relative h-full flex-shrink'} style={{ height: 'calc(100% - 60px)' }}>
             {/* <NDataTable bordered={false} maxHeight={''} striped singleLine={false} columns={tableCfg.colList} data={tableCfg.data} size={'large'} >

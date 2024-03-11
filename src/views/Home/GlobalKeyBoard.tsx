@@ -1,4 +1,4 @@
-import { NInputNumber } from "naive-ui";
+import { NInput, NInputNumber } from "naive-ui";
 import { defineComponent, onMounted, onUnmounted, watch, ref, Transition, Teleport, nextTick, computed, reactive } from "vue";
 import { useMain } from "@/store";
 import Keyboard from "simple-keyboard";
@@ -22,6 +22,7 @@ export default defineComponent({
     // ref(false)
     const isMounted = ref(false)
     const inputRef = ref<InputType>()
+    const showTextRef = ref<HTMLDivElement>()
     let keyboardIns: Keyboard
 
 
@@ -36,6 +37,7 @@ export default defineComponent({
       store.setGlobalKeyBoardShow(!keyborardShow.value)
     }
     const onChange = (value: string) => {
+      // console.log("🚀 ~ onChange ~ value:", value)
       // let num = Number(value)
       // if (num >= 359) {
       //   num = 359
@@ -44,9 +46,19 @@ export default defineComponent({
       // keyboardIns.setInput(String(num))
     }
     const onKeyPress = (button: string) => {
-      console.log("🚀 ~ file: GlobalKeyBoard.tsx:41 ~ onKeyPress ~ button:", button)
-      if(button == `{bksp}`){
+      // console.log("🚀 ~ file: GlobalKeyBoard.tsx:41 ~ onKeyPress ~ button:", button)
+      if (button == '{bksp2}') {
+        focusToInput(store).then(() => {
+          return callSpc(callFnName.keyPress, keyCodeMap.BACKSPACE)
+        }).then(() => {
+          // refreshVal()
+          keyboardIns.setCaretPosition(String(keyBoardAngle.value).length);
+        })
+        return
+      }
+      if (button == `{bksp}`) {
         keyBoardAngle.value = String(keyBoardAngle.value).slice(0, -1)
+        keyboardIns.setInput(keyBoardAngle.value)
         return
       }
       if (button == '{enter}') {
@@ -81,12 +93,6 @@ export default defineComponent({
         })
         return
       }
-      if (button == '{bksp2}') {
-        focusToInput(store).then(() => {
-          callSpc(callFnName.keyPress, keyCodeMap.BACKSPACE)
-        })
-        return
-      }
       if (button == '{lock}') {
         commonData.isCapLock = !commonData.isCapLock
         keyboardIns.setOptions({
@@ -116,15 +122,23 @@ export default defineComponent({
       // }
       if (button == '{esc}') {
         store.setGlobalKeyBoardShow(false)
+        return
       }
-      if (button == '{reset}') {
+      if (button == '{reset}' || button == '{clear}') {
         resetVal()
+        return
       }
     }
     const resetVal = () => {
       keyboardIns.clearInput()
       keyBoardAngle.value = ''
       keyboardIns.setInput('')
+    }
+    const refreshVal = () => {
+      let temp = keyBoardAngle.value
+      resetVal()
+      keyboardIns.setInput(String(temp))
+      keyBoardAngle.value = temp
     }
 
     watch(keyborardShow, (nv) => {
@@ -141,6 +155,7 @@ export default defineComponent({
           theme: 'hg-theme-default hg-layout-default myTheme',
           display: {
             '{bksp2}': 'backspace(目标输入框)',
+            '{clear}': '清空',
             // '{bksp}': '←',
             // '{enter}': 'OK',
             // '{esc}': '❌',
@@ -153,14 +168,14 @@ export default defineComponent({
               '` 1 2 3 4 5 6 7 8 9 0 - = {bksp}',
               'q w e r t y u i o p [ ] \\',
               '{lock} a s d f g h j k l ; \' {enter}',
-              '{shift} z x c v b n m , . / {shift}',
+              '{clear} z x c v b n m , . / {shift}',
               '.com {space} {bksp2}'
             ],
             'lock': [
               '~ ! @ # $ % ^ & * ( ) _ + {bksp}',
               'Q W E R T Y U I O P { } |',
               '{lock} A S D F G H J K L : " {enter}',
-              '{shift} Z X C V B N M < > ? {shift}',
+              '{clear} Z X C V B N M < > ? {shift}',
               '.com {space} {bksp2}'
             ]
           },
@@ -182,17 +197,18 @@ export default defineComponent({
       return (
         <div class={'absolute right-4 bottom-8 h-[10vh] w-[10vh] flex flex-col items-center justify-center'} onMousedown={(e) => { e.preventDefault() }} >
           {
-            isMounted.value && 
+            isMounted.value &&
             // <Teleport to="#indexCon">
-              <Transition name='slide-fade'>
-                <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md   w-[68vh] h-[440px] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
-                  <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'}>
-                    {keyBoardAngle.value}
-                  </div>
-                  {/* <NInputNumber ref={(e) => { inputRef.value = e as InputType }} class={'w-full'} value={Number(keyBoardAngle.value)} size={'large'} /> */}
-                  <div class={'simple-keyboard w-full h-full shrink'}></div>
+            <Transition name='slide-fade'>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md   w-[68vh] h-[440px] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
+                <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
+                  {keyBoardAngle.value}
                 </div>
-              </Transition>
+                {/* <NInput value={keyBoardAngle.value}></NInput> */}
+                {/* <NInputNumber ref={(e) => { inputRef.value = e as InputType }} class={'w-full'} value={Number(keyBoardAngle.value)} size={'large'} /> */}
+                <div class={'simple-keyboard w-full h-full shrink'}></div>
+              </div>
+            </Transition>
             // </Teleport>
           }
 

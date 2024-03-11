@@ -25,7 +25,8 @@ export interface formListItem {
   min?: number,
   max?: number,
   radioType?: 'btn' | 'def',
-  hide?: boolean
+  hide?: boolean,
+  childCompList?:formListItem[]
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -160,7 +161,7 @@ export const MyFormWrap = defineComponent({
     }
     const renderDivider = (form: typeof props.form, item: formListItem) => {
       return (
-        <NDivider titlePlacement="left" style={item.style} >
+        <NDivider titlePlacement="left" class={'large-label-size'} style={item.style} >
           {item.label}
         </NDivider>
       )
@@ -175,19 +176,31 @@ export const MyFormWrap = defineComponent({
     const renderFreeComp = (form: typeof props.form, item: formListItem) => {
       return item.renderComp && item.renderComp()
     }
+    
     return (context: any) => {
-
+      const renderShadowBox = (form: typeof props.form,item: formListItem,optionMap: object) => {
+        return (
+          <div class={'border border-solid rounded-2xl bg-white border-gray-200 shadow-md p-4 pt-0 mb-4'}>
+            {/* {item.childCompList && item.childCompList.map(e => ((!e.hide) && obj[e.type] && obj[e.type](form, e, optionMap)))} */}
+            {item.childCompList && (<NGrid xGap={12} yGap={2}>
+              {renderComp(item.childCompList, form, optionMap)}
+            </NGrid>)}
+          </div>
+        )
+      }
+      const obj: Record<string, any> = {
+        input: renderInput,
+        select: renderSelect,
+        switch: renderSwitch,
+        divider: renderDivider,
+        text: renderText,
+        free: renderFreeComp,
+        radio: renderRadio,
+        numInput: renderNumInput,
+        shadowBox:renderShadowBox
+      }
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
-        const obj: Record<string, any> = {
-          input: renderInput,
-          select: renderSelect,
-          switch: renderSwitch,
-          divider: renderDivider,
-          text: renderText,
-          free: renderFreeComp,
-          radio: renderRadio,
-          numInput: renderNumInput
-        }
+        
         return itemList?.map((item) => {
           return (
             <NGi span={item.width || 12}>
@@ -199,7 +212,7 @@ export const MyFormWrap = defineComponent({
 
       return (
         <div class={'w-full h-full  '}>
-          <NForm model={props.form} ref={formRef} rules={finalRule.value} size="medium" labelPlacement="left" >
+          <NForm model={props.form} ref={formRef} rules={finalRule.value} size="large" labelPlacement="left" >
             <NGrid xGap={12} yGap={2}>
               {renderComp(props.itemList, pform.value || {}, props.optionMap || {})}
             </NGrid>

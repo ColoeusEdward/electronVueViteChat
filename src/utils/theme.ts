@@ -10,6 +10,14 @@ const themeOverride:GlobalThemeOverrides = {
   "Radio": {
     "buttonColorActive": "#4d75a1FF",
     "buttonTextColorActive": "#FFFFFF"
+  },
+  "Form":{
+    "labelFontSizeLeftLarge": "18px",
+    // "labelFontSizeLeftMedium": "16px",
+    // "labelFontSizeLeftSmall": "14px",
+    // "labelFontSizeRightLarge": "18px",
+    // "labelFontSizeRightMedium": "16px",
+    // "labelFontSizeRightSmall": "14px"
   }
 }
 

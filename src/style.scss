@@ -129,7 +129,12 @@ body {
     }
   }
 }
-
+.large-label-size{
+  font-size: 20px;
+  .n-divider__title{
+    font-size: 26px;
+  }
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
