@@ -8,7 +8,7 @@ import ModbusTCPSlave from "./RightBlock/ModbusTCPSlave";
 import OPCUA from "./RightBlock/OPCUA";
 
 export default defineComponent({
-  name: 'DataConfig',
+  name: 'DataConfig', 
   setup(props, ctx) {
     const dataConfigPartStore = useDataConfigPartStore()
     const store = useMain()

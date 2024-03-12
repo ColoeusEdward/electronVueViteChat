@@ -6,6 +6,7 @@ import { callFnName } from "./enum";
 import { useSysCfgInnerDataStore } from "@/views/Home/config/sysConfig/innderData";
 import { useMain } from "@/store";
 import { Ref } from "vue";
+import { propNameMap } from "@/views/Home/config/devConfig/enum";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -66,7 +67,7 @@ export const showKeyBoard = () => {
 export const getRegState = () => { //获取注册状态
   const SysCfgInnerData = useSysCfgInnerDataStore()
   callSpc(callFnName.getRegisterState).then((e: ActualResult) => {
-    console.log("🚀 ~ callSpc ~ e:", e)
+    // console.log("🚀 ~ callSpc ~ e:", e)
     if (e != null) {
       SysCfgInnerData.setRegState(true)
     } else {
@@ -94,6 +95,13 @@ export const multiPressKey = (main: number, sec: number) => {
   }).then(() => {
     return callSpc(callFnName.keyUp, main)
   })
+}
+
+export const mapKeyAndTitle = (str: string) => {
+  return {
+    key: str,
+    title: propNameMap[str]
+  }
 }
 
 export const loopGet = (fn: () => Promise<any>, ms: number, isGettingRef: Ref<boolean>) => {

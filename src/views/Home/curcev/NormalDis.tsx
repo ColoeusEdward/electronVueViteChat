@@ -7,6 +7,7 @@ import { useCurcevInnerDataStore } from "./innerData";
 import * as echarts from 'echarts';
 import { nornameDisChartId } from "./enum";
 import { sleep } from "@/utils/utils";
+import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 
 
 export default defineComponent({
@@ -14,7 +15,8 @@ export default defineComponent({
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
     const commonData = reactive({
-      disData:{} as DistributionModel
+      disData: {} as DistributionModel,
+      isInit: false,
     })
     let myChart: echarts.ECharts
 
@@ -26,12 +28,16 @@ export default defineComponent({
         }
       })
     })
- 
+
     const getNorDis = () => {
       return callSpc(callFnName.getNormalDistribution, innerData.curDataCfgEntity?.GId).then((res: DistributionModel) => {
         console.log("🚀 ~ file: NormalDis.tsx:18 ~ getNorDis ~ res:", res)
         commonData.disData = res
-        initChart()
+        if (!commonData.isInit) {
+          initChart()
+        } else {
+          updateChart()
+        }
       })
       // innerData.setIsGetting(false)
     }
@@ -39,9 +45,71 @@ export default defineComponent({
       innerData.setNormalDisShow(false)
       // innerData.setIsGetting(true)
     }
+    const updateChart = () => {
+      let xMin = commonData.disData.NdX[0] * 0.99
+      let xMax = commonData.disData.NdX[commonData.disData.NdX.length - 1] * 1.01
+      myChart.setOption({
+        xAxis: [
+          {
+            type: 'value',
+            // data: commonData.disData.GaussX,
+            // axisPointer: {
+            //   type: 'shadow'
+            // },
+            splitLine: {
+              show: true
+            },
+            max: xMax,
+            min: xMin,
+          }
+        ],
+        series: [
+          {
+            data: commonData.disData.NdY.map((e, i) => {
+              return [commonData.disData.NdX[i], e]
+            }),
+            markLine: {
+              symbol: 'none',
+              lineStyle: {
+                color: 'red',
+                type: 'dashed'
+              },
+              label: {
+                formatter: '上限: ' + commonData.disData.Usl.toFixed(3),
+                position: 'end'
+              },
+              data: [{
+                xAxis: commonData.disData.Lsl, // set the y-axis value for the upper limit
+                label: {
+                  formatter: '下限: ' + commonData.disData.Lsl.toFixed(3),
+                  position: 'end'
+                }
+              }, {
+                xAxis: commonData.disData.Std, // set the y-axis value for the upper limit
+                label: {
+                  formatter: '标准值: ' + commonData.disData.Std.toFixed(3),
+                  position: 'end'
+                },
+                lineStyle: {
+                  color: 'green',
+                  type: 'dashed'
+                },
+              }, {
+                xAxis: commonData.disData.Usl // set the y-axis value for the upper limit
+              },]
+            }
+          },
+          {
+            data: commonData.disData.GaussY.map((e, i) => {
+              return [commonData.disData.GaussX[i], e]
+            })
+          }
+        ]
+      })
+    }
     const initChart = () => {
-      let xMin = commonData.disData.NdX[0]*0.99
-      let xMax = commonData.disData.NdX[commonData.disData.NdX.length - 1]*1.01
+      let xMin = commonData.disData.NdX[0] * 0.99
+      let xMax = commonData.disData.NdX[commonData.disData.NdX.length - 1] * 1.01
 
       let ele = document.getElementById(nornameDisChartId)
       if (!ele) return
@@ -49,7 +117,7 @@ export default defineComponent({
         useDirtyRect: true
       });
       let option = {
-        animation:false,
+        animation: false,
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -139,8 +207,8 @@ export default defineComponent({
             //     return value + ' ml';
             //   }
             // },
-            data: commonData.disData.NdY.map( (e,i) => {
-              return [commonData.disData.NdX[i],e]
+            data: commonData.disData.NdY.map((e, i) => {
+              return [commonData.disData.NdX[i], e]
             }),
             markLine: {
               symbol: 'none',
@@ -149,26 +217,26 @@ export default defineComponent({
                 type: 'dashed'
               },
               label: {
-                formatter: '上限: '+commonData.disData.Usl.toFixed(3),
+                formatter: '上限: ' + commonData.disData.Usl.toFixed(3),
                 position: 'end'
               },
               data: [{
                 xAxis: commonData.disData.Lsl, // set the y-axis value for the upper limit
                 label: {
-                  formatter: '下限: '+commonData.disData.Lsl.toFixed(3),
+                  formatter: '下限: ' + commonData.disData.Lsl.toFixed(3),
                   position: 'end'
                 }
               }, {
                 xAxis: commonData.disData.Std, // set the y-axis value for the upper limit
                 label: {
-                  formatter: '标准值: '+commonData.disData.Std.toFixed(3),
+                  formatter: '标准值: ' + commonData.disData.Std.toFixed(3),
                   position: 'end'
                 },
                 lineStyle: {
                   color: 'green',
                   type: 'dashed'
                 },
-              },{
+              }, {
                 xAxis: commonData.disData.Usl // set the y-axis value for the upper limit
               },]
             }
@@ -183,13 +251,14 @@ export default defineComponent({
             //     return value + ' °C';
             //   }
             // },
-            data: commonData.disData.GaussY.map( (e,i) => {
-              return [commonData.disData.GaussX[i],e]
+            data: commonData.disData.GaussY.map((e, i) => {
+              return [commonData.disData.GaussX[i], e]
             })
           }
         ]
       };
       myChart.setOption(option);
+      commonData.isInit = true
     }
     const loopRefresh = () => {
       if (innerData.normalDisShow) {
@@ -199,7 +268,7 @@ export default defineComponent({
         })
       }
     }
-    
+
     watch(() => innerData.normalDisShow, (val) => {
       if (val) {
         nextTick(() => {
@@ -209,6 +278,8 @@ export default defineComponent({
         // sleep(50).then(() => {
         //   initChart()
         // })
+      } else {
+        commonData.isInit = false
       }
     })
     return () => {
@@ -217,7 +288,9 @@ export default defineComponent({
           {/* <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
             
           </NDropdown> */}
-          <NButton onClick={() => {innerData.setNormalDisShow(true)}} >正态分布</NButton>
+          {innerData.curDataCfgEntity?.DataType && innerData.curDataCfgEntity?.DataType==DataTypeEnum.Chart &&
+            <NButton onClick={() => { innerData.setNormalDisShow(true) }} >正态分布</NButton>
+          }
           <Transition name={'full-pop'}>
             {
               innerData.normalDisShow && <div class={' absolute w-full h-full flex flex-col bg-white top-0 left-0 z-10'}>
@@ -227,7 +300,7 @@ export default defineComponent({
                   </NSpace>
                 </div>
                 <div class={'flex-shrink w-full h-full'} id={nornameDisChartId}>
-                  
+
                 </div>
               </div>
             }

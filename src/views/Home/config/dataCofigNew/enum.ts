@@ -34,6 +34,7 @@ export enum DataTypeEnum {
   Alarm = 8,
   FFT = 9,
 }
+export const DataTypeOnIndex = [DataTypeEnum.Chart, DataTypeEnum.FFT] //展示在首页左半部分的数据类型
 export const dataTypeEnumNameList = [
   "曲线",
   "仅展示",

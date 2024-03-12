@@ -56,7 +56,8 @@ export default defineComponent({
     ]
     const maintainOption2 = ref<PopselectProps['options']>([
       { label: '配置', value: 'option' },
-      { label: '关机', value: 'shutdown' },
+      // { label: '关机', value: 'shutdown' },
+      { label: 'Reload', value: 'Reload' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
       let valueMap: Record<string, () => void> = {
@@ -69,6 +70,9 @@ export default defineComponent({
         shutdown: () => {
           callSpc(callFnName.closeApp).then(() => {
           })
+        },
+        Reload:() => {
+          window.location.reload()
         },
         productHistory: () => {
           configStore.setProductHistoryShow(true)

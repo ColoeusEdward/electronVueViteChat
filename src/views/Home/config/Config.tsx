@@ -45,6 +45,7 @@ export default defineComponent({
 
     const handleTabChange = (value: string) => {
       curTabValue.value = value
+      configStore.setConfigTab(value)
     }
     const invokeKeyBoard = () => {
       // window.ipc.invoke('keyboard')

@@ -43,7 +43,8 @@ export const useConfigStore = defineStore('config', {
       connectDev: localConnectDev as connectDev,
 
       sysConfig: {} as Record<string, string>,
-      originSysConfig:[] as SysConfigEntity[]
+      originSysConfig:[] as SysConfigEntity[],
+      configTab:''
     }
   },
   /**
@@ -123,6 +124,9 @@ export const useConfigStore = defineStore('config', {
     setFormulaCfgShow(value: boolean){
       this.formulaCfgShow = value
     },
+    setConfigTab(value: string){
+      this.configTab = value
+    }
 
   }
 

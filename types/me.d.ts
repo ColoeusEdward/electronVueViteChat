@@ -24,8 +24,9 @@ type ActualResult = {
 }
 
 type DriverInfo = {
-  connectType: string,
-  addressType: string,
+  connectType: string,    //决定连接配置表单有哪些输入项
+  addressType: string,   //决定地址表单有哪些输入项
+  colType: string,      //决定地址表格有哪些列
   // connectTypeDefaultData: DriverConnectType,
   // addressTypeDefaultData: DriverAddressType
 }
@@ -57,6 +58,11 @@ type ConnectTcpModel = {
   Timeout: number;
   Endian32Bit: string;
   Endian16Bit: string;
+}
+
+type ConnectFFTModel = {
+  Host: string;
+  Port: number;
 }
 
 type ConnectComModel = {

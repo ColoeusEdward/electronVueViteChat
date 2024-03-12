@@ -1,6 +1,6 @@
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap"
 import { generateUUID } from "@/utils/utils"
-import { ConnectTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
+import { ConnectFFTModel, ConnectTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
 import { useDevCfgInnerData } from "./innerData"
 
 export const adressSubmitFn = (form: DriverAddressType, innerData: ReturnType<typeof useDevCfgInnerData>) => {
@@ -60,6 +60,10 @@ export const defaultConnectTcpModel: ConnectTcpModel = {
   Timeout: 500,
   Endian16Bit: '21'
 }
+export const defaultConnectFFTModel: ConnectFFTModel = {
+  Host: `127.0.0.1`,
+  Port: 502,
+}
 export const defaultModbusAddressModel: ModbusAddressModel = {
   Area: "[4区]保持寄存器",
   DataType: "[16位]无符号整数",
@@ -79,14 +83,13 @@ driverInfo[`Modbus Tcp Client`] = {
   connectType: 'ConnectTcpModel',
   // connectTypeDefaultData:defaultConnectTcpModel,
   addressType: 'ModbusAddressModel',
+  colType:'defaultCol'
   // addressTypeDefaultData:defaultModbusAddressModel
 }
-driverInfo[`Test FFTC lient`] = {
-  connectType: 'ConnectTcpModel',
-  addressType: 'ModbusAddressModel',
-  // connectType: 'ConnectFFTModel',
-  // addressType: 'ModbusAddressModel',
-  
+driverInfo[`Test FFT Client`] = {
+  connectType: 'ConnectFFTModel',
+  addressType: 'FFTAddressModel',
+  colType:'fftCol'
 }
 
 export enum propNameEnum {
@@ -111,7 +114,8 @@ export enum propNameEnum {
   CountFormula = 'CountFormula',
   ExchangeData = 'ExchangeData',
   EndianBit = 'EndianBit',
-  Endian16Bit = 'Endian16Bit'
+  Endian16Bit = 'Endian16Bit',
+  Frequency = 'Frequency',
 }
 export const propNameMap: Record<string, string> = {
 }
@@ -136,6 +140,7 @@ propNameMap[propNameEnum.DataBits] = '数据位'
 propNameMap[propNameEnum.StopBits] = '停止位'
 propNameMap[propNameEnum.Parity] = '校验位'
 propNameMap[propNameEnum.EndianString] = '字符串高低位'
+propNameMap[propNameEnum.Frequency] = '频率'
 
 
 const mapLabelAndProp = (str: string) => {
@@ -160,6 +165,8 @@ commonFormItemListMap[propNameEnum.DataType] = { type: 'select', ...mapLabelAndP
 commonFormItemListMap[propNameEnum.CountFormula] = { type: 'input', ...mapLabelAndProp(propNameEnum.CountFormula), width: 12, }
 commonFormItemListMap[propNameEnum.ExchangeData] = { type: 'select', ...mapLabelAndProp(propNameEnum.ExchangeData), width: 12,}
 commonFormItemListMap[propNameEnum.EndianBit] = { type: 'select', ...mapLabelAndProp(propNameEnum.EndianBit), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Frequency] = { type: 'input', ...mapLabelAndProp(propNameEnum.Frequency), width: 12, rule: ['must'] }
+
 
 
 

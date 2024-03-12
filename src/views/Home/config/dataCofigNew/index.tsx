@@ -4,7 +4,7 @@ import { callFnName } from "@/utils/enum";
 import { ajaxPromiseAll, sleep } from "@/utils/utils";
 import classNames from "classnames";
 import { NButton, NPopconfirm, NScrollbar, NSpace, NSwitch, NTree, SelectProps, TreeProps, useMessage } from "naive-ui";
-import { defineComponent, nextTick, onBeforeUnmount, onMounted, reactive, Transition } from "vue";
+import { defineComponent, nextTick, onBeforeUnmount, onDeactivated, onMounted, reactive, Transition, watch } from "vue";
 import { CategoryDataEntity, CategoryNodeEntity, DataConfigEntity, DeviceConfigEntity, } from "~/me";
 import { categoryClassList, categoryClassObj, limitList, limitRadioList } from "./enum";
 import { useDataCfgInnerDataStore } from "./innerData";
@@ -13,12 +13,14 @@ import ConfigRight from "./ConfigRight";
 import CDataRight from "./CDataRight";
 import DevConfig from "../devConfig";
 import DetailRigth from "./DetailRigth";
+import { useConfigStore } from "@/store/config";
 
 //数据采集
 export default defineComponent({
   name: 'DataCofigNew', 
   setup(props, ctx) {
     const innerData = useDataCfgInnerDataStore()
+    const configStore = useConfigStore()
     innerData.cleanSelectItem()
     const msg = useMessage()
     let allList = [] as (CategoryNodeEntity | CategoryDataEntity)[]
@@ -162,7 +164,11 @@ export default defineComponent({
     onMounted(() => {
       innerData.setIsMemberAddMore(false)
     })
-
+    watch(() => configStore.configTab, (val) => {
+      if(val != 'dataConfig'){
+        innerData.setDevCfgShow(false)
+      }
+    })
     return () => {
       return (
         <div class={'w-full h-full flex relative'}>

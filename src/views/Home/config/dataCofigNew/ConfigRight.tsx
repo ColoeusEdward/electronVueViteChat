@@ -41,11 +41,10 @@ export default defineComponent({
             { type: 'divider', label: '数据范围', width: 24 },
             { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 12 },
             { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
+            UnilateralItem,
+            AlarmTypeItem,
           ]
         },
-
-        UnilateralItem,
-        AlarmTypeItem,
       ] as formListItem[],
       hideBtn: false,
       noLargeBtn: false,

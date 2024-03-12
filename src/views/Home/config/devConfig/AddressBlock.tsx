@@ -3,19 +3,15 @@ import { } from "naive-ui";
 import { computed, defineComponent, reactive, Transition, watch } from "vue";
 import { DriverAddressType } from "~/me";
 import AddressForm from "./addressForm";
-import { propNameEnum, propNameMap } from "./enum";
+import { addressTableColMap } from "./addressTableCol";
+import { driverInfo, propNameEnum, propNameMap } from "./enum";
 import { useDevCfgInnerData } from "./innerData";
 
 export default defineComponent({
   name: 'AddressBlock',
   setup(props, ctx) {
     const innerData = useDevCfgInnerData()
-    const mapKeyAndTitle = (str: string) => {
-      return {
-        key: str,
-        title: propNameMap[str]
-      }
-    }
+    
     const driverName = computed(() => {
       return innerData.devConfigForm.DriverName
     })
@@ -25,13 +21,7 @@ export default defineComponent({
           type: 'selection',
           multiple: false,
         },
-        { ...mapKeyAndTitle(propNameEnum.DataName), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.SlaveId), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.Area), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.Index), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.Length), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.DataType), resizable: true },
-        { ...mapKeyAndTitle(propNameEnum.CountFormula), resizable: true },
+        ...addressTableColMap[driverInfo[driverName.value].colType]
       ],
       data: innerData.addressDataList,
       rowKey: (row: DriverAddressType) => row.DataName,

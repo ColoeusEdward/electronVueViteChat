@@ -1,6 +1,7 @@
-import {  } from "naive-ui";
+import { } from "naive-ui";
 import { computed, defineComponent } from "vue";
 import { driverInfo } from "../enum";
+import FFTAddressModelForm from "./FFTAddressModelForm";
 import ModbusAddressModelForm from "./ModbusAddressModelForm";
 
 export default defineComponent({
@@ -17,9 +18,10 @@ export default defineComponent({
     })
 
     const driverFormMap: Record<string, any> = {
-      ModbusAddressModel: <ModbusAddressModelForm />
+      ModbusAddressModel: <ModbusAddressModelForm />,
+      FFTAddressModel: <FFTAddressModelForm />
     }
-    
+
 
     return () => {
       return driverFormMap[addressType.value] || (

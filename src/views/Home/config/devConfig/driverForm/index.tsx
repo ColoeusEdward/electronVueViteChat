@@ -1,6 +1,7 @@
 import { } from "naive-ui";
 import { computed, defineComponent } from "vue";
 import { driverInfo } from "../enum";
+import ConnectFFTModelForm from "./ConnectFFTModelForm";
 import ConnectTcpModelForm from "./ConnectTcpModelForm";
 
 export default defineComponent({
@@ -17,7 +18,8 @@ export default defineComponent({
     })
 
     const driverFormMap: Record<string, any> = {
-      ConnectTcpModel: <ConnectTcpModelForm />
+      ConnectTcpModel: <ConnectTcpModelForm />,
+      ConnectFFTModel: <ConnectFFTModelForm />
     }
     
 

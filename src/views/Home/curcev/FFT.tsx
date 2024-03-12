@@ -7,6 +7,7 @@ import { FFTModel } from "~/me";
 import { fftChartId } from "./enum";
 import { useCurcevInnerDataStore } from "./innerData";
 import * as echarts from 'echarts';
+import { DataTypeEnum } from "../config/dataCofigNew/enum";
 
 export default defineComponent({
   name: '',
@@ -18,7 +19,7 @@ export default defineComponent({
       xList: [] as number[],
       // yList: [] as {value:number,label:{show:boolean}}[],
       yList: [] as number[],
-      maxList:[{ name: '周最低', value: `-2`, xAxis: 1, yAxis: -1.5 }],
+      maxList: [{ name: '周最低', value: `-2`, xAxis: 1, yAxis: -1.5 }],
       isMounted: false,
       isInit: false
     })
@@ -46,21 +47,21 @@ export default defineComponent({
         commonData.data = res
         commonData.xList = res.Ffrequencys
         commonData.yList = res.Fcounts
-        let tempList = res.Ffrequencys.map((e,i) => {
+        let tempList = res.Ffrequencys.map((e, i) => {
           return {
-            x:e,
-            y:res.Fcounts[i]
+            x: e,
+            y: res.Fcounts[i]
           }
         })
-        commonData.maxList = tempList.filter(e=>e.y>1).map(e=>{
+        commonData.maxList = tempList.filter(e => e.y > 1).map(e => {
           return {
-            name:'计数',
-            value:`频率:${e.x}\n幅度:${Number(e.y.toFixed(3))}`,
-            xAxis:e.x,
-            yAxis:e.y
+            name: '计数',
+            value: `频率:${e.x}\n幅度:${Number(e.y.toFixed(3))}`,
+            xAxis: e.x,
+            yAxis: e.y
           }
         })
-        
+
         if (!commonData.isInit) {
           initChart()
           return
@@ -78,17 +79,18 @@ export default defineComponent({
     }
     const initChart = () => {
       let ele = document.getElementById(fftChartId)
+      console.log("🚀 ~ initChart ~ ele:", ele)
       if (!ele) return
       myChart = echarts.init(ele, undefined, {
         // useDirtyRect: true
       });
       let option = {
         animation: false,
-        grid:{
-          containLabel:true,
-          top:'10%',
-          left:'0%',
-          right:'2%'
+        grid: {
+          containLabel: true,
+          top: '10%',
+          left: '0%',
+          right: '2%'
         },
         tooltip: {
           trigger: 'axis',
@@ -130,7 +132,7 @@ export default defineComponent({
             // max: 250,
             // interval: 50,
             max: function (value: any) {
-              return value.max*1.01
+              return value.max * 1.01
             },
             // min: function (value: any) {
             //   return value.min.toFixed(3)
@@ -156,15 +158,15 @@ export default defineComponent({
             name: '高频数据(FFT)',
             type: 'line',
             label: {
-              fontSize:16
+              fontSize: 16
             },
-            markPoint:{
-              symbol:'pin',
-              symbolSize:[120,80],
-              data:commonData.maxList,
-              label:{
+            markPoint: {
+              symbol: 'pin',
+              symbolSize: [120, 80],
+              data: commonData.maxList,
+              label: {
                 // color:'#fff',
-                lineHeight:14
+                lineHeight: 14
               }
             },
             // yAxisIndex: 0,
@@ -181,41 +183,51 @@ export default defineComponent({
       myChart.setOption(option);
       commonData.isInit = true
     }
-    watch(() => innerData.fftShow, (val) => {
-      if (val) {
+    watch(() => innerData.curDataCfgEntity?.DataType, (val) => {
+      if (val == DataTypeEnum.FFT) {
         loopGet(getFFT, 5000, loopGetRef)
-      }else{
+      } else {
         commonData.isInit = false
       }
-    })
+    },{immediate:true})
     onMounted(() => {
 
     })
 
     return () => {
       return (
-        <div class={''}>
-          {/* <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
-            
-          </NDropdown> */}
-          <NButton onClick={() => { innerData.setFftShow(true) }} >高频数据</NButton>
-          <Transition name={'full-pop'}>
-            {
-              innerData.fftShow && <div class={' absolute w-full h-full flex flex-col bg-white top-0 left-0 z-10'}>
-                <div class={'px-2 pt-2'}>
-                  <NSpace>
-                    <NButton class={'my-large-btn'} size={'large'} onClick={back} >返回</NButton>
-                  </NSpace>
-                </div>
-                <div class={'flex-shrink w-full h-full'} id={fftChartId}>
+        <div class={'w-full h-full flex flex-col '}>
+          {/* <div class={'px-2 pt-2'}>
+            <NSpace>
+              <NButton class={'my-large-btn'} size={'large'} onClick={back} >返回</NButton>
+            </NSpace>
+          </div> */}
+          <div class={'flex-shrink w-full h-full'} id={fftChartId}>
 
-                </div>
-              </div>
-            }
-
-          </Transition>
-
+          </div>
         </div>
+        // <div class={''}>
+        //   {/* <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
+
+        //   </NDropdown> */}
+        //   <NButton onClick={() => { innerData.setFftShow(true) }} >高频数据</NButton>
+        //   <Transition name={'full-pop'}>
+        //     {
+        //       innerData.fftShow && <div class={' absolute w-full h-full flex flex-col bg-white top-0 left-0 z-10'}>
+        //         <div class={'px-2 pt-2'}>
+        //           <NSpace>
+        //             <NButton class={'my-large-btn'} size={'large'} onClick={back} >返回</NButton>
+        //           </NSpace>
+        //         </div>
+        //         <div class={'flex-shrink w-full h-full'} id={fftChartId}>
+
+        //         </div>
+        //       </div>
+        //     }
+
+        //   </Transition>
+
+        // </div>
       )
     }
   }

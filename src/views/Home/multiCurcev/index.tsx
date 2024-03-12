@@ -6,6 +6,7 @@ import CurcevChartRow from "../curcev/CurcevChartRow";
 import { useCurcevInnerDataStore } from "../curcev/innerData";
 import { chartId } from "./enum";
 import niotLogo from '@/assets/login_logos.png';
+import { DataTypeEnum } from "../config/dataCofigNew/enum";
 
 export default defineComponent({
   name: 'MultiCurcev',
@@ -20,6 +21,9 @@ export default defineComponent({
     })
     const prevShow = computed(() => {
       return commonData.curPage > 0
+    })
+    const dataList = computed(() => {
+      return curCevInnerData.dataCfgList.filter(e=>e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
     })
     const nextPage = () => {
       commonData.curPage = commonData.curPage + 1
@@ -59,7 +63,7 @@ export default defineComponent({
           </div>
           <div class={'flex-shrink w-full h-full pb-2 overflow-hidden'}>
             <div class={'w-full h-full'}>
-              {curCevInnerData.dataCfgList.slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize).map((e: DataConfigEntity, i) => {
+              {dataList.value.map((e: DataConfigEntity, i) => {
                 return <CurcevChartRow i={i} dataConfig={e} chartId={chartId} />
               })}
             </div>
