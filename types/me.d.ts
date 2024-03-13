@@ -31,8 +31,8 @@ type DriverInfo = {
   // addressTypeDefaultData: DriverAddressType
 }
 
-type DriverConnectType = ConnectTcpModel | ConnectComModel
-type DriverAddressType = ModbusAddressModel
+type DriverConnectType = ConnectTcpModel | ConnectComModel | ConnectFFTModel
+type DriverAddressType = ModbusAddressModel | FFTAddressModel
 
 type SysConfigEntity = {  //原始ActualResult
   Name: string

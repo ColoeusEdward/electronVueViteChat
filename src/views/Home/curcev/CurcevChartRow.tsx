@@ -147,6 +147,7 @@ export default defineComponent({
           innerData.setCurDataLength(length)
           res[length-1] && innerData.setCurNewVal(res[length-1].Value)
         }
+        // filter((e,i) => i % 2 == 0)
         let list = res.map(e => {
           return [e.Intime, e.Value]
         })

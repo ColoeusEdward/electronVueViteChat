@@ -47,7 +47,7 @@ export default defineComponent({
         if (res.length == 0) {
           return sleep(500).then(() => refresh())
         }
-        let list = res.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType)))
+        let list = res
         console.log("🚀 ~ returncallSpc ~ list:", list)
         commonData.cfgDataList = list.sort((a, b) => a.SortNum - b.SortNum)
         innerData.setDataCfgList(list)
@@ -120,7 +120,7 @@ export default defineComponent({
     const menuOpt = computed(() => {
       let opt = menuOptList
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
-      sitem && (sitem.children = commonData.cfgDataList.map(e => {
+      sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
         return {
           label: e.Name,
           key: menuPropEnum.dataSource + menuIdSplit + e.GId,
@@ -184,15 +184,15 @@ export default defineComponent({
     // )
     console.log(`curcev create`,);
     onMounted(() => {
-      if(innerData.isFirst){
+      if (innerData.isFirst) {
         sleep(500).then(() => {
           innerData.setIsFirst(false)
           return refresh()
         })
-      }else{
+      } else {
         return refresh()
       }
-      
+
     })
     onBeforeUnmount(() => {
       innerData.addReMounted()
@@ -205,10 +205,11 @@ export default defineComponent({
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>
               <div></div>
-              <NDropdown  options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
-                  <NButton strong={true} type="primary" secondary size={'large'} class={'h-12 w-28 shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}>   <span class={'text-2xl'}>菜单</span>
-                  </NButton>
-                </NDropdown>
+              <NDropdown options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
+                {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
+                <NButton strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                </NButton>
+              </NDropdown>
               {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>

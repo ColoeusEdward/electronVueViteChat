@@ -1,5 +1,5 @@
 import { NTabs, NTabPane, NDropdown, DropdownProps, MenuOption, NScrollbar } from "naive-ui";
-import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from "vue";
 import activeImg from '@/assets/PnlBtnActive.png'
 import { useMain } from "@/store";
 import closeBtn from '@/assets/LedCloseBtn.png'
@@ -13,11 +13,18 @@ import { useCurcevInnerDataStore } from "./curcev/innerData";
 import { CpkModel } from "~/me";
 import { cpkModelPropName } from "./curcev/enum";
 import classNames from "classnames";
+import RightOtherValue from "./RightOtherValue";
 
-const ValueRow = defineComponent({
+export interface RightValueType {
+  label?: string,
+  title?: string,
+  value?: number,
+  unit?: string
+}
+export const ValueRow = defineComponent({
   name: 'ValueRow',
   props: {
-    data: Object,
+    data: Object as PropType<RightValueType>,
     x: {
       type: Number,
       required: true
@@ -26,9 +33,9 @@ const ValueRow = defineComponent({
       type: Number,
       required: true
     },
-    fixNum:{
-      type:Number,
-      default:8
+    fixNum: {
+      type: Number,
+      default: 8
     }
   },
   setup(props, ctx) {
@@ -90,13 +97,13 @@ const ValueRow = defineComponent({
     return () => {
       return (
         <div class={'w-full shrink mb-1'}>
-          <div class={classNames('flex items-center w-full  py-1',{'pt-0':props.y==0}) }>
+          <div class={classNames('flex items-center w-full  py-1', { 'pt-0': props.y == 0 })}>
             <span class={'text-2xl'}>{props.data?.title || ''}</span>
             {/* {renderAddOrDel()} */}
           </div>
           <div class={'flex items-end w-full  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
             <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-3 value-number'}>
-              <span class={classNames(' font-semibold text-[#003a62]',{'text-4xl':store.isLowRes,' text-6xl':!store.isLowRes})} >{props.data?.value.toFixed(props.fixNum)  || ''}</span>
+              <span class={classNames(' font-semibold text-[#003a62]', { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })} >{props.data?.value!.toFixed(props.fixNum) || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >
               <span class={'mb-2'}>{props.data?.unit || '  '}</span>
@@ -132,7 +139,7 @@ export default defineComponent({
     const curTabValue = ref('value1')
     let startLoop = false
     const cpkList = computed(() => {
-      if(!curCevInnerData.curCpk) return []
+      if (!curCevInnerData.curCpk) return []
       let list = Object.keys(curCevInnerData.curCpk).map((key) => {
         let k = key as keyof CpkModel
         return {
@@ -143,15 +150,15 @@ export default defineComponent({
         }
       })
       let sortList = [] as typeof list
-      let tempList = ['Avg','Max','Min','Sd','Ca','Cp','Cpk']
+      let tempList = ['Avg', 'Max', 'Min', 'Sd', 'Ca', 'Cp', 'Cpk']
       list.forEach(e => {
         let idx = tempList.findIndex(e1 => e1 == e.label)
-        if(idx > -1){
+        if (idx > -1) {
           sortList[idx] = e
         }
       })
-          // console.log("🚀 ~ cpkList ~ sortList:", sortList)
-          return sortList
+      // console.log("🚀 ~ cpkList ~ sortList:", sortList)
+      return sortList
     })
     const fixNumRef = computed(() => {
       let val = curCevInnerData.sysConfig.find(e => e.Name == 'Precision')?.Value
@@ -186,14 +193,19 @@ export default defineComponent({
     return () => {
       return (
         <NTabs type="card" animated size="large" barWidth={1148} value={curTabValue.value} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'value1'} >
-          <NTabPane displayDirective="show:lazy" name="value1" tab="value" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
+          <NTabPane displayDirective="if" name="value1" tab="Value" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
             <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
               {/* <NScrollbar> */}
-                {cpkList.value.map((e, i) => {
-                  return <ValueRow key={i} x={0} y={i} data={e} fixNum={fixNumRef.value} />
-                })}
+              {cpkList.value.map((e, i) => {
+                return <ValueRow key={i} x={0} y={i} data={e} fixNum={fixNumRef.value} />
+              })}
               {/* </NScrollbar> */}
 
+            </div>
+          </NTabPane>
+          <NTabPane displayDirective="if" name="other" tab="Other" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'other' ? activeStyle : {} } }}>
+            <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
+              <RightOtherValue />
             </div>
           </NTabPane>
           {/* <NTabPane displayDirective="show:lazy" name="value2" tab="value2" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value2' ? activeStyle : {} } }}>

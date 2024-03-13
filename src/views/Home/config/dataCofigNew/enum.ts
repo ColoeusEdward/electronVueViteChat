@@ -35,6 +35,7 @@ export enum DataTypeEnum {
   FFT = 9,
 }
 export const DataTypeOnIndex = [DataTypeEnum.Chart, DataTypeEnum.FFT] //展示在首页左半部分的数据类型
+export const DataTypeOnRight = [DataTypeEnum.OnlyRecord, DataTypeEnum.OnlyShow, DataTypeEnum.Length] //展示在首页右半部分的数据类型
 export const dataTypeEnumNameList = [
   "曲线",
   "仅展示",
@@ -85,5 +86,5 @@ export const defaultDataConfigForm: DataConfigEntity = {
   SortNum: 1,
   Precision: 0,
   DataType: 1,
-  Distance:0
+  Distance: 0
 }

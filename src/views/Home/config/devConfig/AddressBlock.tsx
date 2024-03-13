@@ -15,13 +15,16 @@ export default defineComponent({
     const driverName = computed(() => {
       return innerData.devConfigForm.DriverName
     })
+    const colType = computed(() => {
+      return addressTableColMap[driverInfo[driverName.value||'Modbus Tcp Client'].colType]
+    })
     const tableCfg = reactive({
       columns: [
         {
           type: 'selection',
           multiple: false,
         },
-        ...addressTableColMap[driverInfo[driverName.value].colType]
+        ...colType.value
       ],
       data: innerData.addressDataList,
       rowKey: (row: DriverAddressType) => row.DataName,

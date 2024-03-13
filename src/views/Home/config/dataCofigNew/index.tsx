@@ -174,7 +174,7 @@ export default defineComponent({
         <div class={'w-full h-full flex relative'}>
           <div class={'w-1/2 h-full flex flex-col'}>
             <div class={'w-full h-full  p-2 pt-0'}>
-              <div class={'w-full h-full border border-solid border-gray-200 rounded-md relative flex'}>
+              <div class={'w-full h-full border border-solid border-gray-200 rounded-md shadow-md relative flex'}>
                 <NScrollbar>
                   <div class={'h-full w-full flex-shrink pl-2 pt-2'}>
                     <NTree
