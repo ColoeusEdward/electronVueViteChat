@@ -7,6 +7,7 @@ import { focusToInput, isSingleLetter, multiPressKey, simulateKeyPress, sleep } 
 import { commonKeyCodeSpecCharMap, keyCodeMap, keyCodeUpSpecCharMap, keyCodeUpSpecList } from "@/utils/keyCode";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
+import classnames from "classnames";
 
 type InputType = InstanceType<typeof NInputNumber> | null
 export default defineComponent({
@@ -15,10 +16,12 @@ export default defineComponent({
     const store = useMain()
     const angle = ref(0)
     const commonData = reactive({
-      isCapLock: false
+      isCapLock: false,
+      isNum:false,
     })
     const keyBoardAngle = ref<string | number>('')
     const keyborardShow = computed(() => store.globalKeyBoardShow)
+    const keyBoardWidth = computed(() => commonData.isNum?"80px":"40px")
     // ref(false)
     const isMounted = ref(false)
     const inputRef = ref<InputType>()
@@ -93,6 +96,20 @@ export default defineComponent({
         })
         return
       }
+      if(button == '{123}'){
+        commonData.isNum = !commonData.isNum
+        keyboardIns.setOptions({
+          layoutName: commonData.isNum ? 'num' : 'default'
+        })
+        return 
+      }
+      if(button == '{abc}'){
+        commonData.isNum = !commonData.isNum
+        keyboardIns.setOptions({
+          layoutName: !commonData.isNum ? 'default' : 'num'
+        })
+        return 
+      }
       if (button == '{lock}') {
         commonData.isCapLock = !commonData.isCapLock
         keyboardIns.setOptions({
@@ -155,11 +172,13 @@ export default defineComponent({
           theme: 'hg-theme-default hg-layout-default myTheme',
           display: {
             '{bksp2}': 'backspace(目标输入框)',
+            '{123}': '123',
             '{clear}': '清空',
-            // '{bksp}': '←',
+            '{bksp}': '←',
             // '{enter}': 'OK',
-            // '{esc}': '❌',
-            // '{reset}': 'CE'
+            '{esc}': '❌',
+            '{reset}': 'CE',
+            '{abc}':'abc'
           },
           // // inputPattern: /^(?:[1-9][0-9]{0,2}|0)$/,
           // maxLength: 3,
@@ -169,25 +188,39 @@ export default defineComponent({
               'q w e r t y u i o p [ ] \\',
               '{lock} a s d f g h j k l ; \' {enter}',
               '{clear} z x c v b n m , . / {shift}',
-              '.com {space} {bksp2}'
+              '{123} {space} {bksp2}'
             ],
             'lock': [
               '~ ! @ # $ % ^ & * ( ) _ + {bksp}',
               'Q W E R T Y U I O P { } |',
               '{lock} A S D F G H J K L : " {enter}',
               '{clear} Z X C V B N M < > ? {shift}',
-              '.com {space} {bksp2}'
+              '{123} {space} {bksp2}'
+            ],
+            'num':[
+              '1 2 3',
+              '4 5 6',
+              '7 8 9',
+              '{bksp} 0 {reset}',
+              '{esc} {enter}',
+              '{abc} {bksp2}'
             ]
           },
           buttonTheme: [
             {
-              class: "backspace-style",
-              buttons: "{bksp2}"
-            }
+              class: "no-grow-style",
+              buttons: "{bksp2} {123} {abc} {esc}"
+            },
+          
           ],
           onChange: input => onChange(input),
           onKeyPress: button => onKeyPress(button)
         });
+        if(commonData.isNum){
+          keyboardIns.setOptions({
+            layoutName: 'num'
+          })
+        }
       })
 
     })
@@ -200,7 +233,7 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md   w-[68vh] h-[440px] flex flex-col items-center justify-end'} v-show={keyborardShow.value}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end',{'w-[484px]':commonData.isNum,'w-[1080px]':!commonData.isNum})} v-show={keyborardShow.value}>
                 <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
                 </div>

@@ -166,6 +166,11 @@ export const MyFormWrap = defineComponent({
         </NDivider>
       )
     }
+    const renderSpace = (form: typeof props.form, item: formListItem) => {
+      return (
+        <div style={item.style} >{item.text}</div>
+      )
+    }
     const renderText = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
@@ -197,7 +202,8 @@ export const MyFormWrap = defineComponent({
         free: renderFreeComp,
         radio: renderRadio,
         numInput: renderNumInput,
-        shadowBox:renderShadowBox
+        shadowBox:renderShadowBox,
+        space:renderSpace
       }
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
         

@@ -1,6 +1,6 @@
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap"
 import { generateUUID } from "@/utils/utils"
-import { ConnectFFTModel, ConnectTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
+import { ConnectComModel, ConnectFFTModel, ConnectSiemensModel, ConnectSikoraComModel, ConnectSikoraTcpModel, ConnectTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
 import { useDevCfgInnerData } from "./innerData"
 
 export const adressSubmitFn = (form: DriverAddressType, innerData: ReturnType<typeof useDevCfgInnerData>) => {
@@ -45,6 +45,20 @@ export const AreaList = [
   value: e
 }))
 
+export const PortNameList = [
+  'COM1', 'COM2', 'COM3', 'COM4',
+].map(e => ({
+  label: e,
+  value: e
+}))
+
+export const PlcModelList = [
+  "S200Smart", "S200", "S1200", "S1500", "S300", "S400"
+].map(e => ({
+  label: e,
+  value: e
+}))
+
 export const DataTypeList = ["[1位]布尔型", "[16位]无符号整数", "[16位]有符号整数", "[32位]无符号整数", "[32位]有符号整数", "[32位]浮点数", "[8位]ASCII字符"]
   .map(e => ({
     label: e,
@@ -64,6 +78,42 @@ export const defaultConnectFFTModel: ConnectFFTModel = {
   Host: `127.0.0.1`,
   Port: 502,
 }
+export const defaultConnectComModel: ConnectComModel = {
+  PortName: `COM1`,
+  BaudRate: 9600,
+  DataBits: 8,
+  StopBits: '1',
+  Parity: 'N',
+  SlaveId: 1,
+  Cycle: 100,
+  Timeout: 500,
+  Endian32bit: '3412',
+  EndianString: '21'
+}
+export const defaultConnectSiemensModel: ConnectSiemensModel = {
+  PlcModel: 'S200Smart',
+  Host: `192.168.2.1`,
+  Port: 102,
+  Slot: '0',
+  Rack: '1',
+  Cycle: 100,
+  Timeout: 500
+}
+export const defaultConnectSikoraTcpModel: ConnectSikoraTcpModel = {
+  Host: ``,
+  Port: 2001,
+  Cycle: 100,
+  Timeout: 500
+}
+export const defaultConnectSikoraComModel: ConnectSikoraComModel = {
+  PortName: `COM1`,
+  BaudRate: 19200,
+  DataBits: 8,
+  StopBits: '1',
+  Parity: 'N',
+  Cycle: 100,
+  Timeout: 500,
+}
 export const defaultModbusAddressModel: ModbusAddressModel = {
   Area: "[4区]保持寄存器",
   DataType: "[16位]无符号整数",
@@ -75,7 +125,7 @@ export const defaultModbusAddressModel: ModbusAddressModel = {
   DataName: ""
 }
 export const defaultData: Record<string, DriverConnectType | DriverAddressType> = {
-  defaultConnectTcpModel, defaultModbusAddressModel
+  defaultConnectTcpModel, defaultModbusAddressModel,defaultConnectFFTModel,defaultConnectSiemensModel
 }
 
 export const driverInfo = {} as Record<string, DriverInfo>
@@ -83,13 +133,25 @@ driverInfo[`Modbus Tcp Client`] = {
   connectType: 'ConnectTcpModel',
   // connectTypeDefaultData:defaultConnectTcpModel,
   addressType: 'ModbusAddressModel',
-  colType:'defaultCol'
+  colType: 'defaultCol'
   // addressTypeDefaultData:defaultModbusAddressModel
 }
 driverInfo[`Test FFT Client`] = {
   connectType: 'ConnectFFTModel',
   addressType: 'FFTAddressModel',
-  colType:'fftCol'
+  colType: 'fftCol'
+}
+
+driverInfo[`Modbus Rtu Client`] = {
+  connectType: 'ConnectComModel',
+  addressType: 'ModbusAddressModel',
+  colType: 'defaultCol'
+}
+
+driverInfo[`Siemens S7 Client`] = {
+  connectType: 'ConnectSiemensModel',
+  addressType: 'SiemensAddressModel',
+  colType: 'SiemensCol'
 }
 
 export enum propNameEnum {
@@ -116,6 +178,12 @@ export enum propNameEnum {
   EndianBit = 'EndianBit',
   Endian16Bit = 'Endian16Bit',
   Frequency = 'Frequency',
+  PlcModel = 'PlcModel',
+  Slot = 'Slot',
+  Rack = 'Rack',
+  Address = 'Address',
+  Offset = 'Offset',
+  CountMark = 'CountMark'
 }
 export const propNameMap: Record<string, string> = {
 }
@@ -141,6 +209,13 @@ propNameMap[propNameEnum.StopBits] = '停止位'
 propNameMap[propNameEnum.Parity] = '校验位'
 propNameMap[propNameEnum.EndianString] = '字符串高低位'
 propNameMap[propNameEnum.Frequency] = '频率'
+propNameMap[propNameEnum.PlcModel] = 'PLC型号'
+propNameMap[propNameEnum.Slot] = '槽位'
+propNameMap[propNameEnum.Rack] = '机架'
+propNameMap[propNameEnum.Address] = '起始地址'
+propNameMap[propNameEnum.Offset] = '数据偏移量'
+propNameMap[propNameEnum.CountMark] = '计算标志'
+
 
 
 const mapLabelAndProp = (str: string) => {
@@ -163,9 +238,21 @@ commonFormItemListMap[propNameEnum.Index] = { type: 'input', ...mapLabelAndProp(
 commonFormItemListMap[propNameEnum.Length] = { type: 'input', ...mapLabelAndProp(propNameEnum.Length), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.DataType] = { type: 'select', ...mapLabelAndProp(propNameEnum.DataType), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.CountFormula] = { type: 'input', ...mapLabelAndProp(propNameEnum.CountFormula), width: 12, }
-commonFormItemListMap[propNameEnum.ExchangeData] = { type: 'select', ...mapLabelAndProp(propNameEnum.ExchangeData), width: 12,}
+commonFormItemListMap[propNameEnum.ExchangeData] = { type: 'select', ...mapLabelAndProp(propNameEnum.ExchangeData), width: 12, }
 commonFormItemListMap[propNameEnum.EndianBit] = { type: 'select', ...mapLabelAndProp(propNameEnum.EndianBit), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Frequency] = { type: 'input', ...mapLabelAndProp(propNameEnum.Frequency), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.PortName] = { type: 'select', ...mapLabelAndProp(propNameEnum.PortName), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.BaudRate] = { type: 'input', ...mapLabelAndProp(propNameEnum.BaudRate), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.DataBits] = { type: 'input', ...mapLabelAndProp(propNameEnum.DataBits), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.StopBits] = { type: 'input', ...mapLabelAndProp(propNameEnum.StopBits), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Parity] = { type: 'input', ...mapLabelAndProp(propNameEnum.Parity), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.EndianString] = { type: 'input', ...mapLabelAndProp(propNameEnum.EndianString), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.PlcModel] = { type: 'select', ...mapLabelAndProp(propNameEnum.PlcModel), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Slot] = { type: 'input', ...mapLabelAndProp(propNameEnum.Slot), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Rack] = { type: 'input', ...mapLabelAndProp(propNameEnum.Rack), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Address] = { type: 'input', ...mapLabelAndProp(propNameEnum.Address), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Offset] = { type: 'input', ...mapLabelAndProp(propNameEnum.Offset), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.CountMark] = { type: 'select', ...mapLabelAndProp(propNameEnum.CountMark), width: 12, rule: ['must'] }
 
 
 

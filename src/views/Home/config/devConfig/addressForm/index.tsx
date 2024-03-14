@@ -3,6 +3,8 @@ import { computed, defineComponent } from "vue";
 import { driverInfo } from "../enum";
 import FFTAddressModelForm from "./FFTAddressModelForm";
 import ModbusAddressModelForm from "./ModbusAddressModelForm";
+import SiemensAddressModelForm from "./SiemensAddressModelForm";
+import SikoraAddressModelForm from "./SikoraAddressModelForm";
 
 export default defineComponent({
   name: 'AddressForm',
@@ -19,7 +21,9 @@ export default defineComponent({
 
     const driverFormMap: Record<string, any> = {
       ModbusAddressModel: <ModbusAddressModelForm />,
-      FFTAddressModel: <FFTAddressModelForm />
+      FFTAddressModel: <FFTAddressModelForm />,
+      SiemensAddressModel: <SiemensAddressModelForm/>,
+      SikoraAddressModel:<SikoraAddressModelForm/>
     }
 
 

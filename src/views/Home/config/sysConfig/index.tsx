@@ -145,7 +145,7 @@ export default defineComponent({
 
     watch(() => cfgData.value.InputType, (val) => {
       if (val == "True") {
-        showKeyBoard()
+        // showKeyBoard()
       }
     })
 

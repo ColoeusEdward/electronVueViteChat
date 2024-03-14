@@ -15,10 +15,24 @@ import { propNameEnum } from "../enum";
   { ...mapKeyAndTitle(propNameEnum.DataName), resizable: true },
   { ...mapKeyAndTitle(propNameEnum.Frequency), resizable: true },
   { ...mapKeyAndTitle(propNameEnum.DataType), resizable: true },
-
 ]
+
+const SiemensCol = [
+  { ...mapKeyAndTitle(propNameEnum.DataName), resizable: true },
+  { ...mapKeyAndTitle(propNameEnum.Address), resizable: true },
+  { ...mapKeyAndTitle(propNameEnum.Length), resizable: true },
+  { ...mapKeyAndTitle(propNameEnum.DataType), resizable: true },
+  { ...mapKeyAndTitle(propNameEnum.CountFormula), resizable: true },
+  { ...mapKeyAndTitle(propNameEnum.ExchangeData), resizable: true },
+]
+
+// const SiemensCol = [
+  
+// ]
+
 
 export const addressTableColMap:Record<string, typeof defaultCol> = {
   defaultCol,
-  fftCol
+  fftCol,
+  SiemensCol
 }

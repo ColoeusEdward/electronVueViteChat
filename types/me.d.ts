@@ -31,8 +31,8 @@ type DriverInfo = {
   // addressTypeDefaultData: DriverAddressType
 }
 
-type DriverConnectType = ConnectTcpModel | ConnectComModel | ConnectFFTModel
-type DriverAddressType = ModbusAddressModel | FFTAddressModel
+type DriverConnectType = ConnectTcpModel | ConnectComModel | ConnectFFTModel | ConnectSiemensModel | ConnectSikoraTcpModel
+type DriverAddressType = ModbusAddressModel | FFTAddressModel | SiemensAddressModel
 
 type SysConfigEntity = {  //原始ActualResult
   Name: string
@@ -78,6 +78,33 @@ type ConnectComModel = {
   EndianString: string;
 }
 
+type ConnectSiemensModel = {
+  PlcModel: string;  // PLC型号
+  Host: string;
+  Port: number;
+  Slot: string;
+  Rack: string;
+  Cycle: number;
+  Timeout: number;
+}
+
+type ConnectSikoraTcpModel = {
+  Host: string;
+  Port: number;
+  Cycle: number;
+  Timeout: number;
+}
+
+type ConnectSikoraComModel = {
+  PortName: string;
+  BaudRate: number;
+  DataBits: number;
+  StopBits: string;
+  Parity: string;
+  Cycle: number;
+  Timeout: number;
+}
+
 type ModbusAddressModel = {
   Id?: string;          //前端生成并使用的ID
   DataName: string;
@@ -90,6 +117,28 @@ type ModbusAddressModel = {
   ExchangeData?: string;
   EndianBit: string;
 }
+
+type SiemensAddressModel = {
+  DataName: string;
+  Address: string;
+  Length: number;
+  DataType: string;
+  CountFormula?: string;
+  ExchangeData?: string;
+  Rate: string;
+  Offset: string;
+}
+type SikoraAddressModel = {
+  DataName: string;
+  Address: string;
+  Index: number;
+  Length: number;
+  DataType: string;
+  CountFormula?: string;
+  ExchangeData?: string;
+  CountMark: string;
+}
+
 
 type CategoryNodeEntity = {
   GId: string;

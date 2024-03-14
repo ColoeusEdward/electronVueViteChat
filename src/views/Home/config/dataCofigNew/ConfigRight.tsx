@@ -45,6 +45,7 @@ export default defineComponent({
             AlarmTypeItem,
           ]
         },
+        {type:'space',width:24,style:{height:'20px'}},
       ] as formListItem[],
       hideBtn: false,
       noLargeBtn: false,
