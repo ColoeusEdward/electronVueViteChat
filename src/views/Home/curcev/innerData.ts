@@ -15,7 +15,7 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       isGetting: false, //是否开始采集
       maxDataNum: typeof localMaxDataNum == 'number' ? localMaxDataNum : 100000, //最大显示数据量
       startTime: Date.now(),
-      samplingNum: 1000, //降采样临界数据量
+      samplingNum: 800, //降采样临界数据量
       curDataLength: 0,
       dataCfgList: [] as DataConfigEntity[],
       curDataCfgEntity: null as DataConfigEntity | null | undefined, //当前数据源实体

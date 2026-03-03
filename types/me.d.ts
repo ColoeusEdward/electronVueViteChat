@@ -12,7 +12,8 @@ declare global {
     CefSharp: any,
     spcJsBind: any,
     $message: MessageApiInjection,
-    frontFn: Record<string,Function>
+    frontFn: Record<string,Function>,
+    chrome: any
   }
 }
 

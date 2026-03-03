@@ -106,17 +106,17 @@ export default defineComponent({
             formatter: '{value} ' + props.dataConfig?.Unit // Specify the unit here
           }
         },
-        dataZoom: [
-          {
-            type: 'inside',
-            start: 0,
-            end: 100
-          },
-          {
-            start: 0,
-            end: 100
-          }
-        ],
+        // dataZoom: [
+        //   {
+        //     type: 'inside',
+        //     start: 0,
+        //     end: 100
+        //   },
+        //   {
+        //     start: 0,
+        //     end: 100
+        //   }
+        // ],
         series: {
           name: dataSourceItem.value?.label,
           type: 'line',
@@ -160,6 +160,7 @@ export default defineComponent({
           },
           progressiveThreshold: innerData.samplingNum,
           progressive: 200, 
+          progressiveChunkMode:"sequential",
           animation:false,
           series: {
             name: props.dataConfig?.Name,
@@ -169,9 +170,10 @@ export default defineComponent({
             data: list,
             smooth: false,
             large: true, 
-            // 当数据量超过 2000 时，进入大数据模式
+            // 当数据量超过 1000 时，进入大数据模式
             largeThreshold: innerData.samplingNum, 
-            ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
+            sampling: 'lttb' 
+            // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }
         myChart.setOption(opt);
