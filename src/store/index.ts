@@ -102,6 +102,7 @@ export const useMain = defineStore('useStore', {
             lastFocusedInput: <HTMLInputElement | null>null,
             globalKeyBoardShow: false,
 
+            isLandscape: false, //是否横屏
         }
     },
     /**
@@ -211,6 +212,9 @@ export const useMain = defineStore('useStore', {
         },
         setGlobalKeyBoardShow(value: boolean) {
             this.globalKeyBoardShow = value
+        },
+        setIsLandscape(value: boolean) {
+            this.isLandscape = value
         }
 
     }

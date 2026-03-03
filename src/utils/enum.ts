@@ -39,6 +39,7 @@ enum callFnName {
   showDevTools = 'showDevTools',
   closeSpcSystem = `closeSpcSystem`,
   startCollect = `startCollect`,
+  openDevTool = `openDevTool`,
   saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys',stopCollect="stopCollect",
   getSpanCollectPoints = `getSpanCollectPoints`,getNormalDistribution='getNormalDistribution',clearCollect='clearCollect',
   getFFT = `getFFT`,showKeyBoard=`showKeyBoard`,initKeyboardConfig=`initKeyboardConfig`,checkRegister=`checkRegister`,getMachineCode=`getMachineCode`,getRegisterState=`getRegisterState`,getRegisterCode=`getRegisterCode`,keyPress=`keyPress`,keyDown=`keyDown`,keyUp=`keyUp`,getLastPoint=`getLastPoint`

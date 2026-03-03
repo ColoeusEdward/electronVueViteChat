@@ -6,8 +6,8 @@
     "author": "ZN",
     "scripts": {
         "dev": "vite",
-        "buildv": "npm-run-all build:vue",
-        "build": "npm-run-all build:vue build:tsc build:all",
+        "build": "npm-run-all build:vue",
+        "builda": "npm-run-all build:vue build:tsc build:all",
         "preview": "cross-env NODE_ENV=production electron ./output/build/main.js",
         "start": "kill-port 3920 && concurrently -k \"vite\" \"wait-on tcp:3920 && npm-run-all watch\"",
         "watch": "tsc-watch --noClear -p tsconfig.e.json --onSuccess \"npm-run-all start:ect\"",

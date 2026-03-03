@@ -28,11 +28,11 @@ export default defineComponent({
 
     return () => {
       return [
-        <div class={classNames('h-10 w-10 bottom-[2vh] left-0 absolute   bg-green-600  rounded-full shadow-md border border-solid border-gray-200  z-20 hover:bg-green-500 cursor-pointer ')} onClick={showKeyBoard}>
-          <div class={'w-full h-full flex justify-center items-center relative bottom-[1px]'}>
-            <NIcon class={'text-white text-2xl'}><KeyboardAltOutlined /></NIcon>
-          </div>
-        </div>,
+        // <div class={classNames('h-10 w-10 bottom-[2vh] left-0 absolute   bg-green-600  rounded-full shadow-md border border-solid border-gray-200  z-20 hover:bg-green-500 cursor-pointer ')} onClick={showKeyBoard}>
+        //   <div class={'w-full h-full flex justify-center items-center relative bottom-[1px]'}>
+        //     <NIcon class={'text-white text-2xl'}><KeyboardAltOutlined /></NIcon>
+        //   </div>
+        // </div>,
         <GlobalKeyBoard />,
         <div>
           {/* @ts-ignore */}

@@ -26,6 +26,10 @@ const SiemensCol = [
   { ...mapKeyAndTitle(propNameEnum.ExchangeData), resizable: true },
 ]
 
+const SikoraCol = [
+  
+]
+
 // const SiemensCol = [
   
 // ]

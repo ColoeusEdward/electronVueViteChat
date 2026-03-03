@@ -52,9 +52,17 @@ import Home from './views/Home/index';
 import { themeOverride } from '@/utils/theme';
 import { rootPathKey } from '@/utils/enum';
 import { useToolStore } from '@/store/tool';
+import { listenAllInputFocus, listenLandscape } from './utils/utils';
+import { useMain } from './store';
 
 const mainHeaderShow = ref(true);
 const toolStore = useToolStore();
+const mainStore = useMain()
+
+listenAllInputFocus(mainStore)
+
+listenLandscape(mainStore)
+
 
 onBeforeMount(() => {
   bus.on('mainHeaderShow', settingMain);

@@ -5,6 +5,7 @@ import FFTAddressModelForm from "./FFTAddressModelForm";
 import ModbusAddressModelForm from "./ModbusAddressModelForm";
 import SiemensAddressModelForm from "./SiemensAddressModelForm";
 import SikoraAddressModelForm from "./SikoraAddressModelForm";
+import ZumbachAddressModelForm from "./ZumbachAddressModelForm";
 
 export default defineComponent({
   name: 'AddressForm',
@@ -23,7 +24,8 @@ export default defineComponent({
       ModbusAddressModel: <ModbusAddressModelForm />,
       FFTAddressModel: <FFTAddressModelForm />,
       SiemensAddressModel: <SiemensAddressModelForm/>,
-      SikoraAddressModel:<SikoraAddressModelForm/>
+      SikoraAddressModel:<SikoraAddressModelForm/>,
+      ZumbachAddressModel: <ZumbachAddressModelForm/>
     }
 
 

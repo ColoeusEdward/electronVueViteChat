@@ -158,12 +158,19 @@ export default defineComponent({
             text: props.dataConfig?.Name,
             left: '48%'
           },
+          progressiveThreshold: innerData.samplingNum,
+          progressive: 200, 
+          animation:false,
           series: {
             name: props.dataConfig?.Name,
             type: 'line',
             showSymbol: false,
+            symbol: 'none',
             data: list,
             smooth: false,
+            large: true, 
+            // 当数据量超过 2000 时，进入大数据模式
+            largeThreshold: innerData.samplingNum, 
             ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }

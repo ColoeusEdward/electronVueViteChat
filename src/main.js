@@ -14,7 +14,7 @@ import  router  from "./router/index";
 // import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
 import drag from "v-drag"
-import { listenAltF5 } from './utils/utils';
+import { listenAltF5,listenAllInputFocus } from './utils/utils';
 
 // import "./keyboard.min.css";
 // import KeyBoard from "vue-keyboard-virtual-next";

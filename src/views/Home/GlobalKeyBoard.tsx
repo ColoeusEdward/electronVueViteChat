@@ -1,4 +1,4 @@
-import { NInput, NInputNumber } from "naive-ui";
+import { NIcon, NInput, NInputNumber } from "naive-ui";
 import { defineComponent, onMounted, onUnmounted, watch, ref, Transition, Teleport, nextTick, computed, reactive } from "vue";
 import { useMain } from "@/store";
 import Keyboard from "simple-keyboard";
@@ -8,6 +8,8 @@ import { commonKeyCodeSpecCharMap, keyCodeMap, keyCodeUpSpecCharMap, keyCodeUpSp
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import classnames from "classnames";
+import { CloseTwotone, DragIndicatorFilled } from "@vicons/material";
+// import { Drag24Filled } from "@vicons/fluent";
 
 type InputType = InstanceType<typeof NInputNumber> | null
 export default defineComponent({
@@ -17,11 +19,11 @@ export default defineComponent({
     const angle = ref(0)
     const commonData = reactive({
       isCapLock: false,
-      isNum:false,
+      isNum: false,
     })
     const keyBoardAngle = ref<string | number>('')
     const keyborardShow = computed(() => store.globalKeyBoardShow)
-    const keyBoardWidth = computed(() => commonData.isNum?"80px":"40px")
+    const keyBoardWidth = computed(() => commonData.isNum ? "80px" : "40px")
     // ref(false)
     const isMounted = ref(false)
     const inputRef = ref<InputType>()
@@ -64,51 +66,51 @@ export default defineComponent({
         keyboardIns.setInput(keyBoardAngle.value)
         return
       }
-      if (button == '{enter}') {
-        // angle.value = Number(keyBoardAngle.value)
-        // store.setEccAngle(angle.value)
-        // store.setGlobalKeyBoardShow(false
-        focusToInput(store).then(async () => {
-          // store.lastFocusedInput!.value +=  keyBoardAngle.value
-          let str = String(keyBoardAngle.value)
-          let strList: string[] = []
-          for (let i = 0; i < str.length; i++) {
-            strList[i] = str[i]
-          }
-          //(isSingleLetter(str)) 
-          for await (str of strList) {
-            await sleep(16)
-            let code = 0
-            if (keyCodeUpSpecList.find(e => e == str)) {
-              await multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[str])
-            }
-            else if (commonKeyCodeSpecCharMap[str]) {
-              await callSpc(callFnName.keyPress, commonKeyCodeSpecCharMap[str])
-            }
-            else {
-              code = str.toUpperCase().charCodeAt(0)
-              await callSpc(callFnName.keyPress, code)
-            }
-          }
+      // if (button == '{enter}') {
+      //   // angle.value = Number(keyBoardAngle.value)
+      //   // store.setEccAngle(angle.value)
+      //   // store.setGlobalKeyBoardShow(false
+      //   focusToInput(store).then(async () => {
+      //     // store.lastFocusedInput!.value +=  keyBoardAngle.value
+      //     let str = String(keyBoardAngle.value)
+      //     let strList: string[] = []
+      //     for (let i = 0; i < str.length; i++) {
+      //       strList[i] = str[i]
+      //     }
+      //     //(isSingleLetter(str)) 
+      //     for await (str of strList) {
+      //       await sleep(16)
+      //       let code = 0
+      //       if (keyCodeUpSpecList.find(e => e == str)) {
+      //         await multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[str])
+      //       }
+      //       else if (commonKeyCodeSpecCharMap[str]) {
+      //         await callSpc(callFnName.keyPress, commonKeyCodeSpecCharMap[str])
+      //       }
+      //       else {
+      //         code = str.toUpperCase().charCodeAt(0)
+      //         await callSpc(callFnName.keyPress, code)
+      //       }
+      //     }
 
-          // simulateKeyPress(),
-          resetVal()
-        })
-        return
-      }
-      if(button == '{123}'){
+      //     // simulateKeyPress(),
+      //     resetVal()
+      //   })
+      //   return
+      // }
+      if (button == '{123}') {
         commonData.isNum = !commonData.isNum
         keyboardIns.setOptions({
           layoutName: commonData.isNum ? 'num' : 'default'
         })
-        return 
+        return
       }
-      if(button == '{abc}'){
+      if (button == '{abc}') {
         commonData.isNum = !commonData.isNum
         keyboardIns.setOptions({
           layoutName: !commonData.isNum ? 'default' : 'num'
         })
-        return 
+        return
       }
       if (button == '{lock}') {
         commonData.isCapLock = !commonData.isCapLock
@@ -138,13 +140,47 @@ export default defineComponent({
       //   })
       // }
       if (button == '{esc}') {
-        store.setGlobalKeyBoardShow(false)
+        closeKeyboard()
         return
       }
       if (button == '{reset}' || button == '{clear}') {
         resetVal()
         return
       }
+
+      // if (keyCodeUpSpecList.find(e => e == button)) {
+      //   multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[button])
+      //   return
+      // }
+      if (button ) {
+        focusToInput(store).then(async () => {
+          // store.lastFocusedInput!.value +=  keyBoardAngle.value
+          let str = String(keyBoardAngle.value)
+          let strList: string[] = []
+          for (let i = 0; i < str.length; i++) {
+            strList[i] = str[i]
+          }
+          //(isSingleLetter(str)) 
+          for await (str of strList) {
+            await sleep(8)
+            let code = 0
+            if (keyCodeUpSpecList.find(e => e == str)) {
+              await multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[str])
+            }
+            else if (commonKeyCodeSpecCharMap[str]) {
+              await callSpc(callFnName.keyPress, commonKeyCodeSpecCharMap[str])
+            }
+            else {
+              code = str.toUpperCase().charCodeAt(0)
+              await callSpc(callFnName.keyPress, code)
+            }
+          }
+          // simulateKeyPress(),
+          resetVal()
+        })
+        return
+      }
+      // callSpc(callFnName.keyPress, button.toUpperCase().charCodeAt(0))
     }
     const resetVal = () => {
       keyboardIns.clearInput()
@@ -156,6 +192,9 @@ export default defineComponent({
       resetVal()
       keyboardIns.setInput(String(temp))
       keyBoardAngle.value = temp
+    }
+    const closeKeyboard = () => {
+      store.setGlobalKeyBoardShow(false)
     }
 
     watch(keyborardShow, (nv) => {
@@ -171,39 +210,38 @@ export default defineComponent({
           mergeDisplay: true,
           theme: 'hg-theme-default hg-layout-default myTheme',
           display: {
-            '{bksp2}': 'backspace(目标输入框)',
+            '{bksp2}': '←',
             '{123}': '123',
             '{clear}': '清空',
             '{bksp}': '←',
             // '{enter}': 'OK',
             '{esc}': '❌',
             '{reset}': 'CE',
-            '{abc}':'abc'
+            '{abc}': 'abc'
           },
           // // inputPattern: /^(?:[1-9][0-9]{0,2}|0)$/,
           // maxLength: 3,
           layout: {
             'default': [
-              '` 1 2 3 4 5 6 7 8 9 0 - = {bksp}',
+              '` 1 2 3 4 5 6 7 8 9 0 - = {bksp2}',
               'q w e r t y u i o p [ ] \\',
               '{lock} a s d f g h j k l ; \' {enter}',
-              '{clear} z x c v b n m , . / {shift}',
-              '{123} {space} {bksp2}'
+              '{shift} z x c v b n m , . / {shift}',
+              '{123} {space}'
             ],
             'lock': [
-              '~ ! @ # $ % ^ & * ( ) _ + {bksp}',
+              '~ ! @ # $ % ^ & * ( ) _ + {bksp2}',
               'Q W E R T Y U I O P { } |',
               '{lock} A S D F G H J K L : " {enter}',
-              '{clear} Z X C V B N M < > ? {shift}',
-              '{123} {space} {bksp2}'
+              '{shift} Z X C V B N M < > ? {shift}',
+              '{123} {space}'
             ],
-            'num':[
+            'num': [
               '1 2 3',
               '4 5 6',
               '7 8 9',
               '{bksp} 0 {reset}',
-              '{esc} {enter}',
-              '{abc} {bksp2}'
+              '{abc} {enter}',
             ]
           },
           buttonTheme: [
@@ -211,12 +249,12 @@ export default defineComponent({
               class: "no-grow-style",
               buttons: "{bksp2} {123} {abc} {esc}"
             },
-          
+
           ],
           onChange: input => onChange(input),
           onKeyPress: button => onKeyPress(button)
         });
-        if(commonData.isNum){
+        if (commonData.isNum) {
           keyboardIns.setOptions({
             layoutName: 'num'
           })
@@ -233,9 +271,14 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end',{'w-[484px]':commonData.isNum,'w-[1080px]':!commonData.isNum})} v-show={keyborardShow.value}>
-                <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[484px]': commonData.isNum, 'w-[1080px]': !commonData.isNum })} v-show={keyborardShow.value}>
+                {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
+                </div> */}
+                <div class={'w-full h-8 0 rounded-md  global-keyboard-value flex justify-end items-center' } ref={showTextRef}>
+                  <div class={'p-[6px] px-4 flex justify-center items-center text-2xl bg-red-400 rounded  text-white'} onClick={closeKeyboard}>
+                    <NIcon size={'large'}>  <CloseTwotone /> </NIcon>
+                  </div>
                 </div>
                 {/* <NInput value={keyBoardAngle.value}></NInput> */}
                 {/* <NInputNumber ref={(e) => { inputRef.value = e as InputType }} class={'w-full'} value={Number(keyBoardAngle.value)} size={'large'} /> */}

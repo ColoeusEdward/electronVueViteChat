@@ -1,8 +1,10 @@
 import AbsBottomBtn from "@/components/AbsBottomBtn";
 import MyNTable from "@/components/MyNTable";
+import { useMain } from "@/store";
 import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
+import classNames from "classnames";
 import { NButton, NDatePicker, NDivider, NInput, NSelect, NSpace, useMessage } from "naive-ui";
 import { computed, defineComponent, reactive } from "vue";
 import { ProductHistoryEntity } from "~/me";
@@ -14,6 +16,7 @@ export default defineComponent({
   name: 'ProductHistory',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const store = useMain()
     const innerData = useProductHistoryInnerDataStore()
     const msg = useMessage()
 
@@ -92,8 +95,8 @@ export default defineComponent({
     return () => {
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
-          <div class={'flex-shrink flex h-full w-full'}>
-            <div class={"flex flex-col w-1/2"}>
+          <div class={classNames('flex-shrink flex h-full w-full',{'flex-col':!store.isLandscape})}>
+            <div class={classNames("flex flex-col ",{'w-1/2':store.isLandscape,'h-1/2':!store.isLandscape})}>
               <div class={'p-3'}>
                 <NSpace>
                   <NSelect class={'w-32'} v-model:value={commonData.selectProps} options={commonData.selectOpt}></NSelect>
@@ -108,9 +111,8 @@ export default defineComponent({
                 <MyNTable {...tableCfg} data={ftdata.value} />
               </div>
             </div>
-
-            <div class={'w-1/2 h-full border-0 border-l border-gray-200 border-solid'}>
-              <div class={'h-1/2 flex flex-col'}>
+            <div class={classNames(' border-0 border-l border-gray-200 border-solid',{'w-1/2':store.isLandscape,'h-1/2':!store.isLandscape})}>
+              <div class={classNames('h-1/2 flex flex-col',)}>
                 <NDivider titlePlacement="left" >线轴统计数据</NDivider >
                 <Statistic />
               </div>

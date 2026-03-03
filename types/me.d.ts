@@ -105,6 +105,26 @@ type ConnectSikoraComModel = {
   Timeout: number;
 }
 
+type ConnectZumbachComModel = {
+  PortName: string;
+  BaudRate: number;
+  DataBits: number;
+  StopBits: string;
+  Parity: string;
+  Cycle: number;
+  Timeout: number;
+  ReadBuffSize: number;
+}
+
+type ConnectZumbachTcpModel = {
+  Host: string;
+  Port: number;
+  Cycle: number;
+  Timeout: number;
+  ReadBuffSize: number;
+  Split: string;
+}
+
 type ModbusAddressModel = {
   Id?: string;          //前端生成并使用的ID
   DataName: string;
@@ -138,6 +158,15 @@ type SikoraAddressModel = {
   ExchangeData?: string;
   CountMark: string;
 }
+
+type ZumbachAddressModel = {
+  DataName: string;
+  Address: string;
+  DataType: string;
+  CountFormula?: string;
+  ExchangeData?: string;
+}
+
 
 
 type CategoryNodeEntity = {

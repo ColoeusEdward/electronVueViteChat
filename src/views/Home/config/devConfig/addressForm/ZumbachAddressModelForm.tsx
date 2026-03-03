@@ -6,7 +6,7 @@ import { adressSubmitFn, AreaList, commonFormItemListMap, DataTypeList, defaultC
 import { useDevCfgInnerData } from "../innerData";
 
 export default defineComponent({
-  name: 'SikoraAddressModelForm',
+  name: 'ZumbachAddressModelForm',
   setup(props,ctx) {
     const innerData = useDevCfgInnerData()
     const formCfg = reactive({
@@ -16,8 +16,6 @@ export default defineComponent({
       itemList: [
         commonFormItemListMap[propNameEnum.DataName],
         commonFormItemListMap[propNameEnum.Address],
-        commonFormItemListMap[propNameEnum.Index],
-        commonFormItemListMap[propNameEnum.Length],
         commonFormItemListMap[propNameEnum.DataType],
         commonFormItemListMap[propNameEnum.CountFormula],
         commonFormItemListMap[propNameEnum.ExchangeData],

@@ -1,6 +1,7 @@
 import { NButton } from "naive-ui";
 import { defineComponent } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
+
 import LargeBtnIcon from "../LargeBtnIcon";
 import { CloseOutlined } from "@vicons/material";
 
@@ -28,7 +29,7 @@ export default defineComponent({
               }} >
               <span class={'text-2xl ml-2'}>返回</span>
             </NButton> */}
-          <NButton class={'mr-3 h-16 w-[300px] shrink'} renderIcon={() => <LargeBtnIcon><CloseOutlined /></LargeBtnIcon>}  strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
+          <NButton class={'mr-3 h-16 w-[300px] shrink'} renderIcon={() => <LargeBtnIcon><CloseOutlined /></LargeBtnIcon>} style={{backgroundImage:`url(${btnActiveImg})`,backgroundSize:'100% 100%',color:'#534d62'}}  strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
             <span class={'text-2xl ml-2 '}>关 闭</span>
           </NButton>
           {/* <NButton secondary strong={true} onClick={confirm} type="primary" size={'large'} class={'h-16 w-[20vw]  shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}

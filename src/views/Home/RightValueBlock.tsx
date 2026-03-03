@@ -96,7 +96,7 @@ export const ValueRow = defineComponent({
 
     return () => {
       return (
-        <div class={'w-full shrink mb-1'}>
+        <div class={classNames(' shrink mb-1',{'w-full':store.isLandscape,'w-1/2':!store.isLandscape})}>
           <div class={classNames('flex items-center w-full  py-1', { 'pt-0': props.y == 0 })}>
             <span class={'text-2xl'}>{props.data?.title || ''}</span>
             {/* {renderAddOrDel()} */}
@@ -127,6 +127,7 @@ export default defineComponent({
   name: 'RightValueBlock',
   setup(props, ctx) {
     const curCevInnerData = useCurcevInnerDataStore()
+    const store = useMain()
     const activeStyle = {
       backgroundImage: `url(${activeImg})`,
       backgroundSize: 'cover',
@@ -194,7 +195,7 @@ export default defineComponent({
       return (
         <NTabs type="card" animated size="large" barWidth={1148} value={curTabValue.value} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'value1'} >
           <NTabPane displayDirective="if" name="value1" tab="Value" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
-            <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
+            <div class={classNames(' h-full px-2 flex  overflow-y-auto',{'flex-col':store.isLandscape,'flex-wrap':!store.isLandscape})}>
               {/* <NScrollbar> */}
               {cpkList.value.map((e, i) => {
                 return <ValueRow key={i} x={0} y={i} data={e} fixNum={fixNumRef.value} />

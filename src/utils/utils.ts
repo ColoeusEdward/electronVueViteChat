@@ -109,8 +109,55 @@ export const loopGet = (fn: () => Promise<any>, ms: number, isGettingRef: Ref<bo
     return sleep(ms)
   }).then(() => {
     if (isGettingRef.value) {
-      loopGet(fn,ms,isGettingRef)
+      loopGet(fn, ms, isGettingRef)
     }
   })
+}
+
+export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
+  document.addEventListener('focusin', function (event) {
+    // `event.target` 是实际获取焦点的元素
+    const targetElement = event.target;
+
+    // 检查这个元素是否是一个输入框
+    //@ts-ignore
+    if (targetElement && targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA') {
+      console.log('用户点击或选中了一个输入框。');
+      //@ts-ignore
+      console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
+      store.setGlobalKeyBoardShow(true)
+    }
+  });
+}
+
+export const listenLandscape = (store: ReturnType<typeof useMain>) => {
+  // 竖屏查询
+  const mediaQueryPortrait = window.matchMedia('(orientation: portrait)');
+  // 横屏查询
+  const mediaQueryLandscape = window.matchMedia('(orientation: landscape)');
+
+  // 判断当前状态
+  if (mediaQueryLandscape.matches) {
+    console.log('当前是横屏');
+    store.setIsLandscape(true)
+  } else if (mediaQueryPortrait.matches) {
+    console.log('当前是竖屏');
+    store.setIsLandscape(false)
+  }
+
+  // 监听方向变化
+  mediaQueryLandscape.addEventListener('change', (e) => {
+    if (e.matches) {
+      console.log('屏幕方向已变为横屏');
+    store.setIsLandscape(true)
+    }
+  });
+
+  mediaQueryPortrait.addEventListener('change', (e) => {
+    if (e.matches) {
+      console.log('屏幕方向已变为竖屏');
+    store.setIsLandscape(false)
+    }
+  });
 }
 

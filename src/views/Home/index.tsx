@@ -4,7 +4,7 @@ import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
 import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
-import emptyAduio from '@/assets/empty_loop_for_js_performance.wav'
+import emptyAduio from '@/assets/10-seconds-of-silence.mp3'
 import { useMain } from "@/store";
 import { isLowResolution, showKeyBoard, sleep } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
@@ -123,25 +123,26 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           <GlobalKeyBoard2 />
           {/* <KeepAlive> */}
-          <div class={'h-full flex overflow-hidden'}>
-            <div class={'w-2/3'}>
-            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
-              <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
-                <div class={' h-full'}>
-                  <Curcev />
-                </div>
-              </NTabPane>
-              <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
-                <div class={'h-full'}>
-                  <MultiCurcev />
-                </div>
-              </NTabPane>
-              {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
+          {
+            store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
+              <div class={'w-2/3'}>
+                <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
+                  <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
+                    <div class={' h-full'}>
+                      <Curcev />
+                    </div>
+                  </NTabPane>
+                  <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
+                    <div class={'h-full'}>
+                      <MultiCurcev />
+                    </div>
+                  </NTabPane>
+                  {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
                   <PicPane />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="if" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
+                  {/* <NTabPane displayDirective="if" name="trend" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'trend' ? activeStyle : {} } }}>
                 <div class={'h-full'}>
                   <Trend />
                 </div>
@@ -151,7 +152,7 @@ export default defineComponent({
                   <Statistical />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="if" name="productLine" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'productLine' ? activeStyle : {} } }}>
+                  {/* <NTabPane displayDirective="if" name="productLine" tab="生产线" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'productLine' ? activeStyle : {} } }}>
                 <div class={'h-full'}>
                   <ProductLine />
                 </div>
@@ -162,13 +163,34 @@ export default defineComponent({
               <NTabPane displayDirective="if" name="print" tab="打印机" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'print' ? activeStyle : {} } }}>
                 Hey Jude
               </NTabPane> */}
-            </NTabs>
-            </div>
-            
-            <div class={'w-1/3'}>
-              <RightValueBlock />
-            </div>
-          </div>
+                </NTabs>
+              </div>
+
+              <div class={'w-1/3'}>
+                <RightValueBlock />
+              </div>
+            </div> :
+              <div class={'h-full flex overflow-hidden flex-col'}>
+                <div class={'h-2/3'}>
+                  <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
+                    <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
+                      <div class={' h-full'}>
+                        <Curcev />
+                      </div>
+                    </NTabPane>
+                    <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
+                      <div class={'h-full'}>
+                        <MultiCurcev />
+                      </div>
+                    </NTabPane>
+                  </NTabs>
+                </div>
+                <div class={'h-1/3'}>
+                  <RightValueBlock />
+                </div>
+              </div>
+          }
+
           {/* </KeepAlive> */}
           {/* <GlobalKeyBoard /> */}
           <BtmBtn />

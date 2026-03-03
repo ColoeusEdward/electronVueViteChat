@@ -1,6 +1,6 @@
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap"
 import { generateUUID } from "@/utils/utils"
-import { ConnectComModel, ConnectFFTModel, ConnectSiemensModel, ConnectSikoraComModel, ConnectSikoraTcpModel, ConnectTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
+import { ConnectComModel, ConnectFFTModel, ConnectSiemensModel, ConnectSikoraComModel, ConnectSikoraTcpModel, ConnectTcpModel, ConnectZumbachComModel, ConnectZumbachTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
 import { useDevCfgInnerData } from "./innerData"
 
 export const adressSubmitFn = (form: DriverAddressType, innerData: ReturnType<typeof useDevCfgInnerData>) => {
@@ -114,6 +114,24 @@ export const defaultConnectSikoraComModel: ConnectSikoraComModel = {
   Cycle: 100,
   Timeout: 500,
 }
+export const defaultConnectZumbachComModel: ConnectZumbachComModel = {
+  PortName: `COM1`,
+  BaudRate: 9600,
+  DataBits: 8,
+  StopBits: '1',
+  Parity: 'N',
+  Cycle: 100,
+  Timeout: 500,
+  ReadBuffSize: 11,
+}
+export const defaultConnectZumbachTcpModel: ConnectZumbachTcpModel = {
+  Host: ``,
+  Port: 7720,
+  Cycle: 100,
+  Timeout: 500,
+  ReadBuffSize: 11,
+  Split: '0D 0A'
+}
 export const defaultModbusAddressModel: ModbusAddressModel = {
   Area: "[4区]保持寄存器",
   DataType: "[16位]无符号整数",
@@ -183,7 +201,9 @@ export enum propNameEnum {
   Rack = 'Rack',
   Address = 'Address',
   Offset = 'Offset',
-  CountMark = 'CountMark'
+  CountMark = 'CountMark',
+  ReadBuffSize = 'ReadBuffSize',
+  Split = 'Split',
 }
 export const propNameMap: Record<string, string> = {
 }
@@ -215,6 +235,8 @@ propNameMap[propNameEnum.Rack] = '机架'
 propNameMap[propNameEnum.Address] = '起始地址'
 propNameMap[propNameEnum.Offset] = '数据偏移量'
 propNameMap[propNameEnum.CountMark] = '计算标志'
+propNameMap[propNameEnum.ReadBuffSize] = '读数据长度'
+propNameMap[propNameEnum.Split] = '分隔符'
 
 
 
@@ -253,6 +275,8 @@ commonFormItemListMap[propNameEnum.Rack] = { type: 'input', ...mapLabelAndProp(p
 commonFormItemListMap[propNameEnum.Address] = { type: 'input', ...mapLabelAndProp(propNameEnum.Address), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Offset] = { type: 'input', ...mapLabelAndProp(propNameEnum.Offset), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.CountMark] = { type: 'select', ...mapLabelAndProp(propNameEnum.CountMark), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.ReadBuffSize] = { type: 'input', ...mapLabelAndProp(propNameEnum.ReadBuffSize), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.Split] = { type: 'input', ...mapLabelAndProp(propNameEnum.Split), width: 12, rule: ['must'] }
 
 
 

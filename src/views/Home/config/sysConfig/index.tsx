@@ -121,6 +121,7 @@ export default defineComponent({
           }
         })
       })
+      console.log("🪵 [index.tsx:124] ~ token ~ \x1b[0;32moriSysConfig\x1b[0m = ", oriSysConfig);
       callSpc(window.spcJsBind.saveSysConfigs([...oriSysConfig]))
         .then((e: number) => {
           if (e > 0) {

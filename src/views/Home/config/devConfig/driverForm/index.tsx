@@ -7,6 +7,8 @@ import ConnectSiemensModelForm from "./ConnectSiemensModelForm";
 import ConnectSikoraComModelForm from "./ConnectSikoraComModelForm";
 import ConnectSikoraTcpModelForm from "./ConnectSikoraTcpModelForm";
 import ConnectTcpModelForm from "./ConnectTcpModelForm";
+import ConnectZumbachComModelForm from "./ConnectZumbachComModelForm";
+import ConnectZumbachTcpModelForm from "./ConnectZumbachTcpModelForm";
 
 export default defineComponent({
   name: 'DriverForm',  //连接配置表单
@@ -27,7 +29,9 @@ export default defineComponent({
       ConnectComModel: <ConnectComModelForm />,
       ConnectSiemensModel: <ConnectSiemensModelForm/>,
       ConnectSikoraTcpModel: <ConnectSikoraTcpModelForm/>,
-      ConnectSikoraComModel: <ConnectSikoraComModelForm/>
+      ConnectSikoraComModel: <ConnectSikoraComModelForm/>,
+      ConnectZumbachComModel: <ConnectZumbachComModelForm/>,
+      ConnectZumbachTcpModel: <ConnectZumbachTcpModelForm/>
     }
     
 

@@ -33,7 +33,6 @@ export default defineComponent({
       pageSize: 3,
       getCfgLoading: false,
     })
-
     const getSysCfg = () => {
       callSpc(callFnName.getSysConfigs).then((res: SysConfigEntity[]) => {
         // console.log("🚀 ~ file: index.tsx:39 ~ callSpc ~ res:", res)

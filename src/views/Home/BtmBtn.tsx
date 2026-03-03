@@ -58,6 +58,7 @@ export default defineComponent({
       { label: '配置', value: 'option' },
       // { label: '关机', value: 'shutdown' },
       { label: 'Reload', value: 'Reload' },
+      { label: '开发者工具', value: 'devTool' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
       let valueMap: Record<string, () => void> = {
@@ -82,6 +83,10 @@ export default defineComponent({
         },
         formulaCfg: () => {
           configStore.setFormulaCfgShow(true)
+        },
+        devTool: () => {
+          callSpc(callFnName.openDevTool).then(() => {
+          })
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
