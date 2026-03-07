@@ -17,6 +17,7 @@ import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
 import FFT from "./FFT";
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 import { NBaseLoading } from "naive-ui/es/_internal";
+import { callBrige } from "@/utils/callm";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -34,20 +35,20 @@ export default defineComponent({
       getCfgLoading: false,
     })
     const getSysCfg = () => {
-      callSpc(callFnName.getSysConfigs).then((res: SysConfigEntity[]) => {
+      callBrige(callFnName.GetSysConfigs).then((res: SysConfigEntity[]) => {
         // console.log("🚀 ~ file: index.tsx:39 ~ callSpc ~ res:", res)
         innerData.setSysConfig(res)
       })
     }
-    getSysCfg()
+    // getSysCfg()
     const getAllActiveConfigData = () => {
       commonData.getCfgLoading = true
-      return callSpc(callFnName.getDataConfigs).then((res: DataConfigEntity[]) => {
+      return callBrige(callFnName.GetDataConfigs).then((res: DataConfigEntity[]) => {
         if (res.length == 0) {
           return sleep(500).then(() => refresh())
         }
         let list = res
-        console.log("🚀 ~ returncallSpc ~ list:", list)
+        // console.log("🚀 ~ returncallSpc ~ list:", list)
         commonData.cfgDataList = list.sort((a, b) => a.SortNum - b.SortNum)
         innerData.setDataCfgList(list)
         if (!innerData.curDataCfgEntity) {
@@ -88,7 +89,7 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
-      getSysCfg()
+      // getSysCfg()
       return getAllActiveConfigData().then(() => {
         e && msg.success('配置已刷新')
       })

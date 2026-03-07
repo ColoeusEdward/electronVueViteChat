@@ -1,5 +1,6 @@
 import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { NButton, SelectProps } from "naive-ui";
 import { defineComponent, reactive, watch } from "vue";
@@ -49,7 +50,7 @@ export default defineComponent({
       saveText: innerData.dataIsEdit ? '编辑' : '添加'
     })
     const getDataConfigOpt = () => {
-      callSpc(callFnName.getDataConfigs).then((res: DataConfigEntity[]) => {
+      callBrige(callFnName.GetDataConfigs).then((res: DataConfigEntity[]) => {
         formCfg.optionMap.DataId = res.map(e => {
           return {
             label: e.Name,

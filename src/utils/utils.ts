@@ -7,11 +7,12 @@ import { useSysCfgInnerDataStore } from "@/views/Home/config/sysConfig/innderDat
 import { useMain } from "@/store";
 import { Ref } from "vue";
 import { propNameMap } from "@/views/Home/config/devConfig/enum";
+import { callBrige } from "./callm";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const isLowResolution = () => {
-  return screen.width <= 1440
+  return screen.width <= 1440 || window.innerWidth <= 1440
 }
 function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -66,14 +67,14 @@ export const showKeyBoard = () => {
 
 export const getRegState = () => { //获取注册状态
   const SysCfgInnerData = useSysCfgInnerDataStore()
-  callSpc(callFnName.getRegisterState).then((e: ActualResult) => {
-    // console.log("🚀 ~ callSpc ~ e:", e)
-    if (e != null) {
-      SysCfgInnerData.setRegState(true)
-    } else {
-      SysCfgInnerData.setRegState(false)
-    }
-  })
+  // callSpc(callFnName.getRegisterState).then((e: ActualResult) => {
+  //   // console.log("🚀 ~ callSpc ~ e:", e)
+  //   if (e != null) {
+  //     SysCfgInnerData.setRegState(true)
+  //   } else {
+  //     SysCfgInnerData.setRegState(false)
+  //   }
+  // })
 }
 export const focusToInput = (store: ReturnType<typeof useMain>) => {
   return sleep(50).then(() => {
@@ -90,10 +91,10 @@ export const isSingleLetter = (str: string) => {
 
 //main是shift这种按键，sec是普通按键
 export const multiPressKey = (main: number, sec: number) => {
-  callSpc(callFnName.keyDown, main).then(() => {
-    return callSpc(callFnName.keyPress, sec)
+  callBrige(callFnName.KeyDown, main).then(() => {
+    return callBrige(callFnName.KeyPress, sec)
   }).then(() => {
-    return callSpc(callFnName.keyUp, main)
+    return callBrige(callFnName.KeyUp, main)
   })
 }
 
@@ -149,15 +150,24 @@ export const listenLandscape = (store: ReturnType<typeof useMain>) => {
   mediaQueryLandscape.addEventListener('change', (e) => {
     if (e.matches) {
       console.log('屏幕方向已变为横屏');
-    store.setIsLandscape(true)
+      store.setIsLandscape(true)
     }
   });
 
   mediaQueryPortrait.addEventListener('change', (e) => {
     if (e.matches) {
       console.log('屏幕方向已变为竖屏');
-    store.setIsLandscape(false)
+      store.setIsLandscape(false)
     }
   });
 }
 
+export const safeJsonParse = (str: string) => {
+  let res = {}
+  try {
+    res = JSON.parse(str || '{}')
+  } catch (error) {
+    console.log(error)
+  }
+  return res
+}

@@ -4,21 +4,21 @@ const PUBLISH_PROJECT_KEY = 'publishProject'
 
 enum callFnName {
   getState = "getState",
-  getSysConfigs = "getSysConfigs",
-  saveSysConfigs = "saveSysConfigs",
-  showDirSelect = "showDirSelect",
-  getPrinterList = "getPrinterList",
+  GetSysConfigs = "GetSysConfigs",
+  SaveSysConfig = "SaveSysConfig",
+  ShowDirSelect = "ShowDirSelect",
+  GetPrinterList = "GetPrinterList",
   getDeviceConfigs = "getDeviceConfigs",
   saveDeviceConfig = "saveDeviceConfig",
   deleteDeviceConfig = "deleteDeviceConfig",
   getSupportDevices = "getSupportDevices",
-  getCategoryNodes = "getCategoryNodes",
+  GetCategoryNodes = "GetCategoryNodes",
   saveCategoryNode = "saveCategoryNode",
   deleteCategoryNode = "deleteCategoryNode",
-  getCategoryDatas = "getCategoryDatas",
+  GetCategoryDatas = "GetCategoryDatas",
   saveCategoryData = "saveCategoryData",
   deleteCategoryData = "deleteCategoryData",
-  getDataConfigs = "getDataConfigs",
+  GetDataConfigs = "GetDataConfigs",
   saveDataConfig = "saveDataConfig",
   deleteDataConfig = "deleteDataConfig",
   initDataConfig = "initDataConfig",
@@ -28,7 +28,7 @@ enum callFnName {
   getProductStatistics = "getProductStatistics",
   getProductLogs = "getProductLogs",
   deleteProductHistory = "deleteProductHistory",
-  getSerialNos = "getSerialNos",
+  GetSerialNos = "GetSerialNos",
   saveSerialNo = "saveSerialNo",
   deleteSerialNo = "deleteSerialNo",
   getNewSerialNo = "getNewSerialNo",
@@ -40,9 +40,9 @@ enum callFnName {
   closeSpcSystem = `closeSpcSystem`,
   startCollect = `startCollect`,
   openDevTool = `openDevTool`,
-  saveFormulaConfig = `saveFormulaConfig`,activeFormulaConfig='activeFormulaConfig',getProductHistorys='getProductHistorys',stopCollect="stopCollect",
-  getSpanCollectPoints = `getSpanCollectPoints`,getNormalDistribution='getNormalDistribution',clearCollect='clearCollect',
-  getFFT = `getFFT`,showKeyBoard=`showKeyBoard`,initKeyboardConfig=`initKeyboardConfig`,checkRegister=`checkRegister`,getMachineCode=`getMachineCode`,getRegisterState=`getRegisterState`,getRegisterCode=`getRegisterCode`,keyPress=`keyPress`,keyDown=`keyDown`,keyUp=`keyUp`,getLastPoint=`getLastPoint`
+  saveFormulaConfig = `saveFormulaConfig`, activeFormulaConfig = 'activeFormulaConfig', getProductHistorys = 'getProductHistorys', stopCollect = "stopCollect",
+  getSpanCollectPoints = `getSpanCollectPoints`, getNormalDistribution = 'getNormalDistribution', clearCollect = 'clearCollect',
+  getFFT = `getFFT`, showKeyBoard = `showKeyBoard`, initKeyboardConfig = `initKeyboardConfig`, checkRegister = `checkRegister`, getMachineCode = `getMachineCode`, getRegisterState = `getRegisterState`, getRegisterCode = `getRegisterCode`, KeyPress = `KeyPress`, KeyDown = `KeyDown`, KeyUp = `KeyUp`, getLastPoint = `getLastPoint`
 }
 
 export {

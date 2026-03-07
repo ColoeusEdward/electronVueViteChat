@@ -1,5 +1,6 @@
 import MyNTable from "@/components/MyNTable";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { sleep } from "@/utils/utils";
 import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
@@ -45,7 +46,7 @@ export default defineComponent({
     }
     const getTableData = () => {
       innerData.cleanCurCDataRow()
-      callSpc(callFnName.getCategoryDatas).then((e: CategoryDataEntity[]) => {
+      callBrige(callFnName.GetCategoryDatas).then((e: CategoryDataEntity[]) => {
         // let d= {...e[0]}
         // d.GId = '2233444'
         // e.push(d)

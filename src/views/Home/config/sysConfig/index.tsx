@@ -1,6 +1,7 @@
 import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
 import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { showKeyBoard } from "@/utils/utils";
 import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
@@ -122,11 +123,9 @@ export default defineComponent({
         })
       })
       console.log("🪵 [index.tsx:124] ~ token ~ \x1b[0;32moriSysConfig\x1b[0m = ", oriSysConfig);
-      callSpc(window.spcJsBind.saveSysConfigs([...oriSysConfig]))
+      callBrige(callFnName.SaveSysConfig, [...oriSysConfig])
         .then((e: number) => {
-          if (e > 0) {
-            msg.success('保存成功')
-          }
+          msg.success('保存完成')
         }).finally(() => {
           loading.value = false
         })

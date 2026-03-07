@@ -14,10 +14,11 @@ import CDataRight from "./CDataRight";
 import DevConfig from "../devConfig";
 import DetailRigth from "./DetailRigth";
 import { useConfigStore } from "@/store/config";
+import { callBrige } from "@/utils/callm";
 
 //数据采集
 export default defineComponent({
-  name: 'DataCofigNew', 
+  name: 'DataCofigNew',
   setup(props, ctx) {
     const innerData = useDataCfgInnerDataStore()
     const configStore = useConfigStore()
@@ -82,14 +83,20 @@ export default defineComponent({
       innerData.cleanSelectItem()
       // allList.splice(-0)
       allList = []
-      ajaxPromiseAll<[CategoryNodeEntity[], CategoryDataEntity[]]>([callSpc(callFnName.getCategoryNodes), callSpc(callFnName.getCategoryDatas)]).then((e) => {
-        e[1] = e[1].map(e => {
-          return {
-            ...e,
-            ComposeName: `${e.DataName}-${e.DeviceName}-${categoryClassObj[e.Class]}-${limitList[e.Limit]}`
-          }
-        })
-        treeCfg.data = createTree(e)
+      ajaxPromiseAll<[CategoryNodeEntity[], CategoryDataEntity[]]>([callBrige(callFnName.GetCategoryNodes), callBrige(callFnName.GetCategoryDatas)]).then((e) => {
+        if (e[1].length == 0) {
+
+        } else {
+          e[1] = e[1].map(e => {
+            return {
+              ...e,
+              ComposeName: `${e.DataName}-${e.DeviceName}-${categoryClassObj[e.Class]}-${limitList[e.Limit]}`
+            }
+          })
+          treeCfg.data = createTree(e)
+
+        }
+
 
         // console.log("🚀 ~ file: index.tsx:67 ~ ajaxPromiseAll<[CategoryNodeEntity[],CategoryDataEntity[]]> ~ treeCfg.data:", treeCfg.data)
       })
@@ -146,7 +153,7 @@ export default defineComponent({
       let freezeSelectItem = { ...innerData.selectItem }
       callSpc(innerData.isGroup ? callFnName.deleteCategoryNode : callFnName.deleteCategoryData, innerData.selectItem).then(() => {
         if (innerData.isGroup) {
-          callSpc(callFnName.getDataConfigs).then((list: DataConfigEntity[]) => {   //连带删除 dataConfig
+          callBrige(callFnName.GetDataConfigs).then((list: DataConfigEntity[]) => {   //连带删除 dataConfig
             let item = list.find(e => e.CategoryNodeId == freezeSelectItem.GId)
             item && callSpc(callFnName.deleteDataConfig, item)
           })
@@ -165,7 +172,7 @@ export default defineComponent({
       innerData.setIsMemberAddMore(false)
     })
     watch(() => configStore.configTab, (val) => {
-      if(val != 'dataConfig'){
+      if (val != 'dataConfig') {
         innerData.setDevCfgShow(false)
       }
     })

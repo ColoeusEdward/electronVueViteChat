@@ -148,6 +148,7 @@ export const useMain = defineStore('useStore', {
             localStorage.setItem('rightBlockDataMap', JSON.stringify(this.rightBlockDataMap))
         },
         setIsLowRes(value: boolean) {
+            console.log("🪵 [index.ts:150] ~ token ~ \x1b[0;32mvalue\x1b[0m = ", value);
             this.isLowRes = value
         },
         setEccAngle(value: number) {

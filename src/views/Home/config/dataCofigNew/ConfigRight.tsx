@@ -9,6 +9,7 @@ import { AlarmTypeList, DataTypeEnum, dataTypeEnumList, defaultDataConfigForm, U
 import { useDataCfgInnerDataStore } from "./innerData";
 import { ajaxPromiseAll } from "@/utils/utils";
 import { useDataCfgOutInnerDataStore } from "../dataCfgOut/innerData";
+import { callBrige } from "@/utils/callm";
 
 export default defineComponent({
   name: 'ConfigRight',
@@ -20,7 +21,7 @@ export default defineComponent({
     const UnilateralHide = ref(false)
     const AlarmTypeHide = ref(false)
     const UnilateralItem = { type: 'radio', label: '是否单边数据', prop: 'Unilateral', radioType: 'def', radioList: UnilateralList, width: 12, hide: UnilateralHide }
-    const AlarmTypeItem = { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 12, hide: AlarmTypeHide }
+    const AlarmTypeItem = { type: 'radio', label: '报警方式', prop: 'AlarmType', radioType: 'def', radioList: AlarmTypeList, width: 10, hide: AlarmTypeHide }
     const formCfg = reactive({
       form: dataCfgOutInnerData.isEdit ? { ...dataCfgOutInnerData.curRow } as DataConfigEntity : { ...defaultDataConfigForm } as DataConfigEntity,
       optionMap: {
@@ -40,19 +41,21 @@ export default defineComponent({
           type: 'shadowBox', label: '', width: 24, childCompList: [
             { type: 'divider', label: '数据范围', width: 24 },
             { type: 'radio', label: '数据类型', prop: 'DataType', radioType: 'def', radioList: dataTypeEnumList, width: 12 },
-            { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
             UnilateralItem,
             AlarmTypeItem,
+            { type: 'switch', label: '启用状态', prop: 'State', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
+            // { type: 'switch', label: '', prop: '44', checkedValue: 1, uncheckedValue: 0, width: 12 }, //0,1
+
           ]
         },
-        {type:'space',width:24,style:{height:'20px'}},
+        { type: 'space', width: 24, style: { height: '20px' } },
       ] as formListItem[],
       hideBtn: false,
       noLargeBtn: false,
       btnStyleStr: `margin-right: 8px;margin-bottom:8px;`,
       renderToBtn: () => {
         return (
-          <NButton class={' my-large-btn mr-3 relative mb-2'} onClick={cancel} size={'large'} >取消</NButton>
+          <NButton class={' my-large-btn mr-3 relative mb-2 bg-white hover:bg-white'} onClick={cancel} size={'large'} >取消</NButton>
         )
       },
       submitFn: (form: DataConfigEntity) => {
@@ -99,7 +102,7 @@ export default defineComponent({
       if (!item) return
       // ajaxPromiseAll<[DataConfigEntity[], CategoryNodeEntity[]]>([,
       //   callSpc(callFnName.getCategoryNodes)])
-      callSpc(callFnName.getDataConfigs).then((list: DataConfigEntity[]) => {
+      callBrige(callFnName.GetDataConfigs).then((list: DataConfigEntity[]) => {
         console.log("🚀 ~ file: ConfigRight.tsx:44 ~ callSpc ~ list:", list)
         let res = {} as DataConfigEntity | undefined
         if (isCategoryDataEntity(item!)) {
@@ -112,7 +115,7 @@ export default defineComponent({
         }
         console.log("🚀 ~ file: ConfigRight.tsx:63 ~ callSpc ~ res:", res)
         if (!res) //没找到dataConfg,form就设为默认值
-          return callSpc(callFnName.getCategoryNodes)
+          return callBrige(callFnName.GetCategoryNodes)
         else
           return new Promise((resolve) => {
             resolve(false)
@@ -140,7 +143,7 @@ export default defineComponent({
     // callSpc(callFnName.deleteDataConfig,{GId:`66e110e4-348c-4143-bb48-678ee5fb2df4`})
     return () => {
       return (
-        <div class={'w-full h-full relative pr-3'}>
+        <div class={'w-full h-full relative pr-3 bg-white'}>
           <MyFormWrap ref={myFormRef} {...formCfg} form={formCfg.form} ></MyFormWrap>
         </div>
       )

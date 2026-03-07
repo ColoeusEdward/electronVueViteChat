@@ -12,6 +12,7 @@ import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
 import { menuIdSplit, menuOptList, menuPropEnum } from "./enum";
 import { sleep } from "@/utils/utils";
+import { callBrige } from "@/utils/callm";
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -33,11 +34,11 @@ export default defineComponent({
       }
     })
     const getAllActiveConfigData = () => {
-      return callSpc(callFnName.getDataConfigs).then((res: DataConfigEntity[]) => {
+      return callBrige(callFnName.GetDataConfigs).then((res: DataConfigEntity[]) => {
         let list = res.filter((e: DataConfigEntity) => e.State == 1)
         commonData.cfgDataList = list
         innerData.setDataCfgList(list)
-        if(!innerData.curDataCfgEntity){
+        if (!innerData.curDataCfgEntity) {
           innerData.setCurDataCfgEntity(list[0])
         }
       })
@@ -73,7 +74,7 @@ export default defineComponent({
     const prevShow = computed(() => {
       return commonData.curPage > 0
     })
-    
+
     onMounted(() => {
       sleep(50).then(() => {
         refresh()

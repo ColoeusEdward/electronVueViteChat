@@ -9,6 +9,7 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import classnames from "classnames";
 import { CloseTwotone, DragIndicatorFilled } from "@vicons/material";
+import { callBrige } from "@/utils/callm";
 // import { Drag24Filled } from "@vicons/fluent";
 
 type InputType = InstanceType<typeof NInputNumber> | null
@@ -54,7 +55,7 @@ export default defineComponent({
       // console.log("🚀 ~ file: GlobalKeyBoard.tsx:41 ~ onKeyPress ~ button:", button)
       if (button == '{bksp2}') {
         focusToInput(store).then(() => {
-          return callSpc(callFnName.keyPress, keyCodeMap.BACKSPACE)
+          return callBrige(callFnName.KeyPress, keyCodeMap.BACKSPACE)
         }).then(() => {
           // refreshVal()
           keyboardIns.setCaretPosition(String(keyBoardAngle.value).length);
@@ -117,17 +118,17 @@ export default defineComponent({
         keyboardIns.setOptions({
           layoutName: commonData.isCapLock ? 'lock' : 'default'
         })
-        callSpc(callFnName.keyPress, keyCodeMap.CAPSLOCK)
+        callBrige(callFnName.KeyPress, keyCodeMap.CAPSLOCK)
         return
       }
       if (button == '{tab}') {
         focusToInput(store).then(() => {
-          callSpc(callFnName.keyPress, keyCodeMap.TAB)
+          callBrige(callFnName.KeyPress, keyCodeMap.TAB)
         })
         return
       }
       if (button == '{shift}') {
-        callSpc(callFnName.keyPress, keyCodeMap.SHIFT)
+        callBrige(callFnName.KeyPress, keyCodeMap.SHIFT)
         return
       }
       // if (button == '0' && keyBoardAngle.value == 0) {  //该组件有个bug,开头狂按0会正常写入组件内部, 需要手动清空
@@ -152,7 +153,7 @@ export default defineComponent({
       //   multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[button])
       //   return
       // }
-      if (button ) {
+      if (button) {
         focusToInput(store).then(async () => {
           // store.lastFocusedInput!.value +=  keyBoardAngle.value
           let str = String(keyBoardAngle.value)
@@ -168,11 +169,11 @@ export default defineComponent({
               await multiPressKey(keyCodeMap.SHIFT, keyCodeUpSpecCharMap[str])
             }
             else if (commonKeyCodeSpecCharMap[str]) {
-              await callSpc(callFnName.keyPress, commonKeyCodeSpecCharMap[str])
+              await callBrige(callFnName.KeyPress, commonKeyCodeSpecCharMap[str])
             }
             else {
               code = str.toUpperCase().charCodeAt(0)
-              await callSpc(callFnName.keyPress, code)
+              await callBrige(callFnName.KeyPress, code)
             }
           }
           // simulateKeyPress(),
@@ -214,7 +215,7 @@ export default defineComponent({
             '{123}': '123',
             '{clear}': '清空',
             '{bksp}': '←',
-            // '{enter}': 'OK',
+            '{enter}': '↩︎',
             '{esc}': '❌',
             '{reset}': 'CE',
             '{abc}': 'abc'
@@ -271,11 +272,11 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[30vw] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[484px]': commonData.isNum, 'w-[1080px]': !commonData.isNum })} v-show={keyborardShow.value}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[440px] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[484px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
                 {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
                 </div> */}
-                <div class={'w-full h-8 0 rounded-md  global-keyboard-value flex justify-end items-center' } ref={showTextRef}>
+                <div class={'w-full h-8 0 rounded-md  global-keyboard-value flex justify-end items-center'} ref={showTextRef}>
                   <div class={'p-[6px] px-4 flex justify-center items-center text-2xl bg-red-400 rounded  text-white'} onClick={closeKeyboard}>
                     <NIcon size={'large'}>  <CloseTwotone /> </NIcon>
                   </div>

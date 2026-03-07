@@ -1,5 +1,6 @@
 import MyNTable from "@/components/MyNTable";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { ajaxPromiseAll } from "@/utils/utils";
 import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
@@ -41,7 +42,7 @@ export default defineComponent({
       if (!innerData.curRow) return
       innerData.cleanDataRow()
       ajaxPromiseAll<[FormulaDataEntity[], DataConfigEntity[]]>([callSpc(callFnName.getFormulaDatas, innerData.curRow.GId),
-      callSpc(callFnName.getDataConfigs)])
+      callBrige(callFnName.GetDataConfigs)])
         .then(([flist, dlist]) => {
           console.log("🚀 ~ file: FormulaDataList.tsx:43 ~ .then ~ dlist:", dlist)
           let list = flist.map(e => {
@@ -64,7 +65,7 @@ export default defineComponent({
         return
       }
       innerData.dataList.splice(innerData.dataList.findIndex(e => e.GId === innerData.curDataRow!.GId), 1)
-      callSpc(callFnName.saveFormulaConfig, [innerData.curRow, [...innerData.dataList]],true).then((res: number) => {
+      callSpc(callFnName.saveFormulaConfig, [innerData.curRow, [...innerData.dataList]], true).then((res: number) => {
         getTbData()
       })
     }

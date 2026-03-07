@@ -23,20 +23,19 @@ body {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.overlay{
+.overlay {
   overflow-y: overlay;
 }
-.my-large-btn{
+.my-large-btn {
   width: 180px;
   height: 50px;
   font-size: 22px;
 }
 
-.value-number{
-  font-family: 'myMono';
+.value-number {
+  font-family: "myMono";
 }
-.left-side-ani{
-  
+.left-side-ani {
   transition: left 0.3s ease;
 }
 
@@ -112,9 +111,8 @@ body {
   // border-radius: 10px;
   // margin: 10px;
   // width: calc(100% - 20px);
-
 }
-.simple-keyboard.hg-layout-default .hg-button{
+.simple-keyboard.hg-layout-default .hg-button {
   font-size: 28px;
   padding: 30px;
 }
@@ -126,20 +124,20 @@ body {
   // padding: 0 8px;
 }
 
-.simple-keyboard{
-  .my-theme{
-    .backspace-style{
-      width:120px;
+.simple-keyboard {
+  .my-theme {
+    .backspace-style {
+      width: 120px;
     }
-    .short-style{
+    .short-style {
       width: 100px;
     }
   }
 }
-.large-label-size{
-  font-size: 20px;
-  .n-divider__title{
-    font-size: 26px;
+.large-label-size {
+  font-size: 18px;
+  .n-divider__title {
+    font-size: 22px;
   }
 }
 @media (prefers-color-scheme: light) {

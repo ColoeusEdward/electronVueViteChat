@@ -1,7 +1,9 @@
 import { useConfigStore } from "@/store/config"
 import { ActualResult, SysConfigEntity } from "~/me"
+import { callBrige } from "./callm"
+import { callFnName } from "./enum"
 
-const resultProcess = (res: ActualResult) => {
+export const resultProcess = (res: ActualResult) => {
   // console.log("🚀 ~ resultProcess ~ res:", res)
   if (res.OpCode == 200) {
     return res.Value
@@ -35,38 +37,56 @@ export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult
 }
 
 export const chooseFolder = (): Promise<string> => {
-  return callSpc(window.spcJsBind.showDirSelect()).then((res: string) => {
+  return callBrige(callFnName.ShowDirSelect).then((res: string) => {
     return res || ''
   })
 
 }
 
 export const getPrinterList = (): Promise<string[]> => {
-  return callSpc(window.spcJsBind.getPrinterList())
-    .then((res: string[]) => {
-      return res || []
-    })
+  return callBrige(callFnName.GetPrinterList).then((res: string[]) => {
+    return res
+  })
+  // return callSpc(window.spcJsBind.getPrinterList())
+  //   .then((res: string[]) => {
+  //     return res || []
+  //   })
 }
 
 export const getSysConfig = () => {
-
-  return window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
-    const configStore = useConfigStore()
-    // window.spcJsBind.closeSpcSystem().then(function (actualResult:string) {
-    //   console.info(actualResult);
-    // });
-    window.spcJsBind.getSysConfigs().then(function (actualResult: ActualResult) {
-      let list = actualResult.Value as SysConfigEntity[]
-      let data: Record<string, string> = {}
-      list.forEach(e => {
-        data[e.Name] = e.Value
-      })
-      configStore.setOriginSysConfig(list)
-      configStore.setSysConfig(data)
-      // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
-      return new Promise((resolve, reject) => {
-        resolve(data)
-      })
-    });
+  const configStore = useConfigStore()
+  return callBrige(callFnName.GetSysConfigs).then((res: SysConfigEntity[]) => {
+    let list = res;
+    let data: Record<string, string> = {}
+    list.forEach(e => {
+      data[e.Name] = e.Value
+    })
+    console.log("🪵 [call.ts:61] ~ token ~ \x1b[0;32mlist\x1b[0m = ", list);
+    configStore.setOriginSysConfig(list)
+    configStore.setSysConfig(data)
+    // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
+    return new Promise((resolve, reject) => {
+      resolve(data)
+    })
   })
+
+  // return window.CefSharp.BindObjectAsync("spcJsBind").then(() => {
+  //   const configStore = useConfigStore()
+  //   // window.spcJsBind.closeSpcSystem().then(function (actualResult:string) {
+  //   //   console.info(actualResult);
+  //   // });
+  //   window.spcJsBind.getSysConfigs().then(function (actualResult: ActualResult) {
+  //     let list = actualResult.Value as SysConfigEntity[]
+  //     let data: Record<string, string> = {}
+  //     list.forEach(e => {
+  //       data[e.Name] = e.Value
+  //     })
+  //     configStore.setOriginSysConfig(list)
+  //     configStore.setSysConfig(data)
+  //     // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
+  //     return new Promise((resolve, reject) => {
+  //       resolve(data)
+  //     })
+  //   });
+  // })
 }

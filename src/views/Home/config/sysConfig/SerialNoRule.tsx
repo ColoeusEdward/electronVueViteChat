@@ -1,6 +1,7 @@
 import { MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
 import MyNTable from "@/components/MyNTable";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { ajaxPromiseAll } from "@/utils/utils";
 import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
@@ -25,9 +26,11 @@ export default defineComponent({
           multiple: false,
         },
         { key: 'SortNum', title: '排序位置', resizable: true },
-        { key: 'FieldType', title: '字段类型', resizable: true,render: (row: SerialNoEntity) => {
-          return originFieldTypeList[row.FieldType]
-        } },
+        {
+          key: 'FieldType', title: '字段类型', resizable: true, render: (row: SerialNoEntity) => {
+            return originFieldTypeList[row.FieldType]
+          }
+        },
         { key: 'Format', title: '格式', resizable: true },
       ],
       data: [] as SerialNoEntity[],
@@ -81,7 +84,7 @@ export default defineComponent({
     }
     const getTbData = () => {
       innerData.cleanRow()
-      return callSpc(callFnName.getSerialNos).then((res: SerialNoEntity[]) => {
+      return callBrige(callFnName.GetSerialNos).then((res: SerialNoEntity[]) => {
         tableCfg.data = res.sort((a, b) => {
           return a.SortNum - b.SortNum
         })

@@ -1,11 +1,14 @@
 import LargeBtnIcon from "@/components/LargeBtnIcon";
 import MyNTable from "@/components/MyNTable";
+import { useMain } from "@/store";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { sleep } from "@/utils/utils";
 import { AddOutlined, DeleteForeverFilled, EditFilled } from "@vicons/material";
+import classNames from "classnames";
 import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
-import { defineComponent, reactive, Transition } from "vue";
+import { computed, defineComponent, reactive, Transition } from "vue";
 import { CategoryNodeEntity, DataConfigEntity } from "~/me";
 import ConfigRight from "../dataCofigNew/ConfigRight";
 import { AlarmTypeNameList, dataTypeEnumList, dataTypeEnumNameList, UnilateralNameList, } from "../dataCofigNew/enum";
@@ -16,6 +19,8 @@ export default defineComponent({
   setup(props, ctx) {
     const innerData = useDataCfgOutInnerDataStore()
     const msg = useMessage()
+    const mainStore = useMain()
+    const isLowRes = computed(() => mainStore.isLowRes)
     const tableCfg = reactive({
       columns: [
         {
@@ -64,13 +69,13 @@ export default defineComponent({
       innerData.setCurRow(row)
     }
     const getNodeList = () => {
-      callSpc(callFnName.getCategoryNodes).then((list: CategoryNodeEntity[]) => {
+      callBrige(callFnName.GetCategoryNodes).then((list: CategoryNodeEntity[]) => {
         innerData.setNodeList(list)
       })
     }
     getNodeList()
     const getTableData = () => {
-      callSpc(callFnName.getDataConfigs).then((list: DataConfigEntity[]) => {
+      callBrige(callFnName.GetDataConfigs).then((list: DataConfigEntity[]) => {
         tableCfg.data = list.sort((a, b) => a.SortNum - b.SortNum).map(e => {
           return {
             ...e,
@@ -129,15 +134,19 @@ export default defineComponent({
               }}>
                 确认删除吗?
               </NPopconfirm>
-              <NButton class={'my-large-btn'} style={{width: '220px'}}  size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
+              <NButton class={'my-large-btn'} style={{ width: '220px' }} size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
             </NSpace>
           </div>
-          <div class={'flex-shrink h-full w-full relative'}>
-            <MyNTable v-model:checked-row-keys={innerData.curRowKey} {...tableCfg} />
+          <div class={'flex-shrink-0 h-full w-full relative overflow-scroll'}>
+            <div class={'flex-shrink-0 min-h-[500px]'}>
+              <MyNTable v-model:checked-row-keys={innerData.curRowKey} {...tableCfg} />
+
+            </div>
             <Transition name={'full-pop'}>
               {
                 innerData.editShow &&
-                <div class={'absolute bottom-0 right-0 w-full px-2  bg-white'}>
+                // <div class={'relative bottom-0 right-0 w-full px-2  bg-white pb-[100px]'}>
+                <div class={classNames('absolute  right-0 w-full px-2  bg-white  z-[1000] ', { ' bottom-0': !isLowRes.value, 'h-[500px] top-0': isLowRes.value })}>
                   <ConfigRight />
                 </div>
               }

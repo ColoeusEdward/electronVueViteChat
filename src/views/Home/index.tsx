@@ -43,7 +43,7 @@ export default defineComponent({
     }
     const curTabValue = ref('curcev')
     const commonStyle = {
-      width: '10vw', border: 'none', fontSize: '20px',
+      width: '12vw', border: 'none', fontSize: '20px',
       borderBottom: '3px solid #58595a'
     }
     const audio = new Audio(emptyAduio)
@@ -103,8 +103,8 @@ export default defineComponent({
     onMounted(() => {
       // loopGetData()
       sleep(1000).then(() => {
-        if (window.CefSharp) {
-          startSpcSys()
+        if (window.chrome) {
+          // startSpcSys()
         }
       })
 
