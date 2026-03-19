@@ -55,7 +55,7 @@ export default defineComponent({
         commonData.moveLoading = true
         tableCfg.data[idx - 1].SortNum++;
         tableCfg.data[idx].SortNum--;
-        ajaxPromiseAll([callSpc(callFnName.saveSerialNo, tableCfg.data[idx - 1]), callSpc(callFnName.saveSerialNo, tableCfg.data[idx])])
+        ajaxPromiseAll([callBrige(callFnName.SaveSerialNo, tableCfg.data[idx - 1]), callBrige(callFnName.SaveSerialNo, tableCfg.data[idx])])
           .then(() => {
             return getTbData()
           }).finally(() => {
@@ -74,7 +74,7 @@ export default defineComponent({
 
         tableCfg.data[idx + 1].SortNum--;
         tableCfg.data[idx].SortNum++;
-        ajaxPromiseAll([callSpc(callFnName.saveSerialNo, tableCfg.data[idx + 1]), callSpc(callFnName.saveSerialNo, tableCfg.data[idx])])
+        ajaxPromiseAll([callBrige(callFnName.SaveSerialNo, tableCfg.data[idx + 1]), callBrige(callFnName.SaveSerialNo, tableCfg.data[idx])])
           .then(() => {
             return getTbData()
           }).finally(() => {
@@ -98,7 +98,7 @@ export default defineComponent({
         msg.warning('请选择一行数据')
         return
       }
-      callSpc(callFnName.deleteSerialNo, innerData.curRow).then(() => {
+      callBrige(callFnName.DeleteSerialNo, innerData.curRow).then(() => {
         getTbData()
       })
     }

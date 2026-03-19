@@ -23,7 +23,7 @@ export default defineComponent({
       return commonData.curPage > 0
     })
     const dataList = computed(() => {
-      return curCevInnerData.dataCfgList.filter(e=>e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
+      return curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
     })
     const nextPage = () => {
       commonData.curPage = commonData.curPage + 1
@@ -41,14 +41,14 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col'}>
           <div class={'pl-2 flex'}>
             <NSpace align={'center'}>
-              {curCevInnerData.isGetting ?
+              {/* {curCevInnerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>
                 }} onClick={curCevInnerData.stopColFn} >停止采集</NButton>
                 : <NButton type={'primary'} size={'large'} v-slots={{
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={curCevInnerData.startColFn} >开始采集</NButton>
-              }
+              } */}
             </NSpace>
 
             <div class='ml-auto  h-16' >

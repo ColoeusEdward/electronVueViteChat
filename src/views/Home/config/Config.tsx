@@ -28,12 +28,13 @@ export default defineComponent({
     const activeStyle = {
       backgroundImage: `url(${TabActiveImg})`,
       backgroundSize: 'cover',
-      color: '#fff'
+      color: '#fff',
+      zIndex: 6
     }
     const defaultTab = 'sysConfig'
     const curTabValue = ref('sysConfig')
     const commonStyle = {
-      width: '13vw', border: 'none', fontSize: '20px',
+      width: '13vw', border: 'none', fontSize: '20px', minWidth: "120px",
       borderBottom: '3px solid #58595a', flexGrow: 1
     }
     const cancel = () => {
@@ -63,6 +64,8 @@ export default defineComponent({
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
 
           <div class={'h-full w-full shrink'} style={{ height: 'calc(100% - 80px)' }}>
+            <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+
             <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
               <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>

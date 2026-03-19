@@ -11,15 +11,15 @@
     <div
       class="h-[100vh] flex flex-col bg-ele-white overflow-hidden ">
 
-    <!-- 侧边栏总组件 -->
-    <!-- <navSider v-if="mainHeaderShow" /> -->
-    <n-message-provider>
-      <RouterView>
-      </RouterView>
-      <!-- <Home /> -->
-    </n-message-provider>
-    <!-- 窗口基础功能 ：关闭 最小化，最大化 -->
-    <!-- <div class="w-100px self-end flex justify-around items-center my-5px border-r">
+      <!-- 侧边栏总组件 -->
+      <!-- <navSider v-if="mainHeaderShow" /> -->
+      <n-message-provider>
+        <RouterView>
+        </RouterView>
+        <!-- <Home /> -->
+      </n-message-provider>
+      <!-- 窗口基础功能 ：关闭 最小化，最大化 -->
+      <!-- <div class="w-100px self-end flex justify-around items-center my-5px border-r">
       <el-icon
         size="18px"
         @click="navBar('close')">

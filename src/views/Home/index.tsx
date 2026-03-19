@@ -39,11 +39,13 @@ export default defineComponent({
     const activeStyle = {
       backgroundImage: `url(${activeImg})`,
       backgroundSize: 'cover',
-      color: '#fff'
+      color: '#fff',
+      zIndex: 6
     }
     const curTabValue = ref('curcev')
     const commonStyle = {
       width: '12vw', border: 'none', fontSize: '20px',
+      minWidth: "120px",
       borderBottom: '3px solid #58595a'
     }
     const audio = new Audio(emptyAduio)
@@ -61,6 +63,9 @@ export default defineComponent({
       //   console.log(`sdll`, val);
       // })
       audio.play()
+    }
+    const handleResize = () => {
+      store.setIsLowRes(isLowResolution())
     }
     const handleFocus = () => {
       audio.pause()
@@ -80,8 +85,8 @@ export default defineComponent({
 
     }
     const keyboradInit = () => {
-      callSpc(callFnName.initKeyboardConfig).then((res: ActualResult) => {
-      })
+      // callSpc(callFnName.initKeyboardConfig).then((res: ActualResult) => {
+      // })
     }
     const startSpcSys = () => {
       callSpc(callFnName.startSpcSystem).then((res: ActualResult) => {
@@ -94,8 +99,8 @@ export default defineComponent({
       //   });
       // })
     }
-
     store.setIsLowRes(isLowResolution())
+    window.addEventListener('resize', handleResize)
     window.addEventListener('blur', handleBlur)
     window.addEventListener('focus', handleFocus)
     document.addEventListener('focusin', handleAllInputFocuse);
@@ -116,6 +121,7 @@ export default defineComponent({
       document.removeEventListener('focusin', handleAllInputFocuse)
       startFetch = false
     })
+    // console.log("🪵 [index.tsx:130] ~ token ~ \x1b[0;32mstore.isLandscape \x1b[0m = ", store.isLandscape);
 
 
     return () => {
@@ -126,6 +132,9 @@ export default defineComponent({
           {
             store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
               <div class={'w-2/3'}>
+                <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+
+
                 <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
                   <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                     <div class={' h-full'}>
@@ -172,6 +181,7 @@ export default defineComponent({
             </div> :
               <div class={'h-full flex overflow-hidden flex-col'}>
                 <div class={'h-2/3'}>
+                  <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
                   <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
                     <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                       <div class={' h-full'}>
@@ -185,7 +195,10 @@ export default defineComponent({
                     </NTabPane>
                   </NTabs>
                 </div>
-                <div class={'h-1/3'}>
+                <div class={'h-1/3 relative'}>
+                  <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+
+
                   <RightValueBlock />
                 </div>
               </div>

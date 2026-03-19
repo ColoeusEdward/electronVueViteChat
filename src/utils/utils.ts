@@ -122,7 +122,7 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
 
     // 检查这个元素是否是一个输入框
     //@ts-ignore
-    if (targetElement && targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA') {
+    if (targetElement && targetElement.type == 'text' && targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA') {
       console.log('用户点击或选中了一个输入框。');
       //@ts-ignore
       console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
@@ -132,6 +132,14 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
 }
 
 export const listenLandscape = (store: ReturnType<typeof useMain>) => {
+  //比较长宽比判断竖屏
+  if (window.innerHeight > window.innerWidth) {
+    store.setIsLandscape(false)
+  } else {
+    store.setIsLandscape(true)
+  }
+  return window.innerHeight > window.innerWidth
+
   // 竖屏查询
   const mediaQueryPortrait = window.matchMedia('(orientation: portrait)');
   // 横屏查询

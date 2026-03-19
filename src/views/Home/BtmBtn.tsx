@@ -8,6 +8,8 @@ import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
+import { callBrige } from "@/utils/callm";
+import { useCurcevInnerDataStore } from "./curcev/innerData";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -35,13 +37,13 @@ const TimeBlock = defineComponent({
 export default defineComponent({
   name: 'BtmBtn',  //底部按钮栏
   setup(props) {
-
+    const curCevInnerData = useCurcevInnerDataStore()
     const configStore = useConfigStore()
     const maintainOption = [
       { label: '配置', value: 'option' },
       { label: '运行日志', value: 'log' },
       { label: '诊断程序', value: 'diag' },
-      { label: '趋势图/打印机', value: 'chartAndprint' },
+      // { label: '趋势图/打印机', value: 'chartAndprint' },
       { label: '退出', value: 'shutdown' },
       // { label: '组态test', value: 'datav' },
       // { label: '检查元素', value: 'devTool' },
@@ -60,6 +62,10 @@ export default defineComponent({
       { label: 'Reload', value: 'Reload' },
       { label: '开发者工具', value: 'devTool' },
     ])
+    const maintainOption3 = ref<PopselectProps['options']>([
+      { label: '开始', value: 'collectStart' },
+      { label: '结束', value: 'collectStop' },
+    ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
       let valueMap: Record<string, () => void> = {
         option: () => {
@@ -69,10 +75,10 @@ export default defineComponent({
           window.open('datav/index.html')
         },
         shutdown: () => {
-          callSpc(callFnName.closeApp).then(() => {
+          callBrige(callFnName.CloseApp).then(() => {
           })
         },
-        Reload:() => {
+        Reload: () => {
           window.location.reload()
         },
         productHistory: () => {
@@ -85,8 +91,18 @@ export default defineComponent({
           configStore.setFormulaCfgShow(true)
         },
         devTool: () => {
-          callSpc(callFnName.openDevTool).then(() => {
-          })
+          // callSpc(callFnName.openDevTool).then(() => {
+          // })
+        },
+        collectStart: () => {
+          let item = popSelectList.value[3]
+          item.name = `趋势图(开)`
+          curCevInnerData.startColFn && curCevInnerData.startColFn()
+        },
+        collectStop: () => {
+          let item = popSelectList.value[3]
+          item.name = `趋势图(关)`
+          curCevInnerData.stopColFn && curCevInnerData.stopColFn()
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
@@ -99,7 +115,8 @@ export default defineComponent({
       { option: maintainOption, name: '维护', icon: <Tool /> },
       { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
       { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
-      { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
+      { option: maintainOption3.value, name: '趋势图(关)', icon: <AreaChartOutlined /> },
+      // { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     ])
 
 

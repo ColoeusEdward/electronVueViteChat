@@ -146,7 +146,7 @@ export default defineComponent({
               {
                 innerData.editShow &&
                 // <div class={'relative bottom-0 right-0 w-full px-2  bg-white pb-[100px]'}>
-                <div class={classNames('absolute  right-0 w-full px-2  bg-white  z-[1000] ', { ' bottom-0': !isLowRes.value, 'h-[500px] top-0': isLowRes.value })}>
+                <div class={classNames('absolute  right-0 w-full px-2  bg-white  z-[1000] ', { ' bottom-0': !isLowRes.value, 'h-full pb-[100px] top-0': isLowRes.value })}>
                   <ConfigRight />
                 </div>
               }

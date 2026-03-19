@@ -207,17 +207,17 @@ export default defineComponent({
               <div></div>
               <NDropdown options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
                 {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
-                <NButton strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
                 </NButton>
               </NDropdown>
-              {innerData.isGetting ?
+              {/* {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>
                 }} onClick={stopCollect} >停止采集</NButton>
                 : <NButton type={'primary'} size={'large'} v-slots={{
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={startCollect} >开始采集</NButton>
-              }
+              } */}
 
               <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
               <NButton type={'warning'} size={'large'} v-slots={{
