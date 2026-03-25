@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
 import { defineComponent, ref, PropType, onMounted, computed, defineExpose, Ref } from "vue";
+import blueBg from '@/assets/PnlBtnActive.png'
 
 export interface formListItem {
   type: string
@@ -26,11 +27,11 @@ export interface formListItem {
   max?: number,
   radioType?: 'btn' | 'def',
   hide?: boolean,
-  childCompList?:formListItem[]
+  childCompList?: formListItem[]
 }
 export type MyFormWrapIns = {
   submit: Function,
-  resetValid:Function
+  resetValid: Function
 }
 export const MyFormWrap = defineComponent({
   name: 'MyFormWrap',
@@ -61,6 +62,17 @@ export const MyFormWrap = defineComponent({
     }
     const pform = computed(() => {
       return props.form
+    })
+
+    const btnStyleStrToObj = computed(() => {
+      let list = props.btnStyleStr?.split(';') || []
+      let obj: Record<string, string> = {}
+      list.forEach((e) => {
+        let [key, val] = e.split(':')
+        obj[key] = val
+      })
+      return obj
+      return
     })
 
     const buildRule = () => {
@@ -181,9 +193,9 @@ export const MyFormWrap = defineComponent({
     const renderFreeComp = (form: typeof props.form, item: formListItem) => {
       return item.renderComp && item.renderComp()
     }
-    
+
     return (context: any) => {
-      const renderShadowBox = (form: typeof props.form,item: formListItem,optionMap: object) => {
+      const renderShadowBox = (form: typeof props.form, item: formListItem, optionMap: object) => {
         return (
           <div class={'border border-solid rounded-2xl bg-white border-gray-200 shadow-md p-4 pt-0 mb-4'}>
             {/* {item.childCompList && item.childCompList.map(e => ((!e.hide) && obj[e.type] && obj[e.type](form, e, optionMap)))} */}
@@ -202,11 +214,11 @@ export const MyFormWrap = defineComponent({
         free: renderFreeComp,
         radio: renderRadio,
         numInput: renderNumInput,
-        shadowBox:renderShadowBox,
-        space:renderSpace
+        shadowBox: renderShadowBox,
+        space: renderSpace
       }
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
-        
+
         return itemList?.map((item) => {
           return (
             <NGi span={item.width || 12}>
@@ -235,7 +247,9 @@ export const MyFormWrap = defineComponent({
                 ]}
               </div>
               {props.renderToBtn && props.renderToBtn()}
-              <NButton class={classNames({ 'my-large-btn': !props.noLargeBtn })} style={"" + (props.btnStyleStr || '')} type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
+              <NButton class={classNames({ 'my-large-btn': !props.noLargeBtn })} style={{ backgroundImage: `url(${blueBg})`, backgroundSize: '100% 100%', color: '#fff', ...btnStyleStrToObj.value }} secondary strong={true}
+                // style={"" + (props.btnStyleStr || '')} 
+                type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
             </div>]
           }
         </div>

@@ -23,9 +23,8 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
   let fn = bridge[cb]
   if (fn) {
     let fnRun = str ? fn(str) : fn()
-    return fnRun.then((res: string) => {
+    return fnRun.then((res: any) => {
       let resObj = safeJsonParse(res) as ActualResult
-      // console.log("🪵 [callm.ts:16] ~ token ~ \x1b[0;32mres\x1b[0m = ", resObj);
       return resultProcess(resObj)
     }).catch((err: any) => {
       console.error(err)

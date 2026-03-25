@@ -5,6 +5,7 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, FFTModel, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
+import activeWarningImg from '@/assets/LineDspButton_inactive_warning3.png'
 import { useCurcevInnerDataStore } from "./innerData";
 import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
@@ -36,7 +37,6 @@ export default defineComponent({
     })
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfigs).then((res: SysConfigEntity[]) => {
-        // console.log("🚀 ~ file: index.tsx:39 ~ callSpc ~ res:", res)
         innerData.setSysConfig(res)
       })
     }
@@ -44,8 +44,10 @@ export default defineComponent({
     const getAllActiveConfigData = () => {
       commonData.getCfgLoading = true
       return callBrige(callFnName.GetDataConfigs).then((res: DataConfigEntity[]) => {
-        if (res.length == 0) {
+        if (res && res.length == 0) {
           return sleep(500).then(() => refresh())
+        } else {
+          res = []
         }
         let list = res
         // console.log("🚀 ~ returncallSpc ~ list:", list)
@@ -219,9 +221,9 @@ export default defineComponent({
                 }} onClick={startCollect} >开始采集</NButton>
               } */}
 
-              <NButton onClick={refresh} size={'large'} >刷新配置</NButton>
-              <NButton type={'warning'} size={'large'} v-slots={{
-                icon: () => <NIcon><LayersClearOutlined /></NIcon>
+              <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={refresh} size={'large'} >刷新配置</NButton>
+              <NButton type={'warning'} style={{ backgroundImage: `url(${activeWarningImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} v-slots={{
+                icon: () => false && <NIcon><LayersClearOutlined /></NIcon>
               }} onClick={clearCollect} >清空数据</NButton>
               {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2 flex-shrink-0 '}>产品编号</span>

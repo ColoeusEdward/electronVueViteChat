@@ -12,7 +12,7 @@ declare global {
     CefSharp: any,
     spcJsBind: any,
     $message: MessageApiInjection,
-    frontFn: Record<string,Function>,
+    frontFn: Record<string, Function>,
     chrome: any
   }
 }
@@ -20,8 +20,9 @@ declare global {
 type ActualResult = {
   IsSuccess: boolean,
   Message: string,
-  OpCode: number,
-  Value: object|string
+  Code: number,
+  // Value: object | string
+  Data: object | string
 }
 
 type DriverInfo = {
@@ -179,16 +180,16 @@ type CategoryNodeEntity = {
 type CategoryDataEntity = {
   GId: string;
   CategoryNodeId: string;
-  NodeName?:string;
+  NodeName?: string;
   DeviceName: string;
   DataName: string;
   Class: string;
   Limit: number;
   CreateTime: string;
-  ComposeName?:string;
+  ComposeName?: string;
 }
 
-type  DataConfigEntity = {
+type DataConfigEntity = {
   GId?: string;
   CategoryNodeId?: string;
   Name: string;

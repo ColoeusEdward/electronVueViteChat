@@ -5,8 +5,8 @@ import { callFnName } from "./enum"
 
 export const resultProcess = (res: ActualResult) => {
   // console.log("🚀 ~ resultProcess ~ res:", res)
-  if (res.OpCode == 200) {
-    return res.Value
+  if (res.Code == 0) {
+    return res.Data
   } else {
     window.$message.error(res.Message || '操作失败')
     return null
@@ -56,12 +56,13 @@ export const getPrinterList = (): Promise<string[]> => {
 export const getSysConfig = () => {
   const configStore = useConfigStore()
   return callBrige(callFnName.GetSysConfigs).then((res: SysConfigEntity[]) => {
+    // console.log("🪵 [call.ts:58] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
     let list = res;
     let data: Record<string, string> = {}
     list.forEach(e => {
       data[e.Name] = e.Value
     })
-    console.log("🪵 [call.ts:61] ~ token ~ \x1b[0;32mlist\x1b[0m = ", list);
+    // console.log("🪵 [call.ts:61] ~ token ~ \x1b[0;32mlist\x1b[0m = ", list);
     configStore.setOriginSysConfig(list)
     configStore.setSysConfig(data)
     // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)

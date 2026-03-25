@@ -10,6 +10,7 @@ import { callFnName } from "@/utils/enum";
 import classnames from "classnames";
 import { CloseTwotone, DragIndicatorFilled } from "@vicons/material";
 import { callBrige } from "@/utils/callm";
+import { useCurcevInnerDataStore } from "./curcev/innerData";
 // import { Drag24Filled } from "@vicons/fluent";
 
 type InputType = InstanceType<typeof NInputNumber> | null
@@ -198,6 +199,23 @@ export default defineComponent({
       store.setGlobalKeyBoardShow(false)
     }
 
+    const winScale = computed(() => {
+      let val = window.innerWidth / 1920
+      if (val < 0.7 && store.isLandscape) {
+        return 0.7
+      }
+      if (val < 0.8 && !store.isLandscape) {
+        return 0.8
+      }
+      return val
+    })
+
+    const leftMove = computed(() => {
+      // let init = 440 / 1920
+      let val = (window.innerWidth / 1920) * 440 * 1.5
+      return -val
+    })
+
     watch(keyborardShow, (nv) => {
       if (nv) {
         resetVal()
@@ -272,7 +290,7 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200 }} class={classnames(' absolute bottom-40 -left-[440px] p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[484px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 200, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
                 {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
                 </div> */}
