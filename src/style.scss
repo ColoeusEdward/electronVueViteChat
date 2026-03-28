@@ -152,3 +152,22 @@ body {
     background-color: #f9f9f9;
   }
 }
+
+.my-pop-select {
+}
+.n-popselect-menu,
+.n-dropdown-menu {
+  .n-base-select-option,
+  .n-dropdown-option {
+    background-image: url("./assets/LineDspButton_inactive.png");
+    background-size: 100% 100%;
+  }
+  .n-base-select-menu-option-wrapper {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+.n-base-select-menu,
+.n-dropdown-menu {
+  background-color: #96969654;
+}

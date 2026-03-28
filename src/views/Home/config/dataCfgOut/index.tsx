@@ -13,6 +13,10 @@ import { CategoryNodeEntity, DataConfigEntity } from "~/me";
 import ConfigRight from "../dataCofigNew/ConfigRight";
 import { AlarmTypeNameList, dataTypeEnumList, dataTypeEnumNameList, UnilateralNameList, } from "../dataCofigNew/enum";
 import { useDataCfgOutInnerDataStore } from "./innerData";
+import blueBg from '@/assets/PnlBtnActive.png'
+import redBg from '@/assets/PnlBtnActiveDel.png'
+import activeImg from '@/assets/LineDspButton_inactive.png'
+
 
 export default defineComponent({
   name: 'DataCfgOut',  //数据配置
@@ -127,14 +131,14 @@ export default defineComponent({
         <div class={'w-full h-full flex flex-col'}>
           <div class={'pl-2 pb-2'}>
             <NSpace>
-              <NButton type={'primary'} renderIcon={() => <LargeBtnIcon><AddOutlined /></LargeBtnIcon>} class={'my-large-btn'} size={'large'} onClick={add}>新增</NButton>
-              <NButton type={'primary'} class={'my-large-btn'} size={'large'} onClick={edit} renderIcon={() => <LargeBtnIcon><EditFilled /></LargeBtnIcon>}  >编辑</NButton>
+              <NButton type={'primary'} style={{ backgroundImage: `url(${blueBg})`, backgroundSize: '100% 100%', color: '#fff', }} secondary renderIcon={() => <LargeBtnIcon><AddOutlined /></LargeBtnIcon>} class={'my-large-btn'} size={'large'} onClick={add}>新增</NButton>
+              <NButton type={'primary'} style={{ backgroundImage: `url(${blueBg})`, backgroundSize: '100% 100%', color: '#fff', }} secondary class={'my-large-btn'} size={'large'} onClick={edit} renderIcon={() => <LargeBtnIcon><EditFilled /></LargeBtnIcon>}  >编辑</NButton>
               <NPopconfirm onPositiveClick={del} placement={'bottom'} v-slots={{
-                trigger: () => <NButton renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} class={'my-large-btn'} type={'error'} size={'large'} >删除</NButton>
+                trigger: () => <NButton style={{ backgroundImage: `url(${redBg})`, backgroundSize: '100% 100%', color: '#fff', }} secondary renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} class={'my-large-btn'} type={'error'} size={'large'} >删除</NButton>
               }}>
                 确认删除吗?
               </NPopconfirm>
-              <NButton class={'my-large-btn'} style={{ width: '220px' }} size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
+              <NButton class={'my-large-btn'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62', width: '220px' }} secondary size={'large'} onClick={initDatConfig} >初始化数据配置</NButton>
             </NSpace>
           </div>
           <div class={'flex-shrink-0 h-full w-full relative overflow-scroll'}>

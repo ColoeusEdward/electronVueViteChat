@@ -24,6 +24,7 @@ import MultiCurcev from "./multiCurcev";
 import classNames from "classnames";
 import { KeyboardAltOutlined } from "@vicons/material";
 import GlobalKeyBoard2 from "./GlobalKeyBoard2";
+import { callBrige } from "@/utils/callm";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -112,7 +113,9 @@ export default defineComponent({
           // startSpcSys()
         }
       })
+      // callBrige(callFnName.InitService).then((res: string) => {
 
+      // })
 
     })
     onUnmounted(() => {

@@ -247,7 +247,7 @@ export const MyFormWrap = defineComponent({
                 ]}
               </div>
               {props.renderToBtn && props.renderToBtn()}
-              <NButton class={classNames({ 'my-large-btn': !props.noLargeBtn })} style={{ backgroundImage: `url(${blueBg})`, backgroundSize: '100% 100%', color: '#fff', ...btnStyleStrToObj.value }} secondary strong={true}
+              <NButton class={classNames({ 'my-large-btn': !props.noLargeBtn })} style={{ backgroundImage: `url(${blueBg})`, backgroundSize: '100% 100%', color: '#fff', ...btnStyleStrToObj.value }} secondary
                 // style={"" + (props.btnStyleStr || '')} 
                 type="primary" loading={props.loading} size={'large'} onClick={() => { props.submitFn && submit(props.submitFn) }}>{props.saveText || '保存'}</NButton>
             </div>]
