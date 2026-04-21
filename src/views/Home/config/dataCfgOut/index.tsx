@@ -77,7 +77,7 @@ export default defineComponent({
         innerData.setNodeList(list)
       })
     }
-    getNodeList()
+    // getNodeList()
     const getTableData = () => {
       callBrige(callFnName.GetDataConfigs).then((list: DataConfigEntity[]) => {
         tableCfg.data = list.sort((a, b) => a.SortNum - b.SortNum).map(e => {

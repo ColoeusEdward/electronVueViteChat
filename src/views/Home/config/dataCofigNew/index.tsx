@@ -357,7 +357,7 @@ export const MemberForm = defineComponent({
     //   }
     // })
     const getDevList = () => {
-      callSpc(callFnName.getDeviceConfigs).then((res: DeviceConfigEntity[]) => {
+      callSpc(callFnName.GetDevcieConfigs).then((res: DeviceConfigEntity[]) => {
         formCfg.optionMap.DeviceName = res.map(e => {
           return {
             label: e.Name,

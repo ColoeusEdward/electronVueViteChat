@@ -5,7 +5,7 @@ import { useRealTimeStore } from "@/store/realtime";
 import * as echarts from 'echarts';
 import { useTrendStore } from "@/store/trendStore";
 import { storeToRefs } from "pinia";
-import { sleep } from "@/utils/utils";
+import { getRandomInt, sleep } from "@/utils/utils";
 import { useCurcevInnerDataStore } from "./innerData";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
@@ -13,13 +13,19 @@ import { CollectPointModel, DataConfigEntity } from "~/me";
 import CpkBlock from "./CpkBlock";
 import { useConfigStore } from "@/store/config";
 
+let now = Date.now()
+let fakeDataList = new Array(50).fill(0).map((e, i) => {
+  //js 获取特定范围内的随机整数
+  let val = getRandomInt(90, 110)
+  return [now + i, val]
+})
 export type CurcevChartRowIns = {
   getChartIns: Function,
 }
 export default defineComponent({
   name: 'CurcevChartRow',
   props: {
-    chartId:String,
+    chartId: String,
     dataConfig: Object as PropType<DataConfigEntity>,
     dataSourceItem: {
       type: Object as PropType<{
@@ -31,7 +37,7 @@ export default defineComponent({
     i: {
       type: Number
     },
-    height:String,
+    height: String,
   },
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
@@ -45,17 +51,19 @@ export default defineComponent({
       return props.dataSourceItem
     })
     const initEchart = () => {
-      let ele = document.getElementById((props.chartId||'trendChart') + props.i)
+      let ele = document.getElementById((props.chartId || 'trendChart') + props.i)
       if (!ele) return
       myChart = echarts.init(ele, undefined, {
         useDirtyRect: true
       });
+      console.log("🪵 [CurcevChartRow.tsx:66] ~ token ~ \x1b[0;32mprops.dataConfig\x1b[0m = ", props.dataConfig);
 
       let option = {
-        animation:false,
+        animation: false,
         title: {
           //@ts-ignore
-          text: '',
+          // text: '',
+          text: props.dataConfig?.Name,
           left: '48%'
         },
         // toolbox: {
@@ -121,7 +129,7 @@ export default defineComponent({
           name: dataSourceItem.value?.label,
           type: 'line',
           showSymbol: false,
-          data: [],
+          data: fakeDataList,
           smooth: false,
         },
         grid: {
@@ -138,14 +146,16 @@ export default defineComponent({
     const loopGet = () => {
       if (!myChart || !innerData.isGetting || !props.dataConfig || thisReMountedCount != innerData.reMountedCount) return
       // callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
-      callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId).then((res: CollectPointModel[]) => {
+      // callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId)
+
+      new Promise<CollectPointModel[]>((resolve, reject) => { resolve([]) }).then((res: CollectPointModel[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
-        let maxCount = innerData.sysConfig.find(e=>e.Name=='MaxPonitNum')?.Value
+        let maxCount = innerData.sysConfig.find(e => e.Name == 'MaxPonitNum')?.Value
         maxCount && (res = res.slice(-maxCount))
         if (props.i == 0) {
           let length = res.length
           innerData.setCurDataLength(length)
-          res[length-1] && innerData.setCurNewVal(res[length-1].Value)
+          res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
         }
         // filter((e,i) => i % 2 == 0)
         let list = res.map(e => {
@@ -159,9 +169,9 @@ export default defineComponent({
             left: '48%'
           },
           progressiveThreshold: innerData.samplingNum,
-          progressive: 200, 
-          progressiveChunkMode:"sequential",
-          animation:false,
+          progressive: 200,
+          progressiveChunkMode: "sequential",
+          animation: false,
           series: {
             name: props.dataConfig?.Name,
             type: 'line',
@@ -169,15 +179,15 @@ export default defineComponent({
             symbol: 'none',
             data: list,
             smooth: false,
-            large: true, 
+            large: true,
             // 当数据量超过 1000 时，进入大数据模式
-            largeThreshold: innerData.samplingNum, 
-            sampling: 'lttb' 
+            largeThreshold: innerData.samplingNum,
+            sampling: 'lttb'
             // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }
         myChart.setOption(opt);
-        let time = innerData.sysConfig.find(e=>e.Name=='RefreshInterval')?.Value
+        let time = innerData.sysConfig.find(e => e.Name == 'RefreshInterval')?.Value
         return sleep(time ? Number(time) : 1000)
       }).then(() => {
         loopGet()
@@ -221,16 +231,16 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         initEchart()
-        if(innerData.isGetting){
+        if (innerData.isGetting) {
           loopGet()
         }
       }, 0);
     })
     return () => {
       return (
-        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'} style={{...(props.height?{height: props.height}:{})}} >
+        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'} style={{ ...(props.height ? { height: props.height } : {}) }} >
           {/* <CpkBlock dataConfig={props.dataConfig} /> */}
-          <div class={' h-full w-full '} id={(props.chartId||'trendChart') + props.i} >
+          <div class={' h-full w-full '} id={(props.chartId || 'trendChart') + props.i} >
           </div>
         </div>
       )

@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult } from "~/me";
+import { ActualResult, DataConfigEntity } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -8,6 +8,7 @@ import { useMain } from "@/store";
 import { Ref } from "vue";
 import { propNameMap } from "@/views/Home/config/devConfig/enum";
 import { callBrige } from "./callm";
+import { menuIdSplit, menuPropEnum } from "@/views/Home/curcev/enum";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -119,10 +120,11 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
   document.addEventListener('focusin', function (event) {
     // `event.target` 是实际获取焦点的元素
     const targetElement = event.target;
+    // console.log("🪵 [utils.ts:122] ~ token ~ \x1b[0;32mtargetElement\x1b[0m = ", targetElement);
 
     // 检查这个元素是否是一个输入框
     //@ts-ignore
-    if (targetElement && targetElement.type == 'text' && targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA') {
+    if (targetElement && targetElement.type == 'text' && targetElement.tagName === 'INPUT' && !targetElement.className.includes('selection') || targetElement.tagName === 'TEXTAREA') {
       console.log('用户点击或选中了一个输入框。');
       //@ts-ignore
       console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
@@ -178,4 +180,19 @@ export const safeJsonParse = (str: string) => {
     console.log(error)
   }
   return res
+}
+
+export const getRandomInt = (min: number, max: number) => {
+  // Math.random() 生成 [0, 1) 之间的浮点数
+  // (max - min + 1) 确定了范围内的整数个数
+  // Math.floor 向下取整，保证结果是整数
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export const buildMenuOpt = (e: DataConfigEntity) => {
+  return {
+    label: e.Name,
+    key: menuPropEnum.dataSource + menuIdSplit + e.GId,
+    trueKey: e.GId,
+  }
 }

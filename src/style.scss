@@ -4,6 +4,8 @@
 
 * {
   box-sizing: border-box;
+  font-family: "NSimSun";
+  font-weight: bold;
 }
 span,
 img {
@@ -64,6 +66,45 @@ body {
       border-bottom: 2px solid #ccc;
     }
   }
+}
+
+.config-tab {
+  .n-tabs-nav--card-type.n-tabs-nav--top.n-tabs-nav {
+    background-color: #ffffff;
+    background-size: 100% 120%;
+    padding-top: 0.5rem;
+    // border: 2px #000 solid;
+    /* padding-bottom: 4px; */
+  }
+  &.no-bg {
+    .n-tabs-nav--card-type.n-tabs-nav--top.n-tabs-nav {
+      background-image: none;
+      border-bottom: 2px solid #ccc;
+    }
+  }
+  &.n-tabs.n-tabs--top {
+    .n-tab-pane {
+      padding: 0 0 0 0;
+    }
+  }
+
+  .n-tabs-tab-pad {
+    width: 0px;
+  }
+  .n-tabs-wrapper {
+    flex-wrap: wrap;
+    .n-tabs-tab-wrapper {
+      flex-grow: 1;
+    }
+  }
+}
+
+.n-divider:not(.n-divider--vertical) {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.n-divider:not(.n-divider--dashed) .n-divider__line {
+  background-color: #cacaca;
 }
 
 .bar-tab {
@@ -161,13 +202,16 @@ body {
   .n-dropdown-option {
     background-image: url("./assets/LineDspButton_inactive.png");
     background-size: 100% 100%;
+    &::before {
+      border-radius: 5px;
+    }
   }
   .n-base-select-menu-option-wrapper {
     background-color: rgba(0, 0, 0, 0);
   }
 }
 
-.n-base-select-menu,
+.n-base-select-menu:not(.n-select-menu),
 .n-dropdown-menu {
   background-color: #96969654;
 }

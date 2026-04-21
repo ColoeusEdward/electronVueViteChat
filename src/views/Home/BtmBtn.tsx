@@ -56,6 +56,10 @@ export default defineComponent({
     const chartOption = [
       { label: '配方配置', value: 'formulaCfg' },
     ]
+    const screenPrintOption = [
+      { label: '开始打印', value: 'screenPrint' },
+      // { label: '打印机打印', value: 'printerPrint' },
+    ]
     const maintainOption2 = ref<PopselectProps['options']>([
       { label: '配置', value: 'option' },
       // { label: '关机', value: 'shutdown' },
@@ -65,6 +69,7 @@ export default defineComponent({
     const maintainOption3 = ref<PopselectProps['options']>([
       { label: '开始', value: 'collectStart' },
       { label: '结束', value: 'collectStop' },
+      { label: '清空数据', value: 'collectClean' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
       let valueMap: Record<string, () => void> = {
@@ -95,14 +100,18 @@ export default defineComponent({
           // })
         },
         collectStart: () => {
-          let item = popSelectList.value[3]
+          let item = popSelectList.value[2]
           item.name = `趋势图(开)`
           curCevInnerData.startColFn && curCevInnerData.startColFn()
         },
         collectStop: () => {
-          let item = popSelectList.value[3]
+          let item = popSelectList.value[2]
           item.name = `趋势图(关)`
           curCevInnerData.stopColFn && curCevInnerData.stopColFn()
+        },
+        collectClean: () => {
+          curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
+
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
@@ -114,8 +123,9 @@ export default defineComponent({
     const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },
       { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
-      { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
+      // { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
       { option: maintainOption3.value, name: '趋势图(关)', icon: <AreaChartOutlined /> },
+      { option: screenPrintOption, name: '屏幕打印', icon: <LocalPrintshopFilled /> },
       // { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     ])
 

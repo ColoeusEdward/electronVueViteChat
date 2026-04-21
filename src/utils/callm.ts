@@ -27,7 +27,7 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
       let resObj = safeJsonParse(res) as ActualResult
       return resultProcess(resObj)
     }).catch((err: any) => {
-      console.error(err)
+      console.error(cb, err)
       window.$message.error(err)
     });
   }

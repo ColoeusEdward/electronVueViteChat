@@ -16,7 +16,7 @@ import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
 import { ActualResult } from "~/me";
 import { callFnName } from "@/utils/enum";
-import { callSpc } from "@/utils/call";
+import { callSpc, getSysConfig } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
 import Curcev from "./curcev";
 import FormulaConfig from "./config/FormulaConfig";
@@ -106,6 +106,7 @@ export default defineComponent({
     window.addEventListener('focus', handleFocus)
     document.addEventListener('focusin', handleAllInputFocuse);
 
+    getSysConfig()
     onMounted(() => {
       // loopGetData()
       sleep(1000).then(() => {
@@ -135,7 +136,7 @@ export default defineComponent({
           {
             store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
               <div class={'w-2/3'}>
-                <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+                <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
 
 
                 <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
@@ -147,6 +148,11 @@ export default defineComponent({
                   <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <MultiCurcev />
+                    </div>
+                  </NTabPane>
+                  <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
+                    <div class={'h-full'}>
+                      <Statistical />
                     </div>
                   </NTabPane>
                   {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
@@ -184,7 +190,7 @@ export default defineComponent({
             </div> :
               <div class={'h-full flex overflow-hidden flex-col'}>
                 <div class={'h-2/3'}>
-                  <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
                   <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
                     <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                       <div class={' h-full'}>
@@ -199,7 +205,7 @@ export default defineComponent({
                   </NTabs>
                 </div>
                 <div class={'h-1/3 relative'}>
-                  <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
+                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
 
 
                   <RightValueBlock />

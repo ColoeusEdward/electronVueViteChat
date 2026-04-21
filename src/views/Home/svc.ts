@@ -1,6 +1,7 @@
 // declare a service
 //@ts-ignore
 import { svc } from 'vue-hook-svc/dist/vue-hook-svc.mjs';
+import { menuOption } from '~/me';
 
 type state = {
   
@@ -13,6 +14,9 @@ class SomeService extends svc.ServiceBase {  //局部共享数据
 
   setCurMenuItem(val:string){
     this.state.curMenuItem = val;
+  }
+  setInfoList(val:menuOption[]){
+    // this.state.infoList = val;
   }
 }
 

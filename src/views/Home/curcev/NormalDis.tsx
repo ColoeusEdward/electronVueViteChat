@@ -8,6 +8,7 @@ import * as echarts from 'echarts';
 import { nornameDisChartId } from "./enum";
 import { sleep } from "@/utils/utils";
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
+import activeImg from '@/assets/LineDspButton_inactive.png'
 
 
 export default defineComponent({
@@ -288,8 +289,8 @@ export default defineComponent({
           {/* <NDropdown trigger="click" options={opt.value} onSelect={handleSelect}>
             
           </NDropdown> */}
-          {innerData.curDataCfgEntity?.DataType && innerData.curDataCfgEntity?.DataType==DataTypeEnum.Chart &&
-            <NButton onClick={() => { innerData.setNormalDisShow(true) }} >正态分布</NButton>
+          {innerData.curDataCfgEntity?.DataType && innerData.curDataCfgEntity?.DataType == DataTypeEnum.Chart &&
+            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} onClick={() => { innerData.setNormalDisShow(true) }} >正态分布</NButton>
           }
           <Transition name={'full-pop'}>
             {

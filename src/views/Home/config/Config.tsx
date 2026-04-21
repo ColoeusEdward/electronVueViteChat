@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { NButton, NTabs, NTabPane, NIcon, useMessage } from "naive-ui";
+import { NButton, NTabs, NTabPane, NIcon, useMessage, NDialogProvider } from "naive-ui";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import TabActiveImg from '@/assets/PnlBtnActive.png'
@@ -12,6 +12,7 @@ import ConnectDevice from "./connectDevice";
 import ConfigComp from "./configComp";
 import SysConfig from "./sysConfig";
 import DevConfig from "./devConfig";
+import DevConfigNew from "./devConfigNew";
 import DataCofigNew from "./dataCofigNew";
 import FormulaConfig from "./FormulaConfig";
 import AbsBottomBtn from "@/components/AbsBottomBtn";
@@ -26,16 +27,19 @@ export default defineComponent({
     const store = useMain()
 
     const activeStyle = {
-      backgroundImage: `url(${TabActiveImg})`,
+      // backgroundImage: `url(${TabActiveImg})`,
+      // backgroundImage: `url(${TabActiveImg})`,
+      background: `#f5f6f6`,
       backgroundSize: 'cover',
-      color: '#fff',
+      borderBottom: "0px solid #58595a",
+      // color: '#fff',
       zIndex: 6
     }
     const defaultTab = 'sysConfig'
     const curTabValue = ref('sysConfig')
     const commonStyle = {
-      width: '13vw', border: 'none', fontSize: '20px', minWidth: "120px",
-      borderBottom: '3px solid #58595a', flexGrow: 1
+      width: '13vw', fontSize: '20px', minWidth: "120px", borderTop: '1px solid #58595a', borderRight: '1px solid #58595a', borderLeft: '1px solid #58595a', borderBottom: '1px solid #58595a',
+      flexGrow: 1, background: '#fff', borderRadius: '12px 12px 0 0'
     }
     const cancel = () => {
       configStore.setIsShowConfig(false)
@@ -62,61 +66,67 @@ export default defineComponent({
     return () => {
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
+          <NDialogProvider >
+            <div class={"text-3xl flex justify-center items-center h-[54px] font-black"}>ECOCONTROL / V1.8.1.4</div>
+            <div class={'h-full w-full shrink '} style={{ height: 'calc(100% - 80px - 54px)' }}>
+              {/* <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div> */}
 
-          <div class={'h-full w-full shrink'} style={{ height: 'calc(100% - 80px)' }}>
-            <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div>
-
-            <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
-              <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
-                <div class={' h-full shrink'}>
-                  <SysConfig />
-                </div>
-              </NTabPane>
-              {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
+              <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
+                <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink'}>
+                    <SysConfig />
+                  </div>
+                </NTabPane>
+                <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink'}>
+                    <DevConfigNew />
+                  </div>
+                </NTabPane>
+                {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <DevConfig />
                 </div>
               </NTabPane> */}
-              <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据采集" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
-                <div class={' h-full shrink'}>
-                  <DataCofigNew />
-                </div>
-              </NTabPane>
-              <NTabPane displayDirective="show:lazy" name={"dataCfgOut"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataCfgOut' ? activeStyle : {} } }}>
-                <div class={' h-full shrink'}>
-                  <DataCfgOut />
-                </div>
-              </NTabPane>
-              {/* <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
+                <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据采集" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink'}>
+                    <DataCofigNew />
+                  </div>
+                </NTabPane>
+                <NTabPane displayDirective="show:lazy" name={"dataCfgOut"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataCfgOut' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink'}>
+                    <DataCfgOut />
+                  </div>
+                </NTabPane>
+                {/* <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <FormulaConfig />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
+                {/* <NTabPane displayDirective="show:lazy" name={"connect"} tab="连接配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connect' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <Connect />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="show:lazy" name={"data"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'data' ? activeStyle : {} } }}>
+                {/* <NTabPane displayDirective="show:lazy" name={"data"} tab="数据配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'data' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <DataConfig />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
+                {/* <NTabPane displayDirective="show:lazy" name={"connectDevice"} tab="连接设备" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'connectDevice' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <ConnectDevice />
                 </div>
               </NTabPane> */}
-              {/* <NTabPane displayDirective="show:lazy" name={"configComp"} tab="test" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'configComp' ? activeStyle : {} } }}>
+                {/* <NTabPane displayDirective="show:lazy" name={"configComp"} tab="test" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'configComp' ? activeStyle : {} } }}>
                 <div class={' h-full '}>
                   <ConfigComp />
                 </div>
               </NTabPane> */}
 
-            </NTabs>
-          </div>
+              </NTabs>
+            </div>
 
-          {/* <div class={'fixed left-2 bottom-6'} title={'虚拟键盘'}>
+            {/* <div class={'fixed left-2 bottom-6'} title={'虚拟键盘'}>
             <NButton circle type={'success'} v-slots={{
               icon: () => {
                 return <NIcon><KeyboardAltRound /></NIcon>
@@ -125,13 +135,13 @@ export default defineComponent({
 
             </NButton>
           </div> */}
-          {/* 
+            {/* 
           <div class={'w-[40vw] h-[30vh] absolute left-2 bottom-[20vh] bg-red-200 z-[5000]'}>
             <KeyBorad />
           </div> */}
 
-          {btmBtnShow.value && <AbsBottomBtn cancelFn={cancel} />}
-
+            {btmBtnShow.value && <AbsBottomBtn cancelFn={cancel} />}
+          </NDialogProvider>
         </div>
       )
     }

@@ -90,7 +90,7 @@ export default defineComponent({
       innerData.setDevCfgShow(true)
     }
     onMounted(() => {
-      getTableData()
+      // getTableData()
     })
 
     return () => {

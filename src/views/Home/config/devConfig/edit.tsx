@@ -65,21 +65,21 @@ export default defineComponent({
       innerData.setEditShow(false)
     }
     const save = () => {
-      if (!innerData.devConfigForm.ConnectConfig) {
-        msg.warning('请补全连接配置')
-        return
-      }
+      // if (!innerData.devConfigForm.ConnectConfig) {
+      //   msg.warning('请补全连接配置')
+      //   return
+      // }
       if (!innerData.devConfigForm.AddressConfigs) {
         msg.warning('请补全数据地址配置')
         return
       }
       data.saveLoading = true
       MyFormWrapRef.value?.submit().then(() => {
-        let form = innerData.devConfigForm
-        if (form.State == undefined || form.State == null) {
-          form.State = 1
-        }
-        return callSpc(callFnName.saveDeviceConfig, form)
+        // let form = innerData.devConfigForm
+        // if (form.State == undefined || form.State == null) {
+        //   form.State = 1
+        // }
+        // return callSpc(callFnName.SaveDevcieConfig, form)
       }).then((res: number) => {
         innerData.setEditShow(false)
         innerData.resetFn()

@@ -32,14 +32,14 @@ export default defineComponent({
       optionMap: optionMap,
       itemList: [
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '设备信息', width: 24 },
             { type: 'input', label: '公司名称', prop: 'CompanyName', width: 12 },
             { type: 'input', label: '设备编号', prop: 'MachineCode', width: 12 },
           ]
         },
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '数据展示', width: 24 },
             { type: 'select', label: '默认小数位数', prop: 'Precision', width: 12 },
             { type: 'select', label: '单屏曲线数量', prop: 'MaxChartNum', width: 12 },
@@ -50,7 +50,7 @@ export default defineComponent({
           ]
         },
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '数据采集', width: 24 },
             { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
             { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
@@ -59,7 +59,7 @@ export default defineComponent({
           ]
         },
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '统计报表', width: 24 },
             { type: 'switch', label: '导出实时数据', prop: 'EnableExportReal', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
             // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
@@ -82,7 +82,7 @@ export default defineComponent({
           ]
         },
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '编码规则', width: 24 },
             {
               type: 'free', label: '编码规则', renderComp: () => {
@@ -92,7 +92,7 @@ export default defineComponent({
           ]
         },
         {
-          type: 'shadowBox', label: '', width: 24, childCompList: [
+          type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '其他配置', width: 24 },
             // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
             {
@@ -163,7 +163,7 @@ export default defineComponent({
 
         // <NScrollbar class={'w-full h-full relative'} >
 
-        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg'} style={{ height: 'calc(100% + 20px)' }}>
+        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{ height: 'calc(100% + 20px)' }}>
           <MyFormWrap form={cfgData.value} optionMap={formOpt.optionMap} itemList={formOpt.itemList} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} loading={loading.value} />
         </div>
         // </NScrollbar>

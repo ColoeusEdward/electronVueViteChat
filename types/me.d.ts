@@ -47,7 +47,7 @@ type DeviceConfigEntity = {
   Name: string;
   DriverName: string;
   State: number;
-  ConnectConfig: string;
+  ConnectString: string;
   AddressConfigs: string;
   CreateTime: string;
 }
@@ -202,6 +202,7 @@ type DataConfigEntity = {
   Distance: number;
   State: number;
   CreateTime?: string;
+  children?: DataConfigEntity[]
 }
 
 type SerialNoEntity = {
@@ -309,4 +310,23 @@ type DistributionModel = {
   NdY: number[];
   GaussX: number[];
   GaussY: number[];
+}
+
+type menuOption = {
+  label: string,
+  title: string,
+  value?: number,
+  unit?: string,
+  stand?: RightValueType[],
+  children?: menuOption[]
+}
+
+interface simpleTableColumn {
+  label: string;
+  prop: string;
+  flex: number;
+  btnText?: string;
+  btnFn?: (row: any, item: any) => void,
+  isInput?: boolean,
+  inputUpdateFn?: (row: any, item: any) => void
 }

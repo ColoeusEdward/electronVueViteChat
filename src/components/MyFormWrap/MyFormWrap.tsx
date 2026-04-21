@@ -205,6 +205,16 @@ export const MyFormWrap = defineComponent({
           </div>
         )
       }
+      const renderBox = (form: typeof props.form, item: formListItem, optionMap: object) => {
+        return (
+          <div class={'rounded-2xl p-1 pt-0 mb-1'}>
+            {/* {item.childCompList && item.childCompList.map(e => ((!e.hide) && obj[e.type] && obj[e.type](form, e, optionMap)))} */}
+            {item.childCompList && (<NGrid xGap={12} yGap={2}>
+              {renderComp(item.childCompList, form, optionMap)}
+            </NGrid>)}
+          </div>
+        )
+      }
       const obj: Record<string, any> = {
         input: renderInput,
         select: renderSelect,
@@ -215,6 +225,7 @@ export const MyFormWrap = defineComponent({
         radio: renderRadio,
         numInput: renderNumInput,
         shadowBox: renderShadowBox,
+        box: renderBox,
         space: renderSpace
       }
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {

@@ -1,9 +1,37 @@
 import { getLocalStorage, setLocalStorage, sleep } from "@/utils/utils";
 import { defineStore } from "pinia";
-import { CpkModel, DataConfigEntity, SysConfigEntity } from "~/me";
+import { CpkModel, DataConfigEntity, menuOption, SysConfigEntity } from "~/me";
+import { DataTypeEnum } from "../config/dataCofigNew/enum";
 import { maxDataNumLocalKey } from "./enum";
 
 let localMaxDataNum = getLocalStorage(maxDataNumLocalKey)
+let defDataCfgEntity: DataConfigEntity = {
+  Name: "",
+  GId: "",
+  CategoryNodeId: "",
+  DataType: DataTypeEnum.Chart,
+  Unit: "mm",
+  SortNum: 0,
+  Precision: 0,
+  Unilateral: 0,
+  AlarmType: 0,
+  Distance: 0,
+  State: 0
+}
+let defCurCpk: CpkModel = {
+  Std: 0,
+  Usl: 0,
+  Lsl: 0,
+  Avg: 0,
+  Max: 0,
+  Min: 0,
+  Sd: 0,
+  Ca: 0,
+  Cp: 0,
+  Cpk: 0,
+  CpkU: 0,
+  CpkL: 0
+}
 export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   /**
    * 存储全局状态
@@ -19,23 +47,26 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       curDataLength: 0,
       dataCfgList: [] as DataConfigEntity[],
       curDataCfgEntity: null as DataConfigEntity | null | undefined, //当前数据源实体
-      curCpk: null as CpkModel | null,
+      curCpk: defCurCpk as CpkModel | null,
       curCpkKey: null as {
         name: string;
         title: string;
         value: string;
       } | null,  //当前主屏展示的cpk 选项option
-      normalDisShow:false,
-      fftShow:false,
-      curNewVal:0,      //当前最新实时值
-      curProductCode:'',
-      sysConfig:{} as SysConfigEntity[],
-      getCpkFn: () => new Promise(() => {}),
-      startColFn:() => {},
-      stopColFn:() => {},
-      reMountedCount:0,     //组件重新挂载的计数, 用来区分是否还是之前的组件
-      gettingChangeCount:0,   //采集开关变化次数, 也是用来判断开关的快速变化
-      isFirst: true     //是否首次加载
+      normalDisShow: false,
+      fftShow: false,
+      curNewVal: 0,      //当前最新实时值
+      curProductCode: '',
+      sysConfig: {} as SysConfigEntity[],
+      getCpkFn: () => new Promise(() => { }),
+      startColFn: () => { },
+      stopColFn: () => { },
+      cleanColFn: () => { },
+      reMountedCount: 0,     //组件重新挂载的计数, 用来区分是否还是之前的组件
+      gettingChangeCount: 0,   //采集开关变化次数, 也是用来判断开关的快速变化
+      isFirst: true,    //是否首次加载
+      infoList: [] as menuOption[],
+
     }
   },
   /**
@@ -50,10 +81,10 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   actions: {
     setIsGetting(val: boolean) {
       this.isGetting = val
-      if(!val){
+      if (!val) {
         this.addGettingChangeCount()
       }
-      if(val){
+      if (val) {
         this.loopGetCpk(this.gettingChangeCount)
       }
     },
@@ -83,16 +114,16 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     } | null) {
       this.curCpkKey = val
     },
-    setNormalDisShow(val:boolean){
+    setNormalDisShow(val: boolean) {
       this.normalDisShow = val
     },
-    setCurNewVal(val:number){
+    setCurNewVal(val: number) {
       this.curNewVal = val
     },
-    setCurProductCode(val:string){
+    setCurProductCode(val: string) {
       this.curProductCode = val
     },
-    setSysConfig(val:SysConfigEntity[]){
+    setSysConfig(val: SysConfigEntity[]) {
       this.sysConfig = val
     },
     setGetCpkFn(val: () => Promise<any>) {
@@ -104,13 +135,16 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     setStopColFn(val: () => {}) {
       this.stopColFn = val
     },
-    addReMounted(){
+    setCleanColFn(val: () => {}) {
+      this.cleanColFn = val
+    },
+    addReMounted() {
       this.reMountedCount++;
     },
-    addGettingChangeCount(){
+    addGettingChangeCount() {
       this.gettingChangeCount++;
     },
-    loopGetCpk(getCount:number){
+    loopGetCpk(getCount: number) {
       if (!this.isGetting || getCount != this.gettingChangeCount) {
         // console.log(`老loopGetCpk 被消灭`,);
         return
@@ -121,11 +155,15 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
         this.loopGetCpk(getCount)
       })
     },
-    setFftShow(val:boolean){
+    setFftShow(val: boolean) {
       this.fftShow = val
     },
-    setIsFirst(val:boolean){
+    setIsFirst(val: boolean) {
       this.isFirst = val
+    },
+    setInfoList(val: menuOption[]) {
+      this.infoList = val
+      setLocalStorage('infoList', val)
     }
   }
 })

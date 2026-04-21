@@ -4,13 +4,13 @@ const PUBLISH_PROJECT_KEY = 'publishProject'
 
 enum callFnName {
   getState = "getState",
-  GetSysConfigs = "GetSysConfigs",
+  GetSysConfig = "GetSysConfig",
   SaveSysConfig = "SaveSysConfig",
   ShowDirSelect = "ShowDirSelect",
   GetPrinterList = "GetPrinterList",
-  getDeviceConfigs = "getDeviceConfigs",
-  saveDeviceConfig = "saveDeviceConfig",
-  deleteDeviceConfig = "deleteDeviceConfig",
+  GetDevcieConfigs = "GetDevcieConfigs",
+  SaveDevcieConfig = "SaveDevcieConfig",
+  DeleteDevcieConfig = "deleteDeviceConfig",
   getSupportDevices = "getSupportDevices",
   GetCategoryNodes = "GetCategoryNodes",
   saveCategoryNode = "saveCategoryNode",
@@ -41,6 +41,7 @@ enum callFnName {
   startCollect = `startCollect`,
   openDevTool = `openDevTool`,
   InitService = `InitService`,
+  GetDevcieDrivers = `GetDevcieDrivers`,
   saveFormulaConfig = `saveFormulaConfig`, activeFormulaConfig = 'activeFormulaConfig', getProductHistorys = 'getProductHistorys', stopCollect = "stopCollect",
   getSpanCollectPoints = `getSpanCollectPoints`, getNormalDistribution = 'getNormalDistribution', clearCollect = 'clearCollect',
   getFFT = `getFFT`, showKeyBoard = `showKeyBoard`, initKeyboardConfig = `initKeyboardConfig`, checkRegister = `checkRegister`, getMachineCode = `getMachineCode`, getRegisterState = `getRegisterState`, getRegisterCode = `getRegisterCode`, KeyPress = `KeyPress`, KeyDown = `KeyDown`, KeyUp = `KeyUp`, getLastPoint = `getLastPoint`

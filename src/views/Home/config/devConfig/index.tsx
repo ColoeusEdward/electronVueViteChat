@@ -44,7 +44,7 @@ export default defineComponent({
     })
     const getTableData = () => {
       innerData.cleanCurRow()
-      callSpc(callFnName.getDeviceConfigs).then((e: DeviceConfigEntity[]) => {
+      callSpc(callFnName.GetDevcieConfigs).then((e: DeviceConfigEntity[]) => {
         // let d= {...e[0]}
         // d.GId = '2233444'
         // e.push(d)
@@ -85,7 +85,7 @@ export default defineComponent({
         msg.warning('请选择一行数据')
         return
       }
-      callSpc(callFnName.deleteDeviceConfig, innerData.curRow).then(() => {
+      callSpc(callFnName.DeleteDevcieConfig, innerData.curRow).then(() => {
         getTableData()
       })
     }
@@ -98,9 +98,9 @@ export default defineComponent({
         <div class={'w-full h-full flex-col'}>
 
           <div class={'flex flex-shrink-0 justify-start items-center p-2 pt-0 border-0 border-b border-solid border-b-gray-200'}>
-          <div class={'text-[26px] font-semibold'} >
-            设备配置
-          </div>
+            <div class={'text-[26px] font-semibold'} >
+              设备配置
+            </div>
             <NButton class={' ml-3 my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><AddOutlined /></LargeBtnIcon>} type="primary" size={'large'} onClick={addDev}>添加设备</NButton>
             <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><EditFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={editDev}>编辑设备</NButton>
             <NPopconfirm onPositiveClick={delDev} placement={'bottom'} v-slots={{
@@ -110,7 +110,7 @@ export default defineComponent({
             </NPopconfirm>
             {/* <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><DeleteForeverFilled /></LargeBtnIcon>} type="primary" size={'large'} onClick={delDev}>删除设备</NButton> */}
             <NButton class={'my-large-btn mr-3'} renderIcon={() => <LargeBtnIcon><CloseOutlined /></LargeBtnIcon>} type="" size={'large'} onClick={close}>关闭</NButton>
-            
+
             {/* <NDivider titlePlacement="left" class={'large-label-size'}  >
               设备配置
             </NDivider> */}

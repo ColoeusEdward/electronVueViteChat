@@ -11,14 +11,84 @@ import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutline
 import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
-import { frontFnNameEnum, menuIdSplit, menuOptList, menuPropEnum } from "./enum";
-import { getRegState, loopGet, sleep } from "@/utils/utils";
+import { frontFnNameEnum, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
+import { buildMenuOpt, getRandomInt, getRegState, loopGet, sleep } from "@/utils/utils";
 import { useMain } from "@/store";
 import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
 import FFT from "./FFT";
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 import { NBaseLoading } from "naive-ui/es/_internal";
 import { callBrige } from "@/utils/callm";
+
+let defCfgData: DataConfigEntity[] = [
+  {
+    GId: '0',
+    Name: '直径1',
+    DataType: 1,
+    SortNum: 0,
+    Precision: 0,
+    Unit: '',
+    State: 1,
+    AlarmType: 0,
+    Unilateral: 0,
+    Distance: 0,
+    CreateTime: "111",
+    children: [
+      {
+        GId: "3",
+        Name: '直径(平均值)',
+        DataType: 1,
+        SortNum: 0,
+        Precision: 0,
+        Unit: '',
+        State: 1,
+        AlarmType: 0,
+        Unilateral: 0,
+        Distance: 1,
+        CreateTime: "111",
+      },
+      {
+        GId: "4",
+        Name: '椭圆度',
+        DataType: 1,
+        SortNum: 0,
+        Precision: 0,
+        Unit: '',
+        State: 1,
+        AlarmType: 0,
+        Unilateral: 0,
+        Distance: 1,
+        CreateTime: "111",
+      },
+      {
+        GId: "1",
+        Name: '直径X(平均值)',
+        DataType: 1,
+        SortNum: 0,
+        Precision: 0,
+        Unit: '',
+        State: 1,
+        AlarmType: 0,
+        Unilateral: 0,
+        Distance: 1,
+        CreateTime: "111",
+      },
+      {
+        GId: "2",
+        Name: '直径Y(平均值)',
+        DataType: 1,
+        SortNum: 0,
+        Precision: 0,
+        Unit: '',
+        State: 1,
+        AlarmType: 0,
+        Unilateral: 0,
+        Distance: 0,
+        CreateTime: "111",
+      }
+    ]
+  }
+]
 
 export default defineComponent({
   name: 'Curcev',  //实时数据,
@@ -36,16 +106,26 @@ export default defineComponent({
       getCfgLoading: false,
     })
     const getSysCfg = () => {
-      callBrige(callFnName.GetSysConfigs).then((res: SysConfigEntity[]) => {
+      callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
         innerData.setSysConfig(res)
       })
     }
     // getSysCfg()
     const getAllActiveConfigData = () => {
       commonData.getCfgLoading = true
-      return callBrige(callFnName.GetDataConfigs).then((res: DataConfigEntity[]) => {
+      // return callBrige(callFnName.GetDataConfigs)
+      return new Promise<DataConfigEntity[]>((resolve, reject) => resolve([])).then((res: DataConfigEntity[]) => {
         if (res && res.length == 0) {
-          return sleep(500).then(() => refresh())
+          commonData.cfgDataList = defCfgData
+          innerData.setDataCfgList(defCfgData)
+          if (!innerData.curDataCfgEntity) {
+            innerData.setCurDataCfgEntity(defCfgData[0].children![0])
+            nextTick(() => {
+              innerData.getCpkFn()
+            })
+          }
+          return
+          //  sleep(500).then(() => refresh())
         } else {
           res = []
         }
@@ -65,7 +145,8 @@ export default defineComponent({
     }
     const startCollect = () => {
       return refresh().then(() => {
-        return callSpc(callFnName.startCollect)
+        return "aa"
+        callSpc(callFnName.startCollect)
       })
         .then((res: string) => {
           if (res) {
@@ -97,8 +178,11 @@ export default defineComponent({
       })
     }
     const clearCollect = () => {
-      callSpc(callFnName.clearCollect)
+      return callSpc(callFnName.clearCollect).then(() => {
+      })
     }
+    innerData.setCleanColFn(clearCollect)
+
     const nextPage = () => {
 
     }
@@ -119,16 +203,31 @@ export default defineComponent({
     const curDataType = computed(() => {
       return innerData.curDataCfgEntity?.DataType
     })
+
     const menuOpt = computed(() => {
       let opt = menuOptList
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
-      sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-        return {
-          label: e.Name,
-          key: menuPropEnum.dataSource + menuIdSplit + e.GId,
-          trueKey: e.GId
+      if (sitem) {
+        if (commonData.cfgDataList.length == 0) {
+          let list: MenuOptType[] = []
+          // commonData.cfgDataList.map(e => buildMenuOpt(e))
+          sitem.children = list
+        } else {
+          sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+            return {
+              ...buildMenuOpt(e),
+              children: e.children?.map(ee => buildMenuOpt(ee))
+            }
+          }) as MenuOptType[]
         }
-      }))
+
+      }
+      // sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+      //   return {
+      //         ...buildMenuOpt(e),
+      //     children: e.children
+      //   }
+      // }) as MenuOptType[])
 
       return opt
     })
@@ -222,9 +321,9 @@ export default defineComponent({
               } */}
 
               <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={refresh} size={'large'} >刷新配置</NButton>
-              <NButton type={'warning'} style={{ backgroundImage: `url(${activeWarningImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} v-slots={{
+              {/* <NButton type={'warning'} style={{ backgroundImage: `url(${activeWarningImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} v-slots={{
                 icon: () => false && <NIcon><LayersClearOutlined /></NIcon>
-              }} onClick={clearCollect} >清空数据</NButton>
+              }} onClick={clearCollect} >清空数据</NButton> */}
               {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2 flex-shrink-0 '}>产品编号</span>
                 <NInput placeholder={''} style={"width: 430px"} value={innerData.curProductCode}></NInput>

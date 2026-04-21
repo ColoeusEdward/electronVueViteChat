@@ -1,8 +1,15 @@
 import { DropdownProps } from "naive-ui";
 
 export const menuOpt = [
-  {label:''}
+  { label: '' }
 ]
+
+export interface MenuOptType {
+  label: string,
+  key: string,
+  trueKey?: string,
+  children?: MenuOptType[]
+}
 
 export const maxDataNumLocalKey = 'curcevMaxDataNum'
 
@@ -21,21 +28,21 @@ export const cpkModelPropName = {
   CpkL: "下限边过程能力指数",
 };
 
-export const menuOptList:DropdownProps['options'] = [
-  {label:'数据源',key:'dataSource',children:[]},
-  {label:'上传当前曲线图',key:'uploadLineShot'}
+export const menuOptList: DropdownProps['options'] = [
+  { label: '数据源', key: 'dataSource', children: [] },
+  { label: '上传当前曲线图', key: 'uploadLineShot' }
 ]
 export const menuPropEnum = {
-  dataSource:'dataSource',
-  uploadLineShot:'uploadLineShot'
+  dataSource: 'dataSource',
+  uploadLineShot: 'uploadLineShot'
 }
 export const menuIdSplit = '*'
 
-export const nornameDisChartId='normalDisChart'
-export const fftChartId='fftChart'
+export const nornameDisChartId = 'normalDisChart'
+export const fftChartId = 'fftChart'
 
 export const frontFnNameEnum = {
-  startCollect:'startCollect',
-  stopCollect:'stopCollect',
-  testFn:'testFn',
+  startCollect: 'startCollect',
+  stopCollect: 'stopCollect',
+  testFn: 'testFn',
 }

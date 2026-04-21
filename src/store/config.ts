@@ -35,16 +35,17 @@ export const useConfigStore = defineStore('config', {
   state: () => {
     return {
       isShowConfig: false,
-      productHistoryShow:false,
-      productLogShow:false,
-      formulaCfgShow:false,
+      productHistoryShow: false,
+      productLogShow: false,
+      formulaCfgShow: false,
       connect: localConnect as connectConfig,
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
 
       sysConfig: {} as Record<string, string>,
-      originSysConfig:[] as SysConfigEntity[],
-      configTab:''
+      originSysConfig: [] as SysConfigEntity[],
+      configTab: '',
+      // curTabValue: 'sysConfig',
     }
   },
   /**
@@ -112,19 +113,19 @@ export const useConfigStore = defineStore('config', {
     setSysConfig(value: Record<string, string>) {
       this.sysConfig = value
     },
-    setOriginSysConfig(value: SysConfigEntity[]){
+    setOriginSysConfig(value: SysConfigEntity[]) {
       this.originSysConfig = value
     },
-    setProductHistoryShow(value: boolean){
+    setProductHistoryShow(value: boolean) {
       this.productHistoryShow = value
     },
-    setProductLogShow(value: boolean){
+    setProductLogShow(value: boolean) {
       this.productLogShow = value
     },
-    setFormulaCfgShow(value: boolean){
+    setFormulaCfgShow(value: boolean) {
       this.formulaCfgShow = value
     },
-    setConfigTab(value: string){
+    setConfigTab(value: string) {
       this.configTab = value
     }
 

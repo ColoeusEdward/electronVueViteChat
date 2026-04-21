@@ -1,13 +1,13 @@
 
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap";
-const commonLHpostion32 = ['3412', '1234', '2143', '4321']
-const commonLHpostionStr = ['12', '21']
-const commonBaudrate = ['4800', '9600', '19200', '38400', '57600', '115200']
-const commonBytesize = ["8", "7"]
-const commonStopbits = ["1", "2"]
-const commonParity = ["N", "O", "E"]
+export const commonLHpostion32 = ['3412', '1234', '2143', '4321']
+export const commonLHpostionStr = ['12', '21']
+export const commonBaudrate = ['4800', '9600', '19200', '38400', '57600', '115200']
+export const commonBytesize = ["8", "7"]
+export const commonStopbits = ["1", "2"]
+export const commonParity = ["N", "O", "E"]
 
-const commonMap = {
+export const commonMap = {
   LHpostion32: commonLHpostion32.map(e => ({ label: e, value: e })),
   LHpostionStr: commonLHpostionStr.map(e => ({ label: e, value: e })),
   LHpostion16: commonLHpostionStr.map(e => ({ label: e, value: e })),
@@ -15,6 +15,15 @@ const commonMap = {
   Bytesize: commonBytesize.map(e => ({ label: e, value: e })),
   Stopbits: commonStopbits.map(e => ({ label: e, value: e })),
   Parity: commonParity.map(e => ({ label: e, value: e })),
+}
+export const commonMap2 = {
+  Endian32bit: commonMap.LHpostion32,
+  Endian16bit: commonMap.LHpostion16,
+  EndianString: commonMap.LHpostionStr,
+  BaudRate: commonMap.Baudrate,
+  StopBits: commonMap.Stopbits,
+  Parity: commonMap.Parity,
+  DataBits: commonMap.Bytesize
 }
 
 const defaultFormFn = (_this: typeof ModbusTCPMaster) => {
