@@ -116,7 +116,7 @@ export const loopGet = (fn: () => Promise<any>, ms: number, isGettingRef: Ref<bo
   })
 }
 
-export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
+export const listenAllInputFocus = (store: ReturnType<typeof useMain>, configStore: ReturnType<typeof useConfigStore>) => {
   document.addEventListener('focusin', function (event) {
     // `event.target` 是实际获取焦点的元素
     const targetElement = event.target;
@@ -128,7 +128,9 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>) => {
       console.log('用户点击或选中了一个输入框。');
       //@ts-ignore
       console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
-      store.setGlobalKeyBoardShow(true)
+      if (configStore.sysConfig.InputType) {
+        store.setGlobalKeyBoardShow(true)
+      }
     }
   });
 }

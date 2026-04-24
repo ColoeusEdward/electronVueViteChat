@@ -1,11 +1,16 @@
 
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap";
+import { AlarmTypeList, limitRadioList, UnilateralList } from "../dataCofigNew/enum";
+import { AreaList, DataTypeList, propNameEnum } from "../devConfig/enum";
+import { dataClassOptions, deviceClassOptions, paramClassOptions } from "../devConfigNew/enum";
 export const commonLHpostion32 = ['3412', '1234', '2143', '4321']
 export const commonLHpostionStr = ['12', '21']
-export const commonBaudrate = ['4800', '9600', '19200', '38400', '57600', '115200']
-export const commonBytesize = ["8", "7"]
-export const commonStopbits = ["1", "2"]
+export const commonBaudrate = [4800, 9600, 19200, 38400, 57600, 115200]
+export const commonBytesize = [8, 7]
+export const commonStopbits = [1, 2]
 export const commonParity = ["N", "O", "E"]
+
+
 
 export const commonMap = {
   LHpostion32: commonLHpostion32.map(e => ({ label: e, value: e })),
@@ -16,18 +21,30 @@ export const commonMap = {
   Stopbits: commonStopbits.map(e => ({ label: e, value: e })),
   Parity: commonParity.map(e => ({ label: e, value: e })),
 }
-export const commonMap2 = {
+export const commonMap2: Record<string, { label: string | number, value: string | number }[]> = {
   Endian32bit: commonMap.LHpostion32,
   Endian16bit: commonMap.LHpostion16,
   EndianString: commonMap.LHpostionStr,
   BaudRate: commonMap.Baudrate,
   StopBits: commonMap.Stopbits,
   Parity: commonMap.Parity,
-  DataBits: commonMap.Bytesize
+  DataBits: commonMap.Bytesize,
 }
+commonMap2[propNameEnum.DeviceClass] = deviceClassOptions
+commonMap2[propNameEnum.DataClass] = dataClassOptions
+commonMap2[propNameEnum.ParamClass] = paramClassOptions
+commonMap2[propNameEnum.Unilateral] = UnilateralList
+commonMap2[propNameEnum.AlarmType] = AlarmTypeList
+commonMap2[propNameEnum.Permission] = limitRadioList
+commonMap2[propNameEnum.Exchange] = DataTypeList
+commonMap2[propNameEnum.DataType] = DataTypeList
+commonMap2[propNameEnum.Area] = AreaList
+
+
+
 
 const defaultFormFn = (_this: typeof ModbusTCPMaster) => {
-  let obj: Record<string, string> = {}
+  let obj: Record<string | number, string | number> = {}
   _this.itemList.filter(e => e.type == 'select').forEach(e => {
     obj[e.prop] = _this.optionMap[e.prop][0].value
   })
@@ -45,11 +62,11 @@ export const ModbusTCPMaster = {
     { type: 'input', label: '端口', prop: 'ServerPort', width: 6 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
     DevInt: ['Net'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -67,12 +84,13 @@ export const DVPMaster = {
     { type: 'switch', label: '透传使能', prop: 'Penetrate', width: 4, checkedValue: 1, uncheckedValue: 0 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['COM1', 'COM2', 'COM3', 'COM4'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -92,12 +110,13 @@ export const ModbusASCIIMaster = {
     { type: 'switch', label: '透传使能', prop: 'Penetrate', width: 4, checkedValue: 1, uncheckedValue: 0 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['COM1', 'COM2', 'COM3', 'COM4'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -109,7 +128,7 @@ export const MQTT = {
   optionMap: <Record<string, { label: string, value: string }[]>>{
 
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -128,12 +147,13 @@ export const NSTZUMBACH = {
     { type: 'switch', label: '透传使能', prop: 'Penetrate', width: 4, checkedValue: 1, uncheckedValue: 0 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['NET', 'COM1', 'COM2', 'COM3', 'COM4'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -146,12 +166,13 @@ export const OPCUAServer = {
     { type: 'input', label: '端口', prop: 'ServerPort', width: 6 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['NET'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -167,12 +188,13 @@ export const S71200TCP = {
     { type: 'input', label: '端口', prop: 'ServerPort', width: 6 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['NET'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -189,11 +211,12 @@ export const S7SmartTCP = {
     { type: 'input', label: '端口', prop: 'ServerPort', width: 6 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['NET'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }
@@ -206,12 +229,13 @@ export const ModbusTCPSlave = {
     { type: 'switch', label: '透传使能', prop: 'Penetrate', width: 4, checkedValue: 1, uncheckedValue: 0 },
     { type: 'input', label: '从站地址', prop: 'SlaveId', width: 6 },
   ],
-  optionMap: <Record<string, { label: string, value: string }[]>>{
+  optionMap: <Record<string, { label: string | number, value: string | number }[]>>{
+
     DevInt: ['NET'].map(e => ({ label: e, value: e })),
     ComType: ['RS232', 'RS485'].map(e => ({ label: e, value: e })),
     ...commonMap
   },
-  get defaultForm(): Record<string, string> {
+  get defaultForm(): Record<string | number, string | number> {
     return defaultFormFn(this)
   }
 }

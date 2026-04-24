@@ -114,6 +114,9 @@ export default defineComponent({
           // startSpcSys()
         }
       })
+      callBrige(callFnName.InitDevice).then((res: string) => {
+
+      })
       // callBrige(callFnName.InitService).then((res: string) => {
 
       // })

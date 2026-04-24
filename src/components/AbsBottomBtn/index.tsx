@@ -11,6 +11,10 @@ export default defineComponent({
     cancelFn: {
       type: Function,
       default: () => { }
+    },
+    confirmFn: {
+      type: Function,
+      default: () => { }
     }
   },
   setup(props, ctx) {
@@ -33,7 +37,7 @@ export default defineComponent({
           <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
             <span class={'text-2xl ml-2 '}>取消</span>
           </NButton>
-          <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
+          <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.confirmFn() }} size={'large'}  >
             <span class={'text-2xl ml-2 '}>采用</span>
           </NButton>
           {/* <NButton secondary strong={true} onClick={confirm} type="primary" size={'large'} class={'h-16 w-[20vw]  shrink mr-2 '} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }}

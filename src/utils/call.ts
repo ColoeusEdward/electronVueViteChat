@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config"
-import { ActualResult, SysConfigEntity } from "~/me"
+import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me"
 import { callBrige } from "./callm"
 import { callFnName } from "./enum"
 
@@ -55,20 +55,20 @@ export const getPrinterList = (): Promise<string[]> => {
 
 export const getSysConfig = () => {
   const configStore = useConfigStore()
-  return callBrige(callFnName.GetSysConfig).then((res: Record<string, string>) => {
+  return callBrige(callFnName.GetSysConfig).then((res: SysConfigModel) => {
     // console.log("🪵 [call.ts:58] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
     let list: SysConfigEntity[] = [];
-    let data: Record<string, string> = res;
+    let data: SysConfigModel = res;
     // list.forEach(e => {
     //   data[e.Name] = e.Value
     // })
-    Object.keys(data).forEach(e => {
-      list.push({
-        Name: e,
-        Value: data[e],
-        CreateTime: ""
-      })
-    })
+    // Object.keys(data).forEach(e => {
+    //   list.push({
+    //     Name: e,
+    //     Value: data[e],
+    //     CreateTime: ""
+    //   })
+    // })
     // console.log("🪵 [call.ts:61] ~ token ~ \x1b[0;32mlist\x1b[0m = ", list);
     configStore.setOriginSysConfig(list)
     configStore.setSysConfig(data)

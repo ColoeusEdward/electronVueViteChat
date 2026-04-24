@@ -54,12 +54,14 @@ import { rootPathKey } from '@/utils/enum';
 import { useToolStore } from '@/store/tool';
 import { listenAllInputFocus, listenLandscape } from './utils/utils';
 import { useMain } from './store';
+import { useConfigStore } from './store/config';
 
 const mainHeaderShow = ref(true);
 const toolStore = useToolStore();
 const mainStore = useMain()
+const configStore = useConfigStore()
 
-listenAllInputFocus(mainStore)
+listenAllInputFocus(mainStore, configStore)
 
 listenLandscape(mainStore)
 

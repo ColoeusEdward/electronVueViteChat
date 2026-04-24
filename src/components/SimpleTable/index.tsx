@@ -1,4 +1,5 @@
-import { } from "naive-ui";
+import classNames from "classnames";
+import { NButton, NPopconfirm } from "naive-ui";
 import { computed, defineComponent, PropType, StyleValue } from "vue";
 import { simpleTableColumn } from "~/me";
 
@@ -23,11 +24,19 @@ export default defineComponent({
   name: 'simpleTable',
   props: {
     dat: {
-      type: Array as PropType<Record<string, string | number>[]>,
+      type: Array as PropType<Record<string, string | number | boolean>[]>,
       required: false
     },
     col: {
       type: Array as PropType<simpleTableColumn[]>,
+      required: false
+    },
+    addRowRenderFn: {
+      type: Function as PropType<() => void>,
+      required: false
+    },
+    addRowProp: {
+      type: String,
       required: false
     }
   },
@@ -40,7 +49,7 @@ export default defineComponent({
 
 
     const data = computed(() => {
-      let list: Record<string, string | number>[] = props.dat || defData
+      let list: Record<string, string | number | boolean>[] = props.dat || defData
       return list
     })
     // 2. 模拟数据
@@ -48,8 +57,8 @@ export default defineComponent({
     // 3. 样式对象 (保持 JSX 整洁)
     const styles: Record<string, any> = {
       container: { padding: '20px', fontFamily: 'sans-serif' },
-      row: { display: 'flex', gap: '8px', textAlign: 'center' },
-      headerItem: { fontWeight: 'bold', fontSize: '22px', marginBottom: '8px' },
+      row: { display: 'flex', gap: '8px', textAlign: 'center', marginBottom: '8px' },
+      headerItem: { fontWeight: 'bold', fontSize: '20px', marginBottom: '8px' },
       cell: {
         border: '1px solid #333',
         padding: '6px 0',
@@ -59,7 +68,7 @@ export default defineComponent({
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '30px',
-        fontSize: '26px'
+        fontSize: '22px'
       }
     };
 
@@ -75,11 +84,14 @@ export default defineComponent({
         </div>
 
         {
-          data.value.map((item: Record<string, string | number>) => {
+          data.value.map((item: Record<string, string | number | boolean>) => {
             const buildContent = (col: simpleTableColumn) => {
               let res = item[col.prop]
               if (col.btnText) {
                 res = col.btnText
+              }
+              if (col.mapFn) {
+                res = col.mapFn(col, item)
               }
               return res
             }
@@ -88,7 +100,7 @@ export default defineComponent({
               <div style={styles.row}>
                 {columns.value.map((col, i) => {
                   let res = (
-                    <div key={col.prop} style={{ flex: col.flex, ...styles.cell }} onClick={() => {
+                    <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{ flex: col.flex, ...styles.cell }} onClick={() => {
                       col.btnFn && col.btnFn(col, item)
                     }}>
 
@@ -102,6 +114,7 @@ export default defineComponent({
                         onClick={() => {
                           col.btnFn && col.btnFn(col, item)
                         }}
+                        class={classNames({ 'invisible': item.isNewRow && i != 0 })}
                         key={col.prop}
                         onChange={(e: any) => {
                           item[col.prop] = e.target.value
@@ -109,14 +122,46 @@ export default defineComponent({
                         }} style={{ flex: col.flex, ...styles.cell, textAlign: 'center' }} value={buildContent(col)} />
                     )
                   }
+                  if (col.btnType == 'danger') {
+                    res = <NPopconfirm placement="right" title=""
+                      v-slots={{
+                        default: () => {
+                          return <div>确定吗?</div>
+                        },
+                        trigger: () => {
+                          return <div
+                            class={classNames({ 'invisible': item.isNewRow && i != 0 })}
+                            key={col.prop} style={{ flex: col.flex, ...styles.cell }} onClick={() => {
+                              // col.btnFn && col.btnFn(col, item)
+                            }}>
+
+                            {buildContent(col)}
+                            {/* {data.value[col.prop]} */}
+                          </div>
+                        }
+                      }}
+                      onPositiveClick={() => { col.btnFn && col.btnFn(col, item) }}>
+                    </NPopconfirm>
+                  }
+                  // if (item.isNewRow && col.prop != props.addRowProp) {
+                  //   res = <span></span>
+                  // }
                   return res
                 })}
+                {/* {
+                  props.addRowRenderFn && props.addRowRenderFn((<div key={col.prop} style={{ flex: col.flex, ...styles.cell }} onClick={() => {
+                      col.btnFn && col.btnFn(col, item)
+                    }}>
+
+                      {buildContent(col)}
+                    </div>))
+                } */}
               </div>
             )
           })
         }
 
-      </div>
+      </div >
     );
   }
 

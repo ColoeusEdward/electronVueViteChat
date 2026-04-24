@@ -107,6 +107,12 @@ body {
   background-color: #cacaca;
 }
 
+.n-input,
+.n-base-selection {
+  border: 1px #000000 solid;
+  border-radius: 0px;
+}
+
 .bar-tab {
   //带底部边条的标签
   // .n-tabs-nav-scroll-wrapper {

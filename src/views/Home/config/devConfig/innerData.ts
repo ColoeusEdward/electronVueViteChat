@@ -17,7 +17,7 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
       curRow: null as DeviceConfigEntity | null,
       curRowKey: [] as string[],
       contentHeight: 100,
-      resetFn: () => {},
+      resetFn: () => { },
 
       devConfigForm: {} as DeviceConfigEntity,
       connectCfgForm: {} as DriverConnectType,
@@ -44,7 +44,7 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
    */
   actions: {
     setEditShow(val: boolean) {
-      if(!val){
+      if (!val) {
         this.setConnectCfgFormShow(false)
         this.setAddressCfgFormShow(false)
       }
@@ -74,10 +74,10 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
       // Object.assign(this.devConfigForm, val)
     },
     setConnectStrOfDevConfigForm(val: string) {
-      this.devConfigForm.ConnectConfig = val
+      // this.devConfigForm.ConnectConfig = val
     },
     setAddressStrOfDevConfigForm(val: string) {
-      this.devConfigForm.AddressConfigs = val
+      this.devConfigForm.AddressConfig = val
     },
     setConnectCfgForm(val: DriverConnectType) {
       this.connectCfgForm = val
@@ -94,7 +94,7 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
       // this.addressDataList = val
     },
     setAddressCfgForm(val: DriverAddressType) {
-      Object.assign(this.addressCfgForm ,val)
+      Object.assign(this.addressCfgForm, val)
     },
     setAddressIsEdit(val: boolean) {
       this.addressIsEdit = val
@@ -105,7 +105,7 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
     setCurAddressRowKey(val: string[]) {
       this.curAddressRowKey = val
     },
-    checkAddressDataListNotSame(key:string) {
+    checkAddressDataListNotSame(key: string) {
       return this.addressDataList.every(e => e.DataName != key)
     },
     cleanDevConfig() {
@@ -116,11 +116,11 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
     },
     cleanAddressCfgForm() {
       let d = {} as DriverAddressType
-      if(this.devConfigForm.DriverName){
+      if (this.devConfigForm.DriverName) {
         let addressType = driverInfo[this.devConfigForm.DriverName].addressType
         d = defaultData[`default${addressType}`] as DriverAddressType
       }
-      Object.assign(this.addressCfgForm ,d)
+      Object.assign(this.addressCfgForm, d)
       delete this.addressCfgForm.Id
     },
     cleanAdressDataList() {

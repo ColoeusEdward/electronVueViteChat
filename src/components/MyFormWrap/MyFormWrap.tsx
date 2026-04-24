@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio } from "naive-ui";
+import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio, NSpace, NCheckboxGroup, NCheckbox } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
 import { defineComponent, ref, PropType, onMounted, computed, defineExpose, Ref } from "vue";
 import blueBg from '@/assets/PnlBtnActive.png'
@@ -13,8 +13,8 @@ export interface formListItem {
   row?: number
   width?: number
   rule?: string | string[]
-  checkedValue?: string,
-  uncheckedValue?: string,
+  checkedValue?: string | number,
+  uncheckedValue?: string | number,
   disabled?: boolean,
   placement?: Placement,
   suffix?: () => JSX.Element,
@@ -27,7 +27,8 @@ export interface formListItem {
   max?: number,
   radioType?: 'btn' | 'def',
   hide?: boolean,
-  childCompList?: formListItem[]
+  childCompList?: formListItem[],
+  checkboxList?: { value: string | number, label: string }[],
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -59,6 +60,7 @@ export const MyFormWrap = defineComponent({
     const finalRule = ref({})
     const defaultRule: FormRules = {
       must: { required: true, message: '请输入该项', trigger: 'blur' },
+      mustNum: { required: true, message: '请输入该项', trigger: 'blur', type: 'number' },
     }
     const pform = computed(() => {
       return props.form
@@ -96,6 +98,7 @@ export const MyFormWrap = defineComponent({
       formRef.value?.restoreValidation()
     }
     const submit = (propSubmit: typeof props.submitFn) => {
+      console.log("🪵 [MyFormWrap.tsx:100] ~ token ~ \x1b[0;32mprops.form \x1b[0m = ", props.form);
       return validForm().then(() => {
         propSubmit && propSubmit({ ...props.form })
       })
@@ -140,7 +143,25 @@ export const MyFormWrap = defineComponent({
     const renderSwitch = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <NSwitch v-model:value={form[item.prop]} size={'large'} checkedValue={item.checkedValue || true} uncheckedValue={item.uncheckedValue || false} disabled={item.disabled} defaultValue={item.defaultValue} />
+          <NSwitch v-model:value={form[item.prop]} size={'large'} checkedValue={item.checkedValue == undefined ? true : item.checkedValue} uncheckedValue={item.uncheckedValue == undefined ? false : item.uncheckedValue} disabled={item.disabled} defaultValue={item.defaultValue} />
+        </NFormItem>
+      )
+    }
+    const renderCheckbox = (form: typeof props.form, item: formListItem) => {
+      return (
+        <NFormItem label={item.label} path={item.prop}>
+
+          <NCheckboxGroup v-model:value={form[item.prop]} size={'large'} disabled={item.disabled}>
+            <NSpace item-style="display: flex;">
+              {
+                item.checkboxList?.map((e: any) => {
+                  return (
+                    <NCheckbox value={e.value} label={e.label} />
+                  )
+                })
+              }
+            </NSpace>
+          </NCheckboxGroup>
         </NFormItem>
       )
     }
@@ -186,7 +207,7 @@ export const MyFormWrap = defineComponent({
     const renderText = (form: typeof props.form, item: formListItem) => {
       return (
         <NFormItem label={item.label} path={item.prop}>
-          <span style={item.style} >{item.text}</span>
+          <span style={item.style} >{item.text || form[item.prop]}</span>
         </NFormItem>
       )
     }

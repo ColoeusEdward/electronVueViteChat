@@ -1,7 +1,8 @@
+import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
-import { SysConfigEntity } from "~/me";
+import { DeviceConfigEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -24,6 +25,7 @@ const localDataConfig = JSON.parse(localStorage.getItem('dataConfig') || 'null')
   alarmCoodiList: <Record<string, string>[]>[],
   OPCUATopForm: <Record<string, string>>{},
 }
+const defaultTab = tabNameEnum.sysConfig
 
 export const useConfigStore = defineStore('config', {
   /**
@@ -42,10 +44,21 @@ export const useConfigStore = defineStore('config', {
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
 
-      sysConfig: {} as Record<string, string>,
+      sysConfig: {} as SysConfigModel,
       originSysConfig: [] as SysConfigEntity[],
-      configTab: '',
+      configTab: defaultTab,
+
+      allSubmitCount: 0,
       // curTabValue: 'sysConfig',
+
+      curDevConfigRow: null as DeviceConfigEntity | null,
+      addressShow: false,
+      addressFormShow: false,
+      curAddressRow: null as ModbusAdressRow | null,
+      updateAdressRowFn: () => { },
+      addFormShow: false,
+      updateDevConfigRowFn: () => { },
+      isAdressAddMore: false,
     }
   },
   /**
@@ -110,7 +123,7 @@ export const useConfigStore = defineStore('config', {
       this.dataConfig.OPCUATopForm = value
       this.saveDataConfig()
     },
-    setSysConfig(value: Record<string, string>) {
+    setSysConfig(value: SysConfigModel) {
       this.sysConfig = value
     },
     setOriginSysConfig(value: SysConfigEntity[]) {
@@ -127,8 +140,34 @@ export const useConfigStore = defineStore('config', {
     },
     setConfigTab(value: string) {
       this.configTab = value
-    }
-
+    },
+    addSubmitCount() {
+      this.allSubmitCount++
+    },
+    setCurDevConfigRow(value: DeviceConfigEntity | null) {
+      this.curDevConfigRow = value
+    },
+    setAddressShow(value: boolean) {
+      this.addressShow = value
+    },
+    setAddressFormShow(value: boolean) {
+      this.addressFormShow = value
+    },
+    setCurAddressRow(value: ModbusAdressRow | null) {
+      this.curAddressRow = value
+    },
+    setUpdateAdressRowFn(value: () => void) {
+      this.updateAdressRowFn = value
+    },
+    setAddFormShow(value: boolean) {
+      this.addFormShow = value
+    },
+    setUpdateDevConfigRowFn(value: () => void) {
+      this.updateDevConfigRowFn = value
+    },
+    setIsAdressAddMore(value: boolean) {
+      this.isAdressAddMore = value
+    },
   }
 
 })

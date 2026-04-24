@@ -1,4 +1,4 @@
-import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
+import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
@@ -7,7 +7,7 @@ import { showKeyBoard } from "@/utils/utils";
 import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
-import { ActualResult } from "~/me";
+import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me";
 import AcCode from "./AcCode";
 import { formDivideStyle, optionMap } from "./enum";
 import SerialNoRule from "./SerialNoRule";
@@ -16,12 +16,20 @@ export default defineComponent({
   name: 'SysConfig',
   setup(props, ctx) {
     getSysConfig()
-
+    const myFormRef = ref<MyFormWrapIns>()
     const configStore = useConfigStore()
     const loading = ref(false)
     const msg = useMessage()
+    const alldata = reactive({
+      cfgData: {} as SysConfigModel
+    })
     const cfgData = computed(() => {
       return configStore.sysConfig
+    })
+    watch(() => cfgData.value, () => {
+      alldata.cfgData = { ...cfgData.value }
+    }, {
+      immediate: true
     })
     // .then(() => {
     //   cfgData = reactive({
@@ -55,21 +63,21 @@ export default defineComponent({
             { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
             { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
             { type: 'input', label: '报警信号间隔', prop: 'AlarmInterval', width: 12, suffix: 'ms' },
-            { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, checkedValue: '1', uncheckedValue: '0', },
+            { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, checkedValue: 1, uncheckedValue: 0, },
           ]
         },
         {
           type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '统计报表', width: 24 },
-            { type: 'switch', label: '导出实时数据', prop: 'EnableExportReal', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
+            { type: 'switch', label: '允许实时数据导出', prop: 'EnableExportReal', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
             // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
-            { type: 'switch', label: '导出趋势曲线', prop: 'EnableExportStati', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, suffix: 'ms' },
+            { type: 'switch', label: '允许统计数据导出', prop: 'EnableExportStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, suffix: 'ms' },
             // { type: 'select', label: '曲线文件类型', prop: 'ExportStatiType', width: 12 },
             {
               type: 'input', label: '导出路径', prop: 'ExportPath', width: 12, suffix: () => {
                 return <label onClick={() => {
                   chooseFolder().then((e) => {
-                    e && (cfgData.value.ExportPath = e)
+                    e && (alldata.cfgData.ExportPath = e)
                   })
                 }} class={'z-50 relative -right-2'} >
                   <NTag bordered={false} >选择目录</NTag>
@@ -77,31 +85,32 @@ export default defineComponent({
               }
             },
             // { type: 'text', },
-            { type: 'switch', label: '打印统计数据', prop: 'EnablePrintStati', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'False', width: 12, },
+            { type: 'switch', label: '允许打印统计数据', prop: 'EnablePrintStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
             { type: 'select', label: '使用的打印机', prop: 'ReportPrinter', width: 12 },
           ]
         },
-        {
-          type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '编码规则', width: 24 },
-            {
-              type: 'free', label: '编码规则', renderComp: () => {
-                return <SerialNoRule />
-              }, width: 24
-            },
-          ]
-        },
+        // {
+        //   type: 'box', label: '', width: 24, childCompList: [
+        //     { type: 'divider', label: '编码规则', width: 24 },
+        //     {
+        //       type: 'free', label: '编码规则', renderComp: () => {
+        //         return <SerialNoRule />
+        //       }, width: 24
+        //     },
+        //   ]
+        // },
         {
           type: 'box', label: '', width: 24, childCompList: [
             { type: 'divider', label: '其他配置', width: 24 },
             // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
             {
               type: 'free', label: '激活码', renderComp: () => {
-                return <AcCode v-model:value={cfgData.value.Cdkey} />
+                return <AcCode v-model:value={alldata.cfgData.Cdkey} />
               }, width: 12
             },
-            { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 'True', uncheckedValue: 'False', defaultValue: 'True', width: 12, suffix: 'ms' },
-            { type: 'text', label: '软件版本', prop: 'Version', text: '1.0.0', width: 24 },
+            { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 1, uncheckedValue: 0, defaultValue: 1, width: 12 },
+            // { type: 'text', label: '', prop: 'InputType', text: '', width: 24 },
+            // { type: 'text', label: '', prop: 'Version', text: '', width: 24 },
           ]
         },
       ] as formListItem[]
@@ -114,18 +123,20 @@ export default defineComponent({
     })
     const submit = () => {
       loading.value = true
-      let oriSysConfig = configStore.originSysConfig
-      Object.keys(cfgData.value).map(e => {
-        oriSysConfig.find(e1 => {
-          if (e1.Name == e) {
-            e1.Value = cfgData.value[e]
-          }
-        })
-      })
-      console.log("🪵 [index.tsx:124] ~ token ~ \x1b[0;32moriSysConfig\x1b[0m = ", oriSysConfig);
-      callBrige(callFnName.SaveSysConfig, [...oriSysConfig])
+      // let oriSysConfig = configStore.originSysConfig
+      // Object.keys(cfgData.value).map(e => {
+      //   oriSysConfig.find(e1 => {
+      //     if (e1.Name == e) {
+      //       e1.Value = cfgData.value[e]
+      //     }
+      //   })
+      // })
+      // console.log("🪵 [index.tsx:124] ~ token ~ \x1b[0;32moriSysConfig\x1b[0m = ", oriSysConfig);
+      console.log("🪵 [index.tsx:134] ~ token ~ \x1b[0;32malldata.cfgData\x1b[0m = ", alldata.cfgData);
+      callBrige(callFnName.SaveSysConfig, alldata.cfgData)
         .then((e: number) => {
           msg.success('保存完成')
+          configStore.setSysConfig(alldata.cfgData)
         }).finally(() => {
           loading.value = false
         })
@@ -141,12 +152,18 @@ export default defineComponent({
       })
     }
     getPrinter()
-
-
+    watch(() => configStore.allSubmitCount, (val) => {
+      myFormRef.value?.submit(submit)
+    })
+    watch(() => configStore.configTab, (val) => {
+      getSysConfig()
+    }, {
+      immediate: true
+    })
     watch(() => cfgData.value.InputType, (val) => {
-      if (val == "True") {
-        // showKeyBoard()
-      }
+      // if (val == "True") {
+      //   // showKeyBoard()
+      // }
     })
 
     onMounted(() => {
@@ -164,7 +181,7 @@ export default defineComponent({
         // <NScrollbar class={'w-full h-full relative'} >
 
         <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{ height: 'calc(100% + 20px)' }}>
-          <MyFormWrap form={cfgData.value} optionMap={formOpt.optionMap} itemList={formOpt.itemList} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} loading={loading.value} />
+          <MyFormWrap ref={myFormRef} form={alldata.cfgData} optionMap={formOpt.optionMap} hideBtn={true} itemList={formOpt.itemList} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} loading={loading.value} />
         </div>
         // </NScrollbar>
 

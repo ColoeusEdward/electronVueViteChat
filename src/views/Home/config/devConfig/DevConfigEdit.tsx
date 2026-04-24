@@ -18,7 +18,7 @@ export default defineComponent({
       return `${innerData.contentHeight - 114 - 28}px`  //28是各种padding
     })
     const connectConfigStr = computed(() => {
-      return innerData.devConfigForm.ConnectConfig
+      // return innerData.devConfigForm.ConnectConfig
     })
     const tableCfg = reactive({
       columns: [
@@ -28,31 +28,31 @@ export default defineComponent({
       data: [] as { Name: string, Value: string }[],
 
     })
-    watch(() => innerData.devConfigForm.ConnectConfig, (val) => {
-      let data = JSON.parse(val)
-      tableCfg.data = Object.keys(data).map(key => {
-        return {
-          Name: propNameMap[key] || key,
-          Value: data[key]
-        }
-      })
-    })
-    watch(innerData.addressDataList , (val) => {
+    // watch(() => innerData.devConfigForm.ConnectConfig, (val) => {
+    //   let data = JSON.parse(val)
+    //   tableCfg.data = Object.keys(data).map(key => {
+    //     return {
+    //       Name: propNameMap[key] || key,
+    //       Value: data[key]
+    //     }
+    //   })
+    // })
+    watch(innerData.addressDataList, (val) => {
       // console.log("🚀 ~ file: DevConfigEdit.tsx:39 ~ watch ~ val:", val)
       if (isMouted) {
         innerData.setAddressStrOfDevConfigForm(JSON.stringify(val))
       }
-    },{deep:true})
+    }, { deep: true })
     const getTbData = () => {
-      if (innerData.isEdit && innerData.devConfigForm.ConnectConfig) {
-        let data = JSON.parse(innerData.devConfigForm.ConnectConfig)
-        tableCfg.data = Object.keys(data).map(key => {
-          return {
-            Name: propNameMap[key] || key,
-            Value: data[key]
-          }
-        })
-      }
+      // if (innerData.isEdit && innerData.devConfigForm.ConnectConfig) {
+      //   let data = JSON.parse(innerData.devConfigForm.ConnectConfig)
+      //   tableCfg.data = Object.keys(data).map(key => {
+      //     return {
+      //       Name: propNameMap[key] || key,
+      //       Value: data[key]
+      //     }
+      //   })
+      // }
     }
     getTbData()
     const driverName = computed(() => {
@@ -63,10 +63,10 @@ export default defineComponent({
         msg.warning('请先选择设备驱动')
         return
       }
-      if (innerData.devConfigForm.ConnectConfig) {
-        let d = JSON.parse(innerData.devConfigForm.ConnectConfig)
-        innerData.setConnectCfgForm(d)
-      }
+      // if (innerData.devConfigForm.ConnectConfig) {
+      //   let d = JSON.parse(innerData.devConfigForm.ConnectConfig)
+      //   innerData.setConnectCfgForm(d)
+      // }
       innerData.setConnectCfgFormShow(true)
     }
     const addAddress = () => {

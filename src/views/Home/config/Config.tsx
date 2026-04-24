@@ -18,6 +18,7 @@ import FormulaConfig from "./FormulaConfig";
 import AbsBottomBtn from "@/components/AbsBottomBtn";
 import { useDataCfgInnerDataStore } from "./dataCofigNew/innerData";
 import DataCfgOut from "./dataCfgOut";
+import AdressTable from "./devConfigNew/AdressTable";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -25,7 +26,12 @@ export default defineComponent({
     const dataCfgInnerData = useDataCfgInnerDataStore()
     const msg = useMessage()
     const store = useMain()
-
+    const curDevConfigRow = computed(() => {
+      return configStore.curDevConfigRow
+    })
+    const addressShow = computed(() => {
+      return configStore.addressShow
+    })
     const activeStyle = {
       // backgroundImage: `url(${TabActiveImg})`,
       // backgroundImage: `url(${TabActiveImg})`,
@@ -36,20 +42,25 @@ export default defineComponent({
       zIndex: 6
     }
     const defaultTab = 'sysConfig'
-    const curTabValue = ref('sysConfig')
+    const curTabValue = computed(() => {
+      return configStore.configTab
+    })
+    const minWidth = store.isLandscape ? '12vw' : '120px'
+    const maxWidth = store.isLandscape ? '25vw' : '400px'
     const commonStyle = {
-      width: '13vw', fontSize: '20px', minWidth: "120px", borderTop: '1px solid #58595a', borderRight: '1px solid #58595a', borderLeft: '1px solid #58595a', borderBottom: '1px solid #58595a',
+      maxWidth: maxWidth, fontSize: '20px', minWidth: minWidth, borderTop: '1px solid #58595a', borderRight: '1px solid #58595a', borderLeft: '1px solid #58595a', borderBottom: '1px solid #58595a',
       flexGrow: 1, background: '#fff', borderRadius: '12px 12px 0 0'
     }
     const cancel = () => {
       configStore.setIsShowConfig(false)
     }
     const confirm = () => {
-      msg.success('应用成功')
+      configStore.addSubmitCount()
+      // msg.success('应用成功')
     }
 
     const handleTabChange = (value: string) => {
-      curTabValue.value = value
+      // curTabValue.value = value
       configStore.setConfigTab(value)
     }
     const invokeKeyBoard = () => {
@@ -68,10 +79,10 @@ export default defineComponent({
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
           <NDialogProvider >
             <div class={"text-3xl flex justify-center items-center h-[54px] font-black"}>ECOCONTROL / V1.8.1.4</div>
-            <div class={'h-full w-full shrink '} style={{ height: 'calc(100% - 80px - 54px)' }}>
+            <div class={'h-full w-full shrink '} style={{ height: 'calc(100% - 80px - 54px)', backgroundColor: '#f5f6f6' }}>
               {/* <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div> */}
 
-              <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
+              <NTabs value={curTabValue.value} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
                 <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
                   <div class={' h-full shrink'}>
                     <SysConfig />
@@ -82,12 +93,21 @@ export default defineComponent({
                     <DevConfigNew />
                   </div>
                 </NTabPane>
+                {
+                  curDevConfigRow.value && addressShow.value &&
+                  <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
+                    <div class={' h-full shrink'}>
+                      <AdressTable />
+                    </div>
+                  </NTabPane>
+                }
+
                 {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <DevConfig />
                 </div>
               </NTabPane> */}
-                <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据采集" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
+                {/* <NTabPane displayDirective="show:lazy" name={"dataConfig"} tab="数据采集" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataConfig' ? activeStyle : {} } }}>
                   <div class={' h-full shrink'}>
                     <DataCofigNew />
                   </div>
@@ -96,7 +116,7 @@ export default defineComponent({
                   <div class={' h-full shrink'}>
                     <DataCfgOut />
                   </div>
-                </NTabPane>
+                </NTabPane> */}
                 {/* <NTabPane displayDirective="show:lazy" name={"formulaConfig"} tab="配方配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'formulaConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>
                   <FormulaConfig />
@@ -140,7 +160,7 @@ export default defineComponent({
             <KeyBorad />
           </div> */}
 
-            {btmBtnShow.value && <AbsBottomBtn cancelFn={cancel} />}
+            {btmBtnShow.value && <AbsBottomBtn cancelFn={cancel} confirmFn={confirm} />}
           </NDialogProvider>
         </div>
       )

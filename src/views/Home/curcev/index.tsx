@@ -136,7 +136,9 @@ export default defineComponent({
         if (!innerData.curDataCfgEntity) {
           innerData.setCurDataCfgEntity(list[0])
           nextTick(() => {
-            innerData.getCpkFn()
+
+            // innerData.getCpkFn()
+
           })
         }
       }).finally(() => {

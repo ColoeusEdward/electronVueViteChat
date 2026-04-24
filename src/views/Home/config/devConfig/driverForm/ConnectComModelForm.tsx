@@ -1,6 +1,6 @@
 import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
 import { NButton, SelectProps } from "naive-ui";
-import { defineComponent, reactive,watch } from "vue";
+import { defineComponent, reactive, watch } from "vue";
 import { ConnectTcpModel } from "~/me";
 import { commonFormItemListMap, defaultConnectComModel, defaultConnectTcpModel, Endian32BitList, PortNameList, propNameEnum } from "../enum";
 import { useDevCfgInnerData } from "../innerData";
@@ -23,7 +23,7 @@ export default defineComponent({
         commonFormItemListMap[propNameEnum.SlaveId],
         commonFormItemListMap[propNameEnum.Cycle],
         commonFormItemListMap[propNameEnum.Timeout],
-        commonFormItemListMap[propNameEnum.Endian32Bit],
+        commonFormItemListMap[propNameEnum.Endian32bit],
         commonFormItemListMap[propNameEnum.EndianString],
       ] as formListItem[],
       hideBtn: false,
@@ -41,7 +41,7 @@ export default defineComponent({
     })
     formCfg.optionMap[propNameEnum.PortName] = PortNameList
 
-    watch(() => innerData.connectCfgForm,(val) => {
+    watch(() => innerData.connectCfgForm, (val) => {
       formCfg.form = val
     })
     const cancel = () => {

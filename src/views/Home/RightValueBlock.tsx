@@ -243,7 +243,8 @@ export default defineComponent({
     }
     const fixNumRef = computed(() => {
       // let val = curCevInnerData.sysConfig.find(e => e.Name == 'Precision')?.Value
-      let val = configStore.originSysConfig.find(e => e.Name == 'Precision')?.Value
+      // let val = configStore.originSysConfig.find(e => e.Name == 'Precision')?.Value
+      let val = configStore.sysConfig.Precision
       return Number(val)
     })
     const handleTabChange = (value: string) => {
