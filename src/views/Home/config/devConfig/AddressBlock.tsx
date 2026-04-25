@@ -11,12 +11,12 @@ export default defineComponent({
   name: 'AddressBlock',
   setup(props, ctx) {
     const innerData = useDevCfgInnerData()
-    
+
     const driverName = computed(() => {
       return innerData.devConfigForm.DriverName
     })
     const colType = computed(() => {
-      return addressTableColMap[driverInfo[driverName.value||'Modbus Tcp Client'].colType]
+      return addressTableColMap[driverInfo[driverName.value || 'Modbus Tcp Client'].colType]
     })
     const tableCfg = reactive({
       columns: [
@@ -38,25 +38,25 @@ export default defineComponent({
       innerData.setCurAddressRowKey([row.DataName])
       innerData.setCurAddressRow(row)
     }
-    watch(
-      () => innerData.devConfigForm.AddressConfigs,
-      (val) => {
-        if (val && innerData.addressDataList.length == 0) {
-          let list = JSON.parse(innerData.devConfigForm.AddressConfigs)
-          innerData.setAddressDataList(list)
-          // tableCfg.data = innerData.addressDataList
-        }
-      }
-    )
+    // watch(
+    //   () => innerData.devConfigForm.AddressConfigs,
+    //   (val) => {
+    //     if (val && innerData.addressDataList.length == 0) {
+    //       let list = JSON.parse(innerData.devConfigForm.AddressConfigs)
+    //       innerData.setAddressDataList(list)
+    //       // tableCfg.data = innerData.addressDataList
+    //     }
+    //   }
+    // )
 
-    const getTbData = () => {
-      if (innerData.isEdit && innerData.devConfigForm.AddressConfigs) {
-        let list = JSON.parse(innerData.devConfigForm.AddressConfigs)
-        innerData.setAddressDataList(list)
-        // tableCfg.data = innerData.addressDataList
-      }
-    }
-    getTbData()
+    // const getTbData = () => {
+    //   if (innerData.isEdit && innerData.devConfigForm.AddressConfigs) {
+    //     let list = JSON.parse(innerData.devConfigForm.AddressConfigs)
+    //     innerData.setAddressDataList(list)
+    //     // tableCfg.data = innerData.addressDataList
+    //   }
+    // }
+    // getTbData()
     return () => {
       return (
         <div class={'w-full h-full relative'}>

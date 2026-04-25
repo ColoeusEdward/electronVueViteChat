@@ -5,9 +5,9 @@ import { AreaList, DataTypeList, propNameEnum } from "../devConfig/enum";
 import { dataClassOptions, deviceClassOptions, paramClassOptions } from "../devConfigNew/enum";
 export const commonLHpostion32 = ['3412', '1234', '2143', '4321']
 export const commonLHpostionStr = ['12', '21']
-export const commonBaudrate = [4800, 9600, 19200, 38400, 57600, 115200]
-export const commonBytesize = [8, 7]
-export const commonStopbits = [1, 2]
+export const commonBaudrate = ["4800", "9600", "19200", "38400", "57600", "115200"]
+export const commonBytesize = ["8", "7"]
+export const commonStopbits = ["1", "2"]
 export const commonParity = ["N", "O", "E"]
 
 

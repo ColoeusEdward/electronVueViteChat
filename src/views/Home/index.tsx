@@ -25,6 +25,8 @@ import classNames from "classnames";
 import { KeyboardAltOutlined } from "@vicons/material";
 import GlobalKeyBoard2 from "./GlobalKeyBoard2";
 import { callBrige } from "@/utils/callm";
+import { useFormulaStore } from "@/store/formula";
+import FormulaConfigNew from "./config/formulaConfigNew";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -34,6 +36,7 @@ export default defineComponent({
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const configStore = useConfigStore()
+    const formulaStore = useFormulaStore()
     window.$message = useMessage()
     store.initDb()
     let startFetch = true
@@ -225,8 +228,11 @@ export default defineComponent({
           <Transition name='full-pop'>
             {configStore.productHistoryShow && <ProductHistory />}
           </Transition>
-          <Transition name='full-pop'>
+          {/* <Transition name='full-pop'>
             {configStore.formulaCfgShow && <FormulaConfig />}
+          </Transition> */}
+          <Transition name='full-pop'>
+            {formulaStore.show && <FormulaConfigNew />}
           </Transition>
           {/* <Transition name='full-pop'>
             {configStore.productLogShow && <ProductLog />}

@@ -57,6 +57,11 @@ export default defineComponent({
         configStore.setAddFormShow(true)
       }
     }
+    const stateClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
+      rowClick(row, item)
+      updateRow({ State: item.State })
+      // configStore.setStateShow(true)
+    }
     const columns = ref<simpleTableColumn[]>([
       { label: '设备类型', prop: 'DriverName', flex: 3, btnFn: addClick },
       {
@@ -71,6 +76,7 @@ export default defineComponent({
       },
       { label: '连接配置', prop: 'ConnectString', flex: 1, btnText: '编辑', btnFn: connectClick },
       { label: '数据地址', prop: 'address', flex: 1, btnText: '编辑', btnFn: adressClick },
+      { label: '状态', prop: 'State', flex: 1, isSwitch: true, mapFn: (col: any, item: DeviceConfigEntity) => { return item.State == 1 ? '启用' : '禁用' }, btnFn: stateClick },
       { label: '', prop: 'op', flex: 1, btnText: '删除', btnFn: deleteClick, btnType: 'danger' },
     ])
     const getData = () => {

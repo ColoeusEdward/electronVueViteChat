@@ -78,7 +78,7 @@ export default defineComponent({
       ]
     })
 
-    const finalOptionMap = computed(() => {
+    const finalOptionMap = computed<any>(() => {
       let form = ctx.attrs.form as commonForm
       let curProtoType = form.ProtoType || 'Modbus-TCP-Master'
       let curProtoInfo = proto[curProtoType.split('-').join('')]

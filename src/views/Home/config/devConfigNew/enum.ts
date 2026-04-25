@@ -3,7 +3,8 @@ import { ConnectComModel } from "~/me";
 export const tabNameEnum = {
   devConfigNew: 'devConfigNew',
   sysConfig: 'sysConfig',
-  dataAddress: 'dataAddress'
+  dataAddress: 'dataAddress',
+  dataGroup: 'dataGroup',
 }
 
 export enum DeviceClassEnum {

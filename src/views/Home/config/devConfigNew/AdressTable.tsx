@@ -67,6 +67,13 @@ export default defineComponent({
         configStore.setAddressFormShow(true)
       }
     }
+    const stateClick = (row: simpleTableColumn, item: ModbusAdressRow) => {
+      rowClick(row, item)
+      callBrige(callFnName.SaveDataAddress, item).then((res: any) => {
+        window.$message.success('保存成功')
+        getData()
+      })
+    }
     const alldata = reactive({
       form: {},
       curDialogIns: null as DialogReactive | null,
@@ -81,9 +88,12 @@ export default defineComponent({
         // { label: '报警类型', prop: 'AlarmType', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return AlarmTypeNameList[item.AlarmType] } },
         { label: '从站地址', prop: 'SlaveId', flex: 1, },
         { label: '读写权限', prop: 'Permission', flex: 1, mapFn: (col: any, item: ModbusAdressRow) => { return PermissionNameList[item.ParamClass] } },
-        { label: '精度', prop: 'Precision', flex: 1 },
+        // { label: '精度', prop: 'Precision', flex: 1 },
         // { label: '单位', prop: 'Unit', flex: 1  },
-        { label: '状态', prop: 'State', flex: 1, mapFn: (col: any, item: ModbusAdressRow) => { return item.State == 1 ? '已启用' : '已禁用' } },
+        {
+          label: '状态', prop: 'State', flex: 1, isSwitch: true, btnFn: stateClick,
+          mapFn: (col: any, item: ModbusAdressRow) => { return item.State == 1 ? '启用' : '禁用' }
+        },
         {
           label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
             configStore.setAddressFormShow(true)

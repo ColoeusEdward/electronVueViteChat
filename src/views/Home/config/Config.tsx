@@ -19,6 +19,7 @@ import AbsBottomBtn from "@/components/AbsBottomBtn";
 import { useDataCfgInnerDataStore } from "./dataCofigNew/innerData";
 import DataCfgOut from "./dataCfgOut";
 import AdressTable from "./devConfigNew/AdressTable";
+import DataGroup from "./devConfigNew/dataGroup";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -38,7 +39,7 @@ export default defineComponent({
       background: `#f5f6f6`,
       backgroundSize: 'cover',
       borderBottom: "0px solid #58595a",
-      // color: '#fff',
+      color: '#000',
       zIndex: 6
     }
     const defaultTab = 'sysConfig'
@@ -84,23 +85,29 @@ export default defineComponent({
 
               <NTabs value={curTabValue.value} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
                 <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink'}>
+                  <div class={' h-full shrink '}>
                     <SysConfig />
                   </div>
                 </NTabPane>
                 <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink'}>
+                  <div class={' h-full shrink overflow-auto'}>
                     <DevConfigNew />
                   </div>
                 </NTabPane>
                 {
                   curDevConfigRow.value && addressShow.value &&
                   <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
-                    <div class={' h-full shrink'}>
+                    <div class={' h-full shrink overflow-auto'}>
                       <AdressTable />
                     </div>
                   </NTabPane>
                 }
+
+                <NTabPane displayDirective="show:lazy" name={"dataGroup"} tab="数据分组" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataGroup' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink overflow-auto'}>
+                    <DataGroup />
+                  </div>
+                </NTabPane>
 
                 {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>

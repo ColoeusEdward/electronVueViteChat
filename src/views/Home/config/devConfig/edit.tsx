@@ -69,10 +69,10 @@ export default defineComponent({
       //   msg.warning('请补全连接配置')
       //   return
       // }
-      if (!innerData.devConfigForm.AddressConfigs) {
-        msg.warning('请补全数据地址配置')
-        return
-      }
+      // if (!innerData.devConfigForm.AddressConfigs) {
+      //   msg.warning('请补全数据地址配置')
+      //   return
+      // }
       data.saveLoading = true
       MyFormWrapRef.value?.submit().then(() => {
         // let form = innerData.devConfigForm

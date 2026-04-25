@@ -77,7 +77,7 @@ export const useDevCfgInnerData = defineStore('DevCfgInner', {
       // this.devConfigForm.ConnectConfig = val
     },
     setAddressStrOfDevConfigForm(val: string) {
-      this.devConfigForm.AddressConfig = val
+      // this.devConfigForm.AddressConfig = val
     },
     setConnectCfgForm(val: DriverConnectType) {
       this.connectCfgForm = val

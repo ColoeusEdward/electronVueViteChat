@@ -28,7 +28,7 @@ export interface formListItem {
   radioType?: 'btn' | 'def',
   hide?: boolean,
   childCompList?: formListItem[],
-  checkboxList?: { value: string | number, label: string }[],
+  checkboxList?: { value: string, label: string }[],
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -53,6 +53,10 @@ export const MyFormWrap = defineComponent({
     },     //是否需要底部占位
     saveText: String,
     noLargeBtn: Boolean,
+    labelWidth: {
+      type: Number,
+      default: 140
+    },
     renderToBtn: Function as PropType<() => JSX.Element>   //自由渲染按钮内容
   },
   setup(props, ctx) {
@@ -61,6 +65,7 @@ export const MyFormWrap = defineComponent({
     const defaultRule: FormRules = {
       must: { required: true, message: '请输入该项', trigger: 'blur' },
       mustNum: { required: true, message: '请输入该项', trigger: 'blur', type: 'number' },
+      mustArr: { required: true, message: '请输入该项', trigger: 'blur', type: 'array' },
     }
     const pform = computed(() => {
       return props.form
@@ -168,7 +173,7 @@ export const MyFormWrap = defineComponent({
     const renderInput = (form: typeof props.form, item: formListItem) => {
       typeof form[item.prop] === 'number' && (form[item.prop] = form[item.prop] + "")
       return (
-        <NFormItem label={item.label} path={item.prop}>
+        <NFormItem label={item.label} path={item.prop} contentStyle={{ maxWidth: '200px' }} >
           <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
             suffix: typeof item.suffix === 'function' ? item.suffix : () => item.suffix
           }} />
@@ -247,7 +252,8 @@ export const MyFormWrap = defineComponent({
         numInput: renderNumInput,
         shadowBox: renderShadowBox,
         box: renderBox,
-        space: renderSpace
+        space: renderSpace,
+        checkbox: renderCheckbox
       }
       const renderComp = (itemList: formListItem[] | undefined, form: object, optionMap: object) => {
 
@@ -262,7 +268,7 @@ export const MyFormWrap = defineComponent({
 
       return (
         <div class={'w-full h-full  '}>
-          <NForm model={props.form} ref={formRef} rules={finalRule.value} size="large" labelPlacement="left" >
+          <NForm model={props.form} ref={formRef} requireMarkPlacement="right" rules={finalRule.value} size="large" labelPlacement="left" labelAlign="right" labelWidth={props.labelWidth} >
             <NGrid xGap={12} yGap={2}>
               {renderComp(props.itemList, pform.value || {}, props.optionMap || {})}
             </NGrid>

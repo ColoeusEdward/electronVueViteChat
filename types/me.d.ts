@@ -243,6 +243,14 @@ type ModbusAdressRow = {
   Length?: number
 }
 
+interface DataGroupEntity {
+  GId?: string;
+  Name: string;
+  DeviceIds?: string;
+  AddressIds?: string;
+  CreateTime?: string;
+  isNewRow?: boolean
+}
 
 
 type SiemensAddressModel = {
@@ -435,5 +443,7 @@ interface simpleTableColumn {
   btnType?: string,
   isInput?: boolean,
   inputUpdateFn?: (row: any, item: any) => void,
-  mapFn?: (row: any, item: any) => string | number | boolean
+  mapFn?: (row: any, item: any) => string | number | boolean,
+  isCheckbox?: boolean,
+  isSwitch?: boolean
 }

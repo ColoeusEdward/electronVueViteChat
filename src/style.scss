@@ -113,6 +113,12 @@ body {
   border-radius: 0px;
 }
 
+.limit-item-width-form {
+  .n-form-item-blank {
+    max-width: 300px;
+  }
+}
+
 .bar-tab {
   //带底部边条的标签
   // .n-tabs-nav-scroll-wrapper {
@@ -158,7 +164,17 @@ body {
   // border-radius: 10px;
   // margin: 10px;
   // width: calc(100% - 20px);
+  .hg-button {
+    background: url("./assets/LineDspButton_inactive_shu.png");
+    background-size: 100% 100%;
+  }
+  .hg-button:active {
+    background: #868788;
+  }
 }
+.simple-keyboard.myTheme {
+}
+
 .simple-keyboard.hg-layout-default .hg-button {
   font-size: 28px;
   padding: 30px;

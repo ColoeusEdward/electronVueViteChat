@@ -10,6 +10,7 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { callBrige } from "@/utils/callm";
 import { useCurcevInnerDataStore } from "./curcev/innerData";
+import { useFormulaStore } from "@/store/formula";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -39,6 +40,7 @@ export default defineComponent({
   setup(props) {
     const curCevInnerData = useCurcevInnerDataStore()
     const configStore = useConfigStore()
+    const formulaStore = useFormulaStore()
     const maintainOption = [
       { label: '配置', value: 'option' },
       { label: '运行日志', value: 'log' },
@@ -49,6 +51,7 @@ export default defineComponent({
       // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [
+      { label: '产品表', value: 'formulaCfg' },
       { label: '产品历史记录', value: 'productHistory' },
       // { label: '产品日志', value: 'productLog' },
       // { label: '设定产品表', value: 'setproduct' },
@@ -92,9 +95,9 @@ export default defineComponent({
         productLog: () => {
           configStore.setProductLogShow(true)
         },
-        formulaCfg: () => {
-          configStore.setFormulaCfgShow(true)
-        },
+        // formulaCfg: () => {
+        //   configStore.setFormulaCfgShow(true)
+        // },
         devTool: () => {
           // callSpc(callFnName.openDevTool).then(() => {
           // })
@@ -112,6 +115,9 @@ export default defineComponent({
         collectClean: () => {
           curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
 
+        },
+        formulaCfg: () => {
+          formulaStore.setShow(true)
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')

@@ -180,8 +180,8 @@ export default defineComponent({
 
         // <NScrollbar class={'w-full h-full relative'} >
 
-        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{ height: 'calc(100% + 20px)' }}>
-          <MyFormWrap ref={myFormRef} form={alldata.cfgData} optionMap={formOpt.optionMap} hideBtn={true} itemList={formOpt.itemList} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} loading={loading.value} />
+        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6] '} style={{ height: 'calc(100% + 20px)' }}>
+          <MyFormWrap class={'limit-item-width-form'} labelWidth={180} ref={myFormRef} form={alldata.cfgData} optionMap={formOpt.optionMap} hideBtn={true} itemList={formOpt.itemList} submitFn={submit} btnStyleStr={'margin-right:50px;margin-bottom:10px;'} loading={loading.value} />
         </div>
         // </NScrollbar>
 

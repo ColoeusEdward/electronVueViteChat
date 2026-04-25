@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { NButton, NPopconfirm } from "naive-ui";
+import { NButton, NCheckbox, NPopconfirm, NSwitch } from "naive-ui";
 import { computed, defineComponent, PropType, StyleValue } from "vue";
 import { simpleTableColumn } from "~/me";
 
@@ -108,7 +108,7 @@ export default defineComponent({
                       {/* {data.value[col.prop]} */}
                     </div>
                   )
-                  if (col.isInput) {
+                  if (col.isInput && !item.isNewRow) {
                     res = (
                       <input
                         onClick={() => {
@@ -142,6 +142,19 @@ export default defineComponent({
                       }}
                       onPositiveClick={() => { col.btnFn && col.btnFn(col, item) }}>
                     </NPopconfirm>
+                  }
+                  if (col.isCheckbox) {
+                    res = <NCheckbox v-model:checked={item[col.prop]} size="large" ></NCheckbox>
+                  }
+                  if (col.isSwitch) {
+                    let text = col.mapFn && col.mapFn(col, item)
+                    res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{ flex: col.flex, ...styles.cell }}>
+                      <NSwitch v-model:value={item[col.prop]} onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} size="large" checkedValue={1} uncheckedValue={0} v-slots={{
+                        checked: () => { return <div >{text}</div> },
+                        unchecked: () => { return <div class={'text-black'}>{text}</div> }
+                      }}  ></NSwitch>
+                    </div>
+
                   }
                   // if (item.isNewRow && col.prop != props.addRowProp) {
                   //   res = <span></span>

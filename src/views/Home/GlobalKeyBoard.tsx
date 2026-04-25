@@ -290,7 +290,7 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#ececec] rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#f5f6f6] border border-solid border-gray-400 rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
                 {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
                 </div> */}
