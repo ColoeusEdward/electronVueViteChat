@@ -32,7 +32,7 @@ export const useFormulaStore = defineStore('formula', {
    * 编辑业务逻辑  类似于methods
    */
   actions: {
-    setShow(value: boolean) {
+    setFormulaShow(value: boolean) {
       this.show = value
     },
   }

@@ -117,7 +117,8 @@ export default defineComponent({
 
         },
         formulaCfg: () => {
-          formulaStore.setShow(true)
+          console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);
+          formulaStore.setFormulaShow(true)
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')
