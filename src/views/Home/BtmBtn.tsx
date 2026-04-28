@@ -1,6 +1,6 @@
-import { NTabs, NTabPane, NPopselect, NButton, NIcon } from "naive-ui";
+import { NTabs, NTabPane, NPopselect, NButton, NIcon, useDialog } from "naive-ui";
 import type { PopselectProps } from 'naive-ui'
-import { defineComponent, onUnmounted, ref } from "vue";
+import { defineComponent, onUnmounted, ref, computed } from "vue";
 import { Tool } from '@vicons/tabler'
 import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
@@ -41,6 +41,8 @@ export default defineComponent({
     const curCevInnerData = useCurcevInnerDataStore()
     const configStore = useConfigStore()
     const formulaStore = useFormulaStore()
+    const dialog = useDialog()
+    const sysConfig = computed(() => configStore.sysConfig)
     const maintainOption = [
       { label: '配置', value: 'option' },
       { label: '运行日志', value: 'log' },
@@ -117,8 +119,13 @@ export default defineComponent({
 
         },
         formulaCfg: () => {
-          console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);
-          formulaStore.setFormulaShow(true)
+          // console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);
+          if (sysConfig.value.CurrentGroupId) {
+            formulaStore.setFormulaShow(true)
+          } else {
+            dialog.warning({ title: '提示', content: '请先前往配置页面应用分组', positiveText: '确定' })
+            // window.$message.warning('请先前往配置页面应用分组')
+          }
         }
         // devTool: () => {
         //   window.ipc.send('devTools','open')

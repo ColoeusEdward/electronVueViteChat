@@ -329,13 +329,14 @@ type SerialNoEntity = {
 
 type FormulaConfigEntity = {
   GId?: string;
+  GroupId: string;
   PN: string;
   Note: string;
-  Active: number;
+  Active?: number;  //废弃⚠️
   CreateTime?: string;
 }
 
-type FormulaDataEntity = {
+type FormulaDataEntity = {  //废弃⚠️
   GId?: string;
   DataId?: string;
   FormulaId?: string;
@@ -343,6 +344,31 @@ type FormulaDataEntity = {
   UpperTol: number;
   LowerTol: number;
   CreateTime?: string;
+}
+
+interface FormulaParamEntity {
+  /** 主键 */
+  GId: string;
+
+  /** 数据采集配置主键 */
+  DataId: string;
+
+  /** 配方配置主键 */
+  FormulaId: string;
+
+  /** 标准值 */
+  Standard: number;
+
+  /** 上公差 */
+  UpperTol: number;
+
+  /** 下公差 */
+  LowerTol: number;
+
+  /** 创建时间 */
+  CreateTime: string;
+
+  AdressItem?: ModbusAdressRow
 }
 
 type ProductHistoryEntity = {

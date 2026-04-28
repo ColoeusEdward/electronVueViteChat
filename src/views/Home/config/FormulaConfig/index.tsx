@@ -31,7 +31,7 @@ export default defineComponent({
         { key: 'Note', title: '注释', resizable: true },
         {
           key: 'Active', title: '启用状态', resizable: true, render: (row: FormulaConfigEntity) => {
-            return ActiveStateEnum[row.Active]
+            // return ActiveStateEnum[row.Active]
           }
         },
       ],
@@ -59,9 +59,9 @@ export default defineComponent({
     const getTbData = () => {
       innerData.cleanRow()
 
-      callSpc(callFnName.getFormulaConfigs).then((res: FormulaConfigEntity[]) => {
-        tableCfg.tdata = res
-      })
+      // callSpc(callFnName.getFormulaConfigs).then((res: FormulaConfigEntity[]) => {
+      //   tableCfg.tdata = res
+      // })
     }
     getTbData()
     innerData.setGetTabDataFn(getTbData)
@@ -73,9 +73,9 @@ export default defineComponent({
         msg.warning('请选择一行数据')
         return
       }
-      callSpc(callFnName.deleteFormulaConfig, innerData.curRow).then((res: number) => {
-        getTbData()
-      })
+      // callSpc(callFnName.deleteFormulaConfig, innerData.curRow).then((res: number) => {
+      //   getTbData()
+      // })
     }
     const changeActiveRow = () => {
       if (!innerData.curRow) {

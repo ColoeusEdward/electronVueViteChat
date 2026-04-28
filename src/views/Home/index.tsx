@@ -1,4 +1,4 @@
-import { NTabs, NTabPane, useMessage, NIcon, } from "naive-ui";
+import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, } from "naive-ui";
 import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
@@ -221,7 +221,9 @@ export default defineComponent({
 
           {/* </KeepAlive> */}
           {/* <GlobalKeyBoard /> */}
-          <BtmBtn />
+          <NDialogProvider>
+            <BtmBtn />
+          </NDialogProvider>
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}
           </Transition>
@@ -232,7 +234,10 @@ export default defineComponent({
             {configStore.formulaCfgShow && <FormulaConfig />}
           </Transition> */}
           <Transition name='full-pop'>
-            {formulaStore.show && <FormulaConfigNew />}
+            <NDialogProvider>
+              {formulaStore.show && <FormulaConfigNew />}
+
+            </NDialogProvider>
           </Transition>
           {/* <Transition name='full-pop'>
             {configStore.productLogShow && <ProductLog />}
