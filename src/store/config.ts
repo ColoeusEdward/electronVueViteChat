@@ -2,7 +2,7 @@ import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
-import { DataGroupEntity, DeviceConfigEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
+import { CPKEntity, DataGroupEntity, DataValue, DeviceConfigEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -45,7 +45,10 @@ export const useConfigStore = defineStore('config', {
       connectDev: localConnectDev as connectDev,
       needRestart: false,
       chartDataAdressList: [] as ModbusAdressRow[],
-      curChartAdress: null as ModbusAdressRow | null,
+      curChartAdress: null as ModbusAdressRow | null | undefined,
+      curMultiChartAdress: [] as ModbusAdressRow[],
+      curCpk: null as CPKEntity | null,
+      curRealTimeData: null as DataValue | null | undefined,
 
       sysConfig: {} as SysConfigModel,
       originSysConfig: [] as SysConfigEntity[],
@@ -199,9 +202,21 @@ export const useConfigStore = defineStore('config', {
     setChartDataAdressList(value: ModbusAdressRow[]) {
       this.chartDataAdressList = value
     },
-    setCurChartAdress(value: ModbusAdressRow | null) {
+    setCurChartAdress(value: ModbusAdressRow | null | undefined) {
       this.curChartAdress = value
     },
+    addMultiChartAdress(value: ModbusAdressRow) {
+      this.curMultiChartAdress.push(value)
+    },
+    clearMultiChartAdress() {
+      this.curMultiChartAdress = []
+    },
+    setCurCpk(value: CPKEntity | null) {
+      this.curCpk = value
+    },
+    setCurRealTimeData(value: DataValue | null | undefined) {
+      this.curRealTimeData = value
+    }
   }
 
 

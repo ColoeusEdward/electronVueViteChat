@@ -3,7 +3,7 @@ import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeU
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc, getSysConfig } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, FFTModel, ModbusAdressRow, SysConfigEntity } from "~/me";
+import { ActualResult, CollectPointModel, CPKEntity, CpkModel, DataConfigEntity, DataValue, FFTModel, ModbusAdressRow, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import activeWarningImg from '@/assets/LineDspButton_inactive_warning3.png'
 import { useCurcevInnerDataStore } from "./innerData";
@@ -156,15 +156,14 @@ export default defineComponent({
         return callBrige(callFnName.StartCollect)
       })
         .then((res: string) => {
-          if (res) {
-            innerData.setCurProductCode(res)
-            innerData.setIsGetting(true)
-          }
+
+          innerData.setIsGetting(true)
+
 
         })
     }
     const stopCollect = () => {
-      return callSpc(callFnName.StopCollect).then(() => {
+      return callBrige(callFnName.StopCollect).then(() => {
         innerData.setIsGetting(false)
       })
     }
@@ -201,7 +200,7 @@ export default defineComponent({
     }
     const mainFixNum = computed(() => {
       // innerData.dataCfgList.
-      let val = innerData.curDataCfgEntity?.Precision
+      let val = configStore.curChartAdress?.Precision
       return Number(val)
     })
     const nextShow = computed(() => {
@@ -214,16 +213,16 @@ export default defineComponent({
       return innerData.curDataCfgEntity?.DataType
     })
     watch(() => chartAdressList.value, (v: ModbusAdressRow[]) => {
-      console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
-      let list = v as unknown as MenuOptType[]
+      // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
+      let list = v
       let opt = menuOptList
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
       if (sitem) {
         if (list.length == 0) {
           // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list as any
+          sitem.children = list.map(e => buildMenuOpt(e)) as any
         } else {
-          sitem.children = list
+          sitem.children = list.map(e => buildMenuOpt(e))
           // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
           //   return {
           //     ...buildMenuOpt(e),
@@ -233,7 +232,7 @@ export default defineComponent({
         }
       }
       commonData.menuOpt = opt as any
-      console.log("🪵 [index.tsx:234] ~ token ~ \x1b[0;32mcommonData.menuOpt\x1b[0m = ", commonData.menuOpt);
+      // console.log("🪵 [index.tsx:234] ~ token ~ \x1b[0;32mcommonData.menuOpt\x1b[0m = ", commonData.menuOpt);
     }, {
       immediate: true
     })
@@ -269,8 +268,10 @@ export default defineComponent({
     // })
     const handleSelect = (key: string) => {
       let type = key.split(menuIdSplit)[0]
-      // let trueKey = key.split(menuIdSplit)[1]
+      let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
+        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
+        configStore.setCurChartAdress(item)
         // let item = commonData.cfgDataList.find(e => e.GId == trueKey)
         // innerData.setCurDataCfgEntity(item)
         // innerData.getCpkFn()
@@ -297,7 +298,7 @@ export default defineComponent({
         option.label = option.DataName
       }
       let text = option.label
-      if (option.trueKey && innerData.curDataCfgEntity?.GId == option.trueKey) {
+      if (option.trueKey && configStore.curChartAdress?.GId == option.trueKey) {
         text += ' ✔️'
       }
 
@@ -312,6 +313,44 @@ export default defineComponent({
         }
       }
     }
+    const loopGetCpk = () => {
+      if (configStore.curChartAdress) {
+        callBrige(callFnName.GetCpkData, configStore.curChartAdress.GId).then((res: CPKEntity) => {
+          // console.log("🪵 [index.tsx:319] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+          configStore.setCurCpk(res)
+        })
+      }
+      if (innerData.isGetting) {
+        sleep(configStore.sysConfig.CpkInterval || 500).then(() => {
+          loopGetCpk()
+        })
+      }
+    }
+
+    const loopGetRealTime = () => {
+      if (configStore.curChartAdress) {
+        callBrige(callFnName.GetRealtimeData, configStore.curChartAdress.GId).then((res: DataValue) => {
+          // console.log("🪵 [index.tsx:332] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+          configStore.setCurRealTimeData(res)
+        })
+      }
+      if (innerData.isGetting) {
+        sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
+          loopGetRealTime()
+        })
+      }
+    }
+
+
+    watch(() => innerData.isGetting, (val) => {
+      // console.log("🪵 [index.tsx:330] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
+      if (val) {
+        loopGetCpk()
+        loopGetRealTime()
+      }
+    }, {
+      immediate: true
+    })
     // const curShowCpkValue = computed(
     //   () => {
     //     if (!innerData.curCpk) return 0
@@ -324,6 +363,11 @@ export default defineComponent({
     //   }
     // )
     console.log(`curcev create`,);
+    const realTimeValue = computed(() => {
+      let val = configStore.curRealTimeData?.Value
+      if (!val) val = 0
+      return val
+    })
     onMounted(() => {
       if (innerData.isFirst) {
         sleep(500).then(() => {
@@ -403,36 +447,39 @@ export default defineComponent({
             </div>
           </div>
           {innerData.curDataCfgEntity && <CpkBlock dataConfig={innerData.curDataCfgEntity} />}
-          {curDataType.value == DataTypeEnum.Chart &&
+          {
+            // curDataType.value == DataTypeEnum.Chart 
+            true
+            &&
             <>
-              <div class={'h-1/2 pb-2 px-2 relative'}>
+              <div class={'h-[360px] pb-2 px-2 relative'}>
 
                 <div class={'h-full border-1 border-solid border-[#e4e4e5] shadow-inner flex'}>
                   <div class={'w-full h-full shrink py-1 px-2 flex justify-end items-center relative'}>
                     <div class={'absolute top-2 right-2  text-lg'}>
                       {/* {innerData.curCpkKey?.title} */}
                       <NSpace>
-                        <div class={'mr-4'}>
+                        {/* <div class={'mr-4'}>
                           <span class={'text-gray-500 mr-2'}>产品编号</span>
                           <span class={"text-blue-500"}>{innerData.curProductCode}</span>
 
-                        </div>
+                        </div> */}
                         <div>
                           <span class={'text-gray-500 mr-2'}>上限</span>
-                          <span class={"text-blue-500"}>{innerData.curCpk?.Usl.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.UpperLimit.toFixed(4)}</span>
                         </div>
                         <div>
                           <span class={'text-gray-500 mr-2'}>下限</span>
-                          <span class={"text-blue-500"}>{innerData.curCpk?.Lsl.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.LowerLimit.toFixed(4)}</span>
                         </div>
                         <div>
                           <span class={'text-gray-500 mr-2'}>标准值</span>
-                          <span class={"text-blue-500"}>{innerData.curCpk?.Std.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.StdDev.toFixed(4)}</span>
                         </div>
                       </NSpace>
                     </div>
                     {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                    <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{innerData.curNewVal.toFixed(mainFixNum.value)}</span>
+                    <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{realTimeValue.value.toFixed(mainFixNum.value)}</span>
 
                   </div>
                   <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
@@ -443,13 +490,13 @@ export default defineComponent({
                     CPK需要等待采集一段时间才会有数据
                 </NTooltip>
               </div> */}
-                    <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{innerData.curDataCfgEntity?.Unit}</span>
+                    <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{configStore.curChartAdress?.Unit}</span>
                   </div>
                 </div>
               </div>
               {
-                innerData.curDataCfgEntity &&
-                <CurcevChartRow height="50%" i={0} dataConfig={innerData.curDataCfgEntity} ref={chartRef} />
+                configStore.curChartAdress &&
+                <CurcevChartRow height="50%" i={0} adressRow={configStore.curChartAdress} ref={chartRef} />
               }
             </>
           }

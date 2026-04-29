@@ -76,7 +76,7 @@ export default defineComponent({
       //   msg.warning('请输入编号')
       //   return
       // }
-      callSpc(callFnName.getProductLogs,innerData.curRow?.ProductNo ).then((res: ProductLogEntity[]) => {
+      callSpc(callFnName.GetProductLogs, innerData.curRow?.ProductNo).then((res: ProductLogEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
         // if (res.length == 0) {
         //   msg.warning('暂无数据')
@@ -84,10 +84,10 @@ export default defineComponent({
         tableCfg.tdata = res
       })
     }
-    watch(() => innerData.curRow,(val) => {
+    watch(() => innerData.curRow, (val) => {
       val && getTableData()
     })
-    
+
     // getTableData()
 
 

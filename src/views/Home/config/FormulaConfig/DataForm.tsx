@@ -42,10 +42,10 @@ export default defineComponent({
         } else {
           dataList.push(form)
         }
-        callSpc(callFnName.saveFormulaConfig, [curCfgRow, [...dataList]], true).then((res: number) => {
-          innerData.getDataTbDataFn()
-          innerData.setDataFormShow(false)
-        })
+        // callSpc(callFnName.saveFormulaConfig, [curCfgRow, [...dataList]], true).then((res: number) => {
+        //   innerData.getDataTbDataFn()
+        //   innerData.setDataFormShow(false)
+        // })
       },
       saveText: innerData.dataIsEdit ? '编辑' : '添加'
     })

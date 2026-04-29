@@ -1,11 +1,13 @@
+import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { sleep } from "@/utils/utils";
 import classNames from "classnames";
 import { NInput, NScrollbar, NSpace } from "naive-ui";
 import { computed, defineComponent, onMounted, PropType, reactive, watch } from "vue";
-import { CollectPointModel, DataConfigEntity, CpkModel } from "~/me";
-import { cpkModelPropName } from "./enum";
+import { CollectPointModel, DataConfigEntity, CpkModel, CPKEntity } from "~/me";
+import { CPKEntityPropName, cpkModelPropName } from "./enum";
 import { useCurcevInnerDataStore } from "./innerData";
 
 export default defineComponent({
@@ -15,20 +17,22 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
+    const configStore = useConfigStore()
     const thisReMountedCount = innerData.reMountedCount
     const commonData = reactive({
       show: false,
-      cpkdata: {} as CpkModel
+      cpkdata: {} as CPKEntity
     })
     const showSide = () => {
       commonData.show = !commonData.show
     }
     const getCpk = () => {
-      if (!innerData.curDataCfgEntity) return
-      return callSpc(callFnName.getCpkData, innerData.curDataCfgEntity?.GId).then((res: CpkModel) => {
+      if (!configStore.curChartAdress) return
+      return callBrige(callFnName.GetCpkData, innerData.curDataCfgEntity?.GId).then((res: CPKEntity) => {
         // console.log("🚀 ~ file: CpkBlock.tsx:28 ~ returncallSpc ~ res:", res)
         commonData.cpkdata = res
-        innerData.setCurCpk(res)
+        configStore.setCurCpk(res)
+        // innerData.setCurCpk(res)
       })
     }
     innerData.setGetCpkFn(getCpk)
@@ -40,19 +44,19 @@ export default defineComponent({
     //     loopGet()
     //   })
     // }
-    const cpkChoose= (item:typeof modelList.value[0]) => {
+    const cpkChoose = (item: typeof modelList.value[0]) => {
       innerData.setCurCpkKey(item)
     }
     const modelList = computed(() => {
       let list = Object.keys(commonData.cpkdata).map((e: string) => {
-        let ee = e as keyof CpkModel
+        let ee = e as keyof CPKEntity
         return {
           name: e,
-          title: cpkModelPropName[ee],
+          title: CPKEntityPropName[ee],
           value: commonData.cpkdata[ee].toFixed(3)
         }
       })
-      if(!innerData.curCpkKey) {
+      if (!innerData.curCpkKey) {
         innerData.setCurCpkKey(list[0])
       }
       return list

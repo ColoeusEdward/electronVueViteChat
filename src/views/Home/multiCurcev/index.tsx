@@ -1,7 +1,7 @@
 import { PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import { DropdownProps, NButton, NDropdown, NIcon, NSpace } from "naive-ui";
-import { computed, defineComponent, onBeforeUnmount, reactive } from "vue";
-import { DataConfigEntity } from "~/me";
+import { computed, defineComponent, onBeforeUnmount, reactive, watch } from "vue";
+import { DataConfigEntity, ModbusAdressRow } from "~/me";
 import CurcevChartRow from "../curcev/CurcevChartRow";
 import { useCurcevInnerDataStore } from "../curcev/innerData";
 import { chartId } from "./enum";
@@ -10,11 +10,14 @@ import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 import { menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "../curcev/enum";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { buildMenuOpt } from "@/utils/utils";
+import { useConfigStore } from "@/store/config";
+import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 
 export default defineComponent({
   name: 'MultiCurcev',
   setup(props, ctx) {
     const curCevInnerData = useCurcevInnerDataStore()
+    const configStore = useConfigStore()
     const cfgDataList = computed<DataConfigEntity[]>(() => {
       return curCevInnerData.dataCfgList
     })
@@ -23,43 +26,67 @@ export default defineComponent({
       curPage: 0,
       getCfgLoading: false,
       pageSize: 3,
+      menuOpt: [] as DropdownMixedOption[],
     })
-    const menuOpt = computed(() => {
+    watch(() => configStore.chartDataAdressList, (v) => {
+      // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
+      let list = v
       let opt = menuOptList
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
       if (sitem) {
-        if (cfgDataList.value.length == 0) {
-          let list: MenuOptType[] = []
-          sitem.children = list
+        if (list.length == 0) {
+          // commonData.cfgDataList.map(e => buildMenuOpt(e))
+          sitem.children = list.map(e => buildMenuOpt(e)) as any
         } else {
-          sitem.children = cfgDataList.value.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType)))
-            .map(e => {
-              return {
-                ...buildMenuOpt(e),
-                children: e.children?.map(ee => buildMenuOpt(ee))
-              }
-            }) as MenuOptType[]
-          // .map(e => {
+          sitem.children = list.map(e => buildMenuOpt(e))
+          // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
           //   return {
-          //     label: e.Name,
-          //     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
-          //     trueKey: e.GId
+          //     ...buildMenuOpt(e),
+          //     children: e.children?.map(ee => buildMenuOpt(ee))
           //   }
-          // }) 
+          // }) as MenuOptType[]
         }
-
       }
-      // sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-      //   return {
-      //     label: e.Name,
-      //     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
-      //     trueKey: e.GId
-      //   }
-      // }) as MenuOptType[])
-      console.log("🪵 [index.tsx:57] ~ token ~ \x1b[0;32mopt\x1b[0m = ", opt);
-
-      return opt
+      commonData.menuOpt = opt as any
+    }, {
+      immediate: true
     })
+    // const menuOpt = computed(() => {
+    //   let opt = menuOptList
+    //   let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
+    //   if (sitem) {
+    //     if (cfgDataList.value.length == 0) {
+    //       let list: MenuOptType[] = []
+    //       sitem.children = list
+    //     } else {
+    //       sitem.children = cfgDataList.value.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType)))
+    //         .map(e => {
+    //           return {
+    //             ...buildMenuOpt(e),
+    //             children: e.children?.map(ee => buildMenuOpt(ee))
+    //           }
+    //         }) as MenuOptType[]
+    //       // .map(e => {
+    //       //   return {
+    //       //     label: e.Name,
+    //       //     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
+    //       //     trueKey: e.GId
+    //       //   }
+    //       // }) 
+    //     }
+
+    //   }
+    //   // sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+    //   //   return {
+    //   //     label: e.Name,
+    //   //     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
+    //   //     trueKey: e.GId
+    //   //   }
+    //   // }) as MenuOptType[])
+    //   console.log("🪵 [index.tsx:57] ~ token ~ \x1b[0;32mopt\x1b[0m = ", opt);
+
+    //   return opt
+    // })
     const nextShow = computed(() => {
       return (commonData.curPage + 1) * commonData.pageSize < curCevInnerData.dataCfgList.length
     })
@@ -67,13 +94,14 @@ export default defineComponent({
       return commonData.curPage > 0
     })
     const dataList = computed(() => {
-      let list = curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart)
-      let allSubList: DataConfigEntity[] = []
-      list.forEach(e => {
-        if (e.children && e.children.length > 0) {
-          allSubList.push(...e.children!)
-        }
-      })
+      // let list = curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart)
+      // let allSubList: DataConfigEntity[] = []
+      // list.forEach(e => {
+      //   if (e.children && e.children.length > 0) {
+      //     allSubList.push(...e.children!)
+      //   }
+      // })
+      let allSubList = configStore.curMultiChartAdress
       return allSubList
       // curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
     })
@@ -81,8 +109,8 @@ export default defineComponent({
       let type = key.split(menuIdSplit)[0]
       let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
-        let item = cfgDataList.value.find(e => e.GId == trueKey)
-        curCevInnerData.setCurDataCfgEntity(item)
+        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
+        item && configStore.addMultiChartAdress(item)
         curCevInnerData.getCpkFn()
       }
 
@@ -127,7 +155,7 @@ export default defineComponent({
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={curCevInnerData.startColFn} >开始采集</NButton>
               } */}
-              <NDropdown options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
+              <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
                 {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
                 <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
                 </NButton>
@@ -146,8 +174,8 @@ export default defineComponent({
           </div>
           <div class={'flex-shrink w-full h-full pb-2 overflow-hidden'}>
             <div class={'w-full h-full'}>
-              {dataList.value.map((e: DataConfigEntity, i) => {
-                return <CurcevChartRow i={i} dataConfig={e} chartId={chartId} />
+              {dataList.value.map((e: ModbusAdressRow, i) => {
+                return <CurcevChartRow i={i} adressRow={e} chartId={chartId} />
               })}
             </div>
           </div>

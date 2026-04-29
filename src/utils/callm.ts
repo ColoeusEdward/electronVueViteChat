@@ -1,6 +1,7 @@
 import { useConfigStore } from "@/store/config"
 import { ActualResult, SysConfigEntity } from "~/me"
 import { resultProcess } from "./call";
+import { callFnName } from "./enum";
 import { safeJsonParse } from "./utils"
 
 
@@ -33,7 +34,11 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
       return resultProcess(resObj)
     }).catch((err: any) => {
       console.error(cb, err)
-      window.$message.error(err)
+      if (cb == callFnName.GetRealtimeData) {
+
+      } else {
+        window.$message.error(err)
+      }
     });
   }
 }

@@ -29,7 +29,7 @@ export interface formListItem {
   hide?: boolean,
   childCompList?: formListItem[],
   checkboxList?: { value: string, label: string }[],
-  labelStyle: CSSProperties | string
+  labelStyle?: CSSProperties | string
 }
 export type MyFormWrapIns = {
   submit: Function,

@@ -122,7 +122,7 @@ export default defineComponent({
                 <NTabPane displayDirective="show:lazy" name={item.DataId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataId ? alldata.activeStyle : {} } }}>
                   <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border-0 border-l border-r border-b border-gray-600 border-solid rounded-xl rounded-t-none'}>
                     <div class={'w-full h-full py-6 pl-4 '}>
-                      <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '400px', marginRight: '10px' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />
+                      <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '450px', marginRight: '10px', textAlign: 'center' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />
                     </div>
 
                   </div>

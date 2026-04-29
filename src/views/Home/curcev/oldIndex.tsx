@@ -43,25 +43,25 @@ export default defineComponent({
         }
       })
     }
-    const startCollect = () => {
-      refresh().then(() => {
-        return callSpc(callFnName.startCollect)
-      })
-        .then(() => {
-          innerData.setIsGetting(true)
+    // const startCollect = () => {
+    //   refresh().then(() => {
+    //     return callSpc(callFnName.startCollect)
+    //   })
+    //     .then(() => {
+    //       innerData.setIsGetting(true)
 
-        })
-    }
-    const stopCollect = () => {
-      callSpc(callFnName.stopCollect).then(() => {
-        innerData.setIsGetting(false)
-      })
-    }
-    const refresh = () => {
-      return getAllActiveConfigData().then(() => {
-        // msg.success('配置已刷新')
-      })
-    }
+    //     })
+    // }
+    // const stopCollect = () => {
+    //   callSpc(callFnName.stopCollect).then(() => {
+    //     innerData.setIsGetting(false)
+    //   })
+    // }
+    // const refresh = () => {
+    //   return getAllActiveConfigData().then(() => {
+    //     // msg.success('配置已刷新')
+    //   })
+    // }
     const nextPage = () => {
 
     }
@@ -77,7 +77,7 @@ export default defineComponent({
 
     onMounted(() => {
       sleep(50).then(() => {
-        refresh()
+        // refresh()
       })
     })
     return () => {
@@ -86,7 +86,7 @@ export default defineComponent({
           {/* <CpkBlock /> */}
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>
-              <div></div>
+              {/* <div></div>
               {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>
@@ -101,7 +101,7 @@ export default defineComponent({
                 <NDatePicker v-model:value={innerData.startTime} type={'datetime'} />
               </div>
 
-              <NormalDis />
+              <NormalDis /> */}
 
               {/* <div class={'flex items-center'} >
                 <span class={'text-md w-fit mr-2'}>最大显示数据量</span>
@@ -132,7 +132,7 @@ export default defineComponent({
 
 
           <div class={'h-full pb-2 overflow-hidden flex-shrink'}>
-            <div class={'w-full h-full'}>
+            {/* <div class={'w-full h-full'}>
               {commonData.cfgDataList.slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize).map((e: DataConfigEntity, i) => {
                 return <CurcevChartRow i={i} dataSourceItem={{
                   "label": "直径(平均值)",
@@ -140,7 +140,7 @@ export default defineComponent({
                   "parent": "diameter1"
                 }} dataConfig={e} />
               })}
-            </div>
+            </div> */}
           </div>
         </div>
       )

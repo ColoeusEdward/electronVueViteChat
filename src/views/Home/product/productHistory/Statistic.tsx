@@ -81,7 +81,7 @@ export default defineComponent({
       //   msg.warning('请输入编号')
       //   return
       // }
-      callSpc(callFnName.getProductStatistics, innerData.curRow?.ProductNo).then((res: ProductStatisticEntity[]) => {
+      callSpc(callFnName.GetProductStatistics, innerData.curRow?.ProductNo).then((res: ProductStatisticEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
         // if (res.length == 0) {
         //   msg.warning('暂无数据')

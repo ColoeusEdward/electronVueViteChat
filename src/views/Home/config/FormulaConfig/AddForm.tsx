@@ -12,12 +12,12 @@ export default defineComponent({
   setup(props, ctx) {
     const innerData = useFormulaCfgInnerDataStore()
     const formCfg = reactive({
-      form: {...defaulFormulaConfigForm} as FormulaConfigEntity,
+      form: { ...defaulFormulaConfigForm } as FormulaConfigEntity,
       optionMap: {
       } as Record<string, SelectProps['options']>,
       itemList: [
         { type: "input", label: "料号", prop: "PN", rule: 'must', width: 24 },
-        { type: "input", label: "注释", prop: "Note",  width: 24 },
+        { type: "input", label: "注释", prop: "Note", width: 24 },
 
       ] as formListItem[],
       hideBtn: false,
@@ -30,10 +30,10 @@ export default defineComponent({
       },
       submitFn: (form: FormulaConfigEntity) => {
         console.log("🚀 ~ file: index.tsx:179 ~ setup ~ form:", form)
-        callSpc(callFnName.saveFormulaConfig, [form,[]],true).then((res: number) => {
-          innerData.getTbDataFn()
-          innerData.setAddFormShow(false)
-        })
+        // callSpc(callFnName.saveFormulaConfig, [form,[]],true).then((res: number) => {
+        //   innerData.getTbDataFn()
+        //   innerData.setAddFormShow(false)
+        // })
       },
       saveText: '添加'
     })
@@ -41,9 +41,9 @@ export default defineComponent({
     const cancel = () => {
       innerData.setAddFormShow(false)
     }
-    watch(() => innerData.addFormShow,(val) => {
-      if(!val){
-        formCfg.form = {...defaulFormulaConfigForm} as FormulaConfigEntity
+    watch(() => innerData.addFormShow, (val) => {
+      if (!val) {
+        formCfg.form = { ...defaulFormulaConfigForm } as FormulaConfigEntity
       }
     })
 

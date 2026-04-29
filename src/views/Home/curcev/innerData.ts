@@ -81,12 +81,12 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
   actions: {
     setIsGetting(val: boolean) {
       this.isGetting = val
-      if (!val) {
-        this.addGettingChangeCount()
-      }
-      if (val) {
-        this.loopGetCpk(this.gettingChangeCount)
-      }
+      // if (!val) {
+      //   this.addGettingChangeCount()
+      // }
+      // if (val) {
+      //   this.loopGetCpk(this.gettingChangeCount)
+      // }
     },
     setMaxDataNum(val: number) {
       this.maxDataNum = val

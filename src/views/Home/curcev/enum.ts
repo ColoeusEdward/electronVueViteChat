@@ -28,6 +28,21 @@ export const cpkModelPropName = {
   CpkL: "下限边过程能力指数",
 };
 
+export const CPKEntityPropName = {
+  Standard: "标准值",
+  Utol: "上公差",
+  Ltol: "下公差",
+  UpperLimit: "上限",
+  LowerLimit: "下限",
+  Average: "平均值",
+  Maximum: "最大值",
+  Minimum: "最小值",
+  StdDev: "标准差",
+  CA: "CA",
+  CP: "CP",
+  CPK: "CPK",
+}
+
 export const menuOptList: DropdownProps['options'] = [
   { label: '数据源', key: 'dataSource', children: [] },
   { label: '上传当前曲线图', key: 'uploadLineShot' }

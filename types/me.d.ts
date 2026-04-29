@@ -457,6 +457,58 @@ type CpkModel = {
   CpkU: number;
   CpkL: number;
 }
+export interface CPKEntity {
+  /** 标准值 */
+  Standard: number;
+
+  /** 上公差 */
+  Utol: number;
+
+  /** 下公差 */
+  Ltol: number;
+
+  /** 上限 */
+  UpperLimit: number;
+
+  /** 下限 */
+  LowerLimit: number;
+
+  /** 平均值 */
+  Average: number;
+
+  /** 最大值 */
+  Maximum: number;
+
+  /** 最小值 */
+  Minimum: number;
+
+  /** 标准差 */
+  StdDev: number;
+
+  /** CA */
+  CA: number;
+
+  /** CP */
+  CP: number;
+
+  /** CPK */
+  CPK: number;
+}
+
+interface DataValue {
+  GId: string;
+
+  Value: number;
+
+  StringValue: string;
+
+  DataType: number;
+
+  /** 注入时间 */
+  Intime: string;
+
+  Index: number;
+}
 
 type FFTModel = {
   Values: number[];

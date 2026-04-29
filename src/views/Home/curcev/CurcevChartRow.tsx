@@ -9,9 +9,10 @@ import { getRandomInt, sleep } from "@/utils/utils";
 import { useCurcevInnerDataStore } from "./innerData";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { CollectPointModel, DataConfigEntity } from "~/me";
+import { CollectPointModel, DataConfigEntity, DataValue, ModbusAdressRow } from "~/me";
 import CpkBlock from "./CpkBlock";
 import { useConfigStore } from "@/store/config";
+import { callBrige } from "@/utils/callm";
 
 let now = Date.now()
 let fakeDataList = new Array(50).fill(0).map((e, i) => {
@@ -26,7 +27,7 @@ export default defineComponent({
   name: 'CurcevChartRow',
   props: {
     chartId: String,
-    dataConfig: Object as PropType<DataConfigEntity>,
+    adressRow: Object as PropType<ModbusAdressRow>,
     dataSourceItem: {
       type: Object as PropType<{
         label: string,
@@ -42,11 +43,15 @@ export default defineComponent({
   setup(props, ctx) {
     let count = 0                     //记录realdata数据的更新次数
     const innerData = useCurcevInnerDataStore()
+    const configStore = useConfigStore()
     // const configStore = useConfigStore()
     let thisReMountedCount = innerData.reMountedCount
     // console.log("🚀 ~ file: CurcevChartRow.tsx:36 ~ setup ~ thisReMountedCount:", thisReMountedCount)
     let myChart: echarts.ECharts
     let unit = `mm`
+    const alldata = reactive({
+      widthPixel: 800
+    })
     const dataSourceItem = computed(() => {
       return props.dataSourceItem
     })
@@ -56,14 +61,14 @@ export default defineComponent({
       myChart = echarts.init(ele, undefined, {
         useDirtyRect: true
       });
-      console.log("🪵 [CurcevChartRow.tsx:66] ~ token ~ \x1b[0;32mprops.dataConfig\x1b[0m = ", props.dataConfig);
+      // console.log("🪵 [CurcevChartRow.tsx:66] ~ token ~ \x1b[0;32mprops.dataConfig\x1b[0m = ", props.dataConfig);
 
       let option = {
         animation: false,
         title: {
           //@ts-ignore
           // text: '',
-          text: props.dataConfig?.Name,
+          text: props.adressRow?.DataName,
           left: '48%'
         },
         // toolbox: {
@@ -83,8 +88,8 @@ export default defineComponent({
           formatter: function (params: any) {
             params = params[0];
             return (
-              params.value[0].toLocaleString() +
-              ' : ' +
+              // params.value[0].toLocaleString() +
+              '  ' +
               params.value[1]
             );
           },
@@ -111,25 +116,26 @@ export default defineComponent({
             show: true
           },
           axisLabel: {
-            formatter: '{value} ' + props.dataConfig?.Unit // Specify the unit here
+            formatter: '{value} ' + props.adressRow?.Unit // Specify the unit here
           }
         },
-        // dataZoom: [
-        //   {
-        //     type: 'inside',
-        //     start: 0,
-        //     end: 100
-        //   },
-        //   {
-        //     start: 0,
-        //     end: 100
-        //   }
-        // ],
+        dataZoom: [
+          {
+            type: 'inside',
+            start: 0,
+            end: 100
+          },
+          {
+            start: 0,
+            end: 100
+          }
+        ],
         series: {
           name: dataSourceItem.value?.label,
           type: 'line',
           showSymbol: false,
-          data: fakeDataList,
+          // data: fakeDataList,
+          data: [],
           smooth: false,
         },
         grid: {
@@ -142,30 +148,37 @@ export default defineComponent({
       // 绘制图表
       myChart.setOption(option);
     }
+    const getWidthPixel = () => {
+      let width = document.querySelector('.my-index-chart')?.clientWidth || 800
+      alldata.widthPixel = width
+    }
 
     const loopGet = () => {
-      if (!myChart || !innerData.isGetting || !props.dataConfig || thisReMountedCount != innerData.reMountedCount) return
+      if (!myChart || !innerData.isGetting || !props.adressRow || thisReMountedCount != innerData.reMountedCount) return
       // callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
-      // callSpc(callFnName.getFullCollectPoints, props.dataConfig.GId)
 
-      new Promise<CollectPointModel[]>((resolve, reject) => { resolve([]) }).then((res: CollectPointModel[]) => {
+
+      // console.log("🪵 [CurcevChartRow.tsx:161] ~ token ~ \x1b[0;32malldata.widthPixel\x1b[0m = ", alldata.widthPixel);
+      // new Promise<CollectPointModel[]>((resolve, reject) => { resolve([]) })
+      callBrige(callFnName.GetChartData, [props.adressRow.GId, alldata.widthPixel], true).then((res: DataValue[]) => {
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
-        let maxCount = innerData.sysConfig.find(e => e.Name == 'MaxPonitNum')?.Value
-        maxCount && (res = res.slice(-maxCount))
-        if (props.i == 0) {
-          let length = res.length
-          innerData.setCurDataLength(length)
-          res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
-        }
+        // let maxCount = configStore.sysConfig.maxDataCount.Value
+        // maxCount && (res = res.slice(-maxCount))
+        // if (props.i == 0) {
+        //   let length = res.length
+        //   innerData.setCurDataLength(length)
+        //   res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
+        // }
         // filter((e,i) => i % 2 == 0)
         let list = res.map(e => {
-          return [e.Intime, e.Value]
+          let time = new Date(e.Intime).getTime()
+          return [time, e.Value * 1]
         })
-        // console.log("🚀 ~ list ~ list:", list.length)
+        // console.log("🚀 ~ list ~ list:", list)
         let opt = {
           title: {
             //@ts-ignore
-            text: props.dataConfig?.Name,
+            text: props.adressRow?.DataName,
             left: '48%'
           },
           progressiveThreshold: innerData.samplingNum,
@@ -173,7 +186,7 @@ export default defineComponent({
           progressiveChunkMode: "sequential",
           animation: false,
           series: {
-            name: props.dataConfig?.Name,
+            name: props.adressRow?.DataName,
             type: 'line',
             showSymbol: false,
             symbol: 'none',
@@ -187,7 +200,8 @@ export default defineComponent({
           },
         }
         myChart.setOption(opt);
-        let time = innerData.sysConfig.find(e => e.Name == 'RefreshInterval')?.Value
+        // let time = innerData.sysConfig.find(e => e.Name == 'RefreshInterval')?.Value
+        let time = configStore.sysConfig.RefreshInterval
         return sleep(time ? Number(time) : 1000)
       }).then(() => {
         loopGet()
@@ -231,6 +245,7 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         initEchart()
+        getWidthPixel()
         if (innerData.isGetting) {
           loopGet()
         }
@@ -238,7 +253,7 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'h-1/3 shrink mt-2 overflow-hidden relative'} style={{ ...(props.height ? { height: props.height } : {}) }} >
+        <div class={'h-full shrink mt-2 overflow-visible relative my-index-chart'} style={{ ...(props.height ? { height: props.height } : {}) }} >
           {/* <CpkBlock dataConfig={props.dataConfig} /> */}
           <div class={' h-full w-full '} id={(props.chartId || 'trendChart') + props.i} >
           </div>

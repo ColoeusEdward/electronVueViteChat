@@ -65,9 +65,9 @@ export default defineComponent({
         return
       }
       innerData.dataList.splice(innerData.dataList.findIndex(e => e.GId === innerData.curDataRow!.GId), 1)
-      callSpc(callFnName.saveFormulaConfig, [innerData.curRow, [...innerData.dataList]], true).then((res: number) => {
-        getTbData()
-      })
+      // callSpc(callFnName.saveFormulaConfig, [innerData.curRow, [...innerData.dataList]], true).then((res: number) => {
+      //   getTbData()
+      // })
     }
     const addItem = () => {
       innerData.setDataIsEdit(false)

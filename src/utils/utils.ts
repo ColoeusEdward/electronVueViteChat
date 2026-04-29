@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult, DataConfigEntity } from "~/me";
+import { ActualResult, DataConfigEntity, ModbusAdressRow } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -191,9 +191,9 @@ export const getRandomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export const buildMenuOpt = (e: DataConfigEntity) => {
+export const buildMenuOpt = (e: ModbusAdressRow) => {
   return {
-    label: e.Name,
+    label: e.DataName,
     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
     trueKey: e.GId,
   }
