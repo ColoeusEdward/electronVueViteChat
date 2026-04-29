@@ -111,7 +111,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full limit-item-width-form formula-param-tab'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
+        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full l formula-param-tab'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
           {
             pararmListWidthAdress.value.map(item => {
               let totalId = item.FormulaId + '-' + item.DataId
@@ -121,8 +121,8 @@ export default defineComponent({
               return (
                 <NTabPane displayDirective="show:lazy" name={item.DataId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataId ? alldata.activeStyle : {} } }}>
                   <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border-0 border-l border-r border-b border-gray-600 border-solid rounded-xl rounded-t-none'}>
-                    <div class={'w-full h-full border border-gray-600 border-solid rounded-xl overflow-hidden bg-white py-2 pr-2'}>
-                      <MyFormWrap {...alldata.formCfg} form={alldata.formMap[totalId]} />
+                    <div class={'w-full h-full py-6 pl-4 '}>
+                      <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '400px', marginRight: '10px' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />
                     </div>
 
                   </div>

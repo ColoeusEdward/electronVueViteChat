@@ -146,7 +146,7 @@ export default defineComponent({
     return () => {
       return (
         // <div class={'w-[400px] h-[600px] bg-white absolute '}>
-        <MyFormWrap ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
+        <MyFormWrap ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} labelWidth={150} itemList={itemList.value}></MyFormWrap>
       )
     }
   }

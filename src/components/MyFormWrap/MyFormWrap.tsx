@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { FormRules, NForm, NFormItem, NGi, NGrid, NInput, NSelect, InputProps, NButton, SelectProps, NSwitch, NDivider, NScrollbar, NRadioGroup, NRadioButton, NInputNumber, NRadio, NSpace, NCheckboxGroup, NCheckbox } from "naive-ui";
 import { Placement } from "naive-ui/es/drawer/src/DrawerBodyWrapper";
-import { defineComponent, ref, PropType, onMounted, computed, defineExpose, Ref } from "vue";
+import { defineComponent, ref, PropType, onMounted, computed, defineExpose, Ref, CSSProperties } from "vue";
 import blueBg from '@/assets/PnlBtnActive.png'
 
 export interface formListItem {
@@ -29,6 +29,7 @@ export interface formListItem {
   hide?: boolean,
   childCompList?: formListItem[],
   checkboxList?: { value: string, label: string }[],
+  labelStyle: CSSProperties | string
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -56,6 +57,17 @@ export const MyFormWrap = defineComponent({
     labelWidth: {
       type: Number,
       default: 140
+    },
+    labelAlign: {
+      type: String,
+      default: 'right'
+    },
+    fontSize: {
+      type: Number,
+    },
+    inputStyle: {
+      type: Object,
+      default: { width: '300px' }
     },
     renderToBtn: Function as PropType<() => JSX.Element>   //自由渲染按钮内容
   },
@@ -95,7 +107,19 @@ export const MyFormWrap = defineComponent({
       })
       finalRule.value = ruleOfProp
     }
+    const commonStyle = computed(() => {
+      let style: Record<string, string> = {}
+      if (props.fontSize) {
+        style.fontSize = `${props.fontSize}px`
+      }
 
+      return style
+    })
+    const inputStyle = computed(() => {
+      let style: Record<string, string> = {}
+
+      return props.inputStyle
+    })
     const validForm = () => {
       return formRef.value?.validate()
     }
@@ -173,8 +197,8 @@ export const MyFormWrap = defineComponent({
     const renderInput = (form: typeof props.form, item: formListItem) => {
       typeof form[item.prop] === 'number' && (form[item.prop] = form[item.prop] + "")
       return (
-        <NFormItem label={item.label} path={item.prop} contentStyle={{ maxWidth: '200px' }} >
-          <NInput size={'large'} v-model:value={form[item.prop]} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
+        <NFormItem label={item.label} path={item.prop} contentStyle={{ maxWidth: '200px', }} labelStyle={commonStyle.value} >
+          <NInput size={'large'} v-model:value={form[item.prop]} style={{ ...commonStyle.value, ...inputStyle.value }} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
             suffix: typeof item.suffix === 'function' ? item.suffix : () => item.suffix
           }} />
         </NFormItem>
@@ -259,7 +283,7 @@ export const MyFormWrap = defineComponent({
 
         return itemList?.map((item) => {
           return (
-            <NGi span={item.width || 12}>
+            <NGi span={item.width || 12} key={item.prop}>
               {(!item.hide) && obj[item.type] && obj[item.type](form, item, optionMap)}
             </NGi>
           )
@@ -268,7 +292,7 @@ export const MyFormWrap = defineComponent({
 
       return (
         <div class={'w-full h-full  '}>
-          <NForm model={props.form} ref={formRef} requireMarkPlacement="right" rules={finalRule.value} size="large" labelPlacement="left" labelAlign="right" labelWidth={props.labelWidth} >
+          <NForm model={props.form} ref={formRef} requireMarkPlacement="right" rules={finalRule.value} size="large" labelPlacement="left" labelAlign={props.labelAlign} labelWidth={props.labelWidth} >
             <NGrid xGap={12} yGap={2}>
               {renderComp(props.itemList, pform.value || {}, props.optionMap || {})}
             </NGrid>
