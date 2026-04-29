@@ -1,5 +1,5 @@
 import { NTabs, NTabPane, NDropdown, DropdownProps, MenuOption, NScrollbar } from "naive-ui";
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, PropType, reactive, ref, watch } from "vue";
 import activeImg from '@/assets/PnlBtnActive.png'
 import { useMain } from "@/store";
 import closeBtn from '@/assets/LedCloseBtn.png'
@@ -10,19 +10,23 @@ import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
 import { buildMenuOpt, getLocalStorage, setLocalStorage, sleep } from "@/utils/utils";
 import { useCurcevInnerDataStore } from "./curcev/innerData";
-import { CpkModel, menuOption } from "~/me";
+import { CpkModel, DataValue, menuOption, ModbusAdressRow } from "~/me";
 import { cpkModelPropName } from "./curcev/enum";
 import classNames from "classnames";
 import RightOtherValue from "./RightOtherValue";
 import { useConfigStore } from "@/store/config";
 import { useSvc } from "./svc";
+import { callBrige } from "@/utils/callm";
+import { callFnName } from "@/utils/enum";
 
 export interface RightValueType {
   label?: string,
   title?: string,
   value?: number,
   unit?: string,
-  stand?: RightValueType[]
+  stand?: RightValueType[],
+  GId?: string,
+  Precision?: number
 }
 let defStandValList: RightValueType[] = [
   {
@@ -31,7 +35,7 @@ let defStandValList: RightValueType[] = [
     value: 0
   },
   {
-    label: 'bcz',
+    label: 'Standard',
     title: '标称值',
     value: 0
   }
@@ -61,22 +65,28 @@ export const ValueRow = defineComponent({
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const curCevInnerData = useCurcevInnerDataStore()
-    const curOption = ref<MenuOption>()
+    const configStore = useConfigStore()
+    const alldata = reactive({
+      value: 0,
+      stand: defStandValList.map(e => ({ ...e }))
+    })
+    const pdata = computed(() => props.data)
+    // const curOption = ref<MenuOption>()
     // const { dataSourceList } = storeToRefs(store)
-    const dataSourceList = computed(() => curCevInnerData.dataCfgList.map(e => {
+    const dataSourceList = computed(() => configStore.showDataAdressList.map(e => {
       return {
         ...buildMenuOpt(e),
-        children: e.children?.map(ee => buildMenuOpt(ee))
+        // children: e.children?.map(ee => buildMenuOpt(ee))
       }
     }))
     const curStandIdx = ref(0)
 
-    const initOption = () => {
-      store.rightBlockDataMap[props.x][props.y] && (
-        curOption.value = store.rightBlockDataMap[props.x][props.y]
-      )
-    }
-    initOption()
+    // const initOption = () => {
+    //   store.rightBlockDataMap[props.x][props.y] && (
+    //     curOption.value = store.rightBlockDataMap[props.x][props.y]
+    //   )
+    // }
+    // initOption()
 
 
     // const data = computed(() => {
@@ -85,21 +95,27 @@ export const ValueRow = defineComponent({
     // })
 
     const data = computed(() => {
-      console.log("🪵 [RightValueBlock.tsx:94] ~ token ~ \x1b[0;32mprops.data\x1b[0m = ", props.data);
+      let myData = props.data
+      // console.log("🪵 [RightValueBlock.tsx:98] ~ token ~ \x1b[0;32mmyData\x1b[0m = ", myData);
+      let formulaParamList = configStore.curEnableFormulaParamList
       let dat: RightValueType = {
-        stand: defStandValList as Object[],
+        stand: [] as Object[],
         label: '',
         title: '',
         value: 0
       }
-      if (!props.data) return dat
-      if (!props.data.stand) {
-        props.data.stand = defStandValList as Object[]
+      if (!myData) return dat
+      if (myData.GId) {
+        // console.log("🪵 [RightValueBlock.tsx:94] ~ token ~ \x1b[0;32mmyData\x1b[0m = ", props.data);
+        let stItem = formulaParamList?.find(e => e.DataId == myData!.GId)
+        // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mformulaParamList\x1b[0m = ", formulaParamList);
+        // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mstItem\x1b[0m = ", stItem);
+        alldata.stand[1].value = stItem?.Standard  //标准值
       }
-      if (props.data.label && !props.data.value) {
-        props.data.value = 0
+      if (myData.label && !myData.value) {
+        myData.value = 0
       }
-      return props.data
+      return myData
     })
 
 
@@ -109,16 +125,26 @@ export const ValueRow = defineComponent({
     // }
     const handleMenuSelect: DropdownProps['onSelect'] = (val, option) => {
       console.log("🪵 [RightValueBlock.tsx:103] ~ token ~ \x1b[0;32mval\x1b[0m = ", val, option);
-      curOption.value = option
+      let opt = option as ModbusAdressRow
+      let dat: RightValueType = {
+        stand: defStandValList as Object[],
+        label: opt.DataName,
+        title: '',
+        value: 0,
+        GId: opt.GId,
+        unit: opt.Unit,
+        Precision: opt.Precision
+      }
+      // curOption.value = dat
       let list: menuOption[] = curCevInnerData.infoList
       if (props.i > -1) {
-        list[props.i] = option as menuOption
+        list[props.i] = dat as menuOption
       }
       curCevInnerData.setInfoList(list)
       // store.addRightBlockData(option, props.x, props.y)
     }
     const handleDel = () => {
-      curOption.value = {}
+      // curOption.value = {}
       // store.removeRightBlockData(props.x, props.y)
       let list: menuOption[] = curCevInnerData.infoList
       if (props.i > -1) {
@@ -142,6 +168,43 @@ export const ValueRow = defineComponent({
         curStandIdx.value++
       }
     }
+    const standVal = computed(() => {
+      // data.value.stand[curStandIdx.value].value
+      // console.log("🪵 [RightValueBlock.tsx:169] ~ token ~ \x1b[0;32mdata.value.stand[curStandIdx.value].value\x1b[0m = ", data.value.stand);
+      return alldata.stand[curStandIdx.value].title + ' : ' + alldata.stand[curStandIdx.value].value
+    })
+
+    const loopGetVal = () => {
+      if (props.data && props.data.GId) {
+        callBrige(callFnName.GetRealtimeData, props.data.GId).then((res: DataValue) => {
+          // console.log("🪵 [RightValueBlock.tsx:167] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+          // console.log("🪵 [RightValueBlock.tsx:174] ~ token ~ \x1b[0;32mprops.data!.stand![1].value!\x1b[0m = ", res.Value, props.data!.stand![1].value!);
+          props.data!.value = res.Value
+          let diff = res.Value - alldata.stand![1].value!
+          // console.log("🪵 [RightValueBlock.tsx:175] ~ token ~ \x1b[0;32mdiff\x1b[0m = ", Number((diff * 1).toFixed(props.data!.Precision || 2)));
+          if (alldata.stand) {
+            alldata.stand![0].value = Number((diff * 1).toFixed(props.data!.Precision || 2))
+          }
+
+        })
+      }
+      sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
+        loopGetVal()
+      })
+    }
+
+    // watch(() => props.data, (val) => {
+    //   // console.log("🪵 [RightValueBlock.tsx:179] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
+    //   if (val && val.GId) {
+    //     loopGetVal()
+    //   }
+
+    // }, { immediate: true })
+
+    onMounted(() => {
+      loopGetVal()
+
+    })
 
 
     const renderAddOrDel = () => {
@@ -162,7 +225,7 @@ export const ValueRow = defineComponent({
           </div>
           <div class={'flex items-end w-full h-[76px]  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
             <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-2 value-number'}>
-              <span class={classNames(' font-semibold text-[#003a62]', { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })} >{props.data?.value?.toFixed ? props.data?.value?.toFixed(props.fixNum) : "" || ''}</span>
+              <span class={classNames(' font-semibold text-[#003a62]', { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })} >{props.data?.value?.toFixed ? props.data?.value?.toFixed(props.data?.Precision || 4) : "" || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >
               <span class={'mb-2'}>{props.data?.unit || '  '}</span>
@@ -171,7 +234,7 @@ export const ValueRow = defineComponent({
           <div class={'flex items-center w-full h-1/4 pt-1'}>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standLeft} ><img class={'m-auto h-1/2'} src={lefticon}></img></div>
             <div class={'h-full w-full shrink btn-bg mx-2 flex items-center justify-center'}>
-              <span class={` font-semibold ${store.isLowRes ? ' text-xs' : 'text-base '}`}>{data.value.stand ? data.value.stand[curStandIdx.value].title + ' :' + data.value.stand[curStandIdx.value].value : ' '}</span>
+              <span class={` font-semibold ${store.isLowRes ? ' text-xs' : 'text-base '}`}>{standVal.value}</span>
             </div>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standRight} ><img class={'m-auto  h-1/2'} src={righticon}></img></div>
           </div>

@@ -62,6 +62,7 @@ enum callFnName {
   GetRealtimeData = `GetRealtimeData`,
   GetChartDataAddress = `GetChartDataAddress`,
   GetChartData = `GetChartData`,
+  GetShowDataAddress = `GetShowDataAddress`,
   SaveFormulaConfig = `SaveFormulaConfig`, activeFormulaConfig = 'activeFormulaConfig', GetProductHistorys = 'GetProductHistorys', StopCollect = "StopCollect",
   getSpanCollectPoints = `getSpanCollectPoints`, getNormalDistribution = 'getNormalDistribution', ClearCollect = 'ClearCollect',
   getFFT = `getFFT`, showKeyBoard = `showKeyBoard`, initKeyboardConfig = `initKeyboardConfig`, checkRegister = `checkRegister`, getMachineCode = `getMachineCode`, getRegisterState = `getRegisterState`, getRegisterCode = `getRegisterCode`, KeyPress = `KeyPress`, KeyDown = `KeyDown`, KeyUp = `KeyUp`, getLastPoint = `getLastPoint`

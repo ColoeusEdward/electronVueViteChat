@@ -196,5 +196,9 @@ export const buildMenuOpt = (e: ModbusAdressRow) => {
     label: e.DataName,
     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
     trueKey: e.GId,
+    DataName: e.DataName,
+    GId: e.GId,
+    Unit: e.Unit,
+    Precision: e.Precision
   }
 }

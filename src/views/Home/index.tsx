@@ -14,7 +14,7 @@ import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
-import { ActualResult, ModbusAdressRow } from "~/me";
+import { ActualResult, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { callFnName } from "@/utils/enum";
 import { callSpc, getSysConfig } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
@@ -113,8 +113,10 @@ export default defineComponent({
       callBrige(callFnName.InitService).then((res: string) => {
         // console.log("🪵 [index.tsx:123] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         callBrige(callFnName.GetChartDataAddress).then((res: ModbusAdressRow[]) => {
-          console.log("🪵 [index.tsx:115] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
           configStore.setChartDataAdressList(res)
+        })
+        callBrige(callFnName.GetShowDataAddress).then((res: ModbusAdressRow[]) => {
+          configStore.setShowDataAdressList(res)
         })
       })
     }
@@ -138,6 +140,15 @@ export default defineComponent({
       if (!val) {
         initData()
       }
+    })
+    watch(() => configStore.sysConfig.CurrentFormulaId, () => {
+      callBrige(callFnName.GetFormulaConfigs, configStore.sysConfig.CurrentGroupId).then((res: FormulaConfigEntity[]) => {
+        let item = res.find(e => e.GId == configStore.sysConfig.CurrentFormulaId)
+        configStore.setCurEnableFormulaRow(item)
+        return callBrige(callFnName.GetFormulaParams, item?.GId)
+      }).then((res: FormulaParamEntity[]) => {
+        configStore.setCurEnableFormulaParamList(res)
+      })
     })
     onUnmounted(() => {
       window.removeEventListener('blur', handleBlur)

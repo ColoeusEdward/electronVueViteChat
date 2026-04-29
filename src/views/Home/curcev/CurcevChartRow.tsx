@@ -174,7 +174,7 @@ export default defineComponent({
           let time = new Date(e.Intime).getTime()
           return [time, e.Value * 1]
         })
-        // console.log("🚀 ~ list ~ list:", list)
+        console.log("🚀 ~ list ~ list:", list.length)
         let opt = {
           title: {
             //@ts-ignore

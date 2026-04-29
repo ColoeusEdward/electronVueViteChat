@@ -341,7 +341,9 @@ export default defineComponent({
       }
     }
 
-
+    const curPrecision = computed(() => {
+      return configStore.curChartAdress?.Precision == undefined ? 3 : configStore.curChartAdress?.Precision
+    })
     watch(() => innerData.isGetting, (val) => {
       // console.log("🪵 [index.tsx:330] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
       if (val) {
@@ -466,16 +468,41 @@ export default defineComponent({
                         </div> */}
                         <div>
                           <span class={'text-gray-500 mr-2'}>上限</span>
-                          <span class={"text-blue-500"}>{configStore.curCpk?.UpperLimit.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.UpperLimit.toFixed(curPrecision.value)}</span>
                         </div>
                         <div>
                           <span class={'text-gray-500 mr-2'}>下限</span>
-                          <span class={"text-blue-500"}>{configStore.curCpk?.LowerLimit.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.LowerLimit.toFixed(curPrecision.value)}</span>
+                        </div>
+                        {/* <div>
+                          <span class={'text-gray-500 mr-2'}>上公差</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.Utol.toFixed(curPrecision.value)}</span>
                         </div>
                         <div>
+                          <span class={'text-gray-500 mr-2'}>下公差</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.Ltol.toFixed(curPrecision.value)}</span>
+                        </div> */}
+                        <div>
                           <span class={'text-gray-500 mr-2'}>标准值</span>
-                          <span class={"text-blue-500"}>{configStore.curCpk?.StdDev.toFixed(4)}</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.Standard.toFixed(curPrecision.value)}</span>
                         </div>
+                        <div>
+                          <span class={'text-gray-500 mr-2'}>标准差</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.StdDev.toFixed(curPrecision.value)}</span>
+                        </div>
+                        <div>
+                          <span class={'text-gray-500 mr-2'}>CP</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.CP.toFixed(curPrecision.value)}</span>
+                        </div>
+                        <div>
+                          <span class={'text-gray-500 mr-2'}>CA</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.CA.toFixed(curPrecision.value)}</span>
+                        </div>
+                        <div>
+                          <span class={'text-gray-500 mr-2'}>CPK</span>
+                          <span class={"text-blue-500"}>{configStore.curCpk?.CPK.toFixed(curPrecision.value)}</span>
+                        </div>
+
                       </NSpace>
                     </div>
                     {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}

@@ -2,7 +2,7 @@ import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
-import { CPKEntity, DataGroupEntity, DataValue, DeviceConfigEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
+import { CPKEntity, DataGroupEntity, DataValue, DeviceConfigEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -45,10 +45,12 @@ export const useConfigStore = defineStore('config', {
       connectDev: localConnectDev as connectDev,
       needRestart: false,
       chartDataAdressList: [] as ModbusAdressRow[],
+      showDataAdressList: [] as ModbusAdressRow[],
       curChartAdress: null as ModbusAdressRow | null | undefined,
       curMultiChartAdress: [] as ModbusAdressRow[],
       curCpk: null as CPKEntity | null,
       curRealTimeData: null as DataValue | null | undefined,
+
 
       sysConfig: {} as SysConfigModel,
       originSysConfig: [] as SysConfigEntity[],
@@ -66,6 +68,9 @@ export const useConfigStore = defineStore('config', {
       updateDevConfigRowFn: () => { },
       isAdressAddMore: false,
       curDataGroupRow: null as DataGroupEntity | null,
+      curEnableFormulaRow: null as FormulaConfigEntity | null | undefined,
+      curEnableFormulaParamList: null as FormulaParamEntity[] | null | undefined,
+
 
       DevChooseShow: false,
       AdressChooseShow: false,
@@ -216,7 +221,17 @@ export const useConfigStore = defineStore('config', {
     },
     setCurRealTimeData(value: DataValue | null | undefined) {
       this.curRealTimeData = value
-    }
+    },
+    setShowDataAdressList(value: ModbusAdressRow[]) {
+      this.showDataAdressList = value
+    },
+    setCurEnableFormulaRow(value: FormulaConfigEntity | null | undefined) {
+      this.curEnableFormulaRow = value
+    },
+    setCurEnableFormulaParamList(value: FormulaParamEntity[] | null | undefined) {
+      this.curEnableFormulaParamList = value
+    },
+
   }
 
 
