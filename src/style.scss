@@ -119,6 +119,42 @@ body {
   }
 }
 
+.simple-style-table {
+  .n-data-table .n-data-table-th {
+    background-color: transparent;
+    border: none;
+  }
+  .n-data-table .n-data-table-table {
+    background-color: transparent;
+    transition: none;
+  }
+  .n-data-table .n-data-table-thead {
+    background-color: transparent;
+    transition: none;
+    font-size: 18px;
+  }
+  .n-data-table-resize-button {
+    display: none;
+  }
+  th {
+    // font-family: "SimSun ";
+    color: #000;
+  }
+  .n-data-table-tr {
+    margin-top: 4px;
+    td {
+      font-size: 22px;
+      background: #ffffff;
+      border: 1px #000 solid;
+      margin: 0 4px;
+      padding: 6px 4px;
+    }
+  }
+  .n-data-table.n-data-table--bottom-bordered .n-data-table-td.n-data-table-td--last-row {
+    border-bottom: 1px #000 solid;
+  }
+}
+
 .bar-tab {
   //带底部边条的标签
   // .n-tabs-nav-scroll-wrapper {
@@ -200,7 +236,7 @@ body {
 .large-label-size {
   font-size: 18px;
   .n-divider__title {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 @media (prefers-color-scheme: light) {

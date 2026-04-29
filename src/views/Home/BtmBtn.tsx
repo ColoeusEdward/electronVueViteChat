@@ -53,7 +53,7 @@ export default defineComponent({
       // { label: '检查元素', value: 'devTool' },
     ]
     const productOption = [
-      { label: '产品表', value: 'formulaCfg' },
+      { label: '配方', value: 'formulaCfg' },
       { label: '产品历史记录', value: 'productHistory' },
       // { label: '产品日志', value: 'productLog' },
       // { label: '设定产品表', value: 'setproduct' },

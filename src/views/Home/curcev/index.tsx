@@ -1,9 +1,9 @@
 import { DropdownProps, NButton, NDatePicker, NDropdown, NIcon, NInput, NInputNumber, NSpace, NTimePicker, NTooltip, useMessage } from "naive-ui";
-import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref } from "vue";
+import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import niotLogo from '@/assets/login_logos.png';
-import { callSpc } from "@/utils/call";
+import { callSpc, getSysConfig } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, FFTModel, SysConfigEntity } from "~/me";
+import { ActualResult, CollectPointModel, CpkModel, DataConfigEntity, FFTModel, ModbusAdressRow, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import activeWarningImg from '@/assets/LineDspButton_inactive_warning3.png'
 import { useCurcevInnerDataStore } from "./innerData";
@@ -19,6 +19,8 @@ import FFT from "./FFT";
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 import { NBaseLoading } from "naive-ui/es/_internal";
 import { callBrige } from "@/utils/callm";
+import { useConfigStore } from "@/store/config";
+import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 
 let defCfgData: DataConfigEntity[] = [
   {
@@ -96,6 +98,7 @@ export default defineComponent({
   setup(props, ctx) {
     const innerData = useCurcevInnerDataStore()
     const store = useMain()
+    const configStore = useConfigStore()
     // innerData.isGetting = false
     const msg = useMessage()
     const chartRef = ref<ComponentPublicInstance<{}, CurcevChartRowIns> | null>(null)
@@ -104,12 +107,14 @@ export default defineComponent({
       curPage: 0,
       pageSize: 3,
       getCfgLoading: false,
+      menuOpt: [] as DropdownMixedOption[],
     })
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
         innerData.setSysConfig(res)
       })
     }
+    const chartAdressList = computed(() => configStore.chartDataAdressList)
     // getSysCfg()
     const getAllActiveConfigData = () => {
       commonData.getCfgLoading = true
@@ -145,10 +150,10 @@ export default defineComponent({
         commonData.getCfgLoading = false
       })
     }
+
     const startCollect = () => {
       return refresh().then(() => {
-        return "aa"
-        callSpc(callFnName.startCollect)
+        return callBrige(callFnName.StartCollect)
       })
         .then((res: string) => {
           if (res) {
@@ -159,7 +164,7 @@ export default defineComponent({
         })
     }
     const stopCollect = () => {
-      return callSpc(callFnName.stopCollect).then(() => {
+      return callSpc(callFnName.StopCollect).then(() => {
         innerData.setIsGetting(false)
       })
     }
@@ -174,13 +179,16 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
-      // getSysCfg()
-      return getAllActiveConfigData().then(() => {
-        e && msg.success('配置已刷新')
-      })
+      if (e) {
+        msg.success('配置已刷新')
+      }
+      return getSysConfig()
+      // return getAllActiveConfigData().then(() => {
+      //   e && msg.success('配置已刷新')
+      // })
     }
     const clearCollect = () => {
-      return callSpc(callFnName.clearCollect).then(() => {
+      return callBrige(callFnName.ClearCollect).then(() => {
       })
     }
     innerData.setCleanColFn(clearCollect)
@@ -205,41 +213,67 @@ export default defineComponent({
     const curDataType = computed(() => {
       return innerData.curDataCfgEntity?.DataType
     })
-
-    const menuOpt = computed(() => {
+    watch(() => chartAdressList.value, (v: ModbusAdressRow[]) => {
+      console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
+      let list = v as unknown as MenuOptType[]
       let opt = menuOptList
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
       if (sitem) {
-        if (commonData.cfgDataList.length == 0) {
-          let list: MenuOptType[] = []
+        if (list.length == 0) {
           // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list
+          sitem.children = list as any
         } else {
-          sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-            return {
-              ...buildMenuOpt(e),
-              children: e.children?.map(ee => buildMenuOpt(ee))
-            }
-          }) as MenuOptType[]
+          sitem.children = list
+          // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+          //   return {
+          //     ...buildMenuOpt(e),
+          //     children: e.children?.map(ee => buildMenuOpt(ee))
+          //   }
+          // }) as MenuOptType[]
         }
-
       }
-      // sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-      //   return {
-      //         ...buildMenuOpt(e),
-      //     children: e.children
-      //   }
-      // }) as MenuOptType[])
-
-      return opt
+      commonData.menuOpt = opt as any
+      console.log("🪵 [index.tsx:234] ~ token ~ \x1b[0;32mcommonData.menuOpt\x1b[0m = ", commonData.menuOpt);
+    }, {
+      immediate: true
     })
+    // const menuOpt = computed(() => {
+    //   let opt = menuOptList
+    //   console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mopt\x1b[0m = ", opt);
+    //   let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
+    //   if (sitem) {
+    //     if (chartAdressList.value.length == 0) {
+    //       let list: MenuOptType[] = []
+    //       // commonData.cfgDataList.map(e => buildMenuOpt(e))
+    //       sitem.children = list
+    //     } else {
+    //       sitem.children = chartAdressList.value
+    //       // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+    //       //   return {
+    //       //     ...buildMenuOpt(e),
+    //       //     children: e.children?.map(ee => buildMenuOpt(ee))
+    //       //   }
+    //       // }) as MenuOptType[]
+    //     }
+
+    //   }
+    //   // sitem && (sitem.children = commonData.cfgDataList.filter((e: DataConfigEntity) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+    //   //   return {
+    //   //         ...buildMenuOpt(e),
+    //   //     children: e.children
+    //   //   }
+    //   // }) as MenuOptType[])
+    //   console.log("🪵 [index.tsx:241] ~ token ~ \x1b[0;32mopt\x1b[0m = ", opt);
+
+    //   return opt
+    // })
     const handleSelect = (key: string) => {
       let type = key.split(menuIdSplit)[0]
-      let trueKey = key.split(menuIdSplit)[1]
+      // let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
-        let item = commonData.cfgDataList.find(e => e.GId == trueKey)
-        innerData.setCurDataCfgEntity(item)
-        innerData.getCpkFn()
+        // let item = commonData.cfgDataList.find(e => e.GId == trueKey)
+        // innerData.setCurDataCfgEntity(item)
+        // innerData.getCpkFn()
       }
       if (type == menuPropEnum.uploadLineShot) {
         getLineShot()
@@ -258,6 +292,10 @@ export default defineComponent({
     getRegState()
 
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
+      if (!option.trueKey && option.GId) {
+        option.trueKey = option.GId
+        option.label = option.DataName
+      }
       let text = option.label
       if (option.trueKey && innerData.curDataCfgEntity?.GId == option.trueKey) {
         text += ' ✔️'
@@ -308,7 +346,7 @@ export default defineComponent({
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>
               <div></div>
-              <NDropdown options={menuOpt.value} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
+              <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
                 {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
                 <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
                 </NButton>

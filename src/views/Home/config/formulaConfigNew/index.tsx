@@ -133,6 +133,11 @@ export default defineComponent({
         window.$message.success('保存成功')
         formulaStore.updateConfigListFn()
       })
+      let configList = formulaStore.getFormulaListFn()
+      let applyItem = configList.find(e => e.GId == configStore.sysConfig.CurrentFormulaId)
+      if (applyItem) {
+        formulaStore.applayFormulaConfigFn(applyItem)
+      }
     }
 
     {/* border-0 border-t border-gray-600 border-solid */ }

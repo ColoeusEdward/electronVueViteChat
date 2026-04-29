@@ -43,6 +43,9 @@ export const useConfigStore = defineStore('config', {
       connect: localConnect as connectConfig,
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
+      needRestart: false,
+      chartDataAdressList: [] as ModbusAdressRow[],
+      curChartAdress: null as ModbusAdressRow | null,
 
       sysConfig: {} as SysConfigModel,
       originSysConfig: [] as SysConfigEntity[],
@@ -189,6 +192,15 @@ export const useConfigStore = defineStore('config', {
     },
     setDataGroupAddFromShow(value: boolean) {
       this.dataGroupAddFromShow = value
+    },
+    setNeedRestart(value: boolean) {
+      this.needRestart = value
+    },
+    setChartDataAdressList(value: ModbusAdressRow[]) {
+      this.chartDataAdressList = value
+    },
+    setCurChartAdress(value: ModbusAdressRow | null) {
+      this.curChartAdress = value
     },
   }
 

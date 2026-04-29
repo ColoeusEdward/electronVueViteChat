@@ -371,15 +371,41 @@ interface FormulaParamEntity {
   AdressItem?: ModbusAdressRow
 }
 
-type ProductHistoryEntity = {
+// type ProductHistoryEntity = {
+//   GId?: string;
+//   ProductNo: string;
+//   PN: string;
+//   Note: string;
+//   StartTime: string;
+//   EndTime: string;
+//   Operator: string;
+//   ExcelPath: string;
+//   PdfPath: string;
+// }
+interface ProductHistoryEntity {
+  /** 主键 */
   GId?: string;
+
+  /** 线轴编号 */
   ProductNo: string;
+
+  Note?: string;
+  /** 线材型号 */
   PN: string;
-  Note: string;
+
+  /** 开始时间 */
   StartTime: string;
+
+  /** 结束时间 */
   EndTime: string;
+
+  /** 操作员 */
   Operator: string;
+
+  /** Excel导出路径 */
   ExcelPath: string;
+
+  /** PDF导出路径 */
   PdfPath: string;
 }
 

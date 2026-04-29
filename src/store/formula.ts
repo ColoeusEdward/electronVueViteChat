@@ -24,6 +24,8 @@ export const useFormulaStore = defineStore('formulaConfig', {
       updateParamListFn: () => { },
       updateConfigListFn: () => { },
       getParamFormMapFn: () => { },
+      applayFormulaConfigFn: (row: FormulaConfigEntity) => { },
+      getFormulaListFn: (() => { }) as () => FormulaConfigEntity[],
     }
   },
   /**
@@ -54,6 +56,13 @@ export const useFormulaStore = defineStore('formulaConfig', {
     setGetParamFormMapFn(value: () => Record<string, FormulaParamEntity>) {
       this.getParamFormMapFn = value
     },
+    setApplayFormulaConfigFn(value: (row: FormulaConfigEntity) => void) {
+      this.applayFormulaConfigFn = value
+    },
+    setGetFormulaListFn(value: () => FormulaConfigEntity[]) {
+      this.getFormulaListFn = value
+    },
+
   }
 
 })

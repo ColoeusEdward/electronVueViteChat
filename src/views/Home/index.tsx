@@ -1,5 +1,5 @@
-import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, } from "naive-ui";
-import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition } from "vue";
+import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, NMessageProvider, } from "naive-ui";
+import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition, watch } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
 import RightValueBlock from "./RightValueBlock";
@@ -14,7 +14,7 @@ import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
-import { ActualResult } from "~/me";
+import { ActualResult, ModbusAdressRow } from "~/me";
 import { callFnName } from "@/utils/enum";
 import { callSpc, getSysConfig } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
@@ -109,6 +109,16 @@ export default defineComponent({
     window.addEventListener('focus', handleFocus)
     document.addEventListener('focusin', handleAllInputFocuse);
 
+    const initData = () => {
+      callBrige(callFnName.InitService).then((res: string) => {
+        // console.log("🪵 [index.tsx:123] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+        callBrige(callFnName.GetChartDataAddress).then((res: ModbusAdressRow[]) => {
+          console.log("🪵 [index.tsx:115] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+          configStore.setChartDataAdressList(res)
+        })
+      })
+    }
+
     getSysConfig()
     onMounted(() => {
       // loopGetData()
@@ -117,13 +127,17 @@ export default defineComponent({
           // startSpcSys()
         }
       })
-      callBrige(callFnName.InitDevice).then((res: string) => {
-
-      })
-      // callBrige(callFnName.InitService).then((res: string) => {
+      initData()
+      // callBrige(callFnName.InitDevice).then((res: string) => {
 
       // })
 
+
+    })
+    watch(() => configStore.isShowConfig, (val: boolean) => {
+      if (!val) {
+        initData()
+      }
     })
     onUnmounted(() => {
       window.removeEventListener('blur', handleBlur)
@@ -227,18 +241,21 @@ export default defineComponent({
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}
           </Transition>
-          <Transition name='full-pop'>
-            {configStore.productHistoryShow && <ProductHistory />}
-          </Transition>
+
+          <NMessageProvider>
+            <Transition name='full-pop'>
+              {configStore.productHistoryShow && <ProductHistory />}
+            </Transition>
+          </NMessageProvider>
+
           {/* <Transition name='full-pop'>
             {configStore.formulaCfgShow && <FormulaConfig />}
           </Transition> */}
-          <Transition name='full-pop'>
-            <NDialogProvider>
+          <NDialogProvider>
+            <Transition name='full-pop'>
               {formulaStore.show && <FormulaConfigNew />}
-
-            </NDialogProvider>
-          </Transition>
+            </Transition>
+          </NDialogProvider>
           {/* <Transition name='full-pop'>
             {configStore.productLogShow && <ProductLog />}
           </Transition> */}

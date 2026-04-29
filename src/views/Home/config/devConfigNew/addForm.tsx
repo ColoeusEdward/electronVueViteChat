@@ -36,7 +36,12 @@ export default defineComponent({
     const submit = (form: any) => {
       // console.log("🪵 [addForm.tsx:31] ~ token ~ \x1b[0;32mform\x1b[0m = ", form);
       form.ConnectString = JSON.stringify(defaultConnectComModel)
-      callBrige(callFnName.SaveDevcieConfig, form).then((res: any[]) => {
+      // callBrige(callFnName.SaveDevcieConfig, form).then((res: any[]) => {
+      //   hideForm()
+      //   window.$message.success('保存成功')
+      //   configStore.updateDevConfigRowFn()
+      // })
+      callBrige(callFnName.InitDevice, form.DriverName).then((res: any[]) => {
         hideForm()
         window.$message.success('保存成功')
         configStore.updateDevConfigRowFn()

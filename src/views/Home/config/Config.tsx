@@ -47,7 +47,7 @@ export default defineComponent({
       return configStore.configTab
     })
     const minWidth = store.isLandscape ? '12vw' : '120px'
-    const maxWidth = store.isLandscape ? '25vw' : '400px'
+    const maxWidth = store.isLandscape ? '32vw' : '52vw'
     const commonStyle = {
       maxWidth: maxWidth, fontSize: '20px', minWidth: minWidth, borderTop: '1px solid #58595a', borderRight: '1px solid #58595a', borderLeft: '1px solid #58595a', borderBottom: '1px solid #58595a',
       flexGrow: 1, background: '#fff', borderRadius: '12px 12px 0 0'

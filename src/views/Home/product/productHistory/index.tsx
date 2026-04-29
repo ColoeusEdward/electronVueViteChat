@@ -3,6 +3,7 @@ import MyNTable from "@/components/MyNTable";
 import { useMain } from "@/store";
 import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
+import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
 import { NButton, NDatePicker, NDivider, NInput, NSelect, NSpace, useMessage } from "naive-ui";
@@ -26,34 +27,39 @@ export default defineComponent({
     }
     const tableCfg = reactive({
       columns: [
-        {
-          type: 'selection',
-          multiple: false,
-        },
-        { key: 'ProductNo', title: '线轴编号', resizable: true },
+        // {
+        //   type: 'selection',
+        //   multiple: false,
+        // },
+        { key: 'ProductNo', title: '线轴编号', resizable: true, align: 'center' },
         { key: 'PN', title: '线材型号', resizable: true },
-        { key: 'Note', title: '物料注释', resizable: true },
+        // { key: 'Note', title: '物料注释', resizable: true },
         { key: 'StartTime', title: '开始时间', resizable: true },
         { key: 'EndTime', title: '结束时间', resizable: true },
         { key: 'Operator', title: '操作员', resizable: true },
-        { key: 'ExcelPath', title: 'Excel导出路径', resizable: true, width: '120px' },
+        { key: 'ExcelPath', title: 'Excel导出路径', resizable: true, },
         { key: 'PdfPath', title: 'PDF导出路径', resizable: true },
       ],
-      tdata: [] as ProductHistoryEntity[],
+      tdata: [
+        // { PN: 22232 },
+        // { PN: 22232 },
+      ] as ProductHistoryEntity[],
       rowProps: (row: ProductHistoryEntity) => {
         return {
           onClick: () => rowClick(row)
         }
       },
       rowKey: (row: ProductHistoryEntity) => row.GId,
-      virtualScroll: true
+      virtualScroll: true,
+      isSimpleStyle: true
     })
     var sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const commonData = reactive({
       filterText: '',
       selectProps: tableCfg.columns[1].key,
-      selectOpt: [tableCfg.columns[1], tableCfg.columns[2]].map(e => {
+      // tableCfg.columns[2]
+      selectOpt: [tableCfg.columns[1]].map(e => {
         return { label: e.title, value: e.key }
       }),
       range: [sevenDaysAgo.getTime(), Date.now()] as [number, number]
@@ -81,26 +87,26 @@ export default defineComponent({
         data.startTime = commonData.range[0]!
         data.endTime = commonData.range[1]!
       }
-      callSpc(callFnName.getProductHistorys, [data.startTime, data.endTime], true).then((res: ProductHistoryEntity[]) => {
+      callBrige(callFnName.GetProductHistorys, [data.startTime, data.endTime, commonData.filterText], true).then((res: ProductHistoryEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
-        if(res.length == 0){
+        if (res.length == 0) {
           msg.warning('暂无数据')
         }
         tableCfg.tdata = res
       })
     }
-    getTableData()
+    // getTableData()
 
 
     return () => {
       return (
-        <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
-          <div class={classNames('flex-shrink flex h-full w-full',{'flex-col':!store.isLandscape})}>
-            <div class={classNames("flex flex-col ",{'w-1/2':store.isLandscape,'h-1/2':!store.isLandscape})}>
+        <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-[#f5f6f6] overflow-hidden'}>
+          <div class={classNames('flex-shrink flex h-full w-full', { 'flex-col': !store.isLandscape })}>
+            <div class={classNames("flex flex-col ", { 'w-full': store.isLandscape, 'h-1/2': !store.isLandscape })}>
               <div class={'p-3'}>
                 <NSpace>
                   <NSelect class={'w-32'} v-model:value={commonData.selectProps} options={commonData.selectOpt}></NSelect>
-                  <NInput v-model:value={commonData.filterText} placeholder={`内容筛选`} clearable ></NInput>
+                  <NInput v-model:value={commonData.filterText} placeholder={`请输入`} clearable ></NInput>
 
                   <NDatePicker v-model:value={commonData.range} type="daterange" clearable />
                   <NButton onClick={() => { getTableData(true) }}>查询</NButton>
@@ -111,7 +117,7 @@ export default defineComponent({
                 <MyNTable {...tableCfg} data={ftdata.value} />
               </div>
             </div>
-            <div class={classNames(' border-0 border-l border-gray-200 border-solid',{'w-1/2':store.isLandscape,'h-1/2':!store.isLandscape})}>
+            {/* <div class={classNames(' border-0 border-l border-gray-200 border-solid', { 'w-1/2': store.isLandscape, 'h-1/2': !store.isLandscape })}>
               <div class={classNames('h-1/2 flex flex-col',)}>
                 <NDivider titlePlacement="left" >线轴统计数据</NDivider >
                 <Statistic />
@@ -121,7 +127,7 @@ export default defineComponent({
                 <ProductLog />
               </div>
 
-            </div>
+            </div> */}
 
 
           </div>

@@ -1,5 +1,6 @@
 import { useConfigStore } from "@/store/config";
 import { useFormulaStore } from "@/store/formula";
+import { getSysConfig } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
@@ -37,10 +38,20 @@ export default defineComponent({
     }
 
     getData()
+    const getConfigList = () => alldata.list
     formulaStore.setUpdateConfigListFn(getData)
+    formulaStore.setGetFormulaListFn(getConfigList)
     const rowClick = (row: FormulaConfigEntity) => {
       formulaStore.setCurFormulaConfigRow(row)
     }
+    const applyConfig = (row: FormulaConfigEntity) => {
+      callBrige(callFnName.EnableFormulaConfig, row.GId).then(() => {
+        window.$message.success('应用成功')
+        getSysConfig()
+        formulaStore.updateConfigListFn()
+      })
+    }
+    formulaStore.setApplayFormulaConfigFn(applyConfig)
 
     watch(() => curGroupId.value, (v) => {
       if (!v) return
@@ -60,14 +71,15 @@ export default defineComponent({
           <div class={"w-full h-full overflow-auto "}>
             {
               alldata.list.map((e, i) => {
-                return <div class={classNames('text-2xl p-2 bg-white flex', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curFormulaConfigRow.value?.GId == e.GId })}
+                return <div class={classNames('text-2xl p-2 bg-white flex items-center', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curFormulaConfigRow.value?.GId == e.GId })}
                   onClick={() => { rowClick(e) }} >
                   <span>
                     {e.PN}
                     {e.Note && <>{` (${e.Note})`}</>}
                   </span>
-                  <span class={'ml-auto mr-2'}>
-                    {curFormulaId.value == e.GId ? '已启用' : ''}
+                  <span class={'ml-auto mr-2  py-1 px-3 bg-white text-black border border-gray-500 border-solid'}
+                    onClick={() => { applyConfig(e) }}>
+                    {curFormulaId.value == e.GId ? `已应用` : '应用'}
                   </span>
                 </div>
               })

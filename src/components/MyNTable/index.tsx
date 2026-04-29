@@ -1,4 +1,5 @@
 import { useElementBounding } from "@vueuse/core";
+import classNames from "classnames";
 import { NDataTable } from "naive-ui";
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 
@@ -11,13 +12,17 @@ export default defineComponent({
 
     const otherProp = computed(() => {
       // return props.tbData ? props.tbData : ctx.attrs
+      let col = ctx.attrs.columns as any
+      col.forEach((item: any) => {
+        item.align = 'center'
+      })
       return ctx.attrs
     })
     const data = reactive({
       maxHeight: '',
     })
     const MyNTableConRef = ref<HTMLDivElement>()
-    const {height} = useElementBounding(MyNTableConRef)
+    const { height } = useElementBounding(MyNTableConRef)
     // const getMaxHeight = () => {
     //   if (MyNTableConRef.value) {
     //     data.maxHeight = MyNTableConRef.value.offsetHeight+''
@@ -30,8 +35,8 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'w-full h-full'} ref={MyNTableConRef}>
-          <NDataTable  bordered={false} maxHeight={height.value} striped singleLine={false} {...otherProp.value} size={'large'} >
+        <div class={classNames('w-full h-full', { 'simple-style-table': otherProp.value.isSimpleStyle })} ref={MyNTableConRef}>
+          <NDataTable bordered={false} maxHeight={height.value} striped singleLine={false} {...otherProp.value} size={'large'} >
           </NDataTable>
         </div>
       )
