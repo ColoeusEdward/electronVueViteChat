@@ -74,6 +74,7 @@ export default defineComponent({
     const maintainOption3 = ref<PopselectProps['options']>([
       { label: '开始', value: 'collectStart' },
       { label: '结束', value: 'collectStop' },
+      { label: '换轴', value: 'shaftCollect' },
       { label: '清空数据', value: 'collectClean' },
     ])
     const handleOptClick: PopselectProps['onUpdate:value'] = (value: string) => {
@@ -117,6 +118,13 @@ export default defineComponent({
         collectClean: () => {
           curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
 
+        },
+        shaftCollect: () => {
+          if (!curCevInnerData.isGetting) {
+            window.$message.warning('请先开始采集')
+            return
+          }
+          curCevInnerData.shaftColFn && curCevInnerData.shaftColFn()
         },
         formulaCfg: () => {
           // console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);

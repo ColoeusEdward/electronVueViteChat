@@ -282,7 +282,7 @@ export const commonFormItemListMap: Record<string, formListItem> = {
 }
 commonFormItemListMap[propNameEnum.Host] = { type: 'input', ...mapLabelAndProp(propNameEnum.Host), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Port] = { type: 'input', ...mapLabelAndProp(propNameEnum.Port), width: 12, rule: ['must'] }
-commonFormItemListMap[propNameEnum.SlaveId] = { type: 'input', ...mapLabelAndProp(propNameEnum.SlaveId), width: 12, rule: ['must'] }
+commonFormItemListMap[propNameEnum.SlaveId] = { type: 'input', ...mapLabelAndProp(propNameEnum.SlaveId), width: 12, }
 commonFormItemListMap[propNameEnum.Endian32bit] = { type: 'select', ...mapLabelAndProp(propNameEnum.Endian32bit), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Endian16bit] = { type: 'select', ...mapLabelAndProp(propNameEnum.Endian16bit), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Cycle] = { type: 'input', ...mapLabelAndProp(propNameEnum.Cycle), width: 12, rule: ['must'] }

@@ -62,6 +62,7 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       startColFn: () => { },
       stopColFn: () => { },
       cleanColFn: () => { },
+      shaftColFn: () => { },
       reMountedCount: 0,     //组件重新挂载的计数, 用来区分是否还是之前的组件
       gettingChangeCount: 0,   //采集开关变化次数, 也是用来判断开关的快速变化
       isFirst: true,    //是否首次加载
@@ -164,6 +165,9 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     setInfoList(val: menuOption[]) {
       this.infoList = val
       setLocalStorage('infoList', val)
-    }
+    },
+    setShaftColFn(val: () => {}) {
+      this.shaftColFn = val
+    },
   }
 })

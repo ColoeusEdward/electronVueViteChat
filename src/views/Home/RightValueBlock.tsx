@@ -1,5 +1,5 @@
 import { NTabs, NTabPane, NDropdown, DropdownProps, MenuOption, NScrollbar } from "naive-ui";
-import { computed, defineComponent, onMounted, onUnmounted, PropType, reactive, ref, watch } from "vue";
+import { computed, defineComponent, onBeforeUnmount, onMounted, onUnmounted, PropType, reactive, ref, watch } from "vue";
 import activeImg from '@/assets/PnlBtnActive.png'
 import { useMain } from "@/store";
 import closeBtn from '@/assets/LedCloseBtn.png'
@@ -68,7 +68,8 @@ export const ValueRow = defineComponent({
     const configStore = useConfigStore()
     const alldata = reactive({
       value: 0,
-      stand: defStandValList.map(e => ({ ...e }))
+      stand: defStandValList.map(e => ({ ...e })),
+      timeIns: null as ReturnType<typeof setInterval> | null
     })
     const pdata = computed(() => props.data)
     // const curOption = ref<MenuOption>()
@@ -175,7 +176,10 @@ export const ValueRow = defineComponent({
     })
 
     const loopGetVal = () => {
+      // console.log("🪵 [RightValueBlock.tsx:207] ~计时器设置 ",);
       if (props.data && props.data.GId) {
+        // console.log("🪵 [RightValueBlock.tsx:207] ~计时器设置voer ",);
+
         callBrige(callFnName.GetRealtimeData, props.data.GId).then((res: DataValue) => {
           // console.log("🪵 [RightValueBlock.tsx:167] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
           // console.log("🪵 [RightValueBlock.tsx:174] ~ token ~ \x1b[0;32mprops.data!.stand![1].value!\x1b[0m = ", res.Value, props.data!.stand![1].value!);
@@ -188,9 +192,9 @@ export const ValueRow = defineComponent({
 
         })
       }
-      sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
-        loopGetVal()
-      })
+      // sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
+      //   loopGetVal()
+      // })
     }
 
     // watch(() => props.data, (val) => {
@@ -202,10 +206,17 @@ export const ValueRow = defineComponent({
     // }, { immediate: true })
 
     onMounted(() => {
-      loopGetVal()
+      sleep(1000).then(() => {
+        // console.log("🪵 [RightValueBlock.tsx:212] ~ token ~ \x1b[0;32mconfigStore.sysConfig.ColloctInterval\x1b[0m = ", configStore.sysConfig.ColloctInterval);
+        alldata.timeIns = setInterval(() => {
+          loopGetVal()
+        }, configStore.sysConfig.ColloctInterval || 500);
+      })
 
     })
-
+    onBeforeUnmount(() => {
+      alldata.timeIns && clearInterval(alldata.timeIns)
+    })
 
     const renderAddOrDel = () => {
       return !data.value.label ?

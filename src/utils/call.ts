@@ -3,12 +3,17 @@ import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me"
 import { callBrige } from "./callm"
 import { callFnName } from "./enum"
 
-export const resultProcess = (res: ActualResult) => {
+export const resultProcess = (res: ActualResult, cb: string) => {
   // console.log("🚀 ~ resultProcess ~ res:", res)
   if (res.Code == 0) {
     return res.Data
   } else {
-    window.$message.error(res.Message || '操作失败')
+    if (cb == callFnName.GetRealtimeData) {
+
+    } else {
+      window.$message.error(res.Message || '操作失败')
+
+    }
     return null
   }
 }
@@ -29,7 +34,7 @@ export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult
       return cb
     }
   }).then((res: ActualResult) => {
-    return resultProcess(res)
+    return resultProcess(res, "")
   }).catch((err: any) => {
     console.error(err)
     window.$message.error(err)

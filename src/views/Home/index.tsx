@@ -110,7 +110,7 @@ export default defineComponent({
     document.addEventListener('focusin', handleAllInputFocuse);
 
     const initData = () => {
-      callBrige(callFnName.InitService).then((res: string) => {
+      return callBrige(callFnName.InitService).then((res: string) => {
         // console.log("🪵 [index.tsx:123] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         callBrige(callFnName.GetChartDataAddress).then((res: ModbusAdressRow[]) => {
           configStore.setChartDataAdressList(res)
@@ -120,7 +120,7 @@ export default defineComponent({
         })
       })
     }
-
+    configStore.setInitServiceFn(initData)
     getSysConfig()
     onMounted(() => {
       // loopGetData()

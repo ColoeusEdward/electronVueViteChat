@@ -31,7 +31,7 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
     }
     return fnRun.then((res: any) => {
       let resObj = safeJsonParse(res) as ActualResult
-      return resultProcess(resObj)
+      return resultProcess(resObj, cb)
     }).catch((err: any) => {
       console.error(cb, err)
       if (cb == callFnName.GetRealtimeData) {

@@ -55,6 +55,7 @@ export default defineComponent({
         window.$message.success('操作成功')
         // getData()
         getSysConfig()
+        dialog.create({ title: '提示', content: '应用新分组记得重新配置配方', positiveText: '确定' })
       })
     }
     const addClick = (row: simpleTableColumn, item: DataGroupEntity) => {

@@ -108,6 +108,7 @@ export default defineComponent({
       pageSize: 3,
       getCfgLoading: false,
       menuOpt: [] as DropdownMixedOption[],
+      timerIns: null as any
     })
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
@@ -178,10 +179,14 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
-      if (e) {
-        msg.success('配置已刷新')
-      }
-      return getSysConfig()
+
+      return getSysConfig().then(() => {
+        return configStore.initServiceFn()
+      }).then(() => {
+        if (e) {
+          msg.success('配置已刷新')
+        }
+      })
       // return getAllActiveConfigData().then(() => {
       //   e && msg.success('配置已刷新')
       // })
@@ -191,6 +196,11 @@ export default defineComponent({
       })
     }
     innerData.setCleanColFn(clearCollect)
+    const shaftCollect = () => {
+      return callBrige(callFnName.ShaftCollect).then(() => {
+      })
+    }
+    innerData.setShaftColFn(shaftCollect)
 
     const nextPage = () => {
 
@@ -320,11 +330,11 @@ export default defineComponent({
           configStore.setCurCpk(res)
         })
       }
-      if (innerData.isGetting) {
-        sleep(configStore.sysConfig.CpkInterval || 500).then(() => {
-          loopGetCpk()
-        })
-      }
+      // if (innerData.isGetting) {
+      //   sleep(configStore.sysConfig.CpkInterval || 500).then(() => {
+      //     loopGetCpk()
+      //   })
+      // }
     }
 
     const loopGetRealTime = () => {
@@ -334,11 +344,11 @@ export default defineComponent({
           configStore.setCurRealTimeData(res)
         })
       }
-      if (innerData.isGetting) {
-        sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
-          loopGetRealTime()
-        })
-      }
+      // if (innerData.isGetting) {
+      //   sleep(configStore.sysConfig.ColloctInterval || 500).then(() => {
+      //     loopGetRealTime()
+      //   })
+      // }
     }
 
     const curPrecision = computed(() => {
@@ -347,12 +357,19 @@ export default defineComponent({
     watch(() => innerData.isGetting, (val) => {
       // console.log("🪵 [index.tsx:330] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
       if (val) {
-        loopGetCpk()
-        loopGetRealTime()
+        // loopGetCpk()
+        // loopGetRealTime()
       }
     }, {
       immediate: true
     })
+
+    const loopGetData = () => {
+      if (innerData.isGetting) {
+        loopGetCpk()
+        loopGetRealTime()
+      }
+    }
     // const curShowCpkValue = computed(
     //   () => {
     //     if (!innerData.curCpk) return 0
@@ -371,6 +388,13 @@ export default defineComponent({
       return val
     })
     onMounted(() => {
+      sleep(500).then(() => {
+        // console.log("🪵 [index.tsx:395] ~ token ~ \x1b[0;32mconfigStore.sysConfig.ColloctInterval\x1b[0m = ", configStore.sysConfig.ColloctInterval);
+        commonData.timerIns = setInterval(() => {
+          loopGetData()
+        }, configStore.sysConfig.ColloctInterval || 500)
+      })
+
       if (innerData.isFirst) {
         sleep(500).then(() => {
           innerData.setIsFirst(false)
@@ -384,6 +408,7 @@ export default defineComponent({
     onBeforeUnmount(() => {
       innerData.addReMounted()
       commonData.getCfgLoading = true
+      commonData.timerIns && clearInterval(commonData.timerIns)
     })
     return () => {
       return (

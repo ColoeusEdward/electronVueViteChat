@@ -62,7 +62,8 @@ export default defineComponent({
         useDirtyRect: true
       });
       // console.log("🪵 [CurcevChartRow.tsx:66] ~ token ~ \x1b[0;32mprops.dataConfig\x1b[0m = ", props.dataConfig);
-
+      const para = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+      console.log("🪵 [CurcevChartRow.tsx:173] ~ token ~ \x1b[0;32mpara\x1b[0m = ", para);
       let option = {
         animation: false,
         title: {
@@ -106,10 +107,20 @@ export default defineComponent({
         yAxis: {
           type: 'value',
           max: function (value: any) {
-            return value.max.toFixed(3)
+            return (value.max + (para?.UpperTol || 0.1)).toFixed(3)
+            // if(para){
+            //   return para?.Standard + para?.UpperTol
+            // }else{
+            //   return value.max.toFixed(3)
+            // }
           },
           min: function (value: any) {
-            return value.min.toFixed(3)
+            return (value.min - (para?.LowerTol || 0.1)).toFixed(3)
+            // if(para){
+            //   return para?.Standard + para?.UpperTol
+            // }else{
+            //   return value.max.toFixed(3)
+            // }
           },
           // boundaryGap: ['10%', '10%'],
           splitLine: {
@@ -170,6 +181,7 @@ export default defineComponent({
         //   res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
         // }
         // filter((e,i) => i % 2 == 0)
+
         let list = res.map(e => {
           let time = new Date(e.Intime).getTime()
           return [time, e.Value * 1]

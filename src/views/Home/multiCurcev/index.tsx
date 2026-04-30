@@ -9,7 +9,7 @@ import niotLogo from '@/assets/login_logos.png';
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
 import { menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "../curcev/enum";
 import activeImg from '@/assets/LineDspButton_inactive.png'
-import { buildMenuOpt } from "@/utils/utils";
+import { buildMenuOpt, sleep } from "@/utils/utils";
 import { useConfigStore } from "@/store/config";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 
@@ -27,6 +27,7 @@ export default defineComponent({
       getCfgLoading: false,
       pageSize: 3,
       menuOpt: [] as DropdownMixedOption[],
+      refreshHide: false
     })
     watch(() => configStore.chartDataAdressList, (v) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
@@ -105,13 +106,15 @@ export default defineComponent({
       return allSubList
       // curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
     })
+
     const handleSelect = (key: string) => {
       let type = key.split(menuIdSplit)[0]
       let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
         let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
         item && configStore.addMultiChartAdress(item)
-        curCevInnerData.getCpkFn()
+
+        // curCevInnerData.getCpkFn()
       }
 
     }
@@ -130,7 +133,7 @@ export default defineComponent({
     }
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
-      if (option.trueKey && curCevInnerData.curDataCfgEntity?.GId == option.trueKey) {
+      if (option.trueKey && configStore.curMultiChartAdress.some(e => e.GId == option.trueKey)) {
         text += ' ✔️'
       }
 
@@ -138,6 +141,12 @@ export default defineComponent({
         <span>{text}</span>
       )
     }
+    watch(() => dataList.value.length, (v) => {
+      commonData.refreshHide = true
+      sleep(200).then(() => {
+        commonData.refreshHide = false
+      })
+    })
     onBeforeUnmount(() => {
       curCevInnerData.addReMounted()
     })
@@ -173,9 +182,11 @@ export default defineComponent({
             </div>
           </div>
           <div class={'flex-shrink w-full h-full pb-2 overflow-hidden'}>
-            <div class={'w-full h-full'}>
-              {dataList.value.map((e: ModbusAdressRow, i) => {
-                return <CurcevChartRow i={i} adressRow={e} chartId={chartId} />
+            <div class={'w-full h-full flex flex-col'}>
+              {!commonData.refreshHide && dataList.value.map((e: ModbusAdressRow, i) => {
+                return <div class={'w-full h-full flex-1'}>
+                  <CurcevChartRow i={i} adressRow={e} chartId={chartId} />
+                </div>
               })}
             </div>
           </div>

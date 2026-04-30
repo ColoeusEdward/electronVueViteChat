@@ -70,6 +70,7 @@ export const useConfigStore = defineStore('config', {
       curDataGroupRow: null as DataGroupEntity | null,
       curEnableFormulaRow: null as FormulaConfigEntity | null | undefined,
       curEnableFormulaParamList: null as FormulaParamEntity[] | null | undefined,
+      initServiceFn: () => { },
 
 
       DevChooseShow: false,
@@ -231,6 +232,9 @@ export const useConfigStore = defineStore('config', {
     setCurEnableFormulaParamList(value: FormulaParamEntity[] | null | undefined) {
       this.curEnableFormulaParamList = value
     },
+    setInitServiceFn(value: () => void) {
+      this.initServiceFn = value
+    }
 
   }
 

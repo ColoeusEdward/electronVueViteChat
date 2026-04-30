@@ -86,7 +86,7 @@ export default defineComponent({
         { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return ParamClassNameMap[item.ParamClass] } },
         { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return UnilateralNameList[item.Unilateral] } },
         // { label: '报警类型', prop: 'AlarmType', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return AlarmTypeNameList[item.AlarmType] } },
-        { label: '从站地址', prop: 'SlaveId', flex: 1, },
+        // { label: '从站地址', prop: 'SlaveId', flex: 1, },
         { label: '读写权限', prop: 'Permission', flex: 1, mapFn: (col: any, item: ModbusAdressRow) => { return PermissionNameList[item.ParamClass] } },
         // { label: '精度', prop: 'Precision', flex: 1 },
         // { label: '单位', prop: 'Unit', flex: 1  },
