@@ -13,6 +13,11 @@ import { CollectPointModel, DataConfigEntity, DataValue, ModbusAdressRow } from 
 import CpkBlock from "./CpkBlock";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
+import SymAuto from '@/assets/SymAuto.png'
+import SymBigger from '@/assets/SymBigger.png'
+import SymSmaller from '@/assets/SymSmaller.png'
+import SymUp from '@/assets/SymUp.png'
+import SymDown from '@/assets/SymDown.png'
 
 let now = Date.now()
 let fakeDataList = new Array(50).fill(0).map((e, i) => {
@@ -50,10 +55,21 @@ export default defineComponent({
     let myChart: echarts.ECharts
     let unit = `mm`
     const alldata = reactive({
-      widthPixel: 800
+      widthPixel: 800,
+      isAuto: true,
+      upMove: 0, //上移动中线
+      // downMove: 0,
+      scalUpMove: 0,  //放大上下限
+      // scalDownMove: 0 //缩小上下限
+      curParSaclStep: 0.1,
     })
     const dataSourceItem = computed(() => {
       return props.dataSourceItem
+    })
+    const paraItem = computed(() => {
+      let item = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+      alldata.curParSaclStep = item?.Standard ? item.Standard * 0.01 : 0.1
+      return item
     })
     const initEchart = () => {
       let ele = document.getElementById((props.chartId || 'trendChart') + props.i)
@@ -62,7 +78,7 @@ export default defineComponent({
         useDirtyRect: true
       });
       // console.log("🪵 [CurcevChartRow.tsx:66] ~ token ~ \x1b[0;32mprops.dataConfig\x1b[0m = ", props.dataConfig);
-      const para = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+      const para = paraItem.value
       console.log("🪵 [CurcevChartRow.tsx:173] ~ token ~ \x1b[0;32mpara\x1b[0m = ", para);
       let option = {
         animation: false,
@@ -107,7 +123,7 @@ export default defineComponent({
         yAxis: {
           type: 'value',
           max: function (value: any) {
-            return (value.max + (para?.UpperTol || 0.1)).toFixed(3)
+            return (value.max + (para?.UpperTol || 0.1) + alldata.scalUpMove + alldata.upMove).toFixed(3)
             // if(para){
             //   return para?.Standard + para?.UpperTol
             // }else{
@@ -115,7 +131,13 @@ export default defineComponent({
             // }
           },
           min: function (value: any) {
-            return (value.min - (para?.LowerTol || 0.1)).toFixed(3)
+            let min = value.min
+            if (value.min == 0 && para) {
+              min = para?.Standard - para?.LowerTol
+            }
+            // let val = (value.min - (para?.LowerTol || 0.1) - alldata.scalUpMove).toFixed(3)
+
+            return (min - (para?.LowerTol || 0.1) - alldata.scalUpMove + alldata.upMove).toFixed(3)
             // if(para){
             //   return para?.Standard + para?.UpperTol
             // }else{
@@ -150,7 +172,7 @@ export default defineComponent({
           smooth: false,
         },
         grid: {
-          right: '2%',
+          right: '14px',
           left: '7%',
           top: '30px'
         }
@@ -251,6 +273,45 @@ export default defineComponent({
         loopGet()
       }
     })
+    const setOption = (opts: any) => {
+      let opt = {
+
+      }
+      myChart.setOption(opt);
+
+    }
+    const resetSysValue = () => {
+      alldata.scalUpMove = 0
+      alldata.upMove = 0
+    }
+    const autoClick = () => {
+      alldata.isAuto = true
+      resetSysValue()
+      myChart.setOption({});
+    }
+    const sysBiggerClick = () => {
+      alldata.isAuto = false
+      alldata.scalUpMove -= alldata.curParSaclStep
+      myChart.setOption({});
+
+    }
+    const sysSmallerClick = () => {
+      alldata.isAuto = false
+      alldata.scalUpMove += alldata.curParSaclStep
+      myChart.setOption({});
+
+    }
+    const sysUpClick = () => {
+      alldata.isAuto = false
+      alldata.upMove += alldata.curParSaclStep
+      myChart.setOption({});
+    }
+    const sysDownClick = () => {
+      alldata.isAuto = false
+      alldata.upMove -= alldata.curParSaclStep
+      myChart.setOption({});
+
+    }
 
     ctx.expose({
       getChartIns,
@@ -289,9 +350,39 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'h-full shrink mt-2 overflow-visible relative my-index-chart'} style={{ ...(props.height ? { height: props.height } : {}) }} >
+        <div class={'h-full shrink mt-2 overflow-visible relative my-index-chart flex'} style={{ ...(props.height ? { height: props.height } : {}) }} >
           {/* <CpkBlock dataConfig={props.dataConfig} /> */}
-          <div class={' h-full w-full '} id={(props.chartId || 'trendChart') + props.i} >
+          <div class={' h-full w-full  '} style={{ width: `calc(100% - 100px)` }} id={(props.chartId || 'trendChart') + props.i} >
+          </div>
+          <div class={'w-[100px]  h-full  '}>
+            <div class={'w-full h-full flex'}>
+              <div class={'flex-1 w-full h-full flex flex-col justify-center items-center'}>
+                <div class={' h-[50px] w-[50px] mb-3'} title={'自动'} onClick={autoClick} style={{ backgroundImage: `url(${SymAuto})`, backgroundSize: '120% 120%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} >
+
+                </div>
+                <div class={' h-[50px] w-[50px] mb-3'} title={'放大曲线'} onClick={sysBiggerClick} style={{ backgroundImage: `url(${SymBigger})`, backgroundSize: '120% 120%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} >
+
+                </div>
+                <div class={' h-[50px] w-[50px] mb-3'} title={'缩小曲线'} onClick={sysSmallerClick} style={{ backgroundImage: `url(${SymSmaller})`, backgroundSize: '120% 120%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} >
+
+                </div>
+              </div>
+              <div class={'flex-1 w-full h-full'}>
+                <div class={'flex-1 w-full h-full flex flex-col justify-center items-center'}>
+                  <div class={' h-[50px] w-[50px] mb-3'} style={{}} >
+
+                  </div>
+                  <div class={' h-[50px] w-[50px] mb-3'} title={'上移'} onClick={sysUpClick} style={{ backgroundImage: `url(${SymUp})`, backgroundSize: '150% 150%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} >
+
+                  </div>
+                  <div class={' h-[50px] w-[50px] mb-3'} title={'下移'} onClick={sysDownClick} style={{ backgroundImage: `url(${SymDown})`, backgroundSize: '150% 150%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} >
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
       )

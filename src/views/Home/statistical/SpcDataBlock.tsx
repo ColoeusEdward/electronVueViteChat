@@ -18,7 +18,7 @@ export default defineComponent({
       { label: '上限', key: 'Usl' },
       { label: '最大值', key: 'Max' },
       // { label: 'CP', key: '4', noUnit: true },
-      { label: '分组计数', key: 'Group', noUnit: true },
+      // { label: '分组计数', key: 'Group', noUnit: true },
       // { label: 'CPK', key: '4', noUnit: true },
       { label: '精准度', key: 'Decimals', noUnit: true },
     ]

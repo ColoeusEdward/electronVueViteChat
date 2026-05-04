@@ -158,9 +158,9 @@ export default defineComponent({
           // max: function (value: any) {
           //   return value.max + 1
           // },
-          // min: function (value: any) {
-          //   return value.min
-          // },
+          min: function (value: any) {
+            return 0
+          },
           boundaryGap: ['5%', '5%'],
           splitLine: {
             show: true
@@ -178,6 +178,9 @@ export default defineComponent({
           // min: function (value: any) {
           //   return value.min
           // },
+          min: function (value: any) {
+            return 0
+          },
           boundaryGap: ['5%', '5%'],
           splitLine: {
             show: true
