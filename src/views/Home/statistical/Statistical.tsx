@@ -6,23 +6,33 @@ import { useRealTimeStore } from "@/store/realtime";
 import { storeToRefs } from "pinia";
 import { useStatisticalStore } from "@/store/statistical";
 import StatisticalChartBlock from "./StatisticalChartBlock";
+import { sleep } from "@/utils/utils";
 
 export default defineComponent({
   name: 'Statistical',
   setup(props, ctx) {
     const store = useMain()
     const staticalStore = useStatisticalStore()
+    const alldata = reactive({
+      tempHide: false
+    })
     const dataSourceList = computed(() => {
-      return staticalStore.dataSourceList
+      return staticalStore.curDisDataAdressList
+    })
+    watch(() => staticalStore.curDisDataAdressList, (val) => {
+      alldata.tempHide = true
+      sleep(200).then(() => {
+        alldata.tempHide = false
+      })
     })
     return () => {
       return (
         <div class={'w-full h-full px-2 flex flex-col'}>
           <MenuBtn />
           <div class={'w-full h-full shrink flex flex-wrap flex-col mt-2'}>
-            {dataSourceList.value.map((e, i) => {
+            {!alldata.tempHide && dataSourceList.value.map((e, i) => {
               return (
-                <StatisticalChartBlock dataSourceItem={e} key={i} i={i} listNum={staticalStore.dataSourceList.length} />
+                <StatisticalChartBlock dataSourceItem={e} key={i} i={i} listNum={dataSourceList.value.length} />
                 // <div >
 
                 // </div>

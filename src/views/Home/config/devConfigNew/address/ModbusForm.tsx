@@ -94,8 +94,9 @@ export default defineComponent({
           configStore.setAddressFormShow(false)
         } else {
           let SlaveId = alldata.form.SlaveId || 0
+          let Index = alldata.form.Index || 0
           let Length = alldata.form.Length || 0
-          alldata.form.SlaveId = SlaveId * 1 + Length * 1
+          alldata.form.Index = Index * 1 + Length * 1
           alldata.form.DataName = ""
         }
         // props.updateParentFn && props.updateParentFn()

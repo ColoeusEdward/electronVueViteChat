@@ -1,5 +1,6 @@
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
+import { DistributionEntity, ModbusAdressRow } from "~/me";
 
 const localDataSourceList = localStorage.getItem('statisticalDataSourceList') ? JSON.parse(localStorage.getItem('statisticalDataSourceList') || '[]') : []
 
@@ -15,7 +16,8 @@ export const useStatisticalStore = defineStore('statistical', {
       dataSourceList: <{ label: string, key: string, parent: string }[]>localDataSourceList,       //菜单选中的数据源
 
       isOnline: true,             //是否启用在线统计
-      isShowData: true            //是否显示底部数据
+      isShowData: true,            //是否显示底部数据
+      curDisDataAdressList: [] as ModbusAdressRow[],          //当前显示的数据
     }
   },
   /**
@@ -33,7 +35,7 @@ export const useStatisticalStore = defineStore('statistical', {
     // },
     addDataSource(value: any) {
       // debugger
-    console.log("🚀 ~ file: statistical.ts:35 ~ addDataSource ~ value:", value)
+      console.log("🚀 ~ file: statistical.ts:35 ~ addDataSource ~ value:", value)
 
       if (!this.dataSourceList.some(e => e.key == value.key && e.parent == value.parent)) {
         if (this.dataSourceList.length == 4) {
@@ -57,7 +59,16 @@ export const useStatisticalStore = defineStore('statistical', {
     },
     changeIsShowData() {
       this.isShowData = !this.isShowData
-    }
+    },
+    addCurDisDataAdressList(value: ModbusAdressRow) {
+      this.curDisDataAdressList.push(value)
+    },
+    removeCurDisDataAdressList(value: ModbusAdressRow) {
+      this.curDisDataAdressList.splice(this.curDisDataAdressList.findIndex(e => e == value), 1)
+    },
+    clearCurDisDataAdressList() {
+      this.curDisDataAdressList = []
+    },
 
   }
 

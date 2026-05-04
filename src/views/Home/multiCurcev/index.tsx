@@ -112,7 +112,13 @@ export default defineComponent({
       let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
         let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
-        item && configStore.addMultiChartAdress(item)
+        if (item) {
+          if (configStore.curMultiChartAdress.some(e => e.GId == item!.GId)) {
+            configStore.removeMultiChartAdress(item)
+          } else {
+            configStore.addMultiChartAdress(item)
+          }
+        }
 
         // curCevInnerData.getCpkFn()
       }

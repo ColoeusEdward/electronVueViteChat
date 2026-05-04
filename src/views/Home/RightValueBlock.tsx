@@ -271,7 +271,7 @@ export default defineComponent({
       zIndex: 6
     }
     const commonStyle = {
-      width: '10vw', border: 'none', fontSize: '20px',
+      width: '7vw', border: 'none', fontSize: '20px',
       minWidth: "100px",
       borderBottom: '3px solid #58595a'
     }

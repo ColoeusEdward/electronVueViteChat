@@ -12,7 +12,7 @@ import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
 import { frontFnNameEnum, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
-import { buildMenuOpt, getRandomInt, getRegState, loopGet, sleep } from "@/utils/utils";
+import { buildMenuOpt, getRandomInt, getRegState, loopGet, sleep, updateFormulaConfig } from "@/utils/utils";
 import { useMain } from "@/store";
 import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
 import FFT from "./FFT";
@@ -179,7 +179,7 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
-
+      updateFormulaConfig(configStore)
       return getSysConfig().then(() => {
         return configStore.initServiceFn()
       }).then(() => {

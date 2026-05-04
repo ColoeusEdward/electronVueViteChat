@@ -7,6 +7,21 @@ import { storeToRefs } from "pinia";
 import { useRealTimeStore } from "@/store/realtime";
 import { useStatisticalStore } from "@/store/statistical";
 import niotLogo from '@/assets/login_logos.png';
+import { useConfigStore } from "@/store/config";
+import { buildMenuOpt } from "@/utils/utils";
+const defMenu = [{
+  label: '数据源', key: 'dataSource', children: [
+    { label: '全部清除', key: 'cleanAll' },
+    // { label: '直径1', key: 'diameter1', },
+    // { label: '热外径', key: 'heat', },
+    // { label: '冷外径', key: 'cold', },
+    // { label: '壁厚', key: 'wall', },
+    // { label: '偏心', key: 'ecc', },
+    // { label: '同心度', key: 'concentricity', },
+    // { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+
+  ]
+},]
 
 const TopValue = defineComponent({
   name: 'TopValue',
@@ -65,6 +80,7 @@ export default defineComponent({
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const statisticalStore = useStatisticalStore()
+    const configStore = useConfigStore()
     const dropdownItemProp = {
       style: {
         fontSize: '1.2rem'
@@ -152,35 +168,46 @@ export default defineComponent({
 
     const handleMenuSelect: DropdownProps['onSelect'] = (val, option) => {
       // console.log(val,option)
-      let { key, label } = option
+      let { key, label, trueKey } = option
 
-      if (String(key).search('-') > -1) {
-        let [parent, ckey] = String(key).split('-')
-        statisticalStore.addDataSource({ label: label, key: ckey, parent: parent })
-      }
-      //@ts-ignore
-      if (originMaintainOption![0].children.slice(3).some(e => e.key == key)) {
-        statisticalStore.addDataSource({ label: label, key: key, parent: 'dataSource' })
-      }
+      // if (String(key).search('-') > -1) {
+      //   let [parent, ckey] = String(key).split('-')
+      //   statisticalStore.addDataSource({ label: label, key: ckey, parent: parent })
+      // }
+      // //@ts-ignore
+      // if (originMaintainOption![0].children.slice(3).some(e => e.key == key)) {
+      //   statisticalStore.addDataSource({ label: label, key: key, parent: 'dataSource' })
+      // }
 
       if (key == 'cleanAll') {
-        statisticalStore.cleanDataSource()
+        statisticalStore.clearCurDisDataAdressList()
+      } else {
+        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
+        if (item) {
+          if (statisticalStore.curDisDataAdressList.some(e => e.GId == item!.GId)) {
+            statisticalStore.removeCurDisDataAdressList(item)
+          } else {
+            statisticalStore.addCurDisDataAdressList(item)
+          }
+        }
       }
-      if (key == 'onlineStatistical') {
-        statisticalStore.setIsOnline(true)
-      }
-      if (key == 'statistical') {
-        statisticalStore.setIsOnline(false)
-      }
-      if (key == 'isShowData') {
-        statisticalStore.changeIsShowData()
-      }
+      // if (key == 'onlineStatistical') {
+      //   statisticalStore.setIsOnline(true)
+      // }
+      // if (key == 'statistical') {
+      //   statisticalStore.setIsOnline(false)
+      // }
+      // if (key == 'isShowData') {
+      //   statisticalStore.changeIsShowData()
+      // }
     }
 
 
     const computeOption = computed(() => {
       //@ts-ignore
-      let opt: DropdownProps['options'] = [...maintainOption.value, ...displayOption.value, ...zoneOption.value]
+      // let opt: DropdownProps['options'] = [...maintainOption.value, ...displayOption.value, ...zoneOption.value]
+      let opt = defMenu.map(e => ({ ...e, children: e.children?.map(ee => { return { ...ee } }) }))
+      opt[0].children.push(...configStore.chartDataAdressList.map(e => buildMenuOpt(e)) as any)
       // if (Object.values(opt).some(e => !e.props)) {
       //   opt = addProp(opt)
       // }
@@ -213,12 +240,12 @@ export default defineComponent({
     const renderLabel: DropdownProps['renderLabel'] = (option) => {
       let text = option.label
       // console.log("🚀 ~ file: MenuBtn.tsx:204 ~ setup ~ option:", option)
-      if (statisticalStore.dataSourceList.some(e => (e.parent + '-' + e.key) == option.key || e.key == option.key)) {
+      if (statisticalStore.curDisDataAdressList.some(e => e.GId == option.trueKey)) {
         text += ' ✔️'
       }
-      if ((option.key == 'onlineStatistical' && statisticalStore.isOnline) || (option.key == 'statistical' && !statisticalStore.isOnline) || (option.key == 'isShowData' && statisticalStore.isShowData)) {
-        text += '✔️'
-      }
+      // if ((option.key == 'onlineStatistical' && statisticalStore.isOnline) || (option.key == 'statistical' && !statisticalStore.isOnline) || (option.key == 'isShowData' && statisticalStore.isShowData)) {
+      //   text += '✔️'
+      // }
       // if (Object.values(store.$state).some(e => e.key == option.key)
       //   || (option.key == 'toleranceBar' && store.isTorBar)) {
       //   // return option.label as VNodeChild

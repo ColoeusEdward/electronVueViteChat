@@ -240,7 +240,8 @@ type ModbusAdressRow = {
   CreateTime?: string;    // 日期时间字符串
   isNewRow?: boolean
   SlaveId?: number;
-  Length?: number
+  Length?: number;
+  Index?: number;
 }
 
 interface DataGroupEntity {
@@ -493,6 +494,47 @@ export interface CPKEntity {
 
   /** CPK */
   CPK: number;
+}
+
+interface DistributionEntity {
+  /** 标准值 */
+  Std: number;
+
+  /** 上限 */
+  Usl: number;
+
+  /** 下线 */
+  Lsl: number;
+
+  /** 最大值 */
+  Max: number;
+
+  /** 最小值 */
+  Min: number;
+
+  /** 平均值 */
+  Avg: number;
+
+  /** 标准差 */
+  Sigma: number;
+
+  /** 分组计数 */
+  Group: number;
+
+  /** 精确度 */
+  Decimals: number;
+
+  /** 正态分布X轴 */
+  X: number[];
+
+  /** 正态分布Y轴 */
+  Y: number[];
+
+  /** 高斯曲线X轴 */
+  GaussX: number[];
+
+  /** 高斯曲线Y轴 */
+  GaussY: number[];
 }
 
 interface DataValue {

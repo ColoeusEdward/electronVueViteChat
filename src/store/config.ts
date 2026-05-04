@@ -214,6 +214,9 @@ export const useConfigStore = defineStore('config', {
     addMultiChartAdress(value: ModbusAdressRow) {
       this.curMultiChartAdress.push(value)
     },
+    removeMultiChartAdress(value: ModbusAdressRow) {
+      this.curMultiChartAdress = this.curMultiChartAdress.filter(item => item.GId !== value.GId)
+    },
     clearMultiChartAdress() {
       this.curMultiChartAdress = []
     },

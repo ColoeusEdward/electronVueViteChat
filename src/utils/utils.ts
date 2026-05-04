@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult, DataConfigEntity, ModbusAdressRow } from "~/me";
+import { ActualResult, DataConfigEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -201,4 +201,14 @@ export const buildMenuOpt = (e: ModbusAdressRow) => {
     Unit: e.Unit,
     Precision: e.Precision
   }
+}
+
+export const updateFormulaConfig = (configStore: ReturnType<typeof useConfigStore>) => {
+  callBrige(callFnName.GetFormulaConfigs, configStore.sysConfig.CurrentGroupId).then((res: FormulaConfigEntity[]) => {
+    let item = res.find(e => e.GId == configStore.sysConfig.CurrentFormulaId)
+    configStore.setCurEnableFormulaRow(item)
+    return callBrige(callFnName.GetFormulaParams, item?.GId)
+  }).then((res: FormulaParamEntity[]) => {
+    configStore.setCurEnableFormulaParamList(res)
+  })
 }

@@ -6,7 +6,7 @@ import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
 import emptyAduio from '@/assets/10-seconds-of-silence.mp3'
 import { useMain } from "@/store";
-import { isLowResolution, showKeyBoard, sleep } from "@/utils/utils";
+import { isLowResolution, showKeyBoard, sleep, updateFormulaConfig } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
 import Trend from "./trend/Trend";
 import Statistical from "./statistical/Statistical";
@@ -142,13 +142,8 @@ export default defineComponent({
       }
     })
     watch(() => configStore.sysConfig.CurrentFormulaId, () => {
-      callBrige(callFnName.GetFormulaConfigs, configStore.sysConfig.CurrentGroupId).then((res: FormulaConfigEntity[]) => {
-        let item = res.find(e => e.GId == configStore.sysConfig.CurrentFormulaId)
-        configStore.setCurEnableFormulaRow(item)
-        return callBrige(callFnName.GetFormulaParams, item?.GId)
-      }).then((res: FormulaParamEntity[]) => {
-        configStore.setCurEnableFormulaParamList(res)
-      })
+      updateFormulaConfig(configStore)
+
     })
     onUnmounted(() => {
       window.removeEventListener('blur', handleBlur)
@@ -166,7 +161,7 @@ export default defineComponent({
           {/* <KeepAlive> */}
           {
             store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
-              <div class={'w-2/3'}>
+              <div class={'w-3/4'}>
                 <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
 
 
@@ -215,7 +210,7 @@ export default defineComponent({
                 </NTabs>
               </div>
 
-              <div class={'w-1/3'}>
+              <div class={'w-1/4'}>
                 <RightValueBlock />
               </div>
             </div> :

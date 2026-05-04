@@ -181,6 +181,13 @@ export default defineComponent({
         //   res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
         // }
         // filter((e,i) => i % 2 == 0)
+        let paramItem = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+        let upValue: number = paramItem?.UpperTol || 0.1
+        let downValue: number = paramItem?.LowerTol || 0.1
+        if (paramItem) {
+          upValue = paramItem.Standard + paramItem.UpperTol
+          downValue = paramItem.Standard - paramItem.LowerTol
+        }
 
         let list = res.map(e => {
           let time = new Date(e.Intime).getTime()
@@ -207,7 +214,24 @@ export default defineComponent({
             large: true,
             // 当数据量超过 1000 时，进入大数据模式
             largeThreshold: innerData.samplingNum,
-            sampling: 'lttb'
+            sampling: 'lttb',
+            markArea: {
+              silent: true, // 图形是否不响应鼠标事件，建议开启以防干扰点击折线
+              itemStyle: {
+                color: 'rgba(0, 0, 0, 0.1)', // 设置阴影颜色和透明度 (这里是淡红色)
+              },
+              data: [
+                [
+                  {
+                    // name: '公差范围', // 阴影区域的名字
+                    yAxis: downValue    // 下公差的具体数值
+                  },
+                  {
+                    yAxis: upValue     // 上公差的具体数值
+                  }
+                ]
+              ]
+            }
             // ...((res.length > innerData.samplingNum) ? { sampling: 'lttb' } : {})
           },
         }
