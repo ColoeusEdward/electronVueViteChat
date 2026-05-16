@@ -119,6 +119,7 @@ type ConnectTcpModel = {
   Timeout: number;
   Endian32Bit: string;
   Endian16Bit: string;
+  EndianString?: string;
 }
 
 type ConnectFFTModel = {
@@ -535,6 +536,73 @@ interface DistributionEntity {
 
   /** 高斯曲线Y轴 */
   GaussY: number[];
+}
+
+interface ProductStatisticEntity {
+  /** 主键 */
+  GId: string;
+
+  /** 线轴Id */
+  ProductId: string;
+
+  /** 数据名称 */
+  DataName: string;
+
+  /** 数据单位 */
+  Unit: string;
+
+  /** 标准值 */
+  Standard: number;
+
+  /** 上限 */
+  USL: number;
+
+  /** 下限 */
+  LSL: number;
+
+  /** 平均值 */
+  Average: number;
+
+  /** 最大值 */
+  Max: number;
+
+  /** 最小值 */
+  Min: number;
+
+  /** 标准差 */
+  StdDev: number;
+
+  /** Ca（制程准确度） */
+  Ca: number;
+
+  /** Cp（制程精密度） */
+  Cp: number;
+
+  /** Cpk（过程能力指数） */
+  Cpk: number;
+}
+
+interface ProductLogEntity {
+  /** 主键 */
+  GId: string;
+
+  /** 产品Id */
+  ProductId: string;
+
+  /** 操作员 */
+  Operater: string;
+
+  /** 日志类型 */
+  LogType: string;
+
+  /** 日志选项 */
+  LogOption: string;
+
+  /** 日志详细 */
+  LogDetail: string;
+
+  /** 创建时间 */
+  CreateTime: string;
 }
 
 interface DataValue {

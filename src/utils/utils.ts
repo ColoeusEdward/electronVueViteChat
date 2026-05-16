@@ -212,3 +212,36 @@ export const updateFormulaConfig = (configStore: ReturnType<typeof useConfigStor
     configStore.setCurEnableFormulaParamList(res)
   })
 }
+
+export function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  return function (this: any, ...args: Parameters<T>) {
+    // 如果已经在计时，则清除之前的计时器重新开始
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+}
+
+export function throttle<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let previous = 0;
+
+  return function (this: any, ...args: Parameters<T>) {
+    const now = Date.now();
+    if (now - previous > wait) {
+      func.apply(this, args);
+      previous = now;
+    }
+  };
+}

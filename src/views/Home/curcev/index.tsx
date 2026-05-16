@@ -21,6 +21,7 @@ import { NBaseLoading } from "naive-ui/es/_internal";
 import { callBrige } from "@/utils/callm";
 import { useConfigStore } from "@/store/config";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
+import classNames from "classnames";
 
 let defCfgData: DataConfigEntity[] = [
   {
@@ -108,7 +109,8 @@ export default defineComponent({
       pageSize: 3,
       getCfgLoading: false,
       menuOpt: [] as DropdownMixedOption[],
-      timerIns: null as any
+      timerIns: null as any,
+      tol: { up: 0, down: 0, }, //上下限
     })
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
@@ -179,8 +181,8 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
-      updateFormulaConfig(configStore)
       return getSysConfig().then(() => {
+        updateFormulaConfig(configStore)
         return configStore.initServiceFn()
       }).then(() => {
         if (e) {
@@ -350,9 +352,36 @@ export default defineComponent({
       //   })
       // }
     }
-
+    const curParamItem = computed(() => {
+      let list = configStore.curEnableFormulaParamList
+      let item = list?.find(e => e.DataId == configStore.curChartAdress?.GId)
+      if (item) {
+        commonData.tol.up = item?.Standard * 1 + item?.UpperTol * 1
+        commonData.tol.down = item?.Standard * 1 - item?.LowerTol
+      }
+      return item
+    })
     const curPrecision = computed(() => {
       return configStore.curChartAdress?.Precision == undefined ? 3 : configStore.curChartAdress?.Precision
+    })
+    const valueIsOk = computed(() => {
+      curParamItem.value;
+      let dat = { ok: false, msg: '' }
+      if (realTimeValue.value * 1 >= commonData.tol.down && realTimeValue.value * 1 <= commonData.tol.up) {
+        dat.ok = true
+        return dat
+      } else {
+        if (realTimeValue.value * 1 < commonData.tol.down) {
+          dat.ok = false
+          dat.msg = 'dowm'
+          return dat
+        }
+        if (realTimeValue.value * 1 > commonData.tol.up) {
+          dat.ok = false
+          dat.msg = 'up'
+          return dat
+        }
+      }
     })
     watch(() => innerData.isGetting, (val) => {
       // console.log("🪵 [index.tsx:330] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
@@ -396,14 +425,14 @@ export default defineComponent({
       })
 
       if (innerData.isFirst) {
-        sleep(500).then(() => {
+        sleep(100).then(() => {
           innerData.setIsFirst(false)
           return refresh()
         })
       } else {
-        return refresh()
+        // return refresh()
       }
-
+      // refresh()
     })
     onBeforeUnmount(() => {
       innerData.addReMounted()
@@ -483,14 +512,20 @@ export default defineComponent({
 
                 <div class={'h-full border-1 border-solid border-[#e4e4e5] shadow-inner flex'}>
                   <div class={'w-full h-full shrink py-1 px-2 flex justify-end items-center relative'}>
-                    <div class={'absolute top-2 right-2  text-lg'}>
-                      {/* {innerData.curCpkKey?.title} */}
-                      <NSpace>
-                        {/* <div class={'mr-4'}>
-                          <span class={'text-gray-500 mr-2'}>产品编号</span>
-                          <span class={"text-blue-500"}>{innerData.curProductCode}</span>
+                    {
+                      !valueIsOk.value?.ok &&
+                      <div class={' absolute top-0 left-2  text-2xl ' + classNames({
+                        'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
+                        'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
+                      })}>
+                        {valueIsOk.value?.msg == 'dowm' ? '- 公差' : '+ 公差'}
+                      </div>
+                    }
 
-                        </div> */}
+                    <div class={'absolute top-2 right-2  text-lg'}>
+
+                      {/* <NSpace>
+
                         <div>
                           <span class={'text-gray-500 mr-2'}>上限</span>
                           <span class={"text-blue-500"}>{configStore.curCpk?.UpperLimit.toFixed(curPrecision.value)}</span>
@@ -499,14 +534,7 @@ export default defineComponent({
                           <span class={'text-gray-500 mr-2'}>下限</span>
                           <span class={"text-blue-500"}>{configStore.curCpk?.LowerLimit.toFixed(curPrecision.value)}</span>
                         </div>
-                        {/* <div>
-                          <span class={'text-gray-500 mr-2'}>上公差</span>
-                          <span class={"text-blue-500"}>{configStore.curCpk?.Utol.toFixed(curPrecision.value)}</span>
-                        </div>
-                        <div>
-                          <span class={'text-gray-500 mr-2'}>下公差</span>
-                          <span class={"text-blue-500"}>{configStore.curCpk?.Ltol.toFixed(curPrecision.value)}</span>
-                        </div> */}
+
                         <div>
                           <span class={'text-gray-500 mr-2'}>标准值</span>
                           <span class={"text-blue-500"}>{configStore.curCpk?.Standard.toFixed(curPrecision.value)}</span>
@@ -528,10 +556,14 @@ export default defineComponent({
                           <span class={"text-blue-500"}>{configStore.curCpk?.CPK.toFixed(curPrecision.value)}</span>
                         </div>
 
-                      </NSpace>
+                      </NSpace> */}
                     </div>
                     {/* <span class={'text-[#013b63] font-semibold'} style={{ fontSize: store.isLowRes ? '12rem' : '16rem' }} >{curShowCpkValue.value.toFixed(6)}</span> */}
-                    <span class={'text-[#013b63] font-semibold value-number'} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{realTimeValue.value.toFixed(mainFixNum.value)}</span>
+                    <span class={' font-semibold value-number ' + classNames({
+                      'text-[#003a62]': valueIsOk.value?.ok,
+                      'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
+                      'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
+                    })} style={{ fontSize: store.isLowRes ? '8rem' : '12rem' }} >{realTimeValue.value.toFixed(mainFixNum.value)}</span>
 
                   </div>
                   <div class={' grow p-2 h-full flex flex-col relative'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>

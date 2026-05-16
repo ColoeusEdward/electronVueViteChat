@@ -129,7 +129,7 @@ export default defineComponent({
           // startSpcSys()
         }
       })
-      initData()
+      // initData()
       // callBrige(callFnName.InitDevice).then((res: string) => {
 
       // })
@@ -138,7 +138,7 @@ export default defineComponent({
     })
     watch(() => configStore.isShowConfig, (val: boolean) => {
       if (!val) {
-        initData()
+        // initData()
       }
     })
     watch(() => configStore.sysConfig.CurrentFormulaId, () => {
@@ -226,6 +226,11 @@ export default defineComponent({
                     <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
                       <div class={'h-full'}>
                         <MultiCurcev />
+                      </div>
+                    </NTabPane>
+                    <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
+                      <div class={'h-full'}>
+                        <Statistical />
                       </div>
                     </NTabPane>
                   </NTabs>

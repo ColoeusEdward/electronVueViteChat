@@ -6,8 +6,12 @@ import { safeJsonParse } from "./utils"
 
 
 export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
-  console.log("🪵 [callm.ts:14] ~ token ~ \x1b[0;32mcb\x1b[0m = ", cb);
+  // console.log("🪵 [callm.ts:14] ~ token ~ \x1b[0;32mcb\x1b[0m = ", cb);
+  // if (cb == callFnName.InitService) {
+  //   console.error('callm.ts:16 ~ callBrige ~ cb', cb);
+  // }
   const bridge = window.chrome.webview.hostObjects.JsBridge;
+  // console.log("🪵 [callm.ts:10] ~ token ~ \x1b[0;32mbridge\x1b[0m = ", bridge);
   let str = null;
   if (data) {
     if (typeof data == 'object') {
@@ -29,8 +33,10 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
     } else {
       fnRun = str ? fn(str) : fn()
     }
+    // console.log("🪵 [callm.ts:34] ~ token ~ \x1b[0;32mfnRun\x1b[0m = ", fnRun);
     return fnRun.then((res: any) => {
       let resObj = safeJsonParse(res) as ActualResult
+      // console.log("🪵 [callm.ts:35] ~ token ~ \x1b[0;32mresObj\x1b[0m = ", cb, resObj);
       return resultProcess(resObj, cb)
     }).catch((err: any) => {
       console.error(cb, err)

@@ -28,8 +28,8 @@ export default defineComponent({
     })
     const connectClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
       // console.log("🪵 [index.tsx:21] ~ token ~ \x1b[0;32mrow\x1b[0m = ", row);
-      otherData.showConnectComForm = true
       rowClick(row, item)
+      otherData.showConnectComForm = true
     }
     const adressClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
       // console.log("🪵 [index.tsx:21] ~ token ~ \x1b[0;32mrow\x1b[0m = ", row);
@@ -81,7 +81,6 @@ export default defineComponent({
     ])
     const getData = () => {
       callBrige(callFnName.GetDevcieConfigs).then((res: DeviceConfigEntity[]) => {
-        console.log("🪵 [index.tsx:11] ~ token ~ \x1b[0;DeviceConfigEntity\x1b[0m = ", res);
         res.push({ DriverName: '新增设备', Name: '', State: 0, CreateTime: '', isNewRow: true })
 
         data.value = res
@@ -110,6 +109,7 @@ export default defineComponent({
           <SimpleTable dat={data.value} col={columns.value} addRowProp={'DriverName'} />
 
           <ConForm connectStr={otherData.curConnectStr}
+            curRow={otherData.curRow}
             updateParentFn={(v: DeviceConfigEntity) => {
               updateRow(v)
             }}

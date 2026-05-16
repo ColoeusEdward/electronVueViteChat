@@ -4,7 +4,6 @@ import { callBrige } from "./callm"
 import { callFnName } from "./enum"
 
 export const resultProcess = (res: ActualResult, cb: string) => {
-  // console.log("🚀 ~ resultProcess ~ res:", res)
   if (res.Code == 0) {
     return res.Data
   } else {

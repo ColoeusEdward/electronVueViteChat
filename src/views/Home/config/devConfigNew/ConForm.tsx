@@ -5,6 +5,7 @@ import ModbusAddressModelForm from "../devConfig/addressForm/ModbusAddressModelF
 import { DeviceConfigEntity } from "~/me";
 import ConnectComForm, { ConnectFormIns } from "./connect/ConnectComForm";
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
+import ConnectTcpForm from "./connect/ConnectTcpForm";
 
 export default defineComponent({
   name: 'ConForm  ',
@@ -25,15 +26,17 @@ export default defineComponent({
       curConnectRefType: null
     })
     const getConForm = (driveName: string) => {
+      console.log("🪵 [ConForm.tsx:28] ~ token ~ \x1b[0;32mdriveName\x1b[0m = ", driveName);
       let res = null;
       switch (driveName) {
         case 'Modbus Tcp Client':
-          res = ConnectComForm
+          res = ConnectTcpForm
           break;
         default:
           res = ConnectComForm
           break;
       }
+      console.log("🪵 [ConForm.tsx:35] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
       return res
     }
 

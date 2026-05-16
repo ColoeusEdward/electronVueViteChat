@@ -69,7 +69,8 @@ export const ValueRow = defineComponent({
     const alldata = reactive({
       value: 0,
       stand: defStandValList.map(e => ({ ...e })),
-      timeIns: null as ReturnType<typeof setInterval> | null
+      timeIns: null as ReturnType<typeof setInterval> | null,
+      tol: { up: 0, down: 0 }, //上下公差
     })
     const pdata = computed(() => props.data)
     // const curOption = ref<MenuOption>()
@@ -112,6 +113,8 @@ export const ValueRow = defineComponent({
         // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mformulaParamList\x1b[0m = ", formulaParamList);
         // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mstItem\x1b[0m = ", stItem);
         alldata.stand[1].value = stItem?.Standard  //标准值
+        alldata.tol.up = stItem?.UpperTol || 0
+        alldata.tol.down = stItem?.LowerTol || 0
       }
       if (myData.label && !myData.value) {
         myData.value = 0
@@ -183,7 +186,11 @@ export const ValueRow = defineComponent({
         callBrige(callFnName.GetRealtimeData, props.data.GId).then((res: DataValue) => {
           // console.log("🪵 [RightValueBlock.tsx:167] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
           // console.log("🪵 [RightValueBlock.tsx:174] ~ token ~ \x1b[0;32mprops.data!.stand![1].value!\x1b[0m = ", res.Value, props.data!.stand![1].value!);
+          if (!res) {
+            return
+          }
           props.data!.value = res.Value
+          // props.data!.value = val
           let diff = res.Value - alldata.stand![1].value!
           // console.log("🪵 [RightValueBlock.tsx:175] ~ token ~ \x1b[0;32mdiff\x1b[0m = ", Number((diff * 1).toFixed(props.data!.Precision || 2)));
           if (alldata.stand) {
@@ -196,7 +203,26 @@ export const ValueRow = defineComponent({
       //   loopGetVal()
       // })
     }
-
+    const valueIsOk = computed(() => {
+      let dat = { ok: false, msg: '' }
+      if (!alldata.stand) { dat.ok = true; return dat }
+      if (!alldata.stand[0].value) { dat.ok = true; return dat }
+      if (alldata.stand[0].value >= alldata.tol.down && alldata.stand[0].value <= alldata.tol.up) {
+        dat.ok = true
+        return dat
+      } else {
+        if (alldata.stand[0].value < alldata.tol.down) {
+          dat.ok = false
+          dat.msg = 'dowm'
+          return dat
+        }
+        if (alldata.stand[0].value > alldata.tol.up) {
+          dat.ok = false
+          dat.msg = 'up'
+          return dat
+        }
+      }
+    })
     // watch(() => props.data, (val) => {
     //   // console.log("🪵 [RightValueBlock.tsx:179] ~ token ~ \x1b[0;32mval\x1b[0m = ", val);
     //   if (val && val.GId) {
@@ -229,14 +255,30 @@ export const ValueRow = defineComponent({
 
     return () => {
       return (
-        <div class={classNames(' shrink mb-1', { 'w-full': store.isLandscape, 'w-1/2': !store.isLandscape })}>
-          <div class={classNames('flex items-center w-full  py-1', { 'pt-0': props.y == 0 })}>
+        <div class={classNames(' shrink mb-1', { 'w-full': store.isLandscape, 'w-1/2 pr-1': !store.isLandscape })}>
+          <div class={classNames('flex items-center w-full  py-1', { 'pt-0': props.y == 0 || (!store.isLandscape && props.y == 1) })}>
             <span class={'text-2xl'}>{data.value.label || ''}</span>
             {renderAddOrDel()}
           </div>
           <div class={'flex items-end w-full h-[76px]  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
-            <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-2 value-number'}>
-              <span class={classNames(' font-semibold text-[#003a62]', { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })} >{props.data?.value?.toFixed ? props.data?.value?.toFixed(props.data?.Precision || 4) : "" || ''}</span>
+            <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-2 value-number relative'}>
+              {
+                !valueIsOk.value?.ok && <div class={'absolute left-[2px] top-[0] ' + classNames({
+                  'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
+                  'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
+                })}>
+                  {valueIsOk.value?.msg == 'dowm' ? '- 公差' : '+ 公差'}
+                </div>
+              }
+
+              <span class={classNames(' font-semibold ',
+                {
+                  'text-[#003a62]': valueIsOk.value?.ok,
+                  'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
+                  'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
+                },
+                { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })}
+              >{props.data?.value?.toFixed ? props.data?.value?.toFixed(props.data?.Precision || 4) : "" || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >
               <span class={'mb-2'}>{props.data?.unit || '  '}</span>
@@ -365,7 +407,7 @@ export default defineComponent({
             {/* <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
               <RightOtherValue />
             </div> */}
-            <div class={classNames(' h-full px-2 flex  overflow-y-auto', { 'flex-col': store.isLandscape, 'flex-wrap': !store.isLandscape })}>
+            <div class={classNames(' h-full pl-2 flex  overflow-y-auto', { 'flex-col': store.isLandscape, 'flex-wrap items-start justify-center': !store.isLandscape })}>
               {/* <NScrollbar> */}
               {infoList.value.slice(6, 12).map((e, i) => {
                 return <ValueRow key={i} x={0} y={i} data={e} i={6 + i} fixNum={fixNumRef.value} />

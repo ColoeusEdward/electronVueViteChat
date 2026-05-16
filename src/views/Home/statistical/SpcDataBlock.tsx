@@ -43,8 +43,11 @@ export default defineComponent({
     }
 
     alldata.watchInstance = watch(() => props.dataItem, (v) => {
-      initData(v!)
-    })
+      if (v) {
+        initData(v!)
+
+      }
+    }, { immediate: true })
 
     onBeforeUnmount(() => {
       alldata.watchInstance()

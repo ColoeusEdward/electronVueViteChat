@@ -78,6 +78,7 @@ export const useConfigStore = defineStore('config', {
       updateDataGroupRowFn: () => { },
 
       dataGroupAddFromShow: false,
+      commonTabWidthObj: {} as Record<string, string>,
     }
   },
   /**
@@ -237,6 +238,9 @@ export const useConfigStore = defineStore('config', {
     },
     setInitServiceFn(value: () => void) {
       this.initServiceFn = value
+    },
+    setCommonTabWidthObj(value: Record<string, string>) {
+      this.commonTabWidthObj = value
     }
 
   }

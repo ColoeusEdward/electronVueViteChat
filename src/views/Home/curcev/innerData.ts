@@ -68,6 +68,10 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
       isFirst: true,    //是否首次加载
       infoList: [] as menuOption[],
 
+      curDataZoomInfo: {},
+      curDataZoomDiff: 0,
+      curDataZoomIndex: 0,
+      ZoomRestoreCount: 0,
     }
   },
   /**
@@ -169,5 +173,17 @@ export const useCurcevInnerDataStore = defineStore('CurcevInnerData', {
     setShaftColFn(val: () => {}) {
       this.shaftColFn = val
     },
+    setCurDataZoomInfo(val: any) {
+      this.curDataZoomInfo = val
+    },
+    setCurDataZoomDiff(val: number) {
+      this.curDataZoomDiff = val
+    },
+    setCurDataZoomIndex(val: number) {
+      this.curDataZoomIndex = val
+    },
+    addZoomRestoreCount() {
+      this.ZoomRestoreCount++
+    }
   }
 })
