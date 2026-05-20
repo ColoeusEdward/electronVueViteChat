@@ -215,6 +215,12 @@ export default defineComponent({
               </div>
             </div> :
               <div class={'h-full flex overflow-hidden flex-col'}>
+                <div class={'h-1/3 relative'}>
+                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
+
+
+                  <RightValueBlock />
+                </div>
                 <div class={'h-2/3'}>
                   <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
                   <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
@@ -235,12 +241,7 @@ export default defineComponent({
                     </NTabPane>
                   </NTabs>
                 </div>
-                <div class={'h-1/3 relative'}>
-                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
 
-
-                  <RightValueBlock />
-                </div>
               </div>
           }
 
