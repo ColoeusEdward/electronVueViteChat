@@ -259,7 +259,7 @@ export default defineComponent({
               '1 2 3',
               '4 5 6',
               '7 8 9',
-              '{bksp} 0 {reset}',
+              '{bksp2} 0',
               '{abc} {enter}',
             ]
           },

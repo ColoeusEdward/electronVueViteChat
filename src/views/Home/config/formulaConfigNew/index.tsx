@@ -11,6 +11,7 @@ import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import { FormulaConfigEntity, FormulaParamEntity } from "~/me";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import DeviceGroupList from "./DeviceGroupList";
 
 export default defineComponent({
   name: 'formulaConfig',
@@ -155,7 +156,13 @@ export default defineComponent({
                 <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
                   <NTabPane displayDirective="show:lazy" name={"formula"} tab="配方" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'formula' ? alldata.activeStyle : {} } }}>
                     <div style={{ height: 'calc(100vh - 160px)' }} class={'w-full h-full p-2 border-0 border-l border-r border-b border-gray-600 border-solid rounded-xl rounded-t-none'}>
-                      <FormulaList />
+                      <div class={'h-full w-[58%] inline-block'}>
+                        <FormulaList />
+
+                      </div>
+                      <div class={'h-full w-[41%] inline-block ml-2'}>
+                        <DeviceGroupList />
+                      </div>
 
                     </div>
                     {/* 

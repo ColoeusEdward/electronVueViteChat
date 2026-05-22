@@ -259,13 +259,56 @@ body {
   .n-base-select-option,
   .n-dropdown-option {
     background-image: url("./assets/LineDspButton_inactive.png");
+    min-height: 64px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-size: 100% 100%;
     &::before {
       border-radius: 5px;
+      background-color: transparent !important;
+    }
+    &:active {
+      background-image: url("./assets/PnlBtnActive.png") !important;
+      color: white !important;
+    }
+    .n-dropdown-option-body {
+      &::before {
+        background-color: transparent !important;
+      }
+      width: 100% !important;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .n-dropdown-option-body__label {
+        font-size: 1.4rem;
+        height: 64px;
+        line-height: 64px;
+      }
+      .n-dropdown-option-body__suffix {
+        // font-size: 2rem;
+      }
     }
   }
   .n-base-select-menu-option-wrapper {
     background-color: rgba(0, 0, 0, 0);
+  }
+}
+.my-simple-table {
+  .n-base-selection {
+    height: 100%;
+    .n-base-selection-label {
+      height: 100%;
+      font-size: 1.4rem;
+    }
+  }
+}
+
+.n-select-menu {
+  .n-base-select-option__content {
+    font-size: 1.1rem;
   }
 }
 

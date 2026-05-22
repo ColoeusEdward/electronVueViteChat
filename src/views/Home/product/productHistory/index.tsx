@@ -10,6 +10,7 @@ import { NButton, NDatePicker, NDivider, NInput, NSelect, NSpace, NTabPane, NTab
 import { computed, defineComponent, reactive } from "vue";
 import { ProductHistoryEntity } from "~/me";
 import { useProductHistoryInnerDataStore } from "./innerData";
+import activeImg from '@/assets/LineDspButton_inactive.png'
 import ProductLog from "./ProductLog";
 import Statistic from "./Statistic";
 
@@ -154,7 +155,7 @@ export default defineComponent({
                         <NInput v-model:value={commonData.filterText} placeholder={`请输入`} clearable ></NInput>
 
                         <NDatePicker v-model:value={commonData.range} type="daterange" clearable />
-                        <NButton onClick={() => { getTableData(true) }}>查询</NButton>
+                        <NButton secondary strong={true} type="primary" size={'medium'} class={' w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => { getTableData(true) }}>查询</NButton>
                       </NSpace>
                     </div>
                     <div class={'flex-shrink'}>

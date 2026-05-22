@@ -1,7 +1,8 @@
 import classNames from "classnames";
-import { NButton, NCheckbox, NPopconfirm, NSwitch } from "naive-ui";
+import { NButton, NCheckbox, NPopconfirm, NSelect, NSwitch } from "naive-ui";
 import { computed, defineComponent, PropType, StyleValue } from "vue";
 import { simpleTableColumn } from "~/me";
+import SimpleRadio from "../SimpleRadio";
 
 let defData = [{
   interface: 'Serial',
@@ -24,7 +25,7 @@ export default defineComponent({
   name: 'simpleTable',
   props: {
     dat: {
-      type: Array as PropType<Record<string, string | number | boolean>[]>,
+      type: Array as PropType<Record<string, string | number | boolean | object>[]>,
       required: false
     },
     col: {
@@ -49,7 +50,7 @@ export default defineComponent({
 
 
     const data = computed(() => {
-      let list: Record<string, string | number | boolean>[] = props.dat || defData
+      let list: Record<string, string | number | boolean | object>[] = props.dat || defData
       return list
     })
     // 2. 模拟数据
@@ -68,12 +69,13 @@ export default defineComponent({
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '30px',
-        fontSize: '22px'
+        fontSize: '22px',
+        width: '100%'
       }
     };
 
     return () => (
-      <div style={styles.container}>
+      <div style={styles.container} class={'my-simple-table'}>
         {/* 表头渲染 */}
         <div style={styles.row}>
           {columns.value.map(col => (
@@ -84,7 +86,7 @@ export default defineComponent({
         </div>
 
         {
-          data.value.map((item: Record<string, string | number | boolean>) => {
+          data.value.map((item: Record<string, string | number | boolean | object>) => {
             const buildContent = (col: simpleTableColumn) => {
               let res = item[col.prop]
               if (col.btnText) {
@@ -155,6 +157,18 @@ export default defineComponent({
                       }}  ></NSwitch>
                     </div>
 
+                  }
+
+                  if (col.isRadio) {
+                    res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{ flex: col.flex, ...styles.cell, backgroundColor: !!item[col.prop] ? '#456e9c' : '#fff', color: !!item[col.prop] ? '#fff' : '#333' }} onClick={() => { col.btnFn && col.btnFn(col, item) }}>
+                      {col.mapFn && col.mapFn(col, item)}
+                    </div>
+                  }
+
+                  if (col.isSelect) {
+                    // let text = col.mapFn && col.mapFn(col, item)
+                    res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{ flex: col.flex, ...styles.cell, padding: '0', border: 'none' }}> <NSelect style={{ height: '100%' }} v-model:value={item[col.prop]} size="large" onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} options={col.selectOption} clearable></NSelect>
+                    </div>
                   }
                   // if (item.isNewRow && col.prop != props.addRowProp) {
                   //   res = <span></span>

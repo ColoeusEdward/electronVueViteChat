@@ -1,16 +1,18 @@
 import { formListItem, MyFormWrap } from "@/components/MyFormWrap/MyFormWrap";
+import { useConfigStore } from "@/store/config";
 import { useFormulaStore } from "@/store/formula";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { ajaxPromiseAll, safeJsonParse, sleep } from "@/utils/utils";
+import { ajaxPromiseAll, safeJsonParse, sleep, getAllDataUnderGroup } from "@/utils/utils";
 import { NTabPane, NTabs } from "naive-ui";
 import { computed, defineComponent, Transition, ref, watch, reactive } from "vue";
-import { DataGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
 
 export default defineComponent({
   name: 'FormulaParam',
   setup(props, ctx) {
     const formulaStore = useFormulaStore()
+    const configstore = useConfigStore()
     const curFormulaConfigRow = computed(() => formulaStore.curFormulaConfigRow)
     const alldata = reactive({
       curTabValue: 'formula',
@@ -27,7 +29,7 @@ export default defineComponent({
         color: '#000',
         zIndex: 6
       },
-      adressList: [] as ModbusAdressRow[],
+      adressList: [] as DataGroupEntity[],
       paramList: [] as FormulaParamEntity[],
       formCfg: {
         optionMap: {
@@ -49,8 +51,9 @@ export default defineComponent({
       },
       formMap: {} as Record<string, FormulaParamEntity>,
     })
+    const curDeviceGroupRow = computed(() => formulaStore.curDeviceGroupRow)
     const pararmListWidthAdress = computed(() => {
-      return alldata.paramList.map(e => { return { ...e, AdressItem: alldata.adressList.find(item => item.GId == e.DataId) } })
+      return alldata.paramList.map(e => { return { ...e, AdressItem: alldata.adressList.find(item => item.GId == e.DataGroupId) } })
     })
     const curDataGroupAdressList = computed(() => {
 
@@ -71,12 +74,26 @@ export default defineComponent({
         // alldata.paramList = [...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res, ...res,]
         if (res.length == 0) {
           let itemList = alldata.adressList.map(e => {
-            let item = { DataId: e.GId, FormulaId: row.GId }
+            let item: FormulaParamEntity = { DataGroupId: e.GId, FormulaId: row.GId }
             return item
           })
           callBrige(callFnName.SaveFormulaParams, itemList).then((res: FormulaParamEntity[]) => {
             getData(row)
           })
+        } else {
+          if (res.length < alldata.adressList.length) {
+            let itemList = alldata.adressList.filter(e => !res.find(item => item.DataGroupId == e.GId)).map(e => {
+              let item: FormulaParamEntity = { DataGroupId: e.GId, FormulaId: row.GId }
+              return item
+            })
+            callBrige(callFnName.SaveFormulaParams, itemList).then((res: FormulaParamEntity[]) => {
+              getData(row)
+            })
+          }
+          // let curAllGroupData = getAllDataUnderGroup(configstore)
+          // if(res.length < curAllGroupData.length){
+
+          // }
         }
       })
     }
@@ -88,19 +105,32 @@ export default defineComponent({
     }, {
       immediate: true
     })
-    watch(() => formulaStore.curEnableDataGroup, (v: DataGroupEntity | null | undefined) => {
+    watch(() => formulaStore.curEnableDataGroupConfig, (v: GroupConfigEntity | null | undefined) => {
       // let item = formulaStore.curEnableDataGroup
       // let list = safeJsonParse(item?.AddressIds || '[]') as string[]
       // callBrige(callFnName.GetDataAddressesWithIds, list).then((res: ModbusAdressRow[]) => {
       //   alldata.adressList = res
       // })
-      callBrige(callFnName.GetFormulaFields).then((res: ModbusAdressRow[]) => {
+      callBrige(callFnName.GetFormulaFields).then((res: DataGroupEntity[]) => {
+        console.log("🪵 [FormulaParam.tsx:105] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         alldata.adressList = res
 
       })
     }, {
       immediate: true
     })
+
+    const curParamList = computed(() => {
+      return pararmListWidthAdress.value.filter(item => item.AdressItem?.DeviceGroupId == curDeviceGroupRow.value?.GId)
+    })
+    watch(() => curParamList.value, (v) => {
+      if (!v.length) return
+      alldata.curTabValue = v[0].DataGroupId || ''
+    })
+    //  watch(() => curDeviceGroupRow.value, (v) => {
+    //   alldata.curTabValue = v[0].DataGroupId
+    // })
+
     const handleTabChange = (value: string) => {
       alldata.curTabValue = value
     }
@@ -113,13 +143,15 @@ export default defineComponent({
       return (
         <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full l formula-param-tab'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
           {
-            pararmListWidthAdress.value.map(item => {
-              let totalId = item.FormulaId + '-' + item.DataId
+            curDeviceGroupRow.value &&
+            // pararmListWidthAdress.value.map(item => {
+            curParamList.value.map(item => {
+              let totalId = item.FormulaId + '-' + item.DataGroupId
               if (!alldata.formMap[totalId]) {
                 alldata.formMap[totalId] = item
               }
               return (
-                <NTabPane displayDirective="show:lazy" name={item.DataId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataId ? alldata.activeStyle : {} } }}>
+                <NTabPane displayDirective="show:lazy" name={item.DataGroupId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataGroupId ? alldata.activeStyle : {} } }}>
                   <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border-0 border-l border-r border-b border-gray-600 border-solid rounded-xl rounded-t-none'}>
                     <div class={'w-full h-full py-6 pl-4 '}>
                       <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '450px', marginRight: '10px', textAlign: 'center' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />

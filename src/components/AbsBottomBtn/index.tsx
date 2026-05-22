@@ -54,6 +54,15 @@ export default defineComponent({
               <span class={'text-2xl ml-2 '}>取消</span>
             </NButton>
           ]
+        // case 'config':
+        //   return [
+
+        //     <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
+        //       <span class={'text-2xl ml-2 '}>取消</span>
+        //     </NButton>,
+        //     <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.confirmFn() }} size={'large'}  >
+        //       <span class={'text-2xl ml-2 '}>采用</span>
+        //     </NButton>]
         default:
           return [
             <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
@@ -61,7 +70,8 @@ export default defineComponent({
             </NButton>,
             <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.confirmFn() }} size={'large'}  >
               <span class={'text-2xl ml-2 '}>采用</span>
-            </NButton>]
+            </NButton>
+          ]
       }
 
     }

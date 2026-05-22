@@ -6,18 +6,19 @@ import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
 import { } from "naive-ui";
 import { computed, defineComponent, reactive, watch } from "vue";
-import { DataGroupEntity, FormulaConfigEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, DeviceGroupEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
 
 export default defineComponent({
-  name: 'formulaList',
+  name: 'DeviceGroupList',
   setup(props, ctx) {
     const configStore = useConfigStore()
     const formulaStore = useFormulaStore()
     const curGroupId = computed(() => configStore.sysConfig.CurrentGroupId)
     const curFormulaId = computed(() => configStore.sysConfig.CurrentFormulaId)
+    const curDeviceGroupRow = computed(() => formulaStore.curDeviceGroupRow)
     const curFormulaConfigRow = computed(() => formulaStore.curFormulaConfigRow)
     const alldata = reactive({
-      list: [] as FormulaConfigEntity[],
+      list: [] as DeviceGroupEntity[],
       curDataGroup: {}
     })
     const getData = () => {
@@ -27,44 +28,40 @@ export default defineComponent({
       // }
 
       // console.log("🪵 [formulaList.tsx:13] ~ token ~ \x1b[0;32mcurGroupId.value\x1b[0m = ", curGroupId.value);
-      callBrige(callFnName.GetFormulaConfigs, curGroupId.value).then((res: FormulaConfigEntity[]) => {
-        return callBrige(callFnName.GetGroupConfigs).then((gRes: GroupConfigEntity[]) => {
-          alldata.list = res.map(e => {
-            const g = gRes.find(g => g.GId == e.GroupId)
-            return { ...e, GroupConfigItem: g }
-          })
-        })
+      callBrige(callFnName.GetShowDeviceGroups).then((res: DeviceGroupEntity[]) => {
+
         // console.log("🪵 [formulaList.tsx:11] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
-        // alldata.list = new Array(50).fill(0).map(e => { return { ...res[0] } }) as unknown as FormulaConfigEntity[]
+        // alldata.list = new Array(50).fill(0).map(e => { return { ...res[0] } }) as unknown as DeviceGroupEntity[]
         // console.log("🪵 [formulaList.tsx:25] ~ token ~ \x1b[0;32malldata.list \x1b[0m = ", alldata.list);
+        alldata.list = res.filter(e => e.GroupId == curGroupId.value)
         // console.log("🪵 [formulaList.tsx:31] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
       })
     }
 
     // getData()
     const getConfigList = () => alldata.list
-    formulaStore.setUpdateConfigListFn(getData)
-    formulaStore.setGetFormulaListFn(getConfigList)
-    const rowClick = (row: FormulaConfigEntity) => {
-      formulaStore.setCurFormulaConfigRow(row)
+    // formulaStore.setUpdateConfigListFn(getData)
+    formulaStore.setGetDeviceGroupListFn(getConfigList)
+    const rowClick = (row: DeviceGroupEntity) => {
+      formulaStore.setCurDeviceGroupRow(row)
     }
-    const applyConfig = (row: FormulaConfigEntity) => {
-      callBrige(callFnName.EnableFormulaConfig, row.GId).then(() => {
-        window.$message.success('应用成功')
-        getSysConfig()
-        formulaStore.updateConfigListFn()
-      })
-    }
-    formulaStore.setApplayFormulaConfigFn(applyConfig)
+    // const applyConfig = (row: DeviceGroupEntity) => {
+    //   callBrige(callFnName.EnableFormulaConfig, row.GId).then(() => {
+    //     window.$message.success('应用成功')
+    //     getSysConfig()
+    //     formulaStore.updateConfigListFn()
+    //   })
+    // }
+    // formulaStore.setApplayFormulaConfigFn(applyConfig)
 
-    watch(() => curGroupId.value, (v) => {
+    watch(() => curFormulaConfigRow.value, (v) => {
       if (!v) return
       getData()
-      callBrige(callFnName.GetGroupConfigs).then((res: GroupConfigEntity[]) => {
-        let curItem = res.find(e => e.GId == curGroupId.value)
-        console.log("🪵 [formulaList.tsx:48] ~ token ~ \x1b[0;32mcurItem\x1b[0m = ", curItem);
-        formulaStore.setCurEnableDataGroupConfig(curItem)
-      })
+      // callBrige(callFnName.GetGroupConfigs).then((res: GroupConfigEntity[]) => {
+      //   let curItem = res.find(e => e.GId == curGroupId.value)
+      //   console.log("🪵 [formulaList.tsx:48] ~ token ~ \x1b[0;32mcurItem\x1b[0m = ", curItem);
+      //   formulaStore.setCurEnableDataGroupConfig(curItem)
+      // })
     }, {
       immediate: true
     })
@@ -74,18 +71,17 @@ export default defineComponent({
         <div class={'w-full h-full border border-gray-600 border-solid rounded-xl overflow-hidden bg-white'}>
           <div class={"w-full h-full overflow-auto "}>
             {
-              alldata.list.map((e, i) => {
-                return <div class={classNames('text-2xl p-2 bg-white flex items-center', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curFormulaConfigRow.value?.GId == e.GId })}
+              curFormulaConfigRow.value && alldata.list.map((e, i) => {
+                return <div class={classNames('text-2xl p-2 bg-white flex items-center', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curDeviceGroupRow.value?.GId == e.GId })}
                   onClick={() => { rowClick(e) }} >
                   <span>
-                    {e.PN}
-                    {e.Note && <>{` (${e.Note})`}</>}
-                    {e.GroupConfigItem && <>{` (分组:${e.GroupConfigItem.GroupName})`}</>}
+                    {e.DeviceName}
+                    {/* {e.Note && <>{` (${e.Note})`}</>} */}
                   </span>
-                  <span class={'ml-auto mr-2  py-1 px-3 bg-white text-black border border-gray-500 border-solid'}
+                  {/* <span class={'ml-auto mr-2  py-1 px-3 bg-white text-black border border-gray-500 border-solid'}
                     onClick={() => { applyConfig(e) }}>
                     {curFormulaId.value == e.GId ? `已应用` : '应用'}
-                  </span>
+                  </span> */}
                 </div>
               })
             }

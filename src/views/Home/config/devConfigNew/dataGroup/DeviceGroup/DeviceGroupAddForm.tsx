@@ -5,47 +5,53 @@ import { useConfigStore } from "@/store/config";
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import { deviceClassOptions } from "../../enum";
 // import { } from "./enum";
 // import { defaultConnectComModel } from "../devConfig/enum";
 
 
 export default defineComponent({
-  name: 'DataGroupAddFrom',
+  name: 'DeviceGroupAddForm',
   props: {
     show: Boolean
   },
   setup(props, ctx) {
     const configStore = useConfigStore()
     const myFormRef = ref<MyFormWrapIns>()
-    const show = computed(() => configStore.dataGroupAddFromShow)
+    const show = computed(() => configStore.DeviceGroupAddFromShow)
     const dialog = useDialog()
     const alldata = reactive({
       form: {},
       curDialogIns: null as DialogReactive | null,
       itemList: [
         {
-          type: 'input', label: '分组名称', prop: "GroupName", width: 24, rule: ['must'],
-        }, {
-          type: 'input', label: '备注', prop: "Note", width: 24, rule: [],
+          type: 'input', label: '设备名称', prop: "DeviceName", width: 24, rule: ['must'],
         },
+        { type: 'select', label: '设备类型', prop: "DeviceClass", width: 12, rule: ['mustNum'], },
+        // { type: 'switch', label: '状态', prop: "State", width: 12, rule: ['must'], }
         // {
         //   type: 'text', label: '*', prop: "", text: '( 设备集合与地址集合 由后端根据当前启用的设备和地址自动进行配置 )', width: 24
         // }
       ] as formListItem[],
+      optionMap: {
+        DeviceClass: deviceClassOptions
+      }
     })
     const hideForm = () => {
-      configStore.setDataGroupAddFromShow(false)
+      configStore.setDeviceGroupAddFormShow(false)
     }
     const submit = (form: any) => {
+      form.GroupId = configStore.curGroupConfigRow?.GId
       // console.log("🪵 [addForm.tsx:31] ~ token ~ \x1b[0;32mform\x1b[0m = ", form);
       // form.ConnectString = JSON.stringify(defaultConnectComModel)
-      callBrige(callFnName.SaveGroupConfig, form).then((res: any[]) => {
+      callBrige(callFnName.SaveDeviceGroup, form).then((res: any[]) => {
         hideForm()
         window.$message.success('保存成功')
-        configStore.updateDataGroupRowFn()
+        configStore.updateDevGroupRowFn()
       })
     }
     watch(() => show.value, (v) => {
+      console.log("🪵 [DeviceGroupAddForm.tsx:49] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
 
       if (v) {
         // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
@@ -53,7 +59,7 @@ export default defineComponent({
           title: '新增设备',
           content: () => {
             return <div class={'min-h-[170px]'}>
-              <MyFormWrap ref={myFormRef} optionMap={{}} hideBtn={true} form={alldata.form} itemList={alldata.itemList}></MyFormWrap>
+              <MyFormWrap ref={myFormRef} optionMap={alldata.optionMap} hideBtn={true} form={alldata.form} itemList={alldata.itemList}></MyFormWrap>
 
             </div>
           },

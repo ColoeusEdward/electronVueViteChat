@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult, DataConfigEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
+import { ActualResult, DataConfigEntity, DataGroupEntity, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -191,16 +191,44 @@ export const getRandomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export const buildMenuOpt = (e: ModbusAdressRow) => {
-  return {
-    label: e.DataName,
+export const buildMenuOpt = (e: DeviceGroupEntity, configStore: ReturnType<typeof useConfigStore>, isShow = false) => {
+  const getChild = (e: DeviceGroupEntity) => {
+    let name = isShow ? callFnName.GetShowDataGroups : callFnName.GetChartDataGroups
+    callBrige(name, e.GId).then((res: DataGroupEntity[]) => {
+      console.log("🪵 [utils.ts:196] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+      if (!isShow) {
+        res.forEach(e => {
+          if (!configStore.chartDataGroupList.find(item => item.GId == e.GId)) {
+            configStore.chartDataGroupList.push(e)
+          }
+        })
+      }
+      let list = res.map(e => {
+        return {
+          label: e.DataName,
+          key: menuPropEnum.dataSource + menuIdSplit + e.GId,
+          trueKey: e.GId,
+          DataName: e.DataName,
+          GId: e.GId,
+          Unit: e.Unit,
+          Precision: e.Precision
+        }
+      })
+      dat.children.push(...list)
+    })
+  }
+  let dat = {
+    label: e.DeviceName,
     key: menuPropEnum.dataSource + menuIdSplit + e.GId,
     trueKey: e.GId,
-    DataName: e.DataName,
+    DataName: e.DeviceName,
     GId: e.GId,
-    Unit: e.Unit,
-    Precision: e.Precision
+    children: [] as any[]
+    // Unit: e.Unit,
+    // Precision: e.Precision
   }
+  getChild(e)
+  return dat
 }
 
 export const updateFormulaConfig = (configStore: ReturnType<typeof useConfigStore>) => {
@@ -244,4 +272,20 @@ export function throttle<T extends (...args: any[]) => void>(
       previous = now;
     }
   };
+}
+
+export const getAllDataUnderGroup = (configStore: ReturnType<typeof useConfigStore>) => {
+  const curGroupId = configStore.sysConfig.CurrentGroupId
+  let dataGroupList: DataGroupEntity[] = []
+  return callBrige(callFnName.GetDeviceGroups, curGroupId).then((devList: DeviceGroupEntity[]) => {
+    let reqList = devList.map(e => {
+      return callBrige(callFnName.GetShowDataGroups, e.GId)
+    })
+    return ajaxPromiseAll(reqList)
+  }).then((res: DataGroupEntity[][]) => {
+    res.forEach(e => {
+      dataGroupList.push(...e)
+    })
+    return dataGroupList
+  })
 }

@@ -5,6 +5,9 @@ export const tabNameEnum = {
   sysConfig: 'sysConfig',
   dataAddress: 'dataAddress',
   dataGroup: 'dataGroup',
+  deviceGroup: 'deviceGroup',
+  devDataGroup: 'devDataGroup',
+  devConfig: 'devConfig'
 }
 
 export enum DeviceClassEnum {

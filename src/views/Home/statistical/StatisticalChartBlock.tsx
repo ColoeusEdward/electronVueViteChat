@@ -11,7 +11,7 @@ import { MaybeComputedElementRef, MaybeElement, useElementSize } from '@vueuse/c
 import { Parachute } from "@vicons/tabler";
 import classNames from 'classnames';
 import SpcDataBlock from "./SpcDataBlock";
-import { DistributionEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
@@ -20,7 +20,7 @@ export default defineComponent({
   name: 'StatisticalChartBlock',
   props: {
     dataSourceItem: {
-      type: Object as PropType<ModbusAdressRow>,
+      type: Object as PropType<DataGroupEntity>,
     },
     i: {
       type: Number
@@ -36,7 +36,7 @@ export default defineComponent({
     const staticalStore = useStatisticalStore()
     const configStore = useConfigStore()
     const paramItem = computed(() => {
-      return configStore.curEnableFormulaParamList?.find(e => e.DataId == props.dataSourceItem?.GId)
+      return configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.dataSourceItem?.GId)
     })
     const conRef = ref<HTMLElement | null>(null)
     let myChart: echarts.ECharts

@@ -14,7 +14,7 @@ import Config from "./config/Config";
 import { useConfigStore } from "@/store/config";
 import GlobalKeyBoard from "./GlobalKeyBoard";
 import ProductLine from "./productLine";
-import { ActualResult, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
+import { ActualResult, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { callFnName } from "@/utils/enum";
 import { callSpc, getSysConfig } from "@/utils/call";
 import ProductHistory from "./product/productHistory";
@@ -110,12 +110,13 @@ export default defineComponent({
     document.addEventListener('focusin', handleAllInputFocuse);
 
     const initData = () => {
+      configStore.setChartDataGroupList([])
       return callBrige(callFnName.InitService).then((res: string) => {
         // console.log("🪵 [index.tsx:123] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
-        callBrige(callFnName.GetChartDataAddress).then((res: ModbusAdressRow[]) => {
+        callBrige(callFnName.GetChartDeviceGroups).then((res: DeviceGroupEntity[]) => {
           configStore.setChartDataAdressList(res)
         })
-        callBrige(callFnName.GetShowDataAddress).then((res: ModbusAdressRow[]) => {
+        callBrige(callFnName.GetShowDeviceGroups).then((res: DeviceGroupEntity[]) => {
           configStore.setShowDataAdressList(res)
         })
       })

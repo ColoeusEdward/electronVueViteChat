@@ -1,6 +1,6 @@
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
-import { DistributionEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
 
 const localDataSourceList = localStorage.getItem('statisticalDataSourceList') ? JSON.parse(localStorage.getItem('statisticalDataSourceList') || '[]') : []
 
@@ -17,7 +17,7 @@ export const useStatisticalStore = defineStore('statistical', {
 
       isOnline: true,             //是否启用在线统计
       isShowData: true,            //是否显示底部数据
-      curDisDataAdressList: [] as ModbusAdressRow[],          //当前显示的数据
+      curDisDataAdressList: [] as DataGroupEntity[],          //当前显示的数据
     }
   },
   /**
@@ -60,10 +60,10 @@ export const useStatisticalStore = defineStore('statistical', {
     changeIsShowData() {
       this.isShowData = !this.isShowData
     },
-    addCurDisDataAdressList(value: ModbusAdressRow) {
+    addCurDisDataAdressList(value: DataGroupEntity) {
       this.curDisDataAdressList.push(value)
     },
-    removeCurDisDataAdressList(value: ModbusAdressRow) {
+    removeCurDisDataAdressList(value: DataGroupEntity) {
       this.curDisDataAdressList.splice(this.curDisDataAdressList.findIndex(e => e == value), 1)
     },
     clearCurDisDataAdressList() {

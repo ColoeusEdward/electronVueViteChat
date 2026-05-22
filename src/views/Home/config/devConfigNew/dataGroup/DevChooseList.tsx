@@ -32,20 +32,20 @@ export default defineComponent({
       filterList: [] as { label: string, value: string }[],
     })
     const show = computed(() => configStore.DevChooseShow)
-    const curDataGroupRow = computed(() => configStore.curDataGroupRow)
+    const curDataGroupRow = computed(() => configStore.curGroupConfigRow)
     const hideForm = () => {
       configStore.setDevChooseShow(false)
     }
     const submit = () => {
-      console.log("🪵 [DevChooseList.tsx:39] ~ token ~ \x1b[0;32malldata.form.DeviceIds\x1b[0m = ", alldata.form.DeviceIds);
-      let dat: DataGroupEntity = { ...curDataGroupRow.value!, DeviceIds: JSON.stringify(alldata.form.DeviceIds) }
-      console.log("🪵 [DevChooseList.tsx:39] ~ token adttt ~ \x1b[0;32mdat\x1b[0m = ", dat);
-      callBrige(callFnName.SaveDataGroup, dat).then((res: any[]) => {
-        window.$message.success('保存成功')
-        hideForm()
-        configStore.updateDataGroupRowFn()
-        //updatefn
-      })
+      // console.log("🪵 [DevChooseList.tsx:39] ~ token ~ \x1b[0;32malldata.form.DeviceIds\x1b[0m = ", alldata.form.DeviceIds);
+      // let dat: DataGroupEntity = { ...curDataGroupRow.value!, DeviceIds: JSON.stringify(alldata.form.DeviceIds) }
+      // console.log("🪵 [DevChooseList.tsx:39] ~ token adttt ~ \x1b[0;32mdat\x1b[0m = ", dat);
+      // callBrige(callFnName.SaveDataGroup, dat).then((res: any[]) => {
+      //   window.$message.success('保存成功')
+      //   hideForm()
+      //   configStore.updateDataGroupRowFn()
+      //   //updatefn
+      // })
     }
     const getDevList = () => {
       return callBrige(callFnName.GetDevcieConfigs).then((res: DeviceConfigEntity[]) => {
@@ -54,10 +54,10 @@ export default defineComponent({
       })
     }
     const initDevChooseList = () => {
-      let devStr = curDataGroupRow.value?.DeviceIds
-      let list = curDataGroupRow.value?.DeviceIds ? JSON.parse(curDataGroupRow.value?.DeviceIds) : []
-      alldata.form = { DeviceIds: list }
-      alldata.filterList = alldata.itemList[0].checkboxList!.filter(e => devStr!.includes(e.value))
+      // let devStr = curDataGroupRow.value?.DeviceIds
+      // let list = curDataGroupRow.value?.DeviceIds ? JSON.parse(curDataGroupRow.value?.DeviceIds) : []
+      // alldata.form = { DeviceIds: list }
+      // alldata.filterList = alldata.itemList[0].checkboxList!.filter(e => devStr!.includes(e.value))
     }
     watch(() => show.value, (v) => {
 

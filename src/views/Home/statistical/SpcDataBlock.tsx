@@ -1,12 +1,12 @@
 import { NTable, NTbody } from "naive-ui";
 import { defineComponent, onBeforeUnmount, PropType, reactive, watch } from "vue";
-import { DistributionEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
 
 export default defineComponent({
   name: 'SpcDataBlock',
   props: {
     dataItem: Object as PropType<DistributionEntity | null>,
-    adressItem: Object as PropType<ModbusAdressRow>
+    adressItem: Object as PropType<DataGroupEntity>
   },
   setup(props, ctx) {
     const spcLabelList: { label: string, key: string, value?: any, noUnit?: boolean }[] = [

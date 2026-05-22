@@ -1,7 +1,7 @@
 import { PlayArrowOutlined, StopCircleOutlined } from "@vicons/material";
 import { DropdownProps, NButton, NDropdown, NIcon, NSpace } from "naive-ui";
 import { computed, defineComponent, onBeforeUnmount, reactive, watch } from "vue";
-import { DataConfigEntity, ModbusAdressRow } from "~/me";
+import { DataConfigEntity, DataGroupEntity, ModbusAdressRow } from "~/me";
 import CurcevChartRow from "../curcev/CurcevChartRow";
 import { useCurcevInnerDataStore } from "../curcev/innerData";
 import { chartId } from "./enum";
@@ -37,9 +37,9 @@ export default defineComponent({
       if (sitem) {
         if (list.length == 0) {
           // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list.map(e => buildMenuOpt(e)) as any
+          sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
         } else {
-          sitem.children = list.map(e => buildMenuOpt(e))
+          sitem.children = list.map(e => buildMenuOpt(e, configStore))
           // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
           //   return {
           //     ...buildMenuOpt(e),
@@ -111,7 +111,7 @@ export default defineComponent({
       let type = key.split(menuIdSplit)[0]
       let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
-        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
+        let item = configStore.chartDataGroupList.find(e => e.GId == trueKey)
         if (item) {
           if (configStore.curMultiChartAdress.some(e => e.GId == item!.GId)) {
             configStore.removeMultiChartAdress(item)
@@ -189,7 +189,7 @@ export default defineComponent({
           </div>
           <div class={'flex-shrink w-full h-full pb-2 overflow-hidden'}>
             <div class={'w-full h-full flex flex-col'}>
-              {!commonData.refreshHide && dataList.value.map((e: ModbusAdressRow, i) => {
+              {!commonData.refreshHide && dataList.value.map((e: DataGroupEntity, i) => {
                 return <div class={'w-full h-full flex-1'}>
                   <CurcevChartRow i={i} adressRow={e} chartId={chartId} />
                 </div>

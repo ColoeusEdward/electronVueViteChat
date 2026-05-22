@@ -2,7 +2,7 @@ import { NTabs, NTabPane, NPopselect, NButton, NIcon, useDialog } from "naive-ui
 import type { PopselectProps } from 'naive-ui'
 import { defineComponent, onUnmounted, ref, computed } from "vue";
 import { Tool } from '@vicons/tabler'
-import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled } from '@vicons/material'
+import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled, HistoryOutlined } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useConfigStore } from "@/store/config";
@@ -23,8 +23,8 @@ const TimeBlock = defineComponent({
     })
     return () => {
       return (
-        <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} >
-          <span class={'text-2xl'}>{
+        <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} >
+          <span class={'text-xl'}>{
             nowTime.value
           }</span>
         </NButton>
@@ -54,7 +54,7 @@ export default defineComponent({
     ]
     const productOption = [
       { label: '配方', value: 'formulaCfg' },
-      { label: '产品历史记录', value: 'productHistory' },
+      // { label: '产品历史记录', value: 'productHistory' },
       // { label: '产品日志', value: 'productLog' },
       // { label: '设定产品表', value: 'setproduct' },
     ]
@@ -86,7 +86,7 @@ export default defineComponent({
           window.open('datav/index.html')
         },
         shutdown: () => {
-          callBrige(callFnName.CloseApp).then(() => {
+          callBrige(callFnName.CloseApp, `true`).then(() => {
           })
         },
         Reload: () => {
@@ -142,12 +142,13 @@ export default defineComponent({
       valueMap[value] && valueMap[value]()
 
     }
-    const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element }[]>([
+    const popSelectList = ref<{ option: PopselectProps['options'], name: string, icon?: JSX.Element, clickFn?: () => void }[]>([
       { option: maintainOption, name: '维护', icon: <Tool /> },
       { option: productOption, name: '产品表', icon: <CandlestickChartRound /> },
       // { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
       { option: maintainOption3.value, name: '趋势图(关)', icon: <AreaChartOutlined /> },
       { option: screenPrintOption, name: '屏幕打印', icon: <LocalPrintshopFilled /> },
+      { option: [], name: '产品历史', icon: <HistoryOutlined />, clickFn: () => { configStore.setProductHistoryShow(true) } },
       // { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     ])
 
@@ -157,7 +158,7 @@ export default defineComponent({
         <div class={'w-full h-24 mt-auto  flex items-center  px-2'}>
           {popSelectList.value.map((item, index) => {
             return (
-              <PopBtnComp name={item.name} options={item.option} key={index} onUpdateValue={handleOptClick}
+              <PopBtnComp clickFn={item.clickFn} disabled={!!item.clickFn} name={item.name} options={item.option} key={index} onUpdateValue={handleOptClick}
                 v-slots={{
                   icon: () => {
                     return item.icon

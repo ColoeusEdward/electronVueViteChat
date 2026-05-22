@@ -2,7 +2,7 @@ import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
-import { CPKEntity, DataGroupEntity, DataValue, DeviceConfigEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
+import { CPKEntity, DataGroupEntity, DataValue, DeviceConfigEntity, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, DataAddressEntity, SysConfigEntity, SysConfigModel } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -44,10 +44,12 @@ export const useConfigStore = defineStore('config', {
       dataConfig: localDataConfig as dataConfig,
       connectDev: localConnectDev as connectDev,
       needRestart: false,
-      chartDataAdressList: [] as ModbusAdressRow[],
-      showDataAdressList: [] as ModbusAdressRow[],
-      curChartAdress: null as ModbusAdressRow | null | undefined,
-      curMultiChartAdress: [] as ModbusAdressRow[],
+      chartDataAdressList: [] as DeviceGroupEntity[],
+      showDataAdressList: [] as DeviceGroupEntity[],
+      chartDataGroupList: [] as DataGroupEntity[],
+      curChartDataGroup: null as DataGroupEntity | null | undefined,
+      curChartAdress: null as DataAddressEntity | null | undefined,
+      curMultiChartAdress: [] as DataGroupEntity[],
       curCpk: null as CPKEntity | null,
       curRealTimeData: null as DataValue | null | undefined,
 
@@ -62,12 +64,17 @@ export const useConfigStore = defineStore('config', {
       curDevConfigRow: null as DeviceConfigEntity | null,
       addressShow: false,
       addressFormShow: false,
-      curAddressRow: null as ModbusAdressRow | null,
+      devDataGroupAddressFormShow: false,
+      curAddressRow: null as DataAddressEntity | null,
+      curDevDataGroupRow: null as DataGroupEntity | null,
+      devDataGroupShow: false,
       updateAdressRowFn: () => { },
       addFormShow: false,
       updateDevConfigRowFn: () => { },
       isAdressAddMore: false,
-      curDataGroupRow: null as DataGroupEntity | null,
+      curGroupConfigRow: null as GroupConfigEntity | null,
+      curDeviceGroupRow: null as DeviceGroupEntity | null | undefined,
+      curDataGroupRow: null as DataGroupEntity | null | undefined,
       curEnableFormulaRow: null as FormulaConfigEntity | null | undefined,
       curEnableFormulaParamList: null as FormulaParamEntity[] | null | undefined,
       initServiceFn: () => { },
@@ -76,9 +83,17 @@ export const useConfigStore = defineStore('config', {
       DevChooseShow: false,
       AdressChooseShow: false,
       updateDataGroupRowFn: () => { },
+      updateDevDataGroupRowFn: () => { },
+      updateDevGroupRowFn: () => { },
+
+      DeviceGroupShow: false, //TabShow
+      devConfigTabShow: false,
 
       dataGroupAddFromShow: false,
+      DeviceGroupAddFromShow: false,
       commonTabWidthObj: {} as Record<string, string>,
+
+      devDataGroupDevListShow: false,
     }
   },
   /**
@@ -170,10 +185,13 @@ export const useConfigStore = defineStore('config', {
     setAddressShow(value: boolean) {
       this.addressShow = value
     },
+    setCurDeviceGroupRow(value: DeviceGroupEntity | null | undefined) {
+      this.curDeviceGroupRow = value
+    },
     setAddressFormShow(value: boolean) {
       this.addressFormShow = value
     },
-    setCurAddressRow(value: ModbusAdressRow | null) {
+    setCurAddressRow(value: DataAddressEntity | null) {
       this.curAddressRow = value
     },
     setUpdateAdressRowFn(value: () => void) {
@@ -188,8 +206,14 @@ export const useConfigStore = defineStore('config', {
     setIsAdressAddMore(value: boolean) {
       this.isAdressAddMore = value
     },
-    setCurDataGroupRow(value: DataGroupEntity | null) {
+    setCurGroupConfigRow(value: GroupConfigEntity | null) {
+      this.curGroupConfigRow = value
+    },
+    setCurDataGroupRow(value: DataGroupEntity | null | undefined) {
       this.curDataGroupRow = value
+    },
+    setDeviceGroupShow(value: boolean) {
+      this.DeviceGroupShow = value
     },
     setDevChooseShow(value: boolean) {
       this.DevChooseShow = value
@@ -200,26 +224,44 @@ export const useConfigStore = defineStore('config', {
     setUpdateDataGroupRowFn(value: () => void) {
       this.updateDataGroupRowFn = value
     },
+    setUpdateDevGroupRowFn(value: () => void) {
+      this.updateDevGroupRowFn = value
+    },
+    setUpdateDevDataGroupRowFn(value: () => void) {
+      this.updateDevDataGroupRowFn = value
+    },
     setDataGroupAddFromShow(value: boolean) {
       this.dataGroupAddFromShow = value
     },
     setNeedRestart(value: boolean) {
       this.needRestart = value
     },
-    setChartDataAdressList(value: ModbusAdressRow[]) {
+    setChartDataAdressList(value: DeviceGroupEntity[]) {
       this.chartDataAdressList = value
     },
-    setCurChartAdress(value: ModbusAdressRow | null | undefined) {
+    setCurChartAdress(value: DataAddressEntity | null | undefined) {
       this.curChartAdress = value
     },
-    addMultiChartAdress(value: ModbusAdressRow) {
+    setCurChartDataGroup(value: DataGroupEntity | null | undefined) {
+      this.curChartDataGroup = value
+    },
+    setDevDataGroupDevListShow(value: boolean) {
+      this.devDataGroupDevListShow = value
+    },
+    addMultiChartAdress(value: DataGroupEntity) {
       this.curMultiChartAdress.push(value)
     },
-    removeMultiChartAdress(value: ModbusAdressRow) {
+    setChartDataGroupList(value: DataGroupEntity[]) {
+      this.chartDataGroupList = value
+    },
+    removeMultiChartAdress(value: DataGroupEntity) {
       this.curMultiChartAdress = this.curMultiChartAdress.filter(item => item.GId !== value.GId)
     },
     clearMultiChartAdress() {
       this.curMultiChartAdress = []
+    },
+    setDevDataGroupShow(value: boolean) {
+      this.devDataGroupShow = value
     },
     setCurCpk(value: CPKEntity | null) {
       this.curCpk = value
@@ -227,7 +269,13 @@ export const useConfigStore = defineStore('config', {
     setCurRealTimeData(value: DataValue | null | undefined) {
       this.curRealTimeData = value
     },
-    setShowDataAdressList(value: ModbusAdressRow[]) {
+    setDevDataGroupAddressFormShow(value: boolean) {
+      this.devDataGroupAddressFormShow = value
+    },
+    setCurDevDataGroupRow(value: DataGroupEntity | null) {
+      this.curDevDataGroupRow = value
+    },
+    setShowDataAdressList(value: DeviceGroupEntity[]) {
       this.showDataAdressList = value
     },
     setCurEnableFormulaRow(value: FormulaConfigEntity | null | undefined) {
@@ -241,8 +289,13 @@ export const useConfigStore = defineStore('config', {
     },
     setCommonTabWidthObj(value: Record<string, string>) {
       this.commonTabWidthObj = value
-    }
-
+    },
+    setDeviceGroupAddFormShow(value: boolean) {
+      this.DeviceGroupAddFromShow = value
+    },
+    setDevConfigTabShow(value: boolean) {
+      this.devConfigTabShow = value
+    },
   }
 
 

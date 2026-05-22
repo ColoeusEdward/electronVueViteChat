@@ -71,18 +71,27 @@ export const ValueRow = defineComponent({
       stand: defStandValList.map(e => ({ ...e })),
       timeIns: null as ReturnType<typeof setInterval> | null,
       tol: { up: 0, down: 0 }, //上下公差
+      menuShow: true
     })
     const pdata = computed(() => props.data)
     // const curOption = ref<MenuOption>()
     // const { dataSourceList } = storeToRefs(store)
     const dataSourceList = computed(() => configStore.showDataAdressList.map(e => {
-      return {
-        ...buildMenuOpt(e),
+      let res = {
+        ...buildMenuOpt(e, configStore, true),
         // children: e.children?.map(ee => buildMenuOpt(ee))
       }
+      console.log("🪵 [RightValueBlock.tsx:79] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+      flashMenu()
+      return res
     }))
     const curStandIdx = ref(0)
-
+    const flashMenu = () => {
+      alldata.menuShow = false
+      sleep(50).then(() => {
+        alldata.menuShow = true
+      })
+    }
     // const initOption = () => {
     //   store.rightBlockDataMap[props.x][props.y] && (
     //     curOption.value = store.rightBlockDataMap[props.x][props.y]
@@ -109,7 +118,7 @@ export const ValueRow = defineComponent({
       if (!myData) return dat
       if (myData.GId) {
         // console.log("🪵 [RightValueBlock.tsx:94] ~ token ~ \x1b[0;32mmyData\x1b[0m = ", props.data);
-        let stItem = formulaParamList?.find(e => e.DataId == myData!.GId)
+        let stItem = formulaParamList?.find(e => e.DataGroupId == myData!.GId)
         // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mformulaParamList\x1b[0m = ", formulaParamList);
         // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mstItem\x1b[0m = ", stItem);
         alldata.stand[1].value = stItem?.Standard  //标准值
@@ -129,7 +138,7 @@ export const ValueRow = defineComponent({
     // }
     const handleMenuSelect: DropdownProps['onSelect'] = (val, option) => {
       console.log("🪵 [RightValueBlock.tsx:103] ~ token ~ \x1b[0;32mval\x1b[0m = ", val, option);
-      let opt = option as ModbusAdressRow
+      let opt = option as any
       let dat: RightValueType = {
         stand: defStandValList as Object[],
         label: opt.DataName,
@@ -232,12 +241,23 @@ export const ValueRow = defineComponent({
     // }, { immediate: true })
 
     onMounted(() => {
-      sleep(1000).then(() => {
-        // console.log("🪵 [RightValueBlock.tsx:212] ~ token ~ \x1b[0;32mconfigStore.sysConfig.ColloctInterval\x1b[0m = ", configStore.sysConfig.ColloctInterval);
-        alldata.timeIns = setInterval(() => {
+      if (configStore.sysConfig.ColloctInterval) {
+        sleep(200).then(() => {
           loopGetVal()
-        }, configStore.sysConfig.ColloctInterval || 500);
-      })
+          alldata.timeIns = setInterval(() => {
+            loopGetVal()
+          }, configStore.sysConfig.ColloctInterval || 500);
+        })
+
+      } else {
+        sleep(1000).then(() => {
+          loopGetVal()
+          alldata.timeIns = setInterval(() => {
+            loopGetVal()
+          }, configStore.sysConfig.ColloctInterval || 500);
+        })
+      }
+
 
     })
     onBeforeUnmount(() => {
@@ -245,11 +265,20 @@ export const ValueRow = defineComponent({
     })
 
     const renderAddOrDel = () => {
-      return !data.value.label ?
-        < NDropdown options={dataSourceList.value} trigger="click" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'}  >
-          <img class={'ml-auto h-[30px] relative top-[2px] cursor-pointer'} src={addBtn}></img>
+      return !data.value.label && alldata.menuShow ?
+        <NDropdown options={dataSourceList.value}
+          nodeProps={(option: any) => {
+            return {
+              style: {
+                fontSize: '1.4rem',
+                width: '12vw'
+              }
+            }
+          }}
+          trigger="click" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'}  >
+          <img class={'ml-auto h-[32px] relative top-[2px] cursor-pointer'} src={addBtn}></img>
         </NDropdown> :
-        <img class={'ml-auto h-[30px] relative top-[2px]   cursor-pointer'} src={closeBtn} onClick={handleDel} ></img>
+        <img class={'ml-auto h-[32px] relative top-[2px]   cursor-pointer'} src={closeBtn} onClick={handleDel} ></img>
     }
 
 
@@ -277,7 +306,7 @@ export const ValueRow = defineComponent({
                   'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
                   'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
                 },
-                { 'text-4xl': store.isLowRes, ' text-6xl': !store.isLowRes })}
+                { 'text-4xl': store.isLowRes, ' text-[4.3rem]': !store.isLowRes })}
               >{props.data?.value?.toFixed ? props.data?.value?.toFixed(props.data?.Precision || 4) : "" || ''}</span>
             </div>
             <div class={'h-full pl-2 min-w-[50px] flex flex-col justify-end text-lg font-semibold text-[#5e5452]'}  >

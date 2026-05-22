@@ -5,6 +5,9 @@ export default defineComponent({
   name: 'BtnComp',
   props: {
     name: String,
+    clickFn: {
+      type: Function,
+    },
     ...popselectProps
   },
   setup(props, ctx) {
@@ -14,15 +17,15 @@ export default defineComponent({
         <NPopselect {...pop} trigger="click" size={'large'} class={'text-2xl my-pop-select'}
           nodeProps={(option: any) => {
             return {
-              class: 'w-[16vw]',
+              class: 'w-[17vw]',
               style: {
-                fontSize: '1.2rem',
+                fontSize: '1.4rem',
               }
             }
           }
           }
         >
-          <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
+          <NButton secondary strong={true} onClick={() => { props.clickFn && props.clickFn() }} type="primary" size={'large'} class={'h-16 w-full shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
             v-slots={{
               icon: () => {
                 return <NIcon class={'text-3xl'}>

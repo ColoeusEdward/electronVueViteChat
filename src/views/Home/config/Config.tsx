@@ -1,6 +1,6 @@
 import { useConfigStore } from "@/store/config";
-import { NButton, NTabs, NTabPane, NIcon, useMessage, NDialogProvider } from "naive-ui";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { NButton, NTabs, NTabPane, NIcon, useMessage, NDialogProvider, NDropdown } from "naive-ui";
+import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import TabActiveImg from '@/assets/PnlBtnActive.png'
 import Connect from "./Connect";
@@ -20,6 +20,10 @@ import { useDataCfgInnerDataStore } from "./dataCofigNew/innerData";
 import DataCfgOut from "./dataCfgOut";
 import AdressTable from "./devConfigNew/AdressTable";
 import DataGroup from "./devConfigNew/dataGroup";
+import DeviceGroup from "./devConfigNew/dataGroup/DeviceGroup";
+import { tabNameEnum } from "./devConfigNew/enum";
+import DevDataGroup from "./devConfigNew/dataGroup/DevDataGroup";
+import activeImg from '@/assets/LineDspButton_inactive.png'
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -27,11 +31,34 @@ export default defineComponent({
     const dataCfgInnerData = useDataCfgInnerDataStore()
     const msg = useMessage()
     const store = useMain()
+    const alldata = reactive({
+      advanceOption: [
+        {
+          label: '设备配置',
+          key: "devConfig",
+        }
+      ]
+    })
     const curDevConfigRow = computed(() => {
       return configStore.curDevConfigRow
     })
     const addressShow = computed(() => {
       return configStore.addressShow
+    })
+    const DeviceGroupShow = computed(() => {
+      return configStore.DeviceGroupShow
+    })
+    const DevDataGroupTabShow = computed(() => {
+      return configStore.devDataGroupShow
+    })
+    const curGroupConfigRow = computed(() => {
+      return configStore.curGroupConfigRow
+    })
+    const curDeviceGroupRow = computed(() => {
+      return configStore.curDeviceGroupRow
+    })
+    const devConfigTabShow = computed(() => {
+      return configStore.devConfigTabShow
     })
     const activeStyle = {
       // backgroundImage: `url(${TabActiveImg})`,
@@ -60,7 +87,12 @@ export default defineComponent({
       configStore.addSubmitCount()
       // msg.success('应用成功')
     }
-
+    const handleAdvanceMenuSelect = (value: any) => {
+      if (value === 'devConfig') {
+        configStore.setDevConfigTabShow(true)
+        configStore.setConfigTab(tabNameEnum.devConfig)
+      }
+    }
     const handleTabChange = (value: string) => {
       // curTabValue.value = value
       configStore.setConfigTab(value)
@@ -72,6 +104,9 @@ export default defineComponent({
     const btmBtnShow = computed(() => {
       return !dataCfgInnerData.devCfgShow
     })
+    watch(() => configStore.curGroupConfigRow, (v) => {
+      configStore.setDevDataGroupShow(false)
+    })
     onMounted(() => {
       // console.log(`config mounted`,);
     })
@@ -80,6 +115,21 @@ export default defineComponent({
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
           <NDialogProvider >
+            <div class={'absolute top-2 right-4'}>
+              <NDropdown options={alldata.advanceOption}
+                nodeProps={(option: any) => {
+                  return {
+                    style: {
+                      fontSize: '1.2rem',
+                      width: '10vw'
+                    }
+                  }
+                }}
+                trigger="click" onSelect={handleAdvanceMenuSelect} size={'large'} class={'text-2xl'}  >
+                <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-36 shrink mr-2 '} >   <span class={'text-2xl'}>高级设置</span>
+                </NButton>
+              </NDropdown>
+            </div>
             <div class={"text-3xl flex justify-center items-center h-[54px] font-black"}>ECOCONTROL / V1.8.1.4</div>
             <div class={'h-full w-full shrink '} style={{ height: 'calc(100% - 80px - 54px)', backgroundColor: '#f5f6f6' }}>
               {/* <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div> */}
@@ -90,11 +140,14 @@ export default defineComponent({
                     <SysConfig />
                   </div>
                 </NTabPane>
-                <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink overflow-auto'}>
-                    <DevConfigNew />
-                  </div>
-                </NTabPane>
+                {
+                  devConfigTabShow.value && <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
+                    <div class={' h-full shrink overflow-auto'}>
+                      <DevConfigNew />
+                    </div>
+                  </NTabPane>
+                }
+
                 {
                   curDevConfigRow.value && addressShow.value &&
                   <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
@@ -109,6 +162,26 @@ export default defineComponent({
                     <DataGroup />
                   </div>
                 </NTabPane>
+
+                {
+                  curGroupConfigRow.value && DeviceGroupShow.value &&
+                  <NTabPane displayDirective="show:lazy" name={"deviceGroup"} tab={`${curGroupConfigRow.value.GroupName} ➔设备`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'deviceGroup' ? activeStyle : {} } }}>
+                    <div class={' h-full shrink overflow-auto'}>
+                      <DeviceGroup />
+                    </div>
+                  </NTabPane>
+                }
+
+                {
+                  curDeviceGroupRow.value && DevDataGroupTabShow.value &&
+                  <NTabPane displayDirective="show:lazy" name={tabNameEnum.devDataGroup} tab={`${curDeviceGroupRow.value?.DeviceName} ➔数据`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == tabNameEnum.devDataGroup ? activeStyle : {} } }}>
+                    <div class={' h-full shrink overflow-auto'}>
+                      <DevDataGroup />
+                    </div>
+                  </NTabPane>
+                }
+
+
 
                 {/* <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                 <div class={' h-full shrink'}>

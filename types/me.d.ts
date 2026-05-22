@@ -243,15 +243,102 @@ type ModbusAdressRow = {
   SlaveId?: number;
   Length?: number;
   Index?: number;
+  isChoose?: boolean,
+  adressItem?: ModbusAdressSubItem
+}
+
+// interface DataGroupEntity {
+//   GId?: string;
+//   Name: string;
+//   DeviceIds?: string;
+//   AddressIds?: string;
+//   CreateTime?: string;
+//   isNewRow?: boolean
+// }
+
+interface GroupConfigEntity {
+  GId?: string;
+  GroupName: string;
+  Note?: string;
+  CreateTime?: string;
+  isNewRow?: boolean
+}
+
+interface DeviceGroupEntity {
+  /** 主键Id */
+  GId?: string;
+
+  /** 构成分组Id */
+  GroupId?: string;
+
+  /** 设备名称 */
+  DeviceName: string;
+
+  /** 设备类型 */
+  DeviceClass?: string;
+
+  /** 状态 */
+  State?: number;
+
+  /** 创建时间 */
+  CreateTime?: string;
+  isNewRow?: boolean
 }
 
 interface DataGroupEntity {
+  /** 主键Id */
   GId?: string;
-  Name: string;
-  DeviceIds?: string;
-  AddressIds?: string;
+
+  /** 设备Id */
+  DeviceGroupId?: string;
+
+  /** 数据Id */
+  DataId?: string;
+
+  /** 数据名称 */
+  DataName?: string;
+
+  /** 数据类型 */
+  DataClass?: number;
+
+  /** 参数类型 */
+  ParamClass?: number;
+
+  /** 单位 */
+  Unit?: string;
+
+  /** 小数位 */
+  Precision?: number;
+
+  /** 是否单边数据 1.没有下偏差 2.没有上偏差 */
+  Unilateral?: number;
+
+  /** 报警类型 0.不报警 1.离散点 2.上升沿 3.下降沿 */
+  AlarmType?: number;
+
+  /** 状态 */
+  State?: number;
+
+  /** 创建时间 */
   CreateTime?: string;
+
   isNewRow?: boolean
+
+}
+
+interface DataAddressEntity {
+  GId?: string;           // UUID 字符串
+  DeviceId: string;      // 设备 ID
+  Name?: string;      // 数据名称，如 "HotOD"
+  Permission: number;    // 权限
+  State: number;         // 状态
+  AddressString: string;
+  isChoose?: boolean;
+  adressItem?: ModbusAdressSubItem;
+  isNewRow?: boolean;
+  SlaveId?: number;
+  Length?: number;
+  Index?: number
 }
 
 
@@ -336,6 +423,7 @@ type FormulaConfigEntity = {
   Note: string;
   Active?: number;  //废弃⚠️
   CreateTime?: string;
+  GroupConfigItem?: GroupConfigEntity
 }
 
 type FormulaDataEntity = {  //废弃⚠️
@@ -350,27 +438,27 @@ type FormulaDataEntity = {  //废弃⚠️
 
 interface FormulaParamEntity {
   /** 主键 */
-  GId: string;
+  GId?: string;
 
   /** 数据采集配置主键 */
-  DataId: string;
+  DataGroupId?: string;
 
   /** 配方配置主键 */
-  FormulaId: string;
+  FormulaId?: string;
 
   /** 标准值 */
-  Standard: number;
+  Standard?: number;
 
   /** 上公差 */
-  UpperTol: number;
+  UpperTol?: number;
 
   /** 下公差 */
-  LowerTol: number;
+  LowerTol?: number;
 
   /** 创建时间 */
-  CreateTime: string;
+  CreateTime?: string;
 
-  AdressItem?: ModbusAdressRow
+  AdressItem?: DataGroupEntity
 }
 
 // type ProductHistoryEntity = {
@@ -659,5 +747,9 @@ interface simpleTableColumn {
   inputUpdateFn?: (row: any, item: any) => void,
   mapFn?: (row: any, item: any) => string | number | boolean,
   isCheckbox?: boolean,
-  isSwitch?: boolean
+  isSwitch?: boolean,
+  isSelect?: boolean,
+  isRadio?: boolean,
+  selectOption?: { label: string, value: string }[],
+  selectChangeFn?: (row: any, item: any) => void
 }

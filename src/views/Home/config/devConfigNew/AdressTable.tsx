@@ -2,7 +2,7 @@ import { c, DialogReactive, NButton, useDialog } from "naive-ui";
 import { computed, defineComponent, PropType, reactive, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import ModbusAddressModelForm from "../devConfig/addressForm/ModbusAddressModelForm";
-import { DeviceConfigEntity, ModbusAdressRow, ModbusAdressSubItem, simpleTableColumn } from "~/me";
+import { DeviceConfigEntity, DataAddressEntity, ModbusAdressSubItem, simpleTableColumn } from "~/me";
 import ConnectComForm, { ConnectFormIns } from "./connect/ConnectComForm";
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
@@ -22,19 +22,12 @@ const defSubAdressItem: ModbusAdressSubItem = {
   Rate: 1,
   Offset: 0
 }
-const defAdressRow: ModbusAdressRow = {
-  DataName: '',
+const defAdressRow: DataAddressEntity = {
+  Name: '',
   DeviceId: '',
-  DeviceClass: 1,
-  DataClass: 101,
-  ParamClass: 0,
-  Unilateral: 0,
-  AlarmType: 1,
   Permission: 0,
   State: 1,
   AddressString: JSON.stringify(defSubAdressItem),
-  Unit: 'mm',
-  Precision: 3,
 }
 
 export default defineComponent({
@@ -51,23 +44,23 @@ export default defineComponent({
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
 
-    const rowClick = (row: simpleTableColumn, item: ModbusAdressRow) => {
+    const rowClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       configStore.setCurAddressRow(item)
     }
-    const deleteClick = (row: simpleTableColumn, item: ModbusAdressRow) => {
+    const deleteClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       rowClick(row, item)
       callBrige(callFnName.DeleteDataAddress, item.GId).then(() => {
         window.$message.success('删除成功')
         getData()
       })
     }
-    const addClick = (row: simpleTableColumn, item: ModbusAdressRow) => {
+    const addClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       if (item.isNewRow) {
-        rowClick(row, { ...item, DataName: '' })
+        rowClick(row, { ...item, Name: '' })
         configStore.setAddressFormShow(true)
       }
     }
-    const stateClick = (row: simpleTableColumn, item: ModbusAdressRow) => {
+    const stateClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       rowClick(row, item)
       callBrige(callFnName.SaveDataAddress, item).then((res: any) => {
         window.$message.success('保存成功')
@@ -78,21 +71,21 @@ export default defineComponent({
       form: {},
       curDialogIns: null as DialogReactive | null,
       curConnectRefType: null,
-      data: [] as ModbusAdressRow[],
+      data: [] as DataAddressEntity[],
       coloumns: [
-        { label: '数据名', prop: 'DataName', flex: 2, btnFn: addClick },
-        { label: '数据分类', prop: 'DeviceClass', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return DeviceClassNameMap[item.DeviceClass] } },
-        { label: '数据类型', prop: 'DataClass', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return DataClassNameMap[item.DataClass] } },
-        { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return ParamClassNameMap[item.ParamClass] } },
-        { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return UnilateralNameList[item.Unilateral] } },
-        // { label: '报警类型', prop: 'AlarmType', flex: 2, mapFn: (col: any, item: ModbusAdressRow) => { return AlarmTypeNameList[item.AlarmType] } },
-        // { label: '从站地址', prop: 'SlaveId', flex: 1, },
-        { label: '读写权限', prop: 'Permission', flex: 1, mapFn: (col: any, item: ModbusAdressRow) => { return PermissionNameList[item.ParamClass] } },
+        { label: '数据名', prop: 'Name', flex: 2, btnFn: addClick },
+        // { label: '数据分类', prop: 'DeviceClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DeviceClassNameMap[item.DeviceClass] } },
+        // { label: '数据类型', prop: 'DataClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataClassNameMap[item.DataClass] } },
+        // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return ParamClassNameMap[item.ParamClass] } },
+        // { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return UnilateralNameList[item.Unilateral] } },
+        // // { label: '报警类型', prop: 'AlarmType', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return AlarmTypeNameList[item.AlarmType] } },
+        // // { label: '从站地址', prop: 'SlaveId', flex: 1, },
+        { label: '读写权限', prop: 'Permission', flex: 1, mapFn: (col: any, item: DataAddressEntity) => { return PermissionNameList[item.Permission] } },
         // { label: '精度', prop: 'Precision', flex: 1 },
         // { label: '单位', prop: 'Unit', flex: 1  },
         {
           label: '状态', prop: 'State', flex: 1, isSwitch: true, btnFn: stateClick,
-          mapFn: (col: any, item: ModbusAdressRow) => { return item.State == 1 ? '启用' : '禁用' }
+          mapFn: (col: any, item: DataAddressEntity) => { return item.State == 1 ? '启用' : '禁用' }
         },
         {
           label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
@@ -105,7 +98,7 @@ export default defineComponent({
     })
 
     const getData = () => {
-      callBrige(callFnName.GetDataAddresses, configStore.curDevConfigRow?.GId).then((res: ModbusAdressRow[]) => {
+      callBrige(callFnName.GetDataAddresses, configStore.curDevConfigRow?.GId).then((res: DataAddressEntity[]) => {
         console.log("🪵 [AdressTable.tsx:60] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         res = res.map(e => {
           let subItem = e.AddressString ? JSON.parse(e.AddressString) : defSubAdressItem
@@ -117,7 +110,7 @@ export default defineComponent({
         })
         res.push({
           ...defAdressRow,
-          DataName: '新增数据',
+          Name: '新增数据',
           DeviceId: configStore.curDevConfigRow?.GId || '',
           isNewRow: true
         })

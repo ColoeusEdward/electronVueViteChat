@@ -3,7 +3,7 @@ import { ComponentPublicInstance, computed, defineComponent, nextTick, onBeforeU
 import niotLogo from '@/assets/login_logos.png';
 import { callSpc, getSysConfig } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { ActualResult, CollectPointModel, CPKEntity, CpkModel, DataConfigEntity, DataValue, FFTModel, ModbusAdressRow, SysConfigEntity } from "~/me";
+import { ActualResult, CollectPointModel, CPKEntity, CpkModel, DataConfigEntity, DataGroupEntity, DataValue, DeviceGroupEntity, FFTModel, ModbusAdressRow, SysConfigEntity } from "~/me";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import activeWarningImg from '@/assets/LineDspButton_inactive_warning3.png'
 import { useCurcevInnerDataStore } from "./innerData";
@@ -111,6 +111,7 @@ export default defineComponent({
       menuOpt: [] as DropdownMixedOption[],
       timerIns: null as any,
       tol: { up: 0, down: 0, }, //上下限
+      menuShow: true,
     })
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
@@ -129,7 +130,7 @@ export default defineComponent({
           if (!innerData.curDataCfgEntity) {
             innerData.setCurDataCfgEntity(defCfgData[0].children![0])
             nextTick(() => {
-              innerData.getCpkFn()
+              // innerData.getCpkFn()
             })
           }
           return
@@ -181,6 +182,7 @@ export default defineComponent({
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
     const refresh = (e?: any) => {
+      // console.log("🪵 [index.tsx:183] ~ token ~ \x1b[0;32mrefresh\x1b[0m = ", refresh);
       return getSysConfig().then(() => {
         updateFormulaConfig(configStore)
         return configStore.initServiceFn()
@@ -212,7 +214,7 @@ export default defineComponent({
     }
     const mainFixNum = computed(() => {
       // innerData.dataCfgList.
-      let val = configStore.curChartAdress?.Precision
+      let val = configStore.curChartDataGroup?.Precision
       return Number(val)
     })
     const nextShow = computed(() => {
@@ -224,7 +226,7 @@ export default defineComponent({
     const curDataType = computed(() => {
       return innerData.curDataCfgEntity?.DataType
     })
-    watch(() => chartAdressList.value, (v: ModbusAdressRow[]) => {
+    watch(() => chartAdressList.value, (v: DeviceGroupEntity[]) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
       let list = v
       let opt = menuOptList
@@ -232,9 +234,9 @@ export default defineComponent({
       if (sitem) {
         if (list.length == 0) {
           // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list.map(e => buildMenuOpt(e)) as any
+          sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
         } else {
-          sitem.children = list.map(e => buildMenuOpt(e))
+          sitem.children = list.map(e => buildMenuOpt(e, configStore))
           // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
           //   return {
           //     ...buildMenuOpt(e),
@@ -244,6 +246,10 @@ export default defineComponent({
         }
       }
       commonData.menuOpt = opt as any
+      commonData.menuShow = false
+      sleep(50).then(() => {
+        commonData.menuShow = true
+      })
       // console.log("🪵 [index.tsx:234] ~ token ~ \x1b[0;32mcommonData.menuOpt\x1b[0m = ", commonData.menuOpt);
     }, {
       immediate: true
@@ -282,8 +288,8 @@ export default defineComponent({
       let type = key.split(menuIdSplit)[0]
       let trueKey = key.split(menuIdSplit)[1]
       if (type == menuPropEnum.dataSource) {
-        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
-        configStore.setCurChartAdress(item)
+        let item = configStore.chartDataGroupList.find(e => e.GId == trueKey) as DataGroupEntity
+        configStore.setCurChartDataGroup(item)
         // let item = commonData.cfgDataList.find(e => e.GId == trueKey)
         // innerData.setCurDataCfgEntity(item)
         // innerData.getCpkFn()
@@ -310,7 +316,7 @@ export default defineComponent({
         option.label = option.DataName
       }
       let text = option.label
-      if (option.trueKey && configStore.curChartAdress?.GId == option.trueKey) {
+      if (option.trueKey && configStore.curChartDataGroup?.GId == option.trueKey) {
         text += ' ✔️'
       }
 
@@ -321,13 +327,14 @@ export default defineComponent({
     const nodeProps = () => {
       return {
         style: {
-          minWidth: '14vh'
+          minWidth: '14vh',
+          fontSize: '1.5rem'
         }
       }
     }
     const loopGetCpk = () => {
-      if (configStore.curChartAdress) {
-        callBrige(callFnName.GetCpkData, configStore.curChartAdress.GId).then((res: CPKEntity) => {
+      if (configStore.curChartDataGroup) {
+        callBrige(callFnName.GetCpkData, configStore.curChartDataGroup.GId).then((res: CPKEntity) => {
           // console.log("🪵 [index.tsx:319] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
           configStore.setCurCpk(res)
         })
@@ -340,8 +347,8 @@ export default defineComponent({
     }
 
     const loopGetRealTime = () => {
-      if (configStore.curChartAdress) {
-        callBrige(callFnName.GetRealtimeData, configStore.curChartAdress.GId).then((res: DataValue) => {
+      if (configStore.curChartDataGroup) {
+        callBrige(callFnName.GetRealtimeData, configStore.curChartDataGroup.GId).then((res: DataValue) => {
           // console.log("🪵 [index.tsx:332] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
           configStore.setCurRealTimeData(res)
         })
@@ -354,15 +361,18 @@ export default defineComponent({
     }
     const curParamItem = computed(() => {
       let list = configStore.curEnableFormulaParamList
-      let item = list?.find(e => e.DataId == configStore.curChartAdress?.GId)
+      let item = list?.find(e => e.DataGroupId == configStore.curChartDataGroup?.GId)
+      let stand = item?.Standard || 0
+      let upVal = item?.UpperTol || 0
+      let downVal = item?.LowerTol || 0
       if (item) {
-        commonData.tol.up = item?.Standard * 1 + item?.UpperTol * 1
-        commonData.tol.down = item?.Standard * 1 - item?.LowerTol
+        commonData.tol.up = stand * 1 + upVal * 1
+        commonData.tol.down = stand * 1 - downVal
       }
       return item
     })
     const curPrecision = computed(() => {
-      return configStore.curChartAdress?.Precision == undefined ? 3 : configStore.curChartAdress?.Precision
+      return configStore.curChartDataGroup?.Precision == undefined ? 3 : configStore.curChartDataGroup?.Precision
     })
     const valueIsOk = computed(() => {
       curParamItem.value;
@@ -395,7 +405,7 @@ export default defineComponent({
 
     const loopGetData = () => {
       if (innerData.isGetting) {
-        loopGetCpk()
+        // loopGetCpk()
         loopGetRealTime()
       }
     }
@@ -425,10 +435,8 @@ export default defineComponent({
       })
 
       if (innerData.isFirst) {
-        sleep(100).then(() => {
-          innerData.setIsFirst(false)
-          return refresh()
-        })
+        innerData.setIsFirst(false)
+        return refresh()
       } else {
         // return refresh()
       }
@@ -446,11 +454,14 @@ export default defineComponent({
           <div class={'flex pl-2'}>
             <NSpace align={'center'}>
               <div></div>
-              <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
-                {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
-                <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
-                </NButton>
-              </NDropdown>
+              {
+                commonData.menuShow && <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
+                  {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
+                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                  </NButton>
+                </NDropdown>
+              }
+
               {/* {innerData.isGetting ?
                 <NButton type={'warning'} size={'large'} v-slots={{
                   icon: () => <NIcon><StopCircleOutlined /></NIcon>
@@ -574,13 +585,13 @@ export default defineComponent({
                     CPK需要等待采集一段时间才会有数据
                 </NTooltip>
               </div> */}
-                    <span class={'mt-auto mb-[6vh] text-5xl font-bold text-[#5e5452]'}>{configStore.curChartAdress?.Unit}</span>
+                    <span class={'mt-auto mb-[6vh] text-6xl px-3 font-bold text-[#5e5452]'}>{configStore.curChartDataGroup?.Unit}</span>
                   </div>
                 </div>
               </div>
               {
-                configStore.curChartAdress &&
-                <CurcevChartRow height="50%" i={0} adressRow={configStore.curChartAdress} ref={chartRef} />
+                configStore.curChartDataGroup &&
+                <CurcevChartRow height="50%" i={0} adressRow={configStore.curChartDataGroup} ref={chartRef} />
               }
             </>
           }

@@ -2,7 +2,7 @@ import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { v4 as uuidv4 } from 'uuid';
-import { DataGroupEntity, DeviceConfigEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
+import { DataGroupEntity, DeviceConfigEntity, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, ModbusAdressRow, SysConfigEntity, SysConfigModel } from "~/me";
 type connectConfig = {
   data: Record<string, string>[]
 }
@@ -20,12 +20,14 @@ export const useFormulaStore = defineStore('formulaConfig', {
     return {
       show: false,
       curFormulaConfigRow: null as FormulaConfigEntity | null,
-      curEnableDataGroup: null as DataGroupEntity | null | undefined,
+      curDeviceGroupRow: null as DeviceGroupEntity | null | undefined,
+      curEnableDataGroupConfig: null as GroupConfigEntity | null | undefined,
       updateParamListFn: () => { },
       updateConfigListFn: () => { },
       getParamFormMapFn: () => { },
       applayFormulaConfigFn: (row: FormulaConfigEntity) => { },
       getFormulaListFn: (() => { }) as () => FormulaConfigEntity[],
+      getDeviceGroupListFn: (() => { }) as () => DeviceGroupEntity[],
     }
   },
   /**
@@ -44,8 +46,8 @@ export const useFormulaStore = defineStore('formulaConfig', {
     setCurFormulaConfigRow(value: FormulaConfigEntity | null) {
       this.curFormulaConfigRow = value
     },
-    setCurEnableDataGroup(value: DataGroupEntity | null | undefined) {
-      this.curEnableDataGroup = value
+    setCurEnableDataGroupConfig(value: GroupConfigEntity | null | undefined) {
+      this.curEnableDataGroupConfig = value
     },
     setUpdateParamListFn(value: () => void) {
       this.updateParamListFn = value
@@ -61,6 +63,12 @@ export const useFormulaStore = defineStore('formulaConfig', {
     },
     setGetFormulaListFn(value: () => FormulaConfigEntity[]) {
       this.getFormulaListFn = value
+    },
+    setGetDeviceGroupListFn(value: () => DeviceGroupEntity[]) {
+      this.getDeviceGroupListFn = value
+    },
+    setCurDeviceGroupRow(value: DeviceGroupEntity | null | undefined) {
+      this.curDeviceGroupRow = value
     },
 
   }

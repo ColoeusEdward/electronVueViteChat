@@ -9,7 +9,7 @@ import { getRandomInt, sleep } from "@/utils/utils";
 import { useCurcevInnerDataStore } from "./innerData";
 import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
-import { CollectPointModel, DataConfigEntity, DataValue, ModbusAdressRow } from "~/me";
+import { CollectPointModel, DataConfigEntity, DataGroupEntity, DataValue, ModbusAdressRow } from "~/me";
 import CpkBlock from "./CpkBlock";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
@@ -32,7 +32,7 @@ export default defineComponent({
   name: 'CurcevChartRow',
   props: {
     chartId: String,
-    adressRow: Object as PropType<ModbusAdressRow>,
+    adressRow: Object as PropType<DataGroupEntity>,
     dataSourceItem: {
       type: Object as PropType<{
         label: string,
@@ -68,7 +68,7 @@ export default defineComponent({
       return props.dataSourceItem
     })
     const paraItem = computed(() => {
-      let item = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+      let item = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.adressRow?.GId)
       alldata.curParSaclStep = item?.Standard ? item.Standard * 0.01 : 0.1
       return item
     })
@@ -287,7 +287,7 @@ export default defineComponent({
         //   res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
         // }
         // filter((e,i) => i % 2 == 0)
-        let paramItem = configStore.curEnableFormulaParamList?.find(e => e.DataId == props.adressRow?.GId)
+        let paramItem = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.adressRow?.GId)
         let upValue: number = paramItem?.UpperTol || 0.1
         let downValue: number = paramItem?.LowerTol || 0.1
         if (paramItem) {

@@ -182,7 +182,7 @@ export default defineComponent({
       if (key == 'cleanAll') {
         statisticalStore.clearCurDisDataAdressList()
       } else {
-        let item = configStore.chartDataAdressList.find(e => e.GId == trueKey)
+        let item = configStore.chartDataGroupList.find(e => e.GId == trueKey)
         if (item) {
           if (statisticalStore.curDisDataAdressList.some(e => e.GId == item!.GId)) {
             statisticalStore.removeCurDisDataAdressList(item)
@@ -207,7 +207,7 @@ export default defineComponent({
       //@ts-ignore
       // let opt: DropdownProps['options'] = [...maintainOption.value, ...displayOption.value, ...zoneOption.value]
       let opt = defMenu.map(e => ({ ...e, children: e.children?.map(ee => { return { ...ee } }) }))
-      opt[0].children.push(...configStore.chartDataAdressList.map(e => buildMenuOpt(e)) as any)
+      opt[0].children.push(...configStore.chartDataAdressList.map(e => buildMenuOpt(e, configStore)) as any)
       // if (Object.values(opt).some(e => !e.props)) {
       //   opt = addProp(opt)
       // }
