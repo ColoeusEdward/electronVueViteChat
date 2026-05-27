@@ -1,3 +1,4 @@
+import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { tabNameEnum } from "@/views/Home/config/devConfigNew/enum";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
@@ -47,9 +48,9 @@ export const useConfigStore = defineStore('config', {
       chartDataAdressList: [] as DeviceGroupEntity[],
       showDataAdressList: [] as DeviceGroupEntity[],
       chartDataGroupList: [] as DataGroupEntity[],
-      curChartDataGroup: null as DataGroupEntity | null | undefined,
+      curChartDataGroup: getLocalStorage('curChartDataGroup', null) as DataGroupEntity | null | undefined,
       curChartAdress: null as DataAddressEntity | null | undefined,
-      curMultiChartAdress: [] as DataGroupEntity[],
+      curMultiChartAdress: getLocalStorage('curMultiChartAdress', []) as DataGroupEntity[],
       curCpk: null as CPKEntity | null,
       curRealTimeData: null as DataValue | null | undefined,
 
@@ -78,6 +79,7 @@ export const useConfigStore = defineStore('config', {
       curEnableFormulaRow: null as FormulaConfigEntity | null | undefined,
       curEnableFormulaParamList: null as FormulaParamEntity[] | null | undefined,
       initServiceFn: () => { },
+      refreshAllConfigFn: () => Promise.resolve(),
 
 
       DevChooseShow: false,
@@ -243,6 +245,7 @@ export const useConfigStore = defineStore('config', {
       this.curChartAdress = value
     },
     setCurChartDataGroup(value: DataGroupEntity | null | undefined) {
+      setLocalStorage('curChartDataGroup', value)
       this.curChartDataGroup = value
     },
     setDevDataGroupDevListShow(value: boolean) {
@@ -250,12 +253,14 @@ export const useConfigStore = defineStore('config', {
     },
     addMultiChartAdress(value: DataGroupEntity) {
       this.curMultiChartAdress.push(value)
+      setLocalStorage('curMultiChartAdress', this.curMultiChartAdress)
     },
     setChartDataGroupList(value: DataGroupEntity[]) {
       this.chartDataGroupList = value
     },
     removeMultiChartAdress(value: DataGroupEntity) {
       this.curMultiChartAdress = this.curMultiChartAdress.filter(item => item.GId !== value.GId)
+      setLocalStorage('curMultiChartAdress', this.curMultiChartAdress)
     },
     clearMultiChartAdress() {
       this.curMultiChartAdress = []
@@ -296,6 +301,9 @@ export const useConfigStore = defineStore('config', {
     setDevConfigTabShow(value: boolean) {
       this.devConfigTabShow = value
     },
+    setRefreshAllConfigFn(value: () => Promise<void>) {
+      this.refreshAllConfigFn = value
+    }
   }
 
 

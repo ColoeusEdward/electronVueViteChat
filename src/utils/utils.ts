@@ -9,6 +9,7 @@ import { Ref } from "vue";
 import { propNameMap } from "@/views/Home/config/devConfig/enum";
 import { callBrige } from "./callm";
 import { menuIdSplit, menuPropEnum } from "@/views/Home/curcev/enum";
+import { noKeyBoardInputClass } from "@/views/Home/config/sysConfig/enum";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -32,8 +33,15 @@ const setLocalStorage = (key: string, value: any) => {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-const getLocalStorage = (key: string) => {
-  return JSON.parse(localStorage.getItem(key) || '{}')
+const getLocalStorage = (key: string, def = {} as any) => {
+  try {
+    return JSON.parse(localStorage.getItem(key) as any) || def;
+  } catch (error) {
+    // 这里可以根据需要决定是否打印错误日志
+    console.error("JSON 解析失败:", error);
+    return def;
+  }
+  // return JSON.parse( || (def == -1 ? '{}' : def))
 }
 export { sleep, isLowResolution, capitalizeFirstLetter, unique, simulateKeyPress, setLocalStorage, getLocalStorage }
 
@@ -124,7 +132,7 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>, configSto
 
     // 检查这个元素是否是一个输入框
     //@ts-ignore
-    if (targetElement && targetElement.type == 'text' && targetElement.tagName === 'INPUT' && !targetElement.className.includes('selection') || targetElement.tagName === 'TEXTAREA') {
+    if (targetElement && targetElement.type == 'text' && targetElement.tagName === 'INPUT' && !targetElement?.closest('div.' + noKeyBoardInputClass) && !targetElement.className.includes('selection') || targetElement.tagName === 'TEXTAREA') {
       console.log('用户点击或选中了一个输入框。');
       //@ts-ignore
       console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
@@ -195,7 +203,7 @@ export const buildMenuOpt = (e: DeviceGroupEntity, configStore: ReturnType<typeo
   const getChild = (e: DeviceGroupEntity) => {
     let name = isShow ? callFnName.GetShowDataGroups : callFnName.GetChartDataGroups
     callBrige(name, e.GId).then((res: DataGroupEntity[]) => {
-      console.log("🪵 [utils.ts:196] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+      // console.log("🪵 [utils.ts:196] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
       if (!isShow) {
         res.forEach(e => {
           if (!configStore.chartDataGroupList.find(item => item.GId == e.GId)) {
@@ -288,4 +296,16 @@ export const getAllDataUnderGroup = (configStore: ReturnType<typeof useConfigSto
     })
     return dataGroupList
   })
+}
+
+export const initWinFn = () => {
+  const ExportRealtime = (dataGroupId: string) => {
+
+  }
+  const ExportDistribution = (dataGroupId: string) => {
+
+  }
+
+  window.ExportRealtime = ExportRealtime
+  window.ExportDistribution = ExportDistribution
 }

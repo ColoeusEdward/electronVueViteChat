@@ -41,11 +41,50 @@ export default defineComponent({
       itemList: [
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '设备信息', width: 24 },
-            { type: 'input', label: '公司名称', prop: 'CompanyName', width: 12 },
-            { type: 'input', label: '设备编号', prop: 'MachineCode', width: 12 },
+            { type: 'divider', label: '数据展示', width: 24 },
+            { type: 'select', label: '默认小数位数', prop: 'Precision', width: 12 },
+            { type: 'select', label: '单屏曲线数量', prop: 'MaxChartNum', width: 12 },
+            { type: 'input', label: '统计最小点数', prop: 'CpkMinPonitNum', width: 12 },
+            { type: 'input', label: '统计数据周期', prop: 'CpkInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: '图形刷新周期', prop: 'RefreshInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: '最大显示点数', prop: 'MaxPonitNum', width: 12 },
           ]
         },
+        {
+          type: 'box', label: '', width: 24, childCompList: [
+            { type: 'divider', label: '数据采集', width: 24 },
+            { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: '报警信号间隔', prop: 'AlarmInterval', width: 12, suffix: 'ms' },
+            { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, checkedValue: 1, uncheckedValue: 0, },
+          ]
+        },
+        // {
+        //   type: 'box', label: '', width: 24, childCompList: [
+        //     { type: 'divider', label: '统计报表', width: 24 },
+        //     { type: 'switch', label: '允许实时数据导出', prop: 'EnableExportReal', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
+        //     // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
+        //     { type: 'switch', label: '允许统计数据导出', prop: 'EnableExportStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, suffix: 'ms' },
+        //     // { type: 'select', label: '曲线文件类型', prop: 'ExportStatiType', width: 12 },
+        //     {
+        //       type: 'input', label: '导出路径', prop: 'ExportPath', class: noKeyBoardInputClass, width: 12, suffix: () => {
+        //         return <label onClick={(e) => {
+        //           e.stopImmediatePropagation()
+        //           e.stopPropagation()
+        //           e.preventDefault()
+        //           chooseFolder().then((e) => {
+        //             e && (alldata.cfgData.ExportPath = e)
+        //           })
+        //         }} class={'z-50 relative -right-2'} >
+        //           <NTag bordered={false} >选择目录</NTag>
+        //         </label>
+        //       }
+        //     },
+        //     // { type: 'text', },
+        //     { type: 'switch', label: '允许打印统计数据', prop: 'EnablePrintStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
+        //     { type: 'select', label: '使用的打印机', prop: 'ReportPrinter', width: 12 },
+        //   ]
+        // },
         // {
         //   type: 'box', label: '', width: 24, childCompList: [
         //     { type: 'divider', label: '编码规则', width: 24 },
@@ -56,20 +95,7 @@ export default defineComponent({
         //     },
         //   ]
         // },
-        {
-          type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '其他配置', width: 24 },
-            // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
-            {
-              type: 'free', label: '激活码', renderComp: () => {
-                return <AcCode v-model:value={alldata.cfgData.Cdkey} />
-              }, width: 12
-            },
-            { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 1, uncheckedValue: 0, defaultValue: 1, width: 12 },
-            // { type: 'text', label: '', prop: 'InputType', text: '', width: 24 },
-            // { type: 'text', label: '', prop: 'Version', text: '', width: 24 },
-          ]
-        },
+
       ] as formListItem[]
     })
     formOpt.itemList = formOpt.itemList.map((e) => {

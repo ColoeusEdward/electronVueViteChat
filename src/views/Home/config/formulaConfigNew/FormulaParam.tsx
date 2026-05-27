@@ -141,7 +141,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full l formula-param-tab'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
+        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full l formula-param-tab my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
           {
             curDeviceGroupRow.value &&
             // pararmListWidthAdress.value.map(item => {
@@ -152,7 +152,7 @@ export default defineComponent({
               }
               return (
                 <NTabPane displayDirective="show:lazy" name={item.DataGroupId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataGroupId ? alldata.activeStyle : {} } }}>
-                  <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border-0 border-l border-r border-b border-gray-600 border-solid rounded-xl rounded-t-none'}>
+                  <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border border-gray-600 border-solid '}>
                     <div class={'w-full h-full py-6 pl-4 '}>
                       <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '450px', marginRight: '10px', textAlign: 'center' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />
                     </div>

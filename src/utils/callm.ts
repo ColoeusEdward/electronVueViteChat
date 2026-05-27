@@ -36,7 +36,7 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
     // console.log("🪵 [callm.ts:34] ~ token ~ \x1b[0;32mfnRun\x1b[0m = ", fnRun);
     return fnRun.then((res: any) => {
       let resObj = safeJsonParse(res) as ActualResult
-      if (cb != callFnName.GetRealtimeData && cb != callFnName.GetChartData) {
+      if (cb != callFnName.GetRealtimeData && cb != callFnName.GetChartData && cb != callFnName.GetDistributionData) {
         console.log("🪵 [callm.ts:35] ~ token ~ \x1b[0;32mresObj\x1b[0m = ", cb, resObj);
       }
       return resultProcess(resObj, cb)

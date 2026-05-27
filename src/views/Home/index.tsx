@@ -6,7 +6,7 @@ import RightValueBlock from "./RightValueBlock";
 import activeImg from '@/assets/PnlBtnActive.png'
 import emptyAduio from '@/assets/10-seconds-of-silence.mp3'
 import { useMain } from "@/store";
-import { isLowResolution, showKeyBoard, sleep, updateFormulaConfig } from "@/utils/utils";
+import { initWinFn, isLowResolution, showKeyBoard, sleep, updateFormulaConfig } from "@/utils/utils";
 import { useRealTimeStore } from "@/store/realtime";
 import Trend from "./trend/Trend";
 import Statistical from "./statistical/Statistical";
@@ -27,6 +27,7 @@ import GlobalKeyBoard2 from "./GlobalKeyBoard2";
 import { callBrige } from "@/utils/callm";
 import { useFormulaStore } from "@/store/formula";
 import FormulaConfigNew from "./config/formulaConfigNew";
+import { noKeyBoardInputClass } from "./config/sysConfig/enum";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -109,6 +110,21 @@ export default defineComponent({
     window.addEventListener('focus', handleFocus)
     document.addEventListener('focusin', handleAllInputFocuse);
 
+    const refreshAllConfig = (e?: any) => {
+      // console.log("🪵 [index.tsx:183] ~ token ~ \x1b[0;32mrefresh\x1b[0m = ", refresh);
+      return getSysConfig().then(() => {
+        updateFormulaConfig(configStore)
+        return initData()
+      }).then(() => {
+        if (e) {
+          window.$message.success('配置已刷新')
+        }
+      })
+      // return getAllActiveConfigData().then(() => {
+      //   e && msg.success('配置已刷新')
+      // })
+    }
+
     const initData = () => {
       configStore.setChartDataGroupList([])
       return callBrige(callFnName.InitService).then((res: string) => {
@@ -122,7 +138,10 @@ export default defineComponent({
       })
     }
     configStore.setInitServiceFn(initData)
-    getSysConfig()
+    configStore.setRefreshAllConfigFn(refreshAllConfig)
+    // getSysConfig()
+    refreshAllConfig()
+    initWinFn()
     onMounted(() => {
       // loopGetData()
       sleep(1000).then(() => {
@@ -163,7 +182,7 @@ export default defineComponent({
           {
             store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
               <div class={'w-3/4'}>
-                <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
+                <div class={"w-full h-[14px] bg-[#39393b] absolute top-[51px] z-[5]"}></div>
 
 
                 <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
@@ -217,13 +236,13 @@ export default defineComponent({
             </div> :
               <div class={'h-full flex overflow-hidden flex-col'}>
                 <div class={'h-1/3 relative'}>
-                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
+                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[51px] z-[5]"}></div>
 
 
                   <RightValueBlock />
                 </div>
                 <div class={'h-2/3'}>
-                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[50px] z-[5]"}></div>
+                  <div class={"w-full h-[14px] bg-[#39393b] absolute top-[51px] z-[8]"}></div>
                   <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
                     <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                       <div class={' h-full'}>

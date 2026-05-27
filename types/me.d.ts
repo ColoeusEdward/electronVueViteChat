@@ -13,7 +13,9 @@ declare global {
     spcJsBind: any,
     $message: MessageApiInjection,
     frontFn: Record<string, Function>,
-    chrome: any
+    chrome: any,
+    ExportRealtime: Function,
+    ExportDistribution: Function
   }
 }
 

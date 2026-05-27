@@ -24,6 +24,8 @@ import DeviceGroup from "./devConfigNew/dataGroup/DeviceGroup";
 import { tabNameEnum } from "./devConfigNew/enum";
 import DevDataGroup from "./devConfigNew/dataGroup/DevDataGroup";
 import activeImg from '@/assets/LineDspButton_inactive.png'
+import SysConfigCollect from "./sysConfig/sysConfigCollect";
+import SysConfigStat from "./sysConfig/sysConfigStat";
 export default defineComponent({
   name: 'Config',
   setup(props, ctx) {
@@ -135,14 +137,24 @@ export default defineComponent({
               {/* <div class={"w-full h-[8px] bg-[#39393b] absolute top-14 z-[5]"}></div> */}
 
               <NTabs value={curTabValue.value} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={defaultTab} >
-                <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="系统配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink '}>
+                <NTabPane displayDirective="show:lazy" name={"sysConfig"} tab="基本配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfig' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink border-0 border-t  border-gray-600 border-solid'}>
                     <SysConfig />
+                  </div>
+                </NTabPane>
+                <NTabPane displayDirective="show:lazy" name={"sysConfigCollect"} tab="采集配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfigCollect' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink border-0 border-t  border-gray-600 border-solid'}>
+                    <SysConfigCollect />
+                  </div>
+                </NTabPane>
+                <NTabPane displayDirective="show:lazy" name={"sysConfigStat"} tab="统计配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'sysConfigStat' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink border-0 border-t  border-gray-600 border-solid'}>
+                    <SysConfigStat />
                   </div>
                 </NTabPane>
                 {
                   devConfigTabShow.value && <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
-                    <div class={' h-full shrink overflow-auto'}>
+                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
                       <DevConfigNew />
                     </div>
                   </NTabPane>
@@ -151,14 +163,14 @@ export default defineComponent({
                 {
                   curDevConfigRow.value && addressShow.value &&
                   <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
-                    <div class={' h-full shrink overflow-auto'}>
+                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
                       <AdressTable />
                     </div>
                   </NTabPane>
                 }
 
                 <NTabPane displayDirective="show:lazy" name={"dataGroup"} tab="数据分组" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataGroup' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink overflow-auto'}>
+                  <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
                     <DataGroup />
                   </div>
                 </NTabPane>
@@ -166,7 +178,7 @@ export default defineComponent({
                 {
                   curGroupConfigRow.value && DeviceGroupShow.value &&
                   <NTabPane displayDirective="show:lazy" name={"deviceGroup"} tab={`${curGroupConfigRow.value.GroupName} ➔设备`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'deviceGroup' ? activeStyle : {} } }}>
-                    <div class={' h-full shrink overflow-auto'}>
+                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
                       <DeviceGroup />
                     </div>
                   </NTabPane>
@@ -175,7 +187,7 @@ export default defineComponent({
                 {
                   curDeviceGroupRow.value && DevDataGroupTabShow.value &&
                   <NTabPane displayDirective="show:lazy" name={tabNameEnum.devDataGroup} tab={`${curDeviceGroupRow.value?.DeviceName} ➔数据`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == tabNameEnum.devDataGroup ? activeStyle : {} } }}>
-                    <div class={' h-full shrink overflow-auto'}>
+                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
                       <DevDataGroup />
                     </div>
                   </NTabPane>

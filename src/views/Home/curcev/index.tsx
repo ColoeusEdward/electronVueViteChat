@@ -181,20 +181,22 @@ export default defineComponent({
 
     innerData.setStartColFn(startCollect)
     innerData.setStopColFn(stopCollect)
-    const refresh = (e?: any) => {
-      // console.log("🪵 [index.tsx:183] ~ token ~ \x1b[0;32mrefresh\x1b[0m = ", refresh);
-      return getSysConfig().then(() => {
-        updateFormulaConfig(configStore)
-        return configStore.initServiceFn()
-      }).then(() => {
-        if (e) {
-          msg.success('配置已刷新')
-        }
-      })
-      // return getAllActiveConfigData().then(() => {
-      //   e && msg.success('配置已刷新')
-      // })
-    }
+    const refresh = configStore.refreshAllConfigFn
+
+    // (e?: any) => {
+    //   // console.log("🪵 [index.tsx:183] ~ token ~ \x1b[0;32mrefresh\x1b[0m = ", refresh);
+    //   return getSysConfig().then(() => {
+    //     updateFormulaConfig(configStore)
+    //     return configStore.initServiceFn()
+    //   }).then(() => {
+    //     if (e) {
+    //       msg.success('配置已刷新')
+    //     }
+    //   })
+    //   // return getAllActiveConfigData().then(() => {
+    //   //   e && msg.success('配置已刷新')
+    //   // })
+    // }
     const clearCollect = () => {
       return callBrige(callFnName.ClearCollect).then(() => {
       })
@@ -436,7 +438,7 @@ export default defineComponent({
 
       if (innerData.isFirst) {
         innerData.setIsFirst(false)
-        return refresh()
+        // return refresh()
       } else {
         // return refresh()
       }

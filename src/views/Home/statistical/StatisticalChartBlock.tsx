@@ -205,7 +205,7 @@ export default defineComponent({
           name: 'gass',
           type: 'line',
           showSymbol: false,
-          data: [],
+          data: [0, 0],
           smooth: true,
           markLine: {
             symbol: ['none', 'none'], // 去掉箭头
@@ -241,7 +241,7 @@ export default defineComponent({
           name: 'Distribution',
           type: 'bar',
           showSymbol: false,
-          data: [],
+          data: [0, 0],
           smooth: true,
         },],
         // {
@@ -300,11 +300,11 @@ export default defineComponent({
     })
     const setChartData = (item: DistributionEntity) => {
       myChart.setOption({
-        // title: {
-        //   //@ts-ignore
-        //   text: dataSourceItem.value?.DataName,
-        //   // left: '40%'
-        // },
+        title: {
+          //@ts-ignore
+          text: dataSourceItem.value?.DataName,
+          // left: '40%'
+        },
         series: [
           {
             name: 'gass',
@@ -335,6 +335,7 @@ export default defineComponent({
     const getDisData = () => {
       callBrige(callFnName.GetDistributionData, dataSourceItem.value?.GId).then((res: DistributionEntity) => {
         console.log("🪵 [StatisticalChartBlock.tsx:276] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+        if (!res) return
         setChartData(res)
         alldata.curDisItem = res
       })
@@ -343,14 +344,16 @@ export default defineComponent({
       myChart && myChart.resize()
     })
     onMounted(() => {
-      setTimeout(() => {
-        initEchart()
-      }, 0);
+      // setTimeout(() => {
+
+      // }, 0);
+      initEchart()
 
       getDisData()
       alldata.timeIns = setInterval(() => {
         getDisData()
       }, configStore.sysConfig.CpkInterval || 500)
+
     })
 
     onBeforeUnmount(() => {

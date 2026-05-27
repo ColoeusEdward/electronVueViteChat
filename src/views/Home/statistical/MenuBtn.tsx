@@ -1,6 +1,6 @@
 
 import { DropdownProps, NButton, NDropdown } from "naive-ui";
-import { defineComponent, ref, computed, watch, onUnmounted, capitalize, } from "vue";
+import { defineComponent, ref, computed, watch, onUnmounted, capitalize, reactive, } from "vue";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useMain } from "@/store";
 import { storeToRefs } from "pinia";
@@ -8,7 +8,7 @@ import { useRealTimeStore } from "@/store/realtime";
 import { useStatisticalStore } from "@/store/statistical";
 import niotLogo from '@/assets/login_logos.png';
 import { useConfigStore } from "@/store/config";
-import { buildMenuOpt } from "@/utils/utils";
+import { buildMenuOpt, sleep } from "@/utils/utils";
 const defMenu = [{
   label: '数据源', key: 'dataSource', children: [
     { label: '全部清除', key: 'cleanAll' },
@@ -81,6 +81,9 @@ export default defineComponent({
     const realtimeStore = useRealTimeStore()
     const statisticalStore = useStatisticalStore()
     const configStore = useConfigStore()
+    const commonData = reactive({
+      menuShow: true
+    })
     const dropdownItemProp = {
       style: {
         fontSize: '1.2rem'
@@ -211,6 +214,10 @@ export default defineComponent({
       // if (Object.values(opt).some(e => !e.props)) {
       //   opt = addProp(opt)
       // }
+      commonData.menuShow = false
+      sleep(50).then(() => {
+        commonData.menuShow = true
+      })
       return opt
     })
     // const { dataSource, displayChart } = storeToRefs(store)
@@ -272,12 +279,15 @@ export default defineComponent({
 
       return (
         <div class={'flex items-center'}>
-          < NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'} renderLabel={renderLabel} nodeProps={nodeProps} >
-            <NButton strong={true} type="primary" secondary size={'large'} class={'h-12 w-28 shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
-            >
-              <span class={'text-2xl'}>菜单</span>
-            </NButton>
-          </NDropdown >
+          {
+            commonData.menuShow && <NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'} renderLabel={renderLabel} nodeProps={nodeProps} >
+              <NButton strong={true} type="primary" secondary size={'large'} class={'h-12 w-28 shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
+              >
+                <span class={'text-2xl'}>菜单</span>
+              </NButton>
+            </NDropdown >
+          }
+
           <div class={'ml-2 text-xl w-[20vw]'}>
 
           </div>

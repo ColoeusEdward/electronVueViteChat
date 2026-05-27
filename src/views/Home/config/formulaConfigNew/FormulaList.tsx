@@ -71,7 +71,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full border border-gray-600 border-solid rounded-xl overflow-hidden bg-white'}>
+        <div class={'w-full h-full border border-gray-600 border-solid  overflow-hidden bg-white'}>
           <div class={"w-full h-full overflow-auto "}>
             {
               alldata.list.map((e, i) => {

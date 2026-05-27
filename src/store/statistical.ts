@@ -1,3 +1,4 @@
+import { getLocalStorage, setLocalStorage } from "@/utils/utils";
 import { DropdownProps } from "naive-ui";
 import { defineStore } from "pinia" // 定义容器
 import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
@@ -17,7 +18,7 @@ export const useStatisticalStore = defineStore('statistical', {
 
       isOnline: true,             //是否启用在线统计
       isShowData: true,            //是否显示底部数据
-      curDisDataAdressList: [] as DataGroupEntity[],          //当前显示的数据
+      curDisDataAdressList: getLocalStorage('curDisDataAdressList', []) as DataGroupEntity[],          //当前显示的数据
     }
   },
   /**
@@ -62,12 +63,20 @@ export const useStatisticalStore = defineStore('statistical', {
     },
     addCurDisDataAdressList(value: DataGroupEntity) {
       this.curDisDataAdressList.push(value)
+      setLocalStorage('curDisDataAdressList', this.curDisDataAdressList)
     },
     removeCurDisDataAdressList(value: DataGroupEntity) {
-      this.curDisDataAdressList.splice(this.curDisDataAdressList.findIndex(e => e == value), 1)
+      let idx = this.curDisDataAdressList.findIndex(e => e.GId == value.GId)
+      let list = [...this.curDisDataAdressList]
+      list.splice(idx, 1)
+      this.curDisDataAdressList = list
+      setLocalStorage('curDisDataAdressList', this.curDisDataAdressList)
+      // this.curDisDataAdressList.splice(idx, 1)
+
     },
     clearCurDisDataAdressList() {
       this.curDisDataAdressList = []
+      setLocalStorage('curDisDataAdressList', this.curDisDataAdressList)
     },
 
   }

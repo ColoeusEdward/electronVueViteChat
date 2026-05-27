@@ -20,6 +20,7 @@ export default defineComponent({
       return staticalStore.curDisDataAdressList
     })
     watch(() => staticalStore.curDisDataAdressList, (val) => {
+
       alldata.tempHide = true
       sleep(200).then(() => {
         alldata.tempHide = false

@@ -210,7 +210,7 @@ export default defineComponent({
           type: 'line',
           showSymbol: false,
           // data: fakeDataList,
-          data: [],
+          data: [0, 0],
           smooth: false,
         },
         grid: {
@@ -287,12 +287,20 @@ export default defineComponent({
         //   res[length - 1] && innerData.setCurNewVal(res[length - 1].Value)
         // }
         // filter((e,i) => i % 2 == 0)
+        if (!res) {
+          return sleep(1000).then(() => {
+            loopGet()
+          })
+        }
         let paramItem = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.adressRow?.GId)
         let upValue: number = paramItem?.UpperTol || 0.1
         let downValue: number = paramItem?.LowerTol || 0.1
         if (paramItem) {
-          upValue = paramItem.Standard + paramItem.UpperTol
-          downValue = paramItem.Standard - paramItem.LowerTol
+          let stand = paramItem.Standard || 0
+          let up = paramItem.UpperTol || 0
+          let down = paramItem.LowerTol || 0
+          upValue = stand + up
+          downValue = stand - down
         }
 
         let list = res.map(e => {
@@ -347,6 +355,8 @@ export default defineComponent({
         return sleep(time ? Number(time) : 1000)
       }).then(() => {
         loopGet()
+      }).catch((err: any) => {
+        console.log("🪵 [CurcevChartRow.tsx:182] ~ token ~ \x1b[0;32merr\x1b[0m = ", err);
       })
     }
     const getChartIns = () => {

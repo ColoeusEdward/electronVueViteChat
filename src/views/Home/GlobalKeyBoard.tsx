@@ -68,6 +68,9 @@ export default defineComponent({
         keyboardIns.setInput(keyBoardAngle.value)
         return
       }
+      if (button == '{enter}') {
+        store.setGlobalKeyBoardShow(false)
+      }
       // if (button == '{enter}') {
       //   // angle.value = Number(keyBoardAngle.value)
       //   // store.setEccAngle(angle.value)
@@ -200,7 +203,7 @@ export default defineComponent({
     }
 
     const winScale = computed(() => {
-      let val = window.innerWidth / 1920
+      let val = window.innerWidth / 1920 * 1.3
       if (val < 0.7 && store.isLandscape) {
         return 0.7
       }
@@ -245,7 +248,7 @@ export default defineComponent({
               '` 1 2 3 4 5 6 7 8 9 0 - = {bksp2}',
               'q w e r t y u i o p [ ] \\',
               '{lock} a s d f g h j k l ; \' {enter}',
-              '{shift} z x c v b n m , . / {shift}',
+              '{shift} z x c v b n m , . /',
               '{123} {space}'
             ],
             'lock': [
@@ -290,7 +293,7 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#f5f6f6] border border-solid border-gray-400 rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[960px]': !commonData.isNum })} v-show={keyborardShow.value}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#f5f6f6] border border-solid border-gray-400 rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[1000px]': !commonData.isNum })} v-show={keyborardShow.value}>
                 {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
                   {keyBoardAngle.value}
                 </div> */}

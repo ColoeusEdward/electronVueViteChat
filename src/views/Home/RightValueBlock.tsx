@@ -32,14 +32,15 @@ let defStandValList: RightValueType[] = [
   {
     label: 'pc',
     title: '偏差',
-    value: 0
+    value: 0.00000
   },
   {
     label: 'Standard',
     title: '标称值',
-    value: 0
+    value: 0.00000
   }
 ]
+let zero = 0
 export const ValueRow = defineComponent({
   name: 'ValueRow',
   props: {
@@ -81,7 +82,6 @@ export const ValueRow = defineComponent({
         ...buildMenuOpt(e, configStore, true),
         // children: e.children?.map(ee => buildMenuOpt(ee))
       }
-      console.log("🪵 [RightValueBlock.tsx:79] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
       flashMenu()
       return res
     }))
@@ -140,10 +140,10 @@ export const ValueRow = defineComponent({
       console.log("🪵 [RightValueBlock.tsx:103] ~ token ~ \x1b[0;32mval\x1b[0m = ", val, option);
       let opt = option as any
       let dat: RightValueType = {
-        stand: defStandValList as Object[],
+        stand: defStandValList.map(e => { return { ...e } }) as Object[],
         label: opt.DataName,
         title: '',
-        value: 0,
+        value: 0.00000,
         GId: opt.GId,
         unit: opt.Unit,
         Precision: opt.Precision
@@ -184,7 +184,9 @@ export const ValueRow = defineComponent({
     const standVal = computed(() => {
       // data.value.stand[curStandIdx.value].value
       // console.log("🪵 [RightValueBlock.tsx:169] ~ token ~ \x1b[0;32mdata.value.stand[curStandIdx.value].value\x1b[0m = ", data.value.stand);
-      return alldata.stand[curStandIdx.value].title + ' : ' + alldata.stand[curStandIdx.value].value
+      let val = alldata.stand[curStandIdx.value].value || 0
+      let res = alldata.stand[curStandIdx.value].title + ' : ' + val.toFixed(props.data?.Precision || 3)
+      return res
     })
 
     const loopGetVal = () => {
@@ -290,9 +292,12 @@ export const ValueRow = defineComponent({
             {renderAddOrDel()}
           </div>
           <div class={'flex items-end w-full h-[76px]  border border-solid border-[#e4e4e5] shadow-inner'} style={{ backgroundImage: `linear-gradient(#cdcdcd, #f2f2f2 ,#cdcdcd)` }}>
+            {
+
+            }
             <div class={'w-full h-full shrink bg-white flex justify-end pr-3 items-center py-2 value-number relative'}>
               {
-                !valueIsOk.value?.ok && <div class={'absolute left-[2px] top-[0] ' + classNames({
+                props.data?.label && !valueIsOk.value?.ok && <div class={'absolute left-[2px] top-[0] ' + classNames({
                   'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
                   'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
                 })}>
@@ -316,7 +321,16 @@ export const ValueRow = defineComponent({
           <div class={'flex items-center w-full h-1/4 pt-1'}>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standLeft} ><img class={'m-auto h-1/2'} src={lefticon}></img></div>
             <div class={'h-full w-full shrink btn-bg mx-2 flex items-center justify-center'}>
-              <span class={` font-semibold ${store.isLowRes ? ' text-xs' : 'text-base '}`}>{standVal.value}</span>
+              {
+                props.data?.value ? <span class={` font-semibold ${store.isLowRes ? ' text-xs' : 'text-base '}`}>{standVal.value
+                }</span> :
+                  props.data?.label ? zero.toFixed(props.data?.Precision || 4) : ''
+              }
+
+              {/* {
+                console.log("🪵 [RightValueBlock.tsx:322] ~ token ~ \x1b[0;32mstandVal.value\x1b[0m = ", props.data?.value, standVal.value)
+
+              } */}
             </div>
             <div class={'h-full w-1/6 flex cursor-pointer btn-bg'} onClick={standRight} ><img class={'m-auto  h-1/2'} src={righticon}></img></div>
           </div>
@@ -341,8 +355,9 @@ export default defineComponent({
       color: '#fff',
       zIndex: 6
     }
+    const width = store.isLandscape ? '8vw' : '12vw'
     const commonStyle = {
-      width: '7vw', border: 'none', fontSize: '20px',
+      width: width, border: 'none', fontSize: '20px',
       minWidth: "100px",
       borderBottom: '3px solid #58595a'
     }
@@ -380,6 +395,17 @@ export default defineComponent({
             title: ``,
             value: undefined,
             unit: curCevInnerData.curDataCfgEntity?.Unit
+          }
+        })
+      } else {
+        list = list.map((e, i) => {
+          if (!e.label) return {
+            ...e,
+            value: undefined
+          }
+          return {
+            ...e,
+            value: 0
           }
         })
       }

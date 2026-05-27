@@ -73,7 +73,7 @@ enum callFnName {
   DeleteDeviceGroup = `DeleteDeviceGroup`,
   GetChartDeviceGroups = `GetChartDeviceGroups`,
   GetShowDeviceGroups = `GetShowDeviceGroups`,
-  GetDataClasses = `GetDataClasses`,
+  GetDataClass = `GetDataClass`,
   GetDeviceClass = `GetDeviceClass`,
   GetChartDataGroups = `GetChartDataGroups`,
   GetShowDataGroups = `GetShowDataGroups`,

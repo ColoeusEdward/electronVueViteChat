@@ -29,7 +29,8 @@ export interface formListItem {
   hide?: boolean,
   childCompList?: formListItem[],
   checkboxList?: { value: string, label: string }[],
-  labelStyle?: CSSProperties | string
+  labelStyle?: CSSProperties | string,
+  class?: string
 }
 export type MyFormWrapIns = {
   submit: Function,
@@ -197,7 +198,7 @@ export const MyFormWrap = defineComponent({
     const renderInput = (form: typeof props.form, item: formListItem) => {
       typeof form[item.prop] === 'number' && (form[item.prop] = form[item.prop] + "")
       return (
-        <NFormItem label={item.label} path={item.prop} contentStyle={{ maxWidth: '200px', }} labelStyle={commonStyle.value} >
+        <NFormItem class={item.class} label={item.label} path={item.prop} contentStyle={{ maxWidth: '200px', }} labelStyle={commonStyle.value} >
           <NInput size={'large'} v-model:value={form[item.prop]} style={{ ...commonStyle.value, ...inputStyle.value }} placeholder="" clearable type={item.inputType || 'text'} rows={item.row || 3} disabled={item.disabled} v-slots={{
             suffix: typeof item.suffix === 'function' ? item.suffix : () => item.suffix
           }} />

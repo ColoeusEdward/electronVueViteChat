@@ -27,7 +27,8 @@ export default defineComponent({
       getCfgLoading: false,
       pageSize: 3,
       menuOpt: [] as DropdownMixedOption[],
-      refreshHide: false
+      refreshHide: false,
+      menuShow: true
     })
     watch(() => configStore.chartDataAdressList, (v) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
@@ -49,6 +50,10 @@ export default defineComponent({
         }
       }
       commonData.menuOpt = opt as any
+      commonData.menuShow = false
+      sleep(50).then(() => {
+        commonData.menuShow = true
+      })
     }, {
       immediate: true
     })
@@ -102,7 +107,7 @@ export default defineComponent({
       //     allSubList.push(...e.children!)
       //   }
       // })
-      let allSubList = configStore.curMultiChartAdress
+      let allSubList = configStore.curMultiChartAdress || []
       return allSubList
       // curCevInnerData.dataCfgList.filter(e => e.DataType == DataTypeEnum.Chart).slice(commonData.curPage * commonData.pageSize, (commonData.curPage + 1) * commonData.pageSize)
     })
@@ -170,11 +175,14 @@ export default defineComponent({
                   icon: () => <NIcon><PlayArrowOutlined /></NIcon>
                 }} onClick={curCevInnerData.startColFn} >开始采集</NButton>
               } */}
-              <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
-                {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
-                <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
-                </NButton>
-              </NDropdown>
+              {
+                commonData.menuShow && <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
+                  {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
+                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                  </NButton>
+                </NDropdown>
+              }
+
             </NSpace>
 
             <div class='ml-auto  h-16' >

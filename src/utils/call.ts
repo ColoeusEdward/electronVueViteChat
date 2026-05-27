@@ -7,8 +7,8 @@ export const resultProcess = (res: ActualResult, cb: string) => {
   if (res.Code == 0) {
     return res.Data
   } else {
-    if (cb == callFnName.GetRealtimeData) {
-
+    if (cb == callFnName.GetRealtimeData || cb == callFnName.GetChartData || cb == callFnName.GetDistributionData) {
+      console.error(cb, res.Message || '操作失败')
     } else {
       window.$message.error(res.Message || '操作失败')
 
@@ -41,7 +41,7 @@ export const callSpc = (cb: (() => Promise<ActualResult>) | Promise<ActualResult
 }
 
 export const chooseFolder = (): Promise<string> => {
-  return callBrige(callFnName.ShowDirSelect).then((res: string) => {
+  return callBrige(callFnName.ShowDirSelect, 'C:\\').then((res: string) => {
     return res || ''
   })
 
