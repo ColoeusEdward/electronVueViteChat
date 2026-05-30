@@ -1,22 +1,27 @@
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
+import { useMain } from "@/store";
 import { useConfigStore } from "@/store/config";
 import { getSysConfig } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { DialogReactive, useDialog } from "naive-ui";
+import classNames from "classnames";
+import { DialogReactive, NPopconfirm, useDialog } from "naive-ui";
 import { computed, defineComponent, reactive, ref, watch } from "vue";
 import { GroupConfigEntity, simpleTableColumn } from "~/me";
 import { tabNameEnum } from "../enum";
 import AdressChooseList from "./AdressChooseList";
 import DataGroupAddFrom from "./DataGroupAddFrom";
 import DevChooseList from "./DevChooseList";
+import DevDataGroup from "./DevDataGroup";
+import DeviceGroup from "./DeviceGroup";
 
 export default defineComponent({
   name: 'dataGroup',
 
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const store = useMain()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const curEnabledDataGroupId = computed(() => configStore.sysConfig.CurrentGroupId)
@@ -41,8 +46,7 @@ export default defineComponent({
       console.log("🪵 [index.tsx:38] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
       configStore.setCurGroupConfigRow(item)
     }
-    const deleteClick = (row: simpleTableColumn, item: GroupConfigEntity) => {
-      rowClick(row, item)
+    const deleteClick = ({ }, item: GroupConfigEntity) => {
       if (item.GId === curEnabledDataGroupId.value) {
         window.$message.error('已应用的分组不能删除')
         return
@@ -61,12 +65,9 @@ export default defineComponent({
         dialog.create({ title: '提示', content: '应用新分组记得重新配置配方', positiveText: '确定' })
       })
     }
-    const addClick = (row: simpleTableColumn, item: GroupConfigEntity) => {
-      if (item.isNewRow) {
-        // rowClick(row, { ...item, Name: '' })
-        // configStore.setAddressFormShow(true)
-        configStore.setDataGroupAddFromShow(true)
-      }
+    const addClick = (item: GroupConfigEntity) => {
+      configStore.setDataGroupAddFromShow(true)
+
     }
     const alldata = reactive({
       form: {},
@@ -75,7 +76,7 @@ export default defineComponent({
       data: [] as GroupConfigEntity[],
       coloumns: [
         {
-          label: '分组名称', prop: 'GroupName', flex: 3, btnFn: addClick, isInput: true,
+          label: '分组名称', prop: 'GroupName', flex: 3, btnFn: () => { }, isInput: true,
           inputUpdateFn: (col, item) => {
             console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
             if (item) {
@@ -84,16 +85,15 @@ export default defineComponent({
             }
           }
         },
-        {
-          label: '备注', prop: 'Note', flex: 3, isInput: true,
-          inputUpdateFn: (col, item) => {
-            if (item) {
-              configStore.setCurGroupConfigRow(item)
-              updateRow({ Note: curRow.value!.Note })
-            }
-          }
-        },
-        { label: '设备集合', prop: 'DeviceIds', flex: 3, btnText: "查看", btnFn: devClick },
+        //   label: '备注', prop: 'Note', flex: 3, isInput: true,
+        //   inputUpdateFn: (col, item) => {
+        //     if (item) {
+        //       configStore.setCurGroupConfigRow(item)
+        //       updateRow({ Note: curRow.value!.Note })
+        //     }
+        //   }
+        // },
+        // { label: '设备集合', prop: 'DeviceIds', flex: 3, btnText: "查看", btnFn: devClick },
 
         // { label: '地址集合', prop: 'AddressIds', flex: 3, btnText: "查看", btnFn: adressClick },
 
@@ -108,7 +108,7 @@ export default defineComponent({
             return item.GId == curEnabledDataGroupId.value ? '已应用' : '应用'
           }
         },
-        { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
+        // { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
       ] as simpleTableColumn[],
     })
 
@@ -124,12 +124,7 @@ export default defineComponent({
         //     Length: subItem.Length
         //   }
         // })
-        res.push({
-          // ...defAdressRow,
-          GroupName: '新增分组',
-          // DeviceId: configStore.curDevConfigRow?.GId || '',
-          isNewRow: true
-        })
+
         alldata.data = res
       })
     }
@@ -157,15 +152,39 @@ export default defineComponent({
     })
 
 
-
     return () => {
       return (
-        <div class={'w-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{}}>
-          <SimpleTable dat={alldata.data} col={alldata.coloumns} />
+        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{
+          height: 'calc(100vh - 200px)'
+        }}>
+          {/* <SimpleTable dat={alldata.data} col={alldata.coloumns} /> */}
+          <div class={'w-full h-full flex ' + classNames({
+            'flex-col': !store.isLandscape
+          })}
 
+          >
+            <div class={"w-full h-full p-2 pl-0 pr-1"} style={{ flex: 2 }}>
+              <div class={'w-full h-full border border-gray-600 border-solid  overflow-hidden bg-white'}>
+                <SimpleTable
+                  rowClickFn={rowClick}
+                  addAndEditAndDelFn={[
+                    addClick,
+                    () => { },
+                    deleteClick
+                  ]} isSmallPadding={true} dat={alldata.data} col={alldata.coloumns} />
+
+              </div>
+            </div>
+            <div class={"w-full h-full  p-2 px-1 "} style={{ flex: 3 }}>
+              <DeviceGroup />
+            </div>
+            <div class={"w-full h-full p-2 pl-1"} style={{ flex: 3 }}>
+              <DevDataGroup />
+            </div>
+          </div>
           <DevChooseList />
           <AdressChooseList />
-          <DataGroupAddFrom />
+          <DataGroupAddFrom isAdd={true} />
         </div>
       )
     }

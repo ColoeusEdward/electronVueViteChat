@@ -42,6 +42,7 @@ export default defineComponent({
       curDialogIns: null as DialogReactive | null,
       subItem: null
     })
+    const isAdd = computed(() => configStore.addressFormIsAdd)
     const optionMap: any = reactive({
       ...commonMap2
     })
@@ -129,7 +130,13 @@ export default defineComponent({
       // console.log("🪵 [ModbusForm.tsx:81] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
       // console.log("🪵 [index.tsx:44] ~ token ~ \x1b[0;curDevConfigRow\x1b[0m = ", configStore.curDevConfigRow);
       if (v) {
-        alldata.form = { ...curRow.value, ...JSON.parse(v) }
+        if (isAdd.value) {
+          alldata.form = { ...buildDefForm(), }
+        } else {
+          alldata.form = { ...curRow.value, ...JSON.parse(v) }
+        }
+
+        console.log("🪵 [ModbusForm.tsx:132] ~ token ~ \x1b[0;32malldata.form\x1b[0m = ", alldata.form);
       } else {
         alldata.form = { ...buildDefForm(), }
       }

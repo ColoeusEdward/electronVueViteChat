@@ -28,6 +28,7 @@ import { callBrige } from "@/utils/callm";
 import { useFormulaStore } from "@/store/formula";
 import FormulaConfigNew from "./config/formulaConfigNew";
 import { noKeyBoardInputClass } from "./config/sysConfig/enum";
+import Ecc from "./ecc";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -48,8 +49,9 @@ export default defineComponent({
       zIndex: 6
     }
     const curTabValue = ref('curcev')
+    const width = store.isLandscape ? '11vw' : '18vw'
     const commonStyle = {
-      width: '12vw', border: 'none', fontSize: '20px',
+      width: width, border: 'none', fontSize: '20px',
       minWidth: "120px",
       borderBottom: '3px solid #58595a'
     }
@@ -199,6 +201,11 @@ export default defineComponent({
                   <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <Statistical />
+                    </div>
+                  </NTabPane>
+                  <NTabPane displayDirective="if" name="eccPic" tab="偏心仪" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
+                    <div class={'h-full'}>
+                      <Ecc />
                     </div>
                   </NTabPane>
                   {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>

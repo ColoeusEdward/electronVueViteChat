@@ -123,7 +123,7 @@ export const ValueRow = defineComponent({
         // console.log("🪵 [RightValueBlock.tsx:107] ~ token ~ \x1b[0;32mstItem\x1b[0m = ", stItem);
         alldata.stand[1].value = stItem?.Standard  //标准值
         alldata.tol.up = stItem?.UpperTol || 0
-        alldata.tol.down = stItem?.LowerTol || 0
+        alldata.tol.down = -(stItem?.LowerTol || 0)
       }
       if (myData.label && !myData.value) {
         myData.value = 0
@@ -462,7 +462,7 @@ export default defineComponent({
             {/* <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
               <RightOtherValue />
             </div> */}
-            <div class={classNames(' h-full pl-2 flex  overflow-y-auto', { 'flex-col': store.isLandscape, 'flex-wrap items-start justify-center': !store.isLandscape })}>
+            <div class={classNames(' h-full px-2 flex  overflow-y-auto', { 'flex-col': store.isLandscape, 'flex-wrap items-start justify-center': !store.isLandscape })}>
               {/* <NScrollbar> */}
               {infoList.value.slice(6, 12).map((e, i) => {
                 return <ValueRow key={i} x={0} y={i} data={e} i={6 + i} fixNum={fixNumRef.value} />

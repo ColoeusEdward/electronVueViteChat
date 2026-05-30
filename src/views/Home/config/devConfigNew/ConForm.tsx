@@ -98,7 +98,7 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'w-full h-full'}>
+        <div class={''}>
 
         </div>
       )

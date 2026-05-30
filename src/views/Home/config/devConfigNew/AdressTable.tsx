@@ -48,17 +48,15 @@ export default defineComponent({
       configStore.setCurAddressRow(item)
     }
     const deleteClick = (row: simpleTableColumn, item: DataAddressEntity) => {
-      rowClick(row, item)
       callBrige(callFnName.DeleteDataAddress, item.GId).then(() => {
         window.$message.success('删除成功')
         getData()
       })
     }
     const addClick = (row: simpleTableColumn, item: DataAddressEntity) => {
-      if (item.isNewRow) {
-        rowClick(row, { ...item, Name: '' })
-        configStore.setAddressFormShow(true)
-      }
+      // configStore.setCurAddressRow(null)
+      configStore.setAddressFormIsAdd(true)
+      configStore.setAddressFormShow(true)
     }
     const stateClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       rowClick(row, item)
@@ -67,13 +65,18 @@ export default defineComponent({
         getData()
       })
     }
+    const editClick = () => {
+      configStore.setAddressFormIsAdd(false)
+      configStore.setAddressFormShow(true)
+    }
     const alldata = reactive({
       form: {},
+      formIsAdd: false,
       curDialogIns: null as DialogReactive | null,
       curConnectRefType: null,
       data: [] as DataAddressEntity[],
       coloumns: [
-        { label: '数据名', prop: 'Name', flex: 2, btnFn: addClick },
+        { label: '数据名', prop: 'Name', flex: 2, },
         // { label: '数据分类', prop: 'DeviceClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DeviceClassNameMap[item.DeviceClass] } },
         // { label: '数据类型', prop: 'DataClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataClassNameMap[item.DataClass] } },
         // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return ParamClassNameMap[item.ParamClass] } },
@@ -87,19 +90,19 @@ export default defineComponent({
           label: '状态', prop: 'State', flex: 1, isSwitch: true, btnFn: stateClick,
           mapFn: (col: any, item: DataAddressEntity) => { return item.State == 1 ? '启用' : '禁用' }
         },
-        {
-          label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
-            configStore.setAddressFormShow(true)
-            rowClick(col, item)
-          }
-        },
-        { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
+        // {
+        //   label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
+        //     configStore.setAddressFormShow(true)
+        //     rowClick(col, item)
+        //   }
+        // },
+        // { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
       ] as simpleTableColumn[],
     })
 
     const getData = () => {
       callBrige(callFnName.GetDataAddresses, configStore.curDevConfigRow?.GId).then((res: DataAddressEntity[]) => {
-        console.log("🪵 [AdressTable.tsx:60] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+        // console.log("🪵 [AdressTable.tsx:60] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         res = res.map(e => {
           let subItem = e.AddressString ? JSON.parse(e.AddressString) : defSubAdressItem
           return {
@@ -108,12 +111,12 @@ export default defineComponent({
             Length: subItem.Length
           }
         })
-        res.push({
-          ...defAdressRow,
-          Name: '新增数据',
-          DeviceId: configStore.curDevConfigRow?.GId || '',
-          isNewRow: true
-        })
+        // res.push({
+        //   ...defAdressRow,
+        //   Name: '新增数据',
+        //   DeviceId: configStore.curDevConfigRow?.GId || '',
+        //   isNewRow: true
+        // })
         alldata.data = res
       })
     }
@@ -122,8 +125,8 @@ export default defineComponent({
       props.updateParentFn && props.updateParentFn({ ConnectString: str })
     }
 
-    watch(() => configStore.configTab, (v) => {
-      if (v == tabNameEnum.dataAddress) {
+    watch(() => configStore.addressShow, (v) => {
+      if (v) {
         getData()
         configStore.setUpdateAdressRowFn(getData)
       }
@@ -133,8 +136,14 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{}}>
-          <SimpleTable dat={alldata.data} col={alldata.coloumns} />
+        <div class={'w-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6] h-full'} style={{}}>
+          <SimpleTable
+            dat={alldata.data} col={alldata.coloumns}
+            addAndEditAndDelFn={[addClick, editClick, deleteClick]}
+            btnShowList={[1, 1, 1]}
+            rowClickFn={rowClick}
+            defIsEditing={true}
+          />
 
           <AdressForm />
         </div>

@@ -142,6 +142,9 @@ export default defineComponent({
           },
           min: function (value: any) {
             let min = value.min
+            if (min == -1) {
+              return 0
+            }
             if (value.min == 0 && para) {
               min = para?.Standard
             }
@@ -210,7 +213,7 @@ export default defineComponent({
           type: 'line',
           showSymbol: false,
           // data: fakeDataList,
-          data: [0, 0],
+          data: [[0, 1]],
           smooth: false,
         },
         grid: {
@@ -523,6 +526,7 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         initEchart()
+
         getWidthPixel()
         if (innerData.isGetting) {
           loopGet()

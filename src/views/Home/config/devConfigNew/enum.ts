@@ -33,34 +33,60 @@ export enum DeviceClassEnum {
 export enum DataClassEnum {
   /** 平均线径 */
   OD = 101,
+
   /** 线径X */
   ODX = 102,
+
   /** 线径Y */
   ODY = 103,
+
   /** 椭圆 */
   OVAL = 104,
+
   /** 电容 */
   CAP = 201,
+
   /** 偏心度 */
   ECC = 301,
+
+  /** 偏心角 */
+  ANGLE = 302,
+
   /** 同心度 */
-  CONCEN = 302,
+  CONCEN = 303,
+
+  /** 导体线径 */
+  CUOD = 304,
+
   /** 凹凸总数 */
   CON = 401,
+
   /** 凹计数 */
   CONC = 402,
+
   /** 凸计数 */
   CONV = 403,
+
   /** 计米 */
   LENGTH = 501,
+
   /** 线速 */
   LSPEED = 502,
+
   /** 开关 */
   SWITCH = 601,
+
   /** 换轴 */
   SHAFT = 602,
+
   /** 清零 */
   CLEAR = 603,
+
+  /** 启动 */
+  START = 604,
+
+  /** 停止 */
+  STOP = 605
 }
 
 /**
@@ -96,8 +122,10 @@ export const DataClassNameMap: Record<number, string> = {
   [DataClassEnum.OVAL]: '椭圆',
   [DataClassEnum.CAP]: '电容',
   [DataClassEnum.ECC]: '偏心度',
+  [DataClassEnum.ANGLE]: '偏心角',
   [DataClassEnum.CONCEN]: '同心度',
   [DataClassEnum.CON]: '凹凸总数',
+  [DataClassEnum.CUOD]: '导体线径',
   [DataClassEnum.CONC]: '凹计数',
   [DataClassEnum.CONV]: '凸计数',
   [DataClassEnum.LENGTH]: '计米',
@@ -105,6 +133,8 @@ export const DataClassNameMap: Record<number, string> = {
   [DataClassEnum.SWITCH]: '开关',
   [DataClassEnum.SHAFT]: '换轴',
   [DataClassEnum.CLEAR]: '清零',
+  [DataClassEnum.START]: '启动',
+  [DataClassEnum.STOP]: '停止',
 };
 
 export const ParamClassNameMap: Record<number, string> = {

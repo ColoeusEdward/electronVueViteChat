@@ -8,6 +8,7 @@ import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { commonMap2 } from "@/views/Home/config/proto/proto";
 import { commonFormItemListMap, propNameEnum } from "@/views/Home/config/devConfig/enum";
+import { DataClassNameMap } from "../../../enum";
 
 export type ConnectFormIns = {
   myFormRef: Ref<MyFormWrapIns>,
@@ -35,6 +36,7 @@ export default defineComponent({
     const changeShow = () => {
       props.updateShowFn && props.updateShowFn(false)
     }
+    const curDeviceGroupRow = computed(() => configStore.curDeviceGroupRow)
     const addressStr = computed(() => configStore.curAddressRow?.AddressString || '')
     const isAdressAddMore = computed(() => configStore.isAdressAddMore)
     const alldata = reactive({
@@ -107,7 +109,12 @@ export default defineComponent({
       })
     }
 
-
+    const buildCurDataClassOpt = () => {
+      if (!curDeviceGroupRow.value) return new Promise(resolve => resolve([]))
+      return callBrige(callFnName.GetDataClass, curDeviceGroupRow.value?.DeviceClass).then((res: number[]) => {
+        optionMap.DataClass = res.map(e => { return { label: DataClassNameMap[e], value: e } })
+      })
+    }
     const buildDefForm = (): any => {
       return {
         ...defForm,
@@ -131,6 +138,7 @@ export default defineComponent({
     watch(() => curRow.value, (v) => {
       // console.log("🪵 [index.tsx:44] ~ token ~ \x1b[0;curDevConfigRow\x1b[0m = ", configStore.curDevConfigRow);
       if (v) {
+        buildCurDataClassOpt()
         // ?.toString() as unknown as number
         alldata.form = { ...v, DataClass: v.DataClass }
         console.log("🪵 [ModbusForm.tsx:132] ~ token ~ \x1b[0;32malldata.form \x1b[0m = ", alldata.form);

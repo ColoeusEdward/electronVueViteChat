@@ -752,6 +752,6 @@ interface simpleTableColumn {
   isSwitch?: boolean,
   isSelect?: boolean,
   isRadio?: boolean,
-  selectOption?: { label: string, value: string }[],
+  selectOption?: { label: string, value: string | number }[],
   selectChangeFn?: (row: any, item: any) => void
 }

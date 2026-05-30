@@ -12,12 +12,14 @@ import { callFnName } from "@/utils/enum";
 export default defineComponent({
   name: 'DataGroupAddFrom',
   props: {
-    show: Boolean
+    show: Boolean,
+    isAdd: Boolean
   },
   setup(props, ctx) {
     const configStore = useConfigStore()
     const myFormRef = ref<MyFormWrapIns>()
     const show = computed(() => configStore.dataGroupAddFromShow)
+    const curGroupConfigRow = computed(() => configStore.curGroupConfigRow)
     const dialog = useDialog()
     const alldata = reactive({
       form: {},
@@ -25,9 +27,10 @@ export default defineComponent({
       itemList: [
         {
           type: 'input', label: '分组名称', prop: "GroupName", width: 24, rule: ['must'],
-        }, {
-          type: 'input', label: '备注', prop: "Note", width: 24, rule: [],
         },
+        // {
+        //   type: 'input', label: '备注', prop: "Note", width: 24, rule: [],
+        // },
         // {
         //   type: 'text', label: '*', prop: "", text: '( 设备集合与地址集合 由后端根据当前启用的设备和地址自动进行配置 )', width: 24
         // }
@@ -48,6 +51,11 @@ export default defineComponent({
     watch(() => show.value, (v) => {
 
       if (v) {
+        if (!props.isAdd) {
+          alldata.form = { ...curGroupConfigRow.value }
+        } else {
+          alldata.form = {}
+        }
         // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
         alldata.curDialogIns = dialog.create({
           title: '新增设备',

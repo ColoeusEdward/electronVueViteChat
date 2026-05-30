@@ -58,6 +58,7 @@ export default defineComponent({
 
 
       ] as simpleTableColumn[],
+      curDataClass: [],
     })
     const hideForm = () => {
       configStore.setDevDataGroupDevListShow(false)
@@ -89,7 +90,7 @@ export default defineComponent({
           DeviceGroupId: curDeviceGroupRow.value?.GId,
           DataId: e.GId,
           DataName: e.Name,
-          DataClass: DataClassEnum.OD,
+          DataClass: alldata.curDataClass[0],
           State: 1,
           AlarmType: 2
         }
@@ -102,10 +103,18 @@ export default defineComponent({
         configStore.updateDevDataGroupRowFn()
       })
     }
+    const getCurDataClass = () => {
+      if (!curDeviceGroupRow.value) return
+      return callBrige(callFnName.GetDataClass, curDeviceGroupRow.value?.DeviceClass).then((res: any) => {
+        alldata.curDataClass = res
+      })
+    }
 
     watch(devDataGroupDevListShow, (val) => {
       if (val) {
+        alldata.curDev = null
         getDevList()
+        getCurDataClass()
 
         alldata.curDialogIns = dialog.create({
           title: '新增数据',
@@ -117,8 +126,12 @@ export default defineComponent({
                 }
               </div>
               {
-                !alldata.curDev ? <SimpleTable dat={alldata.data} col={alldata.coloumns}></SimpleTable>
-                  : <SimpleTable dat={alldata.adressData} col={alldata.adressColoumns}></SimpleTable>
+                //@ts-ignore
+                !alldata.curDev ? <SimpleTable
+                  originMode={true} dat={alldata.data} col={alldata.coloumns}></SimpleTable>
+                  :
+                  //@ts-ignore
+                  <SimpleTable originMode={true} dat={alldata.adressData} col={alldata.adressColoumns}></SimpleTable>
               }
 
             </div>

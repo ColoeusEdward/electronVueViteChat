@@ -371,8 +371,54 @@ body {
       font-size: 1.4rem;
     }
   }
+
+  // /* 纯 CSS 绘制左侧高亮条 */
+  // .is-selected::before {
+  //   content: "";
+  //   position: absolute;
+  //   left: 0px;
+  //   /* 如果不想让条通顶通底，可以调整 top 和 bottom 的值 */
+  //   top: 2px;
+  //   bottom: 2px;
+  //   width: 8px;
+  //   background-color: #3b82f6; /* 经典的皇家蓝 */
+  //   border-radius: 0 4px 4px 0;
+  // }
+
+  .is-selected::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 6px; /* 微调了上下边距，让箭头居中且更精致 */
+    bottom: 6px;
+    width: 18px; /* 稍微加宽一点，给飞翼留出向右延伸的空间 */
+    background-color: #3b82f6; /* 经典的皇家蓝 */
+
+    /* 核心：利用 clip-path 裁剪出飞翼箭头 */
+    /* 坐标点顺序：左上 -> 右中(箭头尖) -> 左下 -> 中间凹陷处 */
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%, 40% 50%);
+
+    /* 动画过渡（当行被选中时，可以加个向右推进的小动画） */
+    animation: flyIn 0.2s ease-out forwards;
+    z-index: 60;
+  }
+
+  /* 可选：让飞翼出现时有一个微微向右刺入的动态效果 */
+  @keyframes flyIn {
+    from {
+      transform: translateX(-4px) scaleX(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0) scaleX(1);
+      opacity: 1;
+    }
+  }
 }
 
+.n-drawer-body-content-wrapper {
+  padding: 0 !important;
+}
 .n-select-menu {
   .n-base-select-option__content {
     font-size: 1.1rem;

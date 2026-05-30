@@ -2,7 +2,7 @@ import SimpleTable from "@/components/SimpleTable";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { useDialog } from "naive-ui";
+import { NButton, NDrawer, NDrawerContent, useDialog } from "naive-ui";
 import { computed, defineComponent, reactive, ref, watch } from "vue";
 import { ConnectComModel, DeviceConfigEntity, simpleTableColumn } from "~/me";
 import AddForm from "./addForm";
@@ -20,7 +20,8 @@ export default defineComponent({
       showConnectComForm: false,
       showAdressForm: false,
       curConnectStr: '' as string | undefined,
-      curRow: undefined as DeviceConfigEntity | undefined
+      curRow: undefined as DeviceConfigEntity | undefined,
+      addressTableShow: false
     })
     const configStore = useConfigStore()
     const configTab = computed(() => {
@@ -35,7 +36,7 @@ export default defineComponent({
       // console.log("🪵 [index.tsx:21] ~ token ~ \x1b[0;32mrow\x1b[0m = ", row);
       otherData.showAdressForm = true
       configStore.setAddressShow(true)
-      configStore.setConfigTab(tabNameEnum.dataAddress)
+      // configStore.setConfigTab(tabNameEnum.dataAddress)
       rowClick(row, item)
     }
     const rowClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
@@ -45,17 +46,14 @@ export default defineComponent({
       configStore.setCurDevConfigRow(item)
     }
     const deleteClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
-      rowClick(row, item)
       callBrige(callFnName.DeleteDevcieConfig, item.GId).then(() => {
         window.$message.success('删除成功')
         getData()
       })
     }
     const addClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
-      if (item.isNewRow) {
-        // rowClick(row, item)
-        configStore.setAddFormShow(true)
-      }
+      configStore.setAddFormShow(true)
+
     }
     const stateClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
       rowClick(row, item)
@@ -63,7 +61,7 @@ export default defineComponent({
       // configStore.setStateShow(true)
     }
     const columns = ref<simpleTableColumn[]>([
-      { label: '设备类型', prop: 'DriverName', flex: 3, btnFn: addClick },
+      { label: '设备类型', prop: 'DriverName', flex: 3, btnFn: () => { } },
       {
         label: '设备名', prop: 'Name', flex: 2, isInput: true
         , btnFn: rowClick
@@ -77,11 +75,11 @@ export default defineComponent({
       { label: '连接配置', prop: 'ConnectString', flex: 1, btnText: '编辑', btnFn: connectClick },
       { label: '数据地址', prop: 'address', flex: 1, btnText: '编辑', btnFn: adressClick },
       { label: '状态', prop: 'State', flex: 1, isSwitch: true, mapFn: (col: any, item: DeviceConfigEntity) => { return item.State == 1 ? '启用' : '禁用' }, btnFn: stateClick },
-      { label: '', prop: 'op', flex: 1, btnText: '删除', btnFn: deleteClick, btnType: 'danger' },
+      // { label: '', prop: 'op', flex: 1, btnText: '删除', btnFn: deleteClick, btnType: 'danger' },
     ])
     const getData = () => {
       callBrige(callFnName.GetDevcieConfigs).then((res: DeviceConfigEntity[]) => {
-        res.push({ DriverName: '新增设备', Name: '', State: 0, CreateTime: '', isNewRow: true })
+        // res.push({ DriverName: '新增设备', Name: '', State: 0, CreateTime: '', isNewRow: true })
 
         data.value = res
       })
@@ -105,8 +103,15 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{}}>
-          <SimpleTable dat={data.value} col={columns.value} addRowProp={'DriverName'} />
+        <div class={'w-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{
+          height: 'calc(100vh - 200px)'
+        }}>
+          <SimpleTable originMode={false}
+            dat={data.value} col={columns.value}
+            rowClickFn={rowClick}
+            defIsEditing={true}
+            addAndEditAndDelFn={[addClick, () => { }, deleteClick]}
+            addRowProp={'DriverName'} />
 
           <ConForm connectStr={otherData.curConnectStr}
             curRow={otherData.curRow}
@@ -118,6 +123,29 @@ export default defineComponent({
             }} />
 
           <AddForm />
+
+
+          <NDrawer
+            v-model:show={configStore.addressShow}
+            width="80vw" // 如果需要横向也铺满全屏，可以改为 100vw
+            placement="right"
+            resizable
+          >
+            <NDrawerContent title="数据地址" closable>
+              {{
+                default: () => (
+                  <AdressTable />
+
+                ),
+                footer: () => (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                    <NButton onClick={() => { configStore.setAddressShow(false) }}>取消</NButton>
+                    <NButton type="primary" onClick={() => { }}>确定</NButton>
+                  </div>
+                )
+              }}
+            </NDrawerContent>
+          </NDrawer>
 
           {/* <AdressTable
             curRow={otherData.curRow}

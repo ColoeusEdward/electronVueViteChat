@@ -408,8 +408,9 @@ export default defineComponent({
     const loopGetData = () => {
       if (innerData.isGetting) {
         // loopGetCpk()
-        loopGetRealTime()
       }
+      loopGetRealTime()
+
     }
     // const curShowCpkValue = computed(
     //   () => {
@@ -431,6 +432,7 @@ export default defineComponent({
     onMounted(() => {
       sleep(500).then(() => {
         // console.log("🪵 [index.tsx:395] ~ token ~ \x1b[0;32mconfigStore.sysConfig.ColloctInterval\x1b[0m = ", configStore.sysConfig.ColloctInterval);
+        loopGetData()
         commonData.timerIns = setInterval(() => {
           loopGetData()
         }, configStore.sysConfig.ColloctInterval || 500)

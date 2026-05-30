@@ -73,6 +73,7 @@ export const useConfigStore = defineStore('config', {
       addFormShow: false,
       updateDevConfigRowFn: () => { },
       isAdressAddMore: false,
+      addressFormIsAdd: false,
       curGroupConfigRow: null as GroupConfigEntity | null,
       curDeviceGroupRow: null as DeviceGroupEntity | null | undefined,
       curDataGroupRow: null as DataGroupEntity | null | undefined,
@@ -303,7 +304,10 @@ export const useConfigStore = defineStore('config', {
     },
     setRefreshAllConfigFn(value: () => Promise<void>) {
       this.refreshAllConfigFn = value
-    }
+    },
+    setAddressFormIsAdd(value: boolean) {
+      this.addressFormIsAdd = value
+    },
   }
 
 

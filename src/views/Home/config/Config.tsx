@@ -1,6 +1,6 @@
 import { useConfigStore } from "@/store/config";
 import { NButton, NTabs, NTabPane, NIcon, useMessage, NDialogProvider, NDropdown } from "naive-ui";
-import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { computed, defineComponent, onBeforeMount, onMounted, reactive, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import TabActiveImg from '@/assets/PnlBtnActive.png'
 import Connect from "./Connect";
@@ -109,10 +109,18 @@ export default defineComponent({
     watch(() => configStore.curGroupConfigRow, (v) => {
       configStore.setDevDataGroupShow(false)
     })
+    watch(() => configStore.isShowConfig, (v) => {
+      if (!v) {
+        configStore.setDevConfigTabShow(false)
+      }
+    })
     onMounted(() => {
       // console.log(`config mounted`,);
     })
-
+    onBeforeMount(() => {
+      configStore.setDevConfigTabShow(false)
+      configStore.setConfigTab(defaultTab)
+    })
     return () => {
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-white overflow-hidden'}>
@@ -152,6 +160,23 @@ export default defineComponent({
                     <SysConfigStat />
                   </div>
                 </NTabPane>
+
+
+                {/* {
+                  curDevConfigRow.value && addressShow.value &&
+                  <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
+                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
+                      <AdressTable />
+                    </div>
+                  </NTabPane>
+                } */}
+
+                <NTabPane displayDirective="show:lazy" name={"dataGroup"} tab="产品分类" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataGroup' ? activeStyle : {} } }}>
+                  <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
+                    <DataGroup />
+                  </div>
+                </NTabPane>
+
                 {
                   devConfigTabShow.value && <NTabPane displayDirective="show:lazy" name={"devConfig"} tab="设备配置" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'devConfig' ? activeStyle : {} } }}>
                     <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
@@ -159,21 +184,6 @@ export default defineComponent({
                     </div>
                   </NTabPane>
                 }
-
-                {
-                  curDevConfigRow.value && addressShow.value &&
-                  <NTabPane displayDirective="show:lazy" name={"dataAddress"} tab={`数据地址-${curDevConfigRow.value.DriverName}(${curDevConfigRow.value.Name})`} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataAddress' ? activeStyle : {} } }}>
-                    <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
-                      <AdressTable />
-                    </div>
-                  </NTabPane>
-                }
-
-                <NTabPane displayDirective="show:lazy" name={"dataGroup"} tab="数据分组" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'dataGroup' ? activeStyle : {} } }}>
-                  <div class={' h-full shrink overflow-auto border-t border-0 border-gray-600 border-solid'}>
-                    <DataGroup />
-                  </div>
-                </NTabPane>
 
                 {
                   curGroupConfigRow.value && DeviceGroupShow.value &&

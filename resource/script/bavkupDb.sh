@@ -1,0 +1,2 @@
+cp D:/NTCode/NTSPC_M/SPC.M/SPC.Main/bin/Debug/Resources/Config/data.db D:/MCode/test;
+cp D:/NTCode/NTSPC_M/SPC.M/SPC.Main/bin/Debug/Resources/Config/data.db D:/NTCode/NTSPC_M/SPC.M/SPC.Main/Resources/Config
