@@ -1,4 +1,5 @@
 import { DropdownProps } from "naive-ui";
+import { useI18n } from "vue-i18n";
 
 export const menuOpt = [
   { label: '' }
@@ -47,6 +48,12 @@ export const menuOptList: DropdownProps['options'] = [
   { label: '数据源', key: 'dataSource', children: [] },
   { label: '上传当前曲线图', key: 'uploadLineShot' }
 ]
+export const getMenuOptList = (t: ReturnType<typeof useI18n>['t']): DropdownProps['options'] => {
+  return [
+    { label: t('menu.dataSource'), key: 'dataSource', children: [] },
+    { label: t('menu.uploadLineShot'), key: 'uploadLineShot' }
+  ]
+}
 export const menuPropEnum = {
   dataSource: 'dataSource',
   uploadLineShot: 'uploadLineShot'

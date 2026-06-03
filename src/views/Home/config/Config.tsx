@@ -131,7 +131,7 @@ export default defineComponent({
                   return {
                     style: {
                       fontSize: '1.2rem',
-                      width: '10vw'
+                      width: '14vw'
                     }
                   }
                 }}

@@ -9,6 +9,7 @@ import { useStatisticalStore } from "@/store/statistical";
 import niotLogo from '@/assets/login_logos.png';
 import { useConfigStore } from "@/store/config";
 import { buildMenuOpt, sleep } from "@/utils/utils";
+import { useMyI18n } from "@/hooks/useMyI18n";
 const defMenu = [{
   label: '数据源', key: 'dataSource', children: [
     { label: '全部清除', key: 'cleanAll' },
@@ -81,6 +82,8 @@ export default defineComponent({
     const realtimeStore = useRealTimeStore()
     const statisticalStore = useStatisticalStore()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
+
     const commonData = reactive({
       menuShow: true
     })
@@ -205,11 +208,26 @@ export default defineComponent({
       // }
     }
 
+    const getDefMenu = () => {
+      return [{
+        label: t('menu.dataSource'), key: 'dataSource', children: [
+          { label: t('menu.cleanAll'), key: 'cleanAll' },
+          // { label: '直径1', key: 'diameter1', },
+          // { label: '热外径', key: 'heat', },
+          // { label: '冷外径', key: 'cold', },
+          // { label: '壁厚', key: 'wall', },
+          // { label: '偏心', key: 'ecc', },
+          // { label: '同心度', key: 'concentricity', },
+          // { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
 
+        ]
+      },]
+    }
     const computeOption = computed(() => {
+      let test = i18nStore.langChangeCount
       //@ts-ignore
       // let opt: DropdownProps['options'] = [...maintainOption.value, ...displayOption.value, ...zoneOption.value]
-      let opt = defMenu.map(e => ({ ...e, children: e.children?.map(ee => { return { ...ee } }) }))
+      let opt = getDefMenu().map(e => ({ ...e, children: e.children?.map(ee => { return { ...ee } }) }))
       opt[0].children.push(...configStore.chartDataAdressList.map(e => buildMenuOpt(e, configStore)) as any)
       // if (Object.values(opt).some(e => !e.props)) {
       //   opt = addProp(opt)
@@ -283,7 +301,7 @@ export default defineComponent({
             commonData.menuShow && <NDropdown options={computeOption.value} trigger="click" placement="bottom-start" onSelect={handleMenuSelect} size={'large'} class={'text-2xl'} renderLabel={renderLabel} nodeProps={nodeProps} >
               <NButton strong={true} type="primary" secondary size={'large'} class={'h-12 w-28 shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }}
               >
-                <span class={'text-2xl'}>菜单</span>
+                <span class={'text-2xl'}>{t('menu.menu')}</span>
               </NButton>
             </NDropdown >
           }

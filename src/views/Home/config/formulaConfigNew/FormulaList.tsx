@@ -76,17 +76,23 @@ export default defineComponent({
           <div class={"w-full h-full overflow-auto "}>
             {
               alldata.list.map((e, i) => {
-                return <div class={classNames('text-2xl p-2 bg-white flex items-center', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curFormulaConfigRow.value?.GId == e.GId })}
+                return <div class={classNames('text-2xl p-2 px-1 pr-0 bg-white flex items-center flex-wrap', { 'bg-[#f5f6f6]': i % 2 != 0, 'bg-[#688eb2] text-white': curFormulaConfigRow.value?.GId == e.GId })}
                   onClick={() => { rowClick(e) }} >
                   <span>
                     {e.PN}
                     {e.Note && <>{` (${e.Note})`}</>}
-                    {e.GroupConfigItem && <>{` (分组:${e.GroupConfigItem.GroupName})`}</>}
+
                   </span>
-                  <span class={'ml-auto mr-2  py-1 px-3 bg-white text-black border border-gray-500 border-solid'}
-                    onClick={() => { applyConfig(e) }}>
-                    {curFormulaId.value == e.GId ? `已应用` : '应用'}
+                  <span class={' grow flex items-center'}>
+                    <span>
+                      {e.GroupConfigItem && <>{` (分组:${e.GroupConfigItem.GroupName})`}</>}
+                    </span>
+                    <span class={'ml-auto mr-2 text-lg  py-2 px-1 min-w-[70px] bg-white text-black border border-gray-500 border-solid'}
+                      onClick={() => { applyConfig(e) }}>
+                      {curFormulaId.value == e.GId ? `已应用` : '应用'}
+                    </span>
                   </span>
+
                 </div>
               })
             }

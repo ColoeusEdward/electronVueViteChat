@@ -18,6 +18,8 @@ import { useConfigStore } from "@/store/config";
 import { useSvc } from "./svc";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import { useI18n } from "vue-i18n";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export interface RightValueType {
   label?: string,
@@ -28,18 +30,7 @@ export interface RightValueType {
   GId?: string,
   Precision?: number
 }
-let defStandValList: RightValueType[] = [
-  {
-    label: 'pc',
-    title: '偏差',
-    value: 0.00000
-  },
-  {
-    label: 'Standard',
-    title: '标称值',
-    value: 0.00000
-  }
-]
+let defStandValList: RightValueType[] = []
 let zero = 0
 export const ValueRow = defineComponent({
   name: 'ValueRow',
@@ -63,10 +54,26 @@ export const ValueRow = defineComponent({
     }
   },
   setup(props, ctx) {
+    const { t, i18nStore } = useMyI18n()
     const store = useMain()
     const realtimeStore = useRealTimeStore()
     const curCevInnerData = useCurcevInnerDataStore()
     const configStore = useConfigStore()
+    const initTextData = () => {
+      defStandValList = [
+        {
+          label: 'pc',
+          title: t('data.deviationMius'),
+          value: 0.00000
+        },
+        {
+          label: 'Standard',
+          title: t('data.standard'),
+          value: 0.00000
+        }
+      ]
+    }
+    initTextData()
     const alldata = reactive({
       value: 0,
       stand: defStandValList.map(e => ({ ...e })),
@@ -85,6 +92,7 @@ export const ValueRow = defineComponent({
       flashMenu()
       return res
     }))
+
     const curStandIdx = ref(0)
     const flashMenu = () => {
       alldata.menuShow = false
@@ -92,6 +100,13 @@ export const ValueRow = defineComponent({
         alldata.menuShow = true
       })
     }
+
+    watch(() => i18nStore.langChangeCount, () => {
+      initTextData()
+      alldata.stand.forEach((e, i) => e.title = defStandValList[i].title)
+    })
+
+
     // const initOption = () => {
     //   store.rightBlockDataMap[props.x][props.y] && (
     //     curOption.value = store.rightBlockDataMap[props.x][props.y]
@@ -301,7 +316,7 @@ export const ValueRow = defineComponent({
                   'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
                   'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
                 })}>
-                  {valueIsOk.value?.msg == 'dowm' ? '- 公差' : '+ 公差'}
+                  {valueIsOk.value?.msg == 'dowm' ? `- ${t('data.tolerance')}` : `+ ${t('data.tolerance')}`}
                 </div>
               }
 
@@ -355,16 +370,18 @@ export default defineComponent({
       color: '#fff',
       zIndex: 6
     }
-    const width = store.isLandscape ? '8vw' : '12vw'
+    const width = store.isLandscape ? '8vw' : '14vw'
     const commonStyle = {
       width: width, border: 'none', fontSize: '20px',
       minWidth: "100px",
       borderBottom: '3px solid #58595a'
     }
+    const { t } = useI18n()
     const infoList = computed(() => { return curCevInnerData.infoList })
     const curTabValue = ref('value1')
     let startLoop = false
     const cpkList = computed(() => {
+
       if (!curCevInnerData.curCpk) return []
       let list = Object.keys(curCevInnerData.curCpk).map((key) => {
         let k = key as keyof CpkModel
@@ -448,7 +465,7 @@ export default defineComponent({
     return () => {
       return (
         <NTabs type="card" animated size="large" barWidth={1148} value={curTabValue.value} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'value1'} >
-          <NTabPane displayDirective="if" name="value1" tab="测量值1" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
+          <NTabPane displayDirective="if" name="value1" tab={t('menu.measureValue') + '1'} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value1' ? activeStyle : {} } }}>
             <div class={classNames(' h-full px-2 flex  overflow-y-auto', { 'flex-col': store.isLandscape, 'flex-wrap': !store.isLandscape })}>
               {/* <NScrollbar> */}
               {infoList.value.slice(0, 6).map((e, i) => {
@@ -458,7 +475,7 @@ export default defineComponent({
 
             </div>
           </NTabPane>
-          <NTabPane displayDirective="if" name="value2" tab="测量值2" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value2' ? activeStyle : {} } }}>
+          <NTabPane displayDirective="if" name="value2" tab={t('menu.measureValue') + '2'} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value2' ? activeStyle : {} } }}>
             {/* <div class={' h-full px-2 flex flex-col overflow-y-auto'}>
               <RightOtherValue />
             </div> */}
@@ -479,7 +496,7 @@ export default defineComponent({
             </div>
 
           </NTabPane> */}
-          <NTabPane displayDirective="show:lazy" name="value3" tab="测量值3" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value3' ? activeStyle : {} } }}>
+          <NTabPane displayDirective="show:lazy" name="value3" tab={t('menu.measureValue') + '3'} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'value3' ? activeStyle : {} } }}>
             {/* <div class={' h-full px-2 flex flex-col'}>
               {new Array(6).fill({}).map((_, i) => {
                 return <ValueRow key={i} x={2} y={i} />

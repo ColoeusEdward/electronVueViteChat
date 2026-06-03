@@ -155,12 +155,12 @@ export default defineComponent({
               <div class={'h-full bg-[#f5f6f6]'}>
                 <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} paneClass={'shrink-0 h-full'} class={'config-tab h-full w-full my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
                   <NTabPane displayDirective="show:lazy" name={"formula"} tab="配方" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'formula' ? alldata.activeStyle : {}, } }}>
-                    <div style={{ height: 'calc(100vh - 160px)' }} class={'w-full h-full p-2 border border-gray-600 border-solid '}>
-                      <div class={'h-full w-[58%] inline-block'}>
+                    <div style={{ height: 'calc(100vh - 160px)' }} class={'w-full h-full p-2 border border-gray-600 border-solid flex flex-nowrap justify-around'}>
+                      <div class={'h-full w-[58%] '}>
                         <FormulaList />
 
                       </div>
-                      <div class={'h-full w-[41%] inline-block ml-2'}>
+                      <div class={'h-full w-[40%] ml-2'}>
                         <DeviceGroupList />
                       </div>
 

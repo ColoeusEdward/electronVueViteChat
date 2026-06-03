@@ -29,6 +29,8 @@ import { useFormulaStore } from "@/store/formula";
 import FormulaConfigNew from "./config/formulaConfigNew";
 import { noKeyBoardInputClass } from "./config/sysConfig/enum";
 import Ecc from "./ecc";
+import { useI18n } from "vue-i18n";
+import { usei18nStore } from "@/store/i18n";
 // import { useSvc } from "./svc";
 //@ts-ignore
 
@@ -48,11 +50,16 @@ export default defineComponent({
       color: '#fff',
       zIndex: 6
     }
+    const { t } = useI18n()
+    const i18nStore = usei18nStore()
     const curTabValue = ref('curcev')
     const width = store.isLandscape ? '11vw' : '18vw'
+    // const maxWidth = store.isLandscape ? '14vw' : '25vw'
     const commonStyle = {
-      width: width, border: 'none', fontSize: '20px',
-      minWidth: "120px",
+      // width: width,
+      border: 'none', fontSize: '20px',
+      minWidth: width,
+      // maxWidth: maxWidth,
       borderBottom: '3px solid #58595a'
     }
     const audio = new Audio(emptyAduio)
@@ -188,22 +195,22 @@ export default defineComponent({
 
 
                 <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
-                  <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
+                  <NTabPane displayDirective="if" name="curcev" tab={t('menu.realTimeData')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                     <div class={' h-full'}>
                       <Curcev />
                     </div>
                   </NTabPane>
-                  <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
+                  <NTabPane displayDirective="if" name="multiCurcev" tab={t('menu.trendChart')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <MultiCurcev />
                     </div>
                   </NTabPane>
-                  <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
+                  <NTabPane displayDirective="if" name="summary" tab={t('menu.statisticsChart')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <Statistical />
                     </div>
                   </NTabPane>
-                  <NTabPane displayDirective="if" name="eccPic" tab="偏心仪" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
+                  <NTabPane displayDirective="if" name="eccPic" tab={t('menu.deviationMeter')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <Ecc />
                     </div>
@@ -264,6 +271,11 @@ export default defineComponent({
                     <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
                       <div class={'h-full'}>
                         <Statistical />
+                      </div>
+                    </NTabPane>
+                    <NTabPane displayDirective="if" name="eccPic" tab="偏心仪" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
+                      <div class={'h-full'}>
+                        <Ecc />
                       </div>
                     </NTabPane>
                   </NTabs>

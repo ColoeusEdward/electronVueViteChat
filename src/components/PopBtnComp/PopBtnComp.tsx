@@ -1,5 +1,5 @@
-import { NTabs, NTabPane, NPopselect, NButton, NIcon, PopselectProps, popselectProps } from "naive-ui";
-import { defineComponent, onUnmounted, ref } from "vue";
+import { NTabs, NTabPane, NPopselect, NButton, NIcon, PopselectProps, popselectProps, NDropdown, dropdownProps } from "naive-ui";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 export default defineComponent({
   name: 'BtnComp',
@@ -8,17 +8,24 @@ export default defineComponent({
     clickFn: {
       type: Function,
     },
-    ...popselectProps
+    ...dropdownProps
   },
   setup(props, ctx) {
+
+    onMounted(() => {
+      console.log("🪵 [PopBtnComp.tsx:15] ~ token ~ \x1b[0;32monMounted\x1b[0m = ", 'BtnComp重新挂在');
+
+    })
     const { name, ...pop } = props
     return () => {
       return (
-        <NPopselect {...pop} trigger="click" size={'large'} class={'text-2xl my-pop-select'}
+        // <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} ></NDropdown>
+        <NDropdown {...pop} trigger="click" size={'large'} class={'text-2xl my-pop-select btm-menu'}
           nodeProps={(option: any) => {
             return {
-              class: 'w-[17vw]',
+              // class: 'w-[17vw]',
               style: {
+                width: '17vw',
                 fontSize: '1.4rem',
               }
             }
@@ -35,7 +42,7 @@ export default defineComponent({
             }} >
             <span class={'text-2xl ml-2'}>{props.name}</span>
           </NButton>
-        </NPopselect>
+        </NDropdown>
       )
     }
   }

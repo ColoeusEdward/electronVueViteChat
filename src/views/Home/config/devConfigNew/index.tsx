@@ -10,6 +10,7 @@ import AdressForm from "./AdressForm";
 import AdressTable from "./AdressTable";
 import ConForm from "./ConForm";
 import ConnectComForm from "./connect/ConnectComForm";
+import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import { tabNameEnum } from "./enum";
 
 export default defineComponent({
@@ -135,12 +136,12 @@ export default defineComponent({
               {{
                 default: () => (
                   <AdressTable />
-
                 ),
                 footer: () => (
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                    <NButton onClick={() => { configStore.setAddressShow(false) }}>取消</NButton>
-                    <NButton type="primary" onClick={() => { }}>确定</NButton>
+                    {/* <NButton onClick={() => { configStore.setAddressShow(false) }}>取消</NButton> */}
+                    <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { configStore.setAddressShow(false) }}>返回</NButton>
+                    {/* <NButton type="primary" onClick={() => { }}>确定</NButton> */}
                   </div>
                 )
               }}

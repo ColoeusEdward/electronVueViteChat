@@ -7,11 +7,13 @@ import { useCurcevInnerDataStore } from "../curcev/innerData";
 import { chartId } from "./enum";
 import niotLogo from '@/assets/login_logos.png';
 import { DataTypeEnum, DataTypeOnIndex } from "../config/dataCofigNew/enum";
-import { menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "../curcev/enum";
+import { getMenuOptList, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "../curcev/enum";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { buildMenuOpt, sleep } from "@/utils/utils";
 import { useConfigStore } from "@/store/config";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
+import { useI18n } from "vue-i18n";
+import { usei18nStore } from "@/store/i18n";
 
 export default defineComponent({
   name: 'MultiCurcev',
@@ -21,6 +23,8 @@ export default defineComponent({
     const cfgDataList = computed<DataConfigEntity[]>(() => {
       return curCevInnerData.dataCfgList
     })
+    const { t } = useI18n()
+    const i18nStore = usei18nStore()
     const commonData = reactive({
       // cfgDataList: [] as DataConfigEntity[],
       curPage: 0,
@@ -30,10 +34,10 @@ export default defineComponent({
       refreshHide: false,
       menuShow: true
     })
-    watch(() => configStore.chartDataAdressList, (v) => {
+    watch([() => configStore.chartDataAdressList, () => i18nStore.langChangeCount], ([v, n]) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
       let list = v
-      let opt = menuOptList
+      let opt = getMenuOptList(t)
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
       if (sitem) {
         if (list.length == 0) {
@@ -178,7 +182,7 @@ export default defineComponent({
               {
                 commonData.menuShow && <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
                   {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
-                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>{t('menu.menu')}</span>
                   </NButton>
                 </NDropdown>
               }

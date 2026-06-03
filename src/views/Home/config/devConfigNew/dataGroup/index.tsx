@@ -154,7 +154,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 text-lg bg-[#f5f6f6]'} style={{
+        <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 pr-2 text-lg bg-[#f5f6f6]'} style={{
           height: 'calc(100vh - 200px)'
         }}>
           {/* <SimpleTable dat={alldata.data} col={alldata.coloumns} /> */}
@@ -163,7 +163,7 @@ export default defineComponent({
           })}
 
           >
-            <div class={"w-full h-full p-2 pl-0 pr-1"} style={{ flex: 2 }}>
+            <div class={"w-full h-full p-2  " + classNames({ 'pl-0 pr-1': store.isLandscape, 'px-0': !store.isLandscape })} style={{ flex: 2 }}>
               <div class={'w-full h-full border border-gray-600 border-solid  overflow-hidden bg-white'}>
                 <SimpleTable
                   rowClickFn={rowClick}
@@ -175,10 +175,10 @@ export default defineComponent({
 
               </div>
             </div>
-            <div class={"w-full h-full  p-2 px-1 "} style={{ flex: 3 }}>
+            <div class={"w-full h-full  p-2  " + classNames({ 'px-1': store.isLandscape, 'px-0': !store.isLandscape })} style={{ flex: 3 }}>
               <DeviceGroup />
             </div>
-            <div class={"w-full h-full p-2 pl-1"} style={{ flex: 3 }}>
+            <div class={"w-full h-full p-2  " + classNames({ 'pl-1': store.isLandscape, 'px-0': !store.isLandscape })} style={{ flex: 3 }}>
               <DevDataGroup />
             </div>
           </div>

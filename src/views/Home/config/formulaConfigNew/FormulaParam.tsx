@@ -141,7 +141,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full l formula-param-tab my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
+        <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full  formula-param-tab my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
           {
             curDeviceGroupRow.value &&
             // pararmListWidthAdress.value.map(item => {

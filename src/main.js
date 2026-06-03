@@ -9,12 +9,13 @@ import { createApp } from 'vue'
 import './style.scss'
 
 import App from './App.vue'
-import  router  from "./router/index";
+import router from "./router/index";
 // import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import ElementPlus from 'element-plus'
 import { createPinia } from 'pinia'
 import drag from "v-drag"
-import { listenAltF5,listenAllInputFocus } from './utils/utils';
+import { listenAltF5, listenAllInputFocus } from './utils/utils';
+import i18n from './i18n/index'
 
 // import "./keyboard.min.css";
 // import KeyBoard from "vue-keyboard-virtual-next";
@@ -24,7 +25,7 @@ import { listenAltF5,listenAllInputFocus } from './utils/utils';
 listenAltF5(any => {
   window.location.reload()
 })
-document.onselectstart = function() {
+document.onselectstart = function () {
   return false;
 };
 let app = createApp(App)
@@ -36,12 +37,13 @@ const pinia = createPinia()
 // app.component("ChartPreview", goViewLib.ChartPreview)
 // app.component("Project", goViewLib.Project)
 app
-// .use(KeyBoard)
-.use(router)
-.use(pinia)
-.use(drag)
+  // .use(KeyBoard)
+  .use(router)
+  .use(pinia)
+  .use(i18n)
+  .use(drag)
 
-// .use(ElementPlus, {
-//     locale: zhCn,
-//   })
+  // .use(ElementPlus, {
+  //     locale: zhCn,
+  //   })
   .mount('#app')

@@ -438,6 +438,11 @@ type FormulaDataEntity = {  //废弃⚠️
   CreateTime?: string;
 }
 
+interface invokeFnRes {
+  Result: any;
+  Succeeded: Boolean;
+}
+
 interface FormulaParamEntity {
   /** 主键 */
   GId?: string;
@@ -755,3 +760,5 @@ interface simpleTableColumn {
   selectOption?: { label: string, value: string | number }[],
   selectChangeFn?: (row: any, item: any) => void
 }
+
+type MyLangStr = 'zh-CN' | 'en-US' 

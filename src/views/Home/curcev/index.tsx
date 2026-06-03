@@ -11,7 +11,7 @@ import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutline
 import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
-import { frontFnNameEnum, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
+import { frontFnNameEnum, getMenuOptList, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
 import { buildMenuOpt, getRandomInt, getRegState, loopGet, sleep, updateFormulaConfig } from "@/utils/utils";
 import { useMain } from "@/store";
 import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
@@ -22,6 +22,8 @@ import { callBrige } from "@/utils/callm";
 import { useConfigStore } from "@/store/config";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 import classNames from "classnames";
+import { useI18n } from "vue-i18n";
+import { usei18nStore } from "@/store/i18n";
 
 let defCfgData: DataConfigEntity[] = [
   {
@@ -113,6 +115,8 @@ export default defineComponent({
       tol: { up: 0, down: 0, }, //上下限
       menuShow: true,
     })
+    const { t } = useI18n()
+    const i18nStore = usei18nStore()
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
         innerData.setSysConfig(res)
@@ -228,10 +232,10 @@ export default defineComponent({
     const curDataType = computed(() => {
       return innerData.curDataCfgEntity?.DataType
     })
-    watch(() => chartAdressList.value, (v: DeviceGroupEntity[]) => {
+    watch([() => chartAdressList.value, () => i18nStore.langChangeCount], ([v, n]) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
       let list = v
-      let opt = menuOptList
+      let opt = getMenuOptList(t)
       let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
       if (sitem) {
         if (list.length == 0) {
@@ -461,7 +465,7 @@ export default defineComponent({
               {
                 commonData.menuShow && <NDropdown options={commonData.menuOpt} renderLabel={renderLabel} onSelect={handleSelect} trigger="click" placement="bottom-start" size={'large'} class={'text-2xl'} nodeProps={nodeProps} >
                   {/* style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} */}
-                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>菜单</span>
+                  <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-12 w-28 shrink mr-2 '} >   <span class={'text-2xl'}>{t('menu.menu')}</span>
                   </NButton>
                 </NDropdown>
               }
@@ -475,7 +479,7 @@ export default defineComponent({
                 }} onClick={startCollect} >开始采集</NButton>
               } */}
 
-              <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={refresh} size={'large'} >刷新配置</NButton>
+              <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={refresh} size={'large'} >{t('menu.refreshConfig')}</NButton>
               {/* <NButton type={'warning'} style={{ backgroundImage: `url(${activeWarningImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} v-slots={{
                 icon: () => false && <NIcon><LayersClearOutlined /></NIcon>
               }} onClick={clearCollect} >清空数据</NButton> */}
@@ -533,7 +537,7 @@ export default defineComponent({
                         'text-[#ff0000]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'dowm',
                         'text-[#ff8d3f]': !valueIsOk.value?.ok && valueIsOk.value?.msg == 'up'
                       })}>
-                        {valueIsOk.value?.msg == 'dowm' ? '- 公差' : '+ 公差'}
+                        {valueIsOk.value?.msg == 'dowm' ? `- ${t('data.tolerance')}` : `+ ${t('data.tolerance')}`}
                       </div>
                     }
 
