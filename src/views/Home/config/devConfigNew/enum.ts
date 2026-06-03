@@ -27,6 +27,8 @@ export enum DeviceClassEnum {
   Alarm = 7,
 }
 
+export const DeviceClassHasShapeList = [DeviceClassEnum.OD, DeviceClassEnum.Ecc, DeviceClassEnum.Con]
+
 /**
  * 数据类型
  */

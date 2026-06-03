@@ -36,28 +36,31 @@ export default defineComponent({
     })
     watch([() => configStore.chartDataAdressList, () => i18nStore.langChangeCount], ([v, n]) => {
       // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
-      let list = v
-      let opt = getMenuOptList(t)
-      let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
-      if (sitem) {
-        if (list.length == 0) {
-          // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
-        } else {
-          sitem.children = list.map(e => buildMenuOpt(e, configStore))
-          // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-          //   return {
-          //     ...buildMenuOpt(e),
-          //     children: e.children?.map(ee => buildMenuOpt(ee))
-          //   }
-          // }) as MenuOptType[]
-        }
-      }
-      commonData.menuOpt = opt as any
-      commonData.menuShow = false
       sleep(50).then(() => {
-        commonData.menuShow = true
+        let list = v
+        let opt = getMenuOptList(t)
+        let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
+        if (sitem) {
+          if (list.length == 0) {
+            // commonData.cfgDataList.map(e => buildMenuOpt(e))
+            sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
+          } else {
+            sitem.children = list.map(e => buildMenuOpt(e, configStore))
+            // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+            //   return {
+            //     ...buildMenuOpt(e),
+            //     children: e.children?.map(ee => buildMenuOpt(ee))
+            //   }
+            // }) as MenuOptType[]
+          }
+        }
+        commonData.menuOpt = opt as any
+        commonData.menuShow = false
+        sleep(50).then(() => {
+          commonData.menuShow = true
+        })
       })
+
     }, {
       immediate: true
     })

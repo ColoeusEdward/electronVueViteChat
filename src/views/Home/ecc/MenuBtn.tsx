@@ -11,6 +11,7 @@ import { DataGroupEntity, menuOption } from "~/me";
 import { useConfigStore } from "@/store/config";
 import { buildMenuOpt, sleep } from "@/utils/utils";
 import { RightValueType } from "../RightValueBlock";
+import { DeviceClassEnum, DeviceClassHasShapeList } from "../config/devConfigNew/enum";
 
 
 export default defineComponent({
@@ -43,7 +44,7 @@ export default defineComponent({
         alldata.menuShow = true
       })
     }
-    const dataSourceList = computed(() => configStore.showDataAdressList.map(e => {
+    const dataSourceList = computed(() => configStore.showDataAdressList.filter(e => Number(e.DeviceClass) == DeviceClassEnum.Ecc).map(e => {
       let res = {
         ...buildMenuOpt(e, configStore, true),
         // children: e.children?.map(ee => buildMenuOpt(ee))

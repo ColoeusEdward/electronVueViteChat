@@ -330,7 +330,7 @@ export default defineComponent({
           <div class={"flex justify-center flex-shrink-0 "}>
             {
               alldata.show && <div class={'flex max-w-[800px]  w-full justify-between ' + classNames({
-                'ml-[310px]': isLandscape.value,
+                'ml-[10px]': isLandscape.value,
                 'ml-2 ': !isLandscape.value
               })}>
                 {
@@ -338,7 +338,7 @@ export default defineComponent({
                     return <div class={'text-lg flex  items-center relative'} >
                       <span class={'mr-2'}>{e.label}</span>
                       <MenuBtn propName={e.prop} />
-                      <span class={'absolute right-2 top-14 text-xl w-[110px] text-center ' + classNames({
+                      <span class={'absolute right-2 top-10 text-xl w-[110px] text-center ' + classNames({
 
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
                         'text-[#ff0000]': e.param && e.diff < -(e.param.LowerTol || 0),
@@ -351,14 +351,10 @@ export default defineComponent({
               </div>
             }
 
-            <div class='ml-auto  h-16' >
-              {/* <NSpace>
-                {nextShow.value && <NButton onClick={nextPage} size={'large'} >上一页</NButton>}
-                {prevShow.value && <NButton onClick={prevPage} size={'large'} >下一页</NButton>}
-
-              </NSpace> */}
+            {/* <div class='ml-auto  h-16' >
+       
               <img class={'h-full'} src={niotLogo} />
-            </div>
+            </div> */}
           </div>
           {
             chartShow.value && <div class={'w-full h-full shrink flex justify-center items-center'} id="ecc-con">

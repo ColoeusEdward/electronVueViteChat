@@ -11,7 +11,7 @@ import { InfoOutlined, LayersClearOutlined, PlayArrowOutlined, StopCircleOutline
 import CurcevChartRow, { CurcevChartRowIns } from "./CurcevChartRow";
 import CpkBlock from "./CpkBlock";
 import NormalDis from "./NormalDis";
-import { frontFnNameEnum, getMenuOptList, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
+import { frontFnNameEnum, getMenuOptList, getMenuOptList1, menuIdSplit, menuOptList, MenuOptType, menuPropEnum } from "./enum";
 import { buildMenuOpt, getRandomInt, getRegState, loopGet, sleep, updateFormulaConfig } from "@/utils/utils";
 import { useMain } from "@/store";
 import { useSysCfgInnerDataStore } from "../config/sysConfig/innderData";
@@ -24,6 +24,9 @@ import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 import classNames from "classnames";
 import { useI18n } from "vue-i18n";
 import { usei18nStore } from "@/store/i18n";
+import { useMyI18n } from "@/hooks/useMyI18n";
+import Ecc from "../ecc";
+import { DeviceClassEnum, DeviceClassHasShapeList, DeviceClassNameMap } from "../config/devConfigNew/enum";
 
 let defCfgData: DataConfigEntity[] = [
   {
@@ -114,14 +117,16 @@ export default defineComponent({
       timerIns: null as any,
       tol: { up: 0, down: 0, }, //上下限
       menuShow: true,
+
     })
-    const { t } = useI18n()
-    const i18nStore = usei18nStore()
+    const { t, i18nStore } = useMyI18n()
     const getSysCfg = () => {
       callBrige(callFnName.GetSysConfig).then((res: SysConfigEntity[]) => {
         innerData.setSysConfig(res)
       })
     }
+    const chartType = computed(() => configStore.chartType)
+    const curChartDeviceType = computed(() => Number(configStore.curChartDeviceType))
     const chartAdressList = computed(() => configStore.chartDataAdressList)
     // getSysCfg()
     const getAllActiveConfigData = () => {
@@ -233,29 +238,33 @@ export default defineComponent({
       return innerData.curDataCfgEntity?.DataType
     })
     watch([() => chartAdressList.value, () => i18nStore.langChangeCount], ([v, n]) => {
-      // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
-      let list = v
-      let opt = getMenuOptList(t)
-      let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
-      if (sitem) {
-        if (list.length == 0) {
-          // commonData.cfgDataList.map(e => buildMenuOpt(e))
-          sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
-        } else {
-          sitem.children = list.map(e => buildMenuOpt(e, configStore))
-          // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
-          //   return {
-          //     ...buildMenuOpt(e),
-          //     children: e.children?.map(ee => buildMenuOpt(ee))
-          //   }
-          // }) as MenuOptType[]
-        }
-      }
-      commonData.menuOpt = opt as any
-      commonData.menuShow = false
       sleep(50).then(() => {
-        commonData.menuShow = true
+        // console.log("🪵 [index.tsx:216] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
+        let list = v
+        let opt = getMenuOptList1(t)
+        let sitem = opt!.find(e => e.key == menuPropEnum.dataSource)
+        if (sitem) {
+          if (list.length == 0) {
+            // commonData.cfgDataList.map(e => buildMenuOpt(e))
+            sitem.children = list.map(e => buildMenuOpt(e, configStore)) as any
+          } else {
+            sitem.children = list.map(e => buildMenuOpt(e, configStore))
+            // .filter((e: ModbusAdressRow) => (e.State == 1 && DataTypeOnIndex.includes(e.DataType))).map(e => {
+            //   return {
+            //     ...buildMenuOpt(e),
+            //     children: e.children?.map(ee => buildMenuOpt(ee))
+            //   }
+            // }) as MenuOptType[]
+          }
+        }
+        commonData.menuOpt = opt as any
+        console.log("🪵 [index.tsx:254] ~ token ~ \x1b[0;32mopt\x1b[0m = ", opt);
+        commonData.menuShow = false
+        sleep(50).then(() => {
+          commonData.menuShow = true
+        })
       })
+
       // console.log("🪵 [index.tsx:234] ~ token ~ \x1b[0;32mcommonData.menuOpt\x1b[0m = ", commonData.menuOpt);
     }, {
       immediate: true
@@ -293,15 +302,40 @@ export default defineComponent({
     const handleSelect = (key: string) => {
       let type = key.split(menuIdSplit)[0]
       let trueKey = key.split(menuIdSplit)[1]
+      let DevGId = key.split(menuIdSplit)[2]
       if (type == menuPropEnum.dataSource) {
+        let curDevItem = configStore.showDataAdressList.find(e => e.GId == DevGId) as DeviceGroupEntity
+        console.log("🪵 [index.tsx:309] ~ token ~ \x1b[0;32mcurDevItem\x1b[0m = ", curDevItem);
+        if (!curDevItem) return
+        if (configStore.chartType == 1 && !DeviceClassHasShapeList.includes(Number(curDevItem.DeviceClass!))) {
+          configStore.setChartType(0)
+          // return
+        }
+        configStore.setCurChartDeviceType(curDevItem.DeviceClass!)
+
         let item = configStore.chartDataGroupList.find(e => e.GId == trueKey) as DataGroupEntity
         configStore.setCurChartDataGroup(item)
+
+
+
+        // let curDevClass = DeviceClassNameMap[Number(curDevItem.DeviceClass)]
+        // console.log("🪵 [index.tsx:311] ~ token ~ \x1b[0;32mcurDevClass\x1b[0m = ", curDevClass);
         // let item = commonData.cfgDataList.find(e => e.GId == trueKey)
         // innerData.setCurDataCfgEntity(item)
         // innerData.getCpkFn()
       }
       if (type == menuPropEnum.uploadLineShot) {
         getLineShot()
+      }
+      if (type == menuPropEnum.trendChart) {
+        configStore.setChartType(0)
+      }
+      if (type == menuPropEnum.shape) {
+        if (!DeviceClassHasShapeList.includes(Number(configStore.curChartDeviceType))) {
+          window.$message.warning(t('menu.notSupportShape'))
+          return
+        }
+        configStore.setChartType(1)
       }
     }
     const getLineShot = () => {
@@ -323,6 +357,9 @@ export default defineComponent({
       }
       let text = option.label
       if (option.trueKey && configStore.curChartDataGroup?.GId == option.trueKey) {
+        text += ' ✔️'
+      }
+      if (option.key == menuPropEnum.trendChart && chartType.value == 0 || option.key == menuPropEnum.shape && chartType.value == 1) {
         text += ' ✔️'
       }
 
@@ -492,7 +529,7 @@ export default defineComponent({
                 <NDatePicker v-model:value={innerData.startTime} type={'datetime'} />
               </div> */}
 
-              <NormalDis />
+              {/* <NormalDis /> */}
               {/* <FFT /> */}
 
               {/* <div class={'flex items-center'} >
@@ -524,7 +561,7 @@ export default defineComponent({
           {innerData.curDataCfgEntity && <CpkBlock dataConfig={innerData.curDataCfgEntity} />}
           {
             // curDataType.value == DataTypeEnum.Chart 
-            true
+            chartType.value == 0
             &&
             <>
               <div class={'h-[360px] pb-2 px-2 relative'}>
@@ -602,6 +639,12 @@ export default defineComponent({
                 <CurcevChartRow height="50%" i={0} adressRow={configStore.curChartDataGroup} ref={chartRef} />
               }
             </>
+          }
+          {
+            chartType.value == 1 && curChartDeviceType.value == DeviceClassEnum.Ecc &&
+            <div class={'h-full shrink mt-2 overflow-visible relative '}  >
+              <Ecc />
+            </div>
           }
           {curDataType.value == DataTypeEnum.FFT && <FFT />}
 

@@ -210,11 +210,11 @@ export default defineComponent({
                       <Statistical />
                     </div>
                   </NTabPane>
-                  <NTabPane displayDirective="if" name="eccPic" tab={t('menu.deviationMeter')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
+                  {/* <NTabPane displayDirective="if" name="eccPic" tab={t('menu.deviationMeter')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
                     <div class={'h-full'}>
                       <Ecc />
                     </div>
-                  </NTabPane>
+                  </NTabPane> */}
                   {/* <NTabPane displayDirective="if" name="pic" tab="图像" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'pic' ? activeStyle : {} } }}>
                 <div class={' h-full'}>
                   <PicPane />
@@ -273,11 +273,11 @@ export default defineComponent({
                         <Statistical />
                       </div>
                     </NTabPane>
-                    <NTabPane displayDirective="if" name="eccPic" tab="偏心仪" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
+                    {/* <NTabPane displayDirective="if" name="eccPic" tab="偏心仪" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'eccPic' ? activeStyle : {} } }}>
                       <div class={'h-full'}>
                         <Ecc />
                       </div>
-                    </NTabPane>
+                    </NTabPane> */}
                   </NTabs>
                 </div>
 

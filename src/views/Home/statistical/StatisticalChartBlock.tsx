@@ -334,7 +334,7 @@ export default defineComponent({
     }
     const getDisData = () => {
       callBrige(callFnName.GetDistributionData, dataSourceItem.value?.GId).then((res: DistributionEntity) => {
-        console.log("🪵 [StatisticalChartBlock.tsx:276] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
+        // console.log("🪵 [StatisticalChartBlock.tsx:276] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         if (!res) return
         setChartData(res)
         alldata.curDisItem = res

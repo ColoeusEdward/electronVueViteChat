@@ -102,8 +102,11 @@ export const ValueRow = defineComponent({
     }
 
     watch(() => i18nStore.langChangeCount, () => {
-      initTextData()
-      alldata.stand.forEach((e, i) => e.title = defStandValList[i].title)
+      sleep(50).then(() => {
+        initTextData()
+        alldata.stand.forEach((e, i) => e.title = defStandValList[i].title)
+      })
+
     })
 
 
@@ -199,7 +202,10 @@ export const ValueRow = defineComponent({
     const standVal = computed(() => {
       // data.value.stand[curStandIdx.value].value
       // console.log("🪵 [RightValueBlock.tsx:169] ~ token ~ \x1b[0;32mdata.value.stand[curStandIdx.value].value\x1b[0m = ", data.value.stand);
+      let _ = i18nStore.langChangeCount
+
       let val = alldata.stand[curStandIdx.value].value || 0
+      console.log("🪵 [RightValueBlock.tsx:204] ~ token ~ \x1b[0;32malldata.stand\x1b[0m = ", alldata.stand);
       let res = alldata.stand[curStandIdx.value].title + ' : ' + val.toFixed(props.data?.Precision || 3)
       return res
     })
@@ -376,7 +382,7 @@ export default defineComponent({
       minWidth: "100px",
       borderBottom: '3px solid #58595a'
     }
-    const { t } = useI18n()
+    const { t, i18nStore } = useMyI18n()
     const infoList = computed(() => { return curCevInnerData.infoList })
     const curTabValue = ref('value1')
     let startLoop = false

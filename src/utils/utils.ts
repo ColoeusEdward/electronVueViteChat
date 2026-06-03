@@ -200,9 +200,9 @@ export const getRandomInt = (min: number, max: number) => {
 }
 
 export const buildMenuOpt = (e: DeviceGroupEntity, configStore: ReturnType<typeof useConfigStore>, isShow = false) => {
-  const getChild = (e: DeviceGroupEntity) => {
+  const getChild = (dev: DeviceGroupEntity) => {
     let name = isShow ? callFnName.GetShowDataGroups : callFnName.GetChartDataGroups
-    callBrige(name, e.GId).then((res: DataGroupEntity[]) => {
+    callBrige(name, dev.GId).then((res: DataGroupEntity[]) => {
       // console.log("🪵 [utils.ts:196] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
       if (!isShow) {
         res.forEach(e => {
@@ -214,12 +214,13 @@ export const buildMenuOpt = (e: DeviceGroupEntity, configStore: ReturnType<typeo
       let list = res.map(e => {
         return {
           label: e.DataName,
-          key: menuPropEnum.dataSource + menuIdSplit + e.GId,
+          key: menuPropEnum.dataSource + menuIdSplit + e.GId + menuIdSplit + dev.GId,
           trueKey: e.GId,
           DataName: e.DataName,
           GId: e.GId,
           Unit: e.Unit,
-          Precision: e.Precision
+          Precision: e.Precision,
+          ParentId: dev.GId
         }
       })
       dat.children.push(...list)
@@ -231,6 +232,7 @@ export const buildMenuOpt = (e: DeviceGroupEntity, configStore: ReturnType<typeo
     trueKey: e.GId,
     DataName: e.DeviceName,
     GId: e.GId,
+    DeviceClass: e.DeviceClass,
     children: [] as any[]
     // Unit: e.Unit,
     // Precision: e.Precision

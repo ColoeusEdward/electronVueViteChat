@@ -15,7 +15,7 @@ import router from "./router/index";
 import { createPinia } from 'pinia'
 import drag from "v-drag"
 import { listenAltF5, listenAllInputFocus } from './utils/utils';
-import i18n from './i18n/index'
+import { initApp } from './i18n/index'
 
 // import "./keyboard.min.css";
 // import KeyBoard from "vue-keyboard-virtual-next";
@@ -36,14 +36,23 @@ const pinia = createPinia()
 // app.component("ChartEditor", goViewLib.ChartEditor)
 // app.component("ChartPreview", goViewLib.ChartPreview)
 // app.component("Project", goViewLib.Project)
-app
-  // .use(KeyBoard)
-  .use(router)
-  .use(pinia)
-  .use(i18n)
-  .use(drag)
 
-  // .use(ElementPlus, {
-  //     locale: zhCn,
-  //   })
-  .mount('#app')
+const bootstrap = async () => {
+  const i18n = await initApp()
+  const app = createApp(App)
+  app.use(router).use(pinia).use(i18n).use(drag).mount('#app')
+}
+
+bootstrap()
+
+// app
+//   // .use(KeyBoard)
+//   .use(router)
+//   .use(pinia)
+//   .use(i18n)
+//   .use(drag)
+
+//   // .use(ElementPlus, {
+//   //     locale: zhCn,
+//   //   })
+//   .mount('#app')

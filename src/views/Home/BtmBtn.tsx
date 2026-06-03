@@ -1,21 +1,20 @@
-import { NTabs, NTabPane, NPopselect, NButton, NIcon, useDialog, DialogReactive, NRadioGroup, NRadio, DropdownMenuProps, } from "naive-ui";
+import { NButton, useDialog, DialogReactive, NRadioGroup, NRadio } from "naive-ui";
 import type { DropdownProps } from 'naive-ui'
-import { defineComponent, onUnmounted, ref, computed, reactive, watch } from "vue";
+import { defineComponent, onUnmounted, ref, computed, reactive } from "vue";
 import { Tool } from '@vicons/tabler'
 import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled, HistoryOutlined } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
 import activeImg from '@/assets/LineDspButton_inactive.png'
 import { useConfigStore } from "@/store/config";
-import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { callBrige } from "@/utils/callm";
 import { useCurcevInnerDataStore } from "./curcev/innerData";
 import { useFormulaStore } from "@/store/formula";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
-import { useI18n } from 'vue-i18n'
 import { usei18nStore } from "@/store/i18n";
 import { MyLangStr } from "~/me";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
+import { useMyI18n } from "@/hooks/useMyI18n";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -47,8 +46,7 @@ export default defineComponent({
     const configStore = useConfigStore()
     const formulaStore = useFormulaStore()
     const dialog = useDialog()
-    const i18nStore = usei18nStore()
-    const { t } = useI18n()
+    const { t, i18nStore } = useMyI18n()
     const sysConfig = computed(() => configStore.sysConfig)
     const alldata = reactive({
       curDialogIns: null as DialogReactive | null,
@@ -68,19 +66,6 @@ export default defineComponent({
       curExitType: 'shutdownApp',
       trandChartStart: false
     })
-    const maintainOption = ref<DropdownMixedOption[]>([])
-    const productOption = ref<DropdownMixedOption[]>([])
-    const chartOption = [
-      { label: '配方配置', key: 'formulaCfg' },
-    ]
-    const screenPrintOption = ref<DropdownMixedOption[]>([])
-    const maintainOption2 = ref<DropdownMixedOption[]>([
-      { label: '配置', key: 'option' },
-      // { label: '关机', key: 'shutdown' },
-      { label: 'Reload', key: 'Reload' },
-      { label: '开发者工具', key: 'devTool' },
-    ])
-    const maintainOption3 = ref<DropdownMixedOption[]>([])
     const shutdownConfirm = () => {
       let exitMapFn: Record<string, () => void> = {
         shutdownApp: () => {
@@ -118,7 +103,7 @@ export default defineComponent({
                 }} v-model:value={alldata.curExitType} size={'large'} >
                   {
                     alldata.exitChooseList.map((item) => {
-                      return <NRadio value={item.value}>{item.label}</NRadio>
+                      return <NRadio value={item.key}>{item.label}</NRadio>
                     })
                   }
                 </NRadioGroup>
@@ -171,8 +156,8 @@ export default defineComponent({
         collectStart: () => {
           let item = popSelectList.value[2]
           alldata.trandChartStart = true
-          item.name =
-            curCevInnerData.startColFn && curCevInnerData.startColFn()
+          item.name = `${t('menu.trendChart')}(${t('menu.startChart')})`
+          curCevInnerData.startColFn && curCevInnerData.startColFn()
         },
         collectStop: () => {
           let item = popSelectList.value[2]
@@ -235,67 +220,70 @@ export default defineComponent({
     //   { option: [] as DropdownMixedOption[], name: '产品历史', icon: <HistoryOutlined />, clickFn: () => { configStore.setProductHistoryShow(true) } },
     //   // { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     // ])
-    const getData = () => {
-      maintainOption.value = [
-        { label: t('menu.config'), key: 'option' },
-        { label: t('menu.log'), key: 'log' },
-        // { label: '诊断程序', key: 'diag' },
-        {
-          label: t('menu.lang'), key: 'lang', props: { "class": 'btm-menu-2level' },
-          children: [
-            { label: '简体中文', key: 'lang-' + 'zh-CN' },
-            { label: 'English', key: 'lang-' + 'en-US' },
-          ]
-        },
-        // { label: '趋势图/打印机', key: 'chartAndprint' },
-        { label: t('menu.exit'), key: 'shutdown' },
-        // { label: '组态test', key: 'datav' },
-        // { label: '检查元素', key: 'devTool' },
-      ]
-      productOption.value = [
-        { label: t('menu.recipe'), key: 'formulaCfg' },
-        // { label: '产品历史记录', key: 'productHistory' },
-        // { label: '产品日志', key: 'productLog' },
-        // { label: '设定产品表', key: 'setproduct' },
-      ]
-      maintainOption3.value = [
-        { label: t('menu.start'), key: 'collectStart' },
-        { label: t('menu.stop'), key: 'collectStop' },
-        { label: t('menu.switchShaft'), key: 'shaftCollect' },
-        { label: t('menu.cleanData'), key: 'collectClean' },
-      ]
-      screenPrintOption.value = [
-        { label: t('menu.startPrint'), key: 'screenPrint' },
-        // { label: '打印机打印', value: 'printerPrint' },
-      ]
-    }
-    getData()
-
     const trendChartBtnText = computed(() => {
       return alldata.trandChartStart ? `${t('menu.trendChart')}(${t('menu.startChart')})` : `${t('menu.trendChart')}(${t('menu.stopChart')})`
     })
 
     const popSelectList = computed(() => {
-      let test = compKey.value
-      getData()
+      // 强制依赖 langChangeCount 以在语言切换时重新计算
+      const _ = i18nStore.langChangeCount
       //@ts-ignore
       return [
-        { option: maintainOption.value, name: t('menu.maintain'), icon: <Tool /> },
-        { option: productOption.value, name: t('menu.prodTable'), icon: <CandlestickChartRound /> },
-        // { option: chartOption, name: '配方', icon: <AreaChartOutlined /> },
-        { option: maintainOption3.value, name: trendChartBtnText.value, icon: <AreaChartOutlined /> },
-        { option: screenPrintOption.value, name: t('menu.printScreen'), icon: <LocalPrintshopFilled /> },
-        { option: [] as DropdownMixedOption[], name: t('menu.prodHistory'), icon: <HistoryOutlined />, clickFn: () => { configStore.setProductHistoryShow(true) } },
+        {
+          option: [
+            { label: t('menu.config'), key: 'option' },
+            { label: t('menu.log'), key: 'log' },
+            {
+              label: t('menu.lang'), key: 'lang', props: { "class": 'btm-menu-2level' },
+              children: [
+                { label: '简体中文', key: 'lang-' + 'zh-CN' },
+                { label: 'English', key: 'lang-' + 'en-US' },
+              ]
+            },
+            { label: t('menu.exit'), key: 'shutdown' },
+          ],
+          name: t('menu.maintain'),
+          icon: <Tool />
+        },
+        {
+          option: [
+            { label: t('menu.recipe'), key: 'formulaCfg' },
+          ],
+          name: t('menu.prodTable'),
+          icon: <CandlestickChartRound />
+        },
+        {
+          option: [
+            { label: t('menu.start'), key: 'collectStart' },
+            { label: t('menu.stop'), key: 'collectStop' },
+            { label: t('menu.switchShaft'), key: 'shaftCollect' },
+            { label: t('menu.cleanData'), key: 'collectClean' },
+          ],
+          name: trendChartBtnText.value,
+          icon: <AreaChartOutlined />
+        },
+        {
+          option: [
+            { label: t('menu.startPrint'), key: 'screenPrint' },
+          ],
+          name: t('menu.printScreen'),
+          icon: <LocalPrintshopFilled />
+        },
+        {
+          option: [],
+          name: t('menu.prodHistory'),
+          icon: <HistoryOutlined />,
+          clickFn: () => { configStore.setProductHistoryShow(true) }
+        },
       ]
     })
     return () => {
       return (
         <div class={'w-full h-24 mt-auto  flex items-center  px-2 '}  >
           {popSelectList.value.map((item, index) => {
-            console.log("🪵 [BtmBtn.tsx:287] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
             return (
               //@ts-ignore
-              <PopBtnComp key={compKey.value + index} clickFn={item.clickFn} disabled={!!item.clickFn} name={item.name} options={item.option} onSelect={handleOptClick}
+              <PopBtnComp clickFn={item.clickFn} disabled={!!item.clickFn} name={item.name} options={item.option} onSelect={handleOptClick}
                 v-slots={{
                   //@ts-ignore
                   icon: () => {

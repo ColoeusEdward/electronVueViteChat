@@ -1,0 +1,55 @@
+{
+  "common": {
+    "title": "Welcome to the system",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "menu": {
+    "config": "Config",
+    "log": "Logs",
+    "lang": "Language",
+    "exit": "Exit",
+    "maintain": "Maintenance",
+    "prodTable": "Product Table",
+    "trendChart": "Trend Chart",
+    "stopChart": "Off",
+    "startChart": "On",
+    "printScreen": "Print Screen",
+    "prodHistory": "Product History",
+    "startPrint": "Start Print",
+    "recipe": "Recipe",
+    "start": "Start",
+    "stop": "Stop",
+    "end": "End",
+    "cleanAll": "Clean All",
+    "switchShaft": "Switch Shaft",
+    "cleanData": "Clean Data",
+    "dataSource": "Data Source",
+    "uploadLineShot": "Upload Chart Graph",
+    "measureValue": "Value",
+    "refreshConfig": "Refresh Config",
+    "statisticsChart": "Statistical Chart",
+    "deviationMeter": "Eccentricity Meter",
+    "menu": "Menu",
+    "realTimeData": "RealTime Data"
+  },
+  "data": {
+    "averageLine": "Average Diameter",
+    "deviation": "Eccentricity",
+    "deviationAngle": "Eccentricity Angle",
+    "guideLine": "Conductor Diameter",
+    "average": "Average",
+    "limitLow": "Lower Limit",
+    "limitHeight": "Upper Limit",
+    "standardDeviation": "Standard Deviation",
+    "max": "Maximum",
+    "min": "Minimum",
+    "standard": "Nominal Value",
+    "accuracy": "Accuracy",
+    "deviationMius": "Deviation",
+    "tolerance": "Tolerance"
+  },
+  "home": {
+    "welcome": "Hello!"
+  }
+}

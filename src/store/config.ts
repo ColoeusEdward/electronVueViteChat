@@ -54,7 +54,6 @@ export const useConfigStore = defineStore('config', {
       curCpk: null as CPKEntity | null,
       curRealTimeData: null as DataValue | null | undefined,
 
-
       sysConfig: {} as SysConfigModel,
       originSysConfig: [] as SysConfigEntity[],
       configTab: defaultTab,
@@ -97,6 +96,9 @@ export const useConfigStore = defineStore('config', {
       commonTabWidthObj: {} as Record<string, string>,
 
       devDataGroupDevListShow: false,
+
+      chartType: getLocalStorage('chartType', 0) as number,
+      curChartDeviceType: getLocalStorage('curChartDeviceType', '') as string,
     }
   },
   /**
@@ -307,6 +309,14 @@ export const useConfigStore = defineStore('config', {
     },
     setAddressFormIsAdd(value: boolean) {
       this.addressFormIsAdd = value
+    },
+    setChartType(value: number) {
+      this.chartType = value
+      setLocalStorage('chartType', value)
+    },
+    setCurChartDeviceType(value: string) {
+      this.curChartDeviceType = value
+      setLocalStorage('curChartDeviceType', value)
     },
   }
 
