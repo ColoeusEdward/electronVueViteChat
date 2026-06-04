@@ -6,6 +6,7 @@ import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
 import { } from "naive-ui";
 import { computed, defineComponent, reactive, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { DataGroupEntity, FormulaConfigEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
 
 export default defineComponent({
@@ -13,6 +14,7 @@ export default defineComponent({
   setup(props, ctx) {
     const configStore = useConfigStore()
     const formulaStore = useFormulaStore()
+    const { t, i18nStore } = useMyI18n()
     const curGroupId = computed(() => configStore.sysConfig.CurrentGroupId)
     const curFormulaId = computed(() => configStore.sysConfig.CurrentFormulaId)
     const curFormulaConfigRow = computed(() => formulaStore.curFormulaConfigRow)
@@ -50,7 +52,7 @@ export default defineComponent({
     }
     const applyConfig = (row: FormulaConfigEntity) => {
       callBrige(callFnName.EnableFormulaConfig, row.GId).then(() => {
-        window.$message.success('应用成功')
+        window.$message.success(t('config.applicationSuccess'))
         getSysConfig()
         formulaStore.updateConfigListFn()
       })
@@ -85,11 +87,11 @@ export default defineComponent({
                   </span>
                   <span class={' grow flex items-center'}>
                     <span>
-                      {e.GroupConfigItem && <>{` (分组:${e.GroupConfigItem.GroupName})`}</>}
+                      {e.GroupConfigItem && <>{` (${t('config.groupPrefix')}${e.GroupConfigItem.GroupName})`}</>}
                     </span>
                     <span class={'ml-auto mr-2 text-lg  py-2 px-1 min-w-[70px] bg-white text-black border border-gray-500 border-solid'}
                       onClick={() => { applyConfig(e) }}>
-                      {curFormulaId.value == e.GId ? `已应用` : '应用'}
+                      {curFormulaId.value == e.GId ? t('config.applied') : t('config.apply2')}
                     </span>
                   </span>
 

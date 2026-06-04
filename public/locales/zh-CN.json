@@ -96,6 +96,7 @@
     "groupName": "分组名称",
     "name": "名称",
     "group": "分组",
+    "groupPrefix": "分组:",
     "default": "默认",
     "applied": "已应用",
     "add": "新增",

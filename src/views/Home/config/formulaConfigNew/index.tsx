@@ -4,7 +4,8 @@ import { useMain } from "@/store";
 import { useConfigStore } from "@/store/config";
 import { useFormulaStore } from "@/store/formula";
 import { NButton, NTabPane, NTabs, useDialog } from "naive-ui";
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import FormulaList from "./FormulaList";
 import FormulaParam from "./FormulaParam";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
@@ -21,6 +22,7 @@ export default defineComponent({
     const dialog = useDialog()
     const store = useMain()
     const formulaStore = useFormulaStore()
+    const { t, i18nStore } = useMyI18n()
     const myFormRef = ref<MyFormWrapIns>()
     const minWidth = store.isLandscape ? '12vw' : '120px'
     const maxWidth = store.isLandscape ? '25vw' : '400px'
@@ -41,7 +43,7 @@ export default defineComponent({
       },
       addFormCfg: {
         itemList: [
-          { type: 'input', label: '名称', prop: 'PN', width: 24, rule: 'must' },
+          { type: 'input', label: t('config.name'), prop: 'PN', width: 24, rule: 'must' },
           // { type: 'input', label: '备注', prop: 'Note', width: 24, },
         ] as formListItem[],
         hideBtn: true,
@@ -49,6 +51,11 @@ export default defineComponent({
         optionMap: {}
 
       }
+    })
+
+    // 语言切换时更新 reactive 对象中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      alldata.addFormCfg.itemList[0].label = t('config.name')
     })
 
     const handleTabChange = (value: string) => {
@@ -71,14 +78,14 @@ export default defineComponent({
       item.GroupId = configStore.sysConfig.CurrentGroupId as string
       callBrige(callFnName.SaveFormulaConfig, item).then((res: number) => {
         // console.log("🪵 [index.tsx:70] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         formulaStore.updateConfigListFn()
         hideForm()
       })
     }
     const add = () => {
       alldata.curDialogIns = dialog.create({
-        title: '新增配方',
+        title: t('config.addRecipe'),
         content: () => {
           return <div class={'min-h-[120px] limit-item-width-form'}>
             <MyFormWrap labelWidth={220} ref={myFormRef} {...alldata.addFormCfg} ></MyFormWrap>
@@ -89,15 +96,15 @@ export default defineComponent({
         style: { width: '800px', minHeight: '200px', },
         action: () => {
           return <div class={'flex justify-around items-center w-full'}>
-            <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>取消</NButton>
+            <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>
             <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
               // console.log("🪵 [ConForm.tsx:65] ~ token ~ \x1b[0;myFormRef.value\x1b[0m = ", myFormRef.value!);
               myFormRef.value?.submit(addConfig)
-            }}>确定</NButton>
+            }}>{t('config.confirm')}</NButton>
           </div>
         },
-        positiveText: '确定',
-        negativeText: '取消',
+        positiveText: t('config.confirm'),
+        negativeText: t('config.cancel'),
         onPositiveClick: () => {
           hideForm()
         },
@@ -119,11 +126,11 @@ export default defineComponent({
     }
     const del = () => {
       if (!formulaStore.curFormulaConfigRow) {
-        window.$message.warning('请先选择要删除的配方')
+        window.$message.warning(t('config.pleaseSelectTheRecipeToBeDeleted'))
         return
       }
       callBrige(callFnName.DeleteFormulaConfig, formulaStore.curFormulaConfigRow.GId).then((res: number) => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         formulaStore.updateConfigListFn()
       })
     }
@@ -131,7 +138,7 @@ export default defineComponent({
       let formMap = formulaStore.getParamFormMapFn() as unknown as Record<string, FormulaParamEntity>
       // console.log("🪵 [index.tsx:130] ~ token ~ \x1b[0;32mformMap\x1b[0m = ", formMap);
       callBrige(callFnName.SaveFormulaParams, Object.values(formMap)).then((res: number) => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         formulaStore.updateConfigListFn()
       })
       let configList = formulaStore.getFormulaListFn()
@@ -154,7 +161,7 @@ export default defineComponent({
             <div class={'flex-1 p-2 h-full'}>
               <div class={'h-full bg-[#f5f6f6]'}>
                 <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} paneClass={'shrink-0 h-full'} class={'config-tab h-full w-full my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
-                  <NTabPane displayDirective="show:lazy" name={"formula"} tab="配方" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'formula' ? alldata.activeStyle : {}, } }}>
+                  <NTabPane displayDirective="show:lazy" name={"formula"} tab={t('menu.recipe')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'formula' ? alldata.activeStyle : {}, } }}>
                     <div style={{ height: 'calc(100vh - 160px)' }} class={'w-full h-full p-2 border border-gray-600 border-solid flex flex-nowrap justify-around'}>
                       <div class={'h-full w-[58%] '}>
                         <FormulaList />

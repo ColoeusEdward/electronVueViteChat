@@ -96,6 +96,7 @@
     "groupName": "Group Name",
     "name": "Name",
     "group": "Group",
+    "groupPrefix": "Group:",
     "default": "Default",
     "applied": "Applied",
     "add": "Add",

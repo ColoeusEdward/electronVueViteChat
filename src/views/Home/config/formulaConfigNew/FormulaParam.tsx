@@ -6,6 +6,7 @@ import { callFnName } from "@/utils/enum";
 import { ajaxPromiseAll, safeJsonParse, sleep, getAllDataUnderGroup } from "@/utils/utils";
 import { NTabPane, NTabs } from "naive-ui";
 import { computed, defineComponent, Transition, ref, watch, reactive } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { DataGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
 
 export default defineComponent({
@@ -13,6 +14,7 @@ export default defineComponent({
   setup(props, ctx) {
     const formulaStore = useFormulaStore()
     const configstore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const curFormulaConfigRow = computed(() => formulaStore.curFormulaConfigRow)
     const alldata = reactive({
       curTabValue: 'formula',
@@ -36,9 +38,9 @@ export default defineComponent({
 
         },
         itemList: [
-          { type: 'input', label: '标准值', prop: 'Standard', width: 24, },
-          { type: 'input', label: '上公差', prop: 'UpperTol', width: 24, },
-          { type: 'input', label: '下公差', prop: 'LowerTol', width: 24, },
+          { type: 'input', label: t('data.standard2'), prop: 'Standard', width: 24, },
+          { type: 'input', label: t('data.toleranceUp'), prop: 'UpperTol', width: 24, },
+          { type: 'input', label: t('data.toleranceDwon'), prop: 'LowerTol', width: 24, },
         ] as formListItem[],
         hideBtn: true,
         noLargeBtn: true,
@@ -51,6 +53,14 @@ export default defineComponent({
       },
       formMap: {} as Record<string, FormulaParamEntity>,
     })
+
+    // 语言切换时更新 reactive 对象中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      alldata.formCfg.itemList[0].label = t('data.standard2')
+      alldata.formCfg.itemList[1].label = t('data.toleranceUp')
+      alldata.formCfg.itemList[2].label = t('data.toleranceDwon')
+    })
+
     const curDeviceGroupRow = computed(() => formulaStore.curDeviceGroupRow)
     const pararmListWidthAdress = computed(() => {
       return alldata.paramList.map(e => { return { ...e, AdressItem: alldata.adressList.find(item => item.GId == e.DataGroupId) } })
