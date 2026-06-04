@@ -1,6 +1,7 @@
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
 import { useConfigStore } from "@/store/config";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { getSysConfig } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
@@ -10,11 +11,13 @@ import { computed, defineComponent, Transition, ref, watch, reactive, onMounted 
 import { DeviceGroupEntity, simpleTableColumn } from "~/me";
 import { DeviceClassEnum, DeviceClassNameMap, tabNameEnum } from "../../enum";
 import DeviceGroupAddForm from "./DeviceGroupAddForm";
+import { sleep } from "@/utils/utils";
 
 export default defineComponent({
   name: 'DeviceGroup',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const classSelect = (row: simpleTableColumn, item: DeviceGroupEntity) => {
@@ -33,17 +36,17 @@ export default defineComponent({
       //   return
       // }
       callBrige(callFnName.DeleteDeviceGroup, item.GId).then(() => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         getData()
       })
     }
     const enableClcik = (row: simpleTableColumn, item: DeviceGroupEntity) => {
       rowClick(row, item)
       callBrige(callFnName.EnableGroupConfig, item.GId).then(() => {
-        window.$message.success('操作成功')
+        window.$message.success(t('config.operationSuccess'))
         // getData()
         // getSysConfig()
-        dialog.create({ title: '提示', content: '应用新分组记得重新配置配方', positiveText: '确定' })
+        dialog.create({ title: t('config.prompt'), content: t('config.remind'), positiveText: t('config.confirm') })
       })
     }
     const addClick = (row: simpleTableColumn, item: DeviceGroupEntity) => {
@@ -63,7 +66,7 @@ export default defineComponent({
     const stateClick = (row: simpleTableColumn, item: DeviceGroupEntity) => {
       rowClick(row, item)
       callBrige(callFnName.SaveDeviceGroup, item).then((res: any) => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         getData()
       })
     }
@@ -74,41 +77,27 @@ export default defineComponent({
       rowClick(row, item)
     }
 
+    const coloumns = ref<simpleTableColumn[]>([
+      {
+        label: t('config.deviceName'), prop: 'DeviceName', flex: 3, btnFn: ()=>{}, isInput: true,
+        inputUpdateFn: (col, item) => {
+          console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
+          if (item) {
+            configStore.setCurDeviceGroupRow(item)
+            updateRow({ DeviceName: curRow.value!.DeviceName })
+          }
+        }
+      },
+      { label: t('config.deviceType'), prop: 'DeviceClass', flex: 3, btnText: "", mapFn: (col: any, item: any) => { return DeviceClassNameMap[item.DeviceClass] }, btnFn: classSelect, isSelect: true, selectOption: Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item })) },
+      {
+        label: t('config.status'), prop: 'State', flex: 2, isSwitch: true, btnFn: stateClick,
+        mapFn: (col: any, item: DeviceGroupEntity) => { return item.State == 1 ? t('config.enabled') : t('config.disabled') }
+      },
+    ])
     const alldata = reactive({
 
       curConnectRefType: null,
       data: [] as DeviceGroupEntity[],
-      coloumns: [
-        {
-          label: '设备名称', prop: 'DeviceName', flex: 3, btnFn: ()=>{}, isInput: true,
-          inputUpdateFn: (col, item) => {
-            console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
-            if (item) {
-              configStore.setCurDeviceGroupRow(item)
-              updateRow({ DeviceName: curRow.value!.DeviceName })
-            }
-          }
-        },
-        { label: '设备类型', prop: 'DeviceClass', flex: 3, btnText: "", mapFn: (col: any, item: any) => { return DeviceClassNameMap[item.DeviceClass] }, btnFn: classSelect, isSelect: true, selectOption: Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item })) },
-        {
-          label: '状态', prop: 'State', flex: 2, isSwitch: true, btnFn: stateClick,
-          mapFn: (col: any, item: DeviceGroupEntity) => { return item.State == 1 ? '启用' : '禁用' }
-        },
-        // { label: '数据集合', prop: 'AddressIds', flex: 3, btnText: "查看", btnFn: adressClick },
-
-        // {
-        //   label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
-        //     // configStore.setAddressFormShow(true)
-        //     rowClick(col, item)
-        //   }
-        // },
-        // {
-        //   label: '', prop: 'op', btnText: '应用', flex: 1, btnFn: enableClcik, mapFn: (col: any, item: any) => {
-        //     return item.GId == curEnabledDataGroupId.value ? '已应用' : '应用'
-        //   }
-        // },
-        // { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
-      ] as simpleTableColumn[],
     })
 
     const getData = () => {
@@ -144,7 +133,7 @@ export default defineComponent({
       callBrige(callFnName.SaveDeviceGroup, data).then((res: any[]) => {
         // console.log("🪵 [index.tsx:11] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         getData()
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         // otherData.showConnectComForm = false
       })
     }
@@ -155,6 +144,14 @@ export default defineComponent({
       }
     }, {
       immediate: true
+    })
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        coloumns.value[0].label = t('config.deviceName')
+        coloumns.value[1].label = t('config.deviceType')
+        coloumns.value[2].label = t('config.status')
+      })
+      
     })
 
     onMounted(() => {
@@ -170,7 +167,7 @@ export default defineComponent({
                   addClick,
                   () => { },
                   deleteClick
-                ]} isSmallPadding={true} dat={alldata.data} col={alldata.coloumns} />
+                ]} isSmallPadding={true} dat={alldata.data} col={coloumns.value} />
           <DeviceGroupAddForm />
 
         </div>

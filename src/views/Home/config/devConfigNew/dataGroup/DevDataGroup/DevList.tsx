@@ -9,12 +9,14 @@ import { DataClassEnum, DataClassNameMap, DeviceClassNameMap, ParamClassNameMap 
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { AreaList, DataTypeList } from "../../../devConfig/enum";
-import { ajaxPromiseAll } from "@/utils/utils";
+import { ajaxPromiseAll, sleep } from "@/utils/utils";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'DevList',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const devDataGroupDevListShow = computed(() => configStore.devDataGroupDevListShow)
@@ -35,23 +37,23 @@ export default defineComponent({
       form: {} as any,
       itemList: [
         {
-          type: 'input', label: '设备名称', prop: "Name", width: 12, rule: ['must'],
+          type: 'input', label: t('config.deviceName'), prop: "Name", width: 12, rule: ['must'],
         },
       ],
       data: [] as DeviceConfigEntity[],
       coloumns: [
-        { label: '设备名称', prop: 'Name', flex: 2, },
-        { label: '设备类型', prop: 'DriverName', flex: 2, },
-        { label: '', prop: 'op', flex: 1, btnText: '选择', btnFn: DevRowClick },
+        { label: t('config.deviceName'), prop: 'Name', flex: 2, },
+        { label: t('config.deviceType'), prop: 'DriverName', flex: 2, },
+        { label: '', prop: 'op', flex: 1, btnText: t('config.select'), btnFn: DevRowClick },
       ] as simpleTableColumn[],
       curDev: null as DeviceGroupEntity | null,
 
       adressData: [] as DataAddressEntity[],
       adressColoumns: [
-        { label: '数据名称', prop: 'Name', flex: 1, isInput: true, },
-        { label: '区域', prop: 'adressItem.Area', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return AreaList.find(a => a.value == item.adressItem?.Area)?.label } },
-        { label: '类型', prop: 'adressItem.DataType', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataTypeList.find(a => a.value == item.adressItem?.DataType)?.label } },
-        { label: '', prop: 'isChoose', flex: 1, isRadio: true, btnFn: adressChoose, mapFn: (col: any, item: DataAddressEntity) => { return item.isChoose ? '已选中' : '选择' } },
+        { label: t('config.dataName'), prop: 'Name', flex: 1, isInput: true, },
+        { label: t('config.area'), prop: 'adressItem.Area', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return AreaList.find(a => a.value == item.adressItem?.Area)?.label } },
+        { label: t('config.dataType'), prop: 'adressItem.DataType', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataTypeList.find(a => a.value == item.adressItem?.DataType)?.label } },
+        { label: '', prop: 'isChoose', flex: 1, isRadio: true, btnFn: adressChoose, mapFn: (col: any, item: DataAddressEntity) => { return item.isChoose ? t('config.selected') : t('config.select') } },
         // { label: '数据分类', prop: 'DeviceClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DeviceClassNameMap[item.DeviceClass] } },
         // { label: '数据类型', prop: 'DataClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataClassNameMap[item.DataClass] } },
         // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return ParamClassNameMap[item.ParamClass] } },
@@ -98,7 +100,7 @@ export default defineComponent({
         return callBrige(callFnName.SaveDataGroup, dat)
       })
       ajaxPromiseAll(reqList).then(() => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         hideForm()
         configStore.updateDevDataGroupRowFn()
       })
@@ -110,6 +112,17 @@ export default defineComponent({
       })
     }
 
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        alldata.coloumns[0].label = t('config.deviceName')
+        alldata.coloumns[1].label = t('config.deviceType')
+        alldata.coloumns[2].btnText = t('config.select')
+        alldata.adressColoumns[0].label = t('config.dataName')
+        alldata.adressColoumns[1].label = t('config.area')
+        alldata.adressColoumns[2].label = t('config.dataType')
+      })
+
+    })
     watch(devDataGroupDevListShow, (val) => {
       if (val) {
         alldata.curDev = null
@@ -117,12 +130,12 @@ export default defineComponent({
         getCurDataClass()
 
         alldata.curDialogIns = dialog.create({
-          title: '新增数据',
+          title: t('config.addData'),
           content: () => {
             return <div class={'min-h-[170px]'}>
               <div class={"h-[40px] flex justify-start items-center"}>
                 {
-                  alldata.curDev && <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { backDevChoose() }}>返回</NButton>
+                  alldata.curDev && <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { backDevChoose() }}>{t('config.back')}</NButton>
                 }
               </div>
               {
@@ -140,16 +153,16 @@ export default defineComponent({
           style: { width: '800px', minHeight: '200px', },
           action: () => {
             return <div class={'flex justify-around items-center w-full'}>
-              <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>取消</NButton>
+              <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>
               <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
                 // console.log("🪵 [ConForm.tsx:65] ~ token ~ \x1b[0;myFormRef.value\x1b[0m = ", myFormRef.value!);
                 // myFormRef.value?.submit(submit)
                 submit()
-              }}>确定</NButton>
+              }}>{t('config.confirm')}</NButton>
             </div>
           },
-          positiveText: '确定',
-          negativeText: '取消',
+          positiveText: t('config.confirm'),
+          negativeText: t('config.cancel'),
           onPositiveClick: () => {
             hideForm()
           },

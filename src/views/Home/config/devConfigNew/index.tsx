@@ -11,6 +11,7 @@ import AdressTable from "./AdressTable";
 import ConForm from "./ConForm";
 import ConnectComForm from "./connect/ConnectComForm";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { tabNameEnum } from "./enum";
 
 export default defineComponent({
@@ -25,6 +26,7 @@ export default defineComponent({
       addressTableShow: false
     })
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const configTab = computed(() => {
       return configStore.configTab
     })
@@ -48,7 +50,7 @@ export default defineComponent({
     }
     const deleteClick = (row: simpleTableColumn, item: DeviceConfigEntity) => {
       callBrige(callFnName.DeleteDevcieConfig, item.GId).then(() => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         getData()
       })
     }
@@ -62,9 +64,9 @@ export default defineComponent({
       // configStore.setStateShow(true)
     }
     const columns = ref<simpleTableColumn[]>([
-      { label: '设备类型', prop: 'DriverName', flex: 3, btnFn: () => { } },
+      { label: t('config.deviceType'), prop: 'DriverName', flex: 3, btnFn: () => { } },
       {
-        label: '设备名', prop: 'Name', flex: 2, isInput: true
+        label: t('config.deviceName'), prop: 'Name', flex: 2, isInput: true
         , btnFn: rowClick
         , inputUpdateFn: () => {
           console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", otherData.curRow);
@@ -73,11 +75,19 @@ export default defineComponent({
           }
         }
       },
-      { label: '连接配置', prop: 'ConnectString', flex: 1, btnText: '编辑', btnFn: connectClick },
-      { label: '数据地址', prop: 'address', flex: 1, btnText: '编辑', btnFn: adressClick },
-      { label: '状态', prop: 'State', flex: 1, isSwitch: true, mapFn: (col: any, item: DeviceConfigEntity) => { return item.State == 1 ? '启用' : '禁用' }, btnFn: stateClick },
+      { label: t('config.connectionConfiguration'), prop: 'ConnectString', flex: 1, btnText: t('config.edit'), btnFn: connectClick },
+      { label: t('config.dataAddress'), prop: 'address', flex: 1, btnText: t('config.edit'), btnFn: adressClick },
+      { label: t('config.status'), prop: 'State', flex: 1, isSwitch: true, mapFn: (col: any, item: DeviceConfigEntity) => { return item.State == 1 ? t('config.enabled') : t('config.disabled') }, btnFn: stateClick },
       // { label: '', prop: 'op', flex: 1, btnText: '删除', btnFn: deleteClick, btnType: 'danger' },
     ])
+    watch(() => i18nStore.langChangeCount, () => {
+      columns.value[0].label = t('config.deviceType')
+      columns.value[1].label = t('config.deviceName')
+      columns.value[2].label = t('config.connectionConfiguration')
+      columns.value[3].label = t('config.dataAddress')
+      columns.value[4].label = t('config.status')
+    })
+
     const getData = () => {
       callBrige(callFnName.GetDevcieConfigs).then((res: DeviceConfigEntity[]) => {
         // res.push({ DriverName: '新增设备', Name: '', State: 0, CreateTime: '', isNewRow: true })
@@ -93,7 +103,7 @@ export default defineComponent({
       callBrige(callFnName.SaveDevcieConfig, data).then((res: any[]) => {
         // console.log("🪵 [index.tsx:11] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         getData()
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         otherData.showConnectComForm = false
       })
     }
@@ -132,7 +142,7 @@ export default defineComponent({
             placement="right"
             resizable
           >
-            <NDrawerContent title="数据地址" closable>
+            <NDrawerContent title={t('config.dataAddress')} closable>
               {{
                 default: () => (
                   <AdressTable />
@@ -140,7 +150,7 @@ export default defineComponent({
                 footer: () => (
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
                     {/* <NButton onClick={() => { configStore.setAddressShow(false) }}>取消</NButton> */}
-                    <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { configStore.setAddressShow(false) }}>返回</NButton>
+                    <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { configStore.setAddressShow(false) }}>{t('config.back')}</NButton>
                     {/* <NButton type="primary" onClick={() => { }}>确定</NButton> */}
                   </div>
                 )

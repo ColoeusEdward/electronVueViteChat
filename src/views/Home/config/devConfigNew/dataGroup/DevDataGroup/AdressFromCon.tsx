@@ -7,6 +7,7 @@ import ModbusForm from "./form/ModbusForm";
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'AdressFormCon',
@@ -16,6 +17,7 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const formRef = ref<MyFormWrapIns>()
     const alldata = reactive({
@@ -71,7 +73,7 @@ export default defineComponent({
       if (v) {
         // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
         alldata.curDialogIns = dialog.create({
-          title: '数据',
+          title: t('config.data'),
           content: () => {
             return <div class={'min-h-[170px] relative'}>
               {/* {
@@ -94,14 +96,14 @@ export default defineComponent({
           style: { width: '800px', minHeight: '200px', },
           action: () => {
             return <div class={'flex justify-around items-center w-full'}>
-              <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>取消</NButton>
+              <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>
               <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
                 formRef.value?.submit(alldata.curSubmitFn)
-              }}>确定</NButton>
+              }}>{t('config.confirm')}</NButton>
             </div>
           },
-          positiveText: '确定',
-          negativeText: '取消',
+          positiveText: t('config.confirm'),
+          negativeText: t('config.cancel'),
           maskClosable: false,
           onPositiveClick: () => {
             hideForm()

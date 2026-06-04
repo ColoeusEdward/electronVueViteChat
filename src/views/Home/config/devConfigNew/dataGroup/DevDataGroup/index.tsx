@@ -11,11 +11,13 @@ import { UnilateralNameList } from "../../../dataCofigNew/enum";
 import { DataClassNameMap, dataClassOptions, DeviceClassEnum, DeviceClassNameMap, ParamClassNameMap, tabNameEnum } from "../../enum";
 import AdressFromCon from "./AdressFromCon";
 import DevList from "./DevList";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'DevDataGroup',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const curDeviceGroupRow = computed(() => configStore.curDeviceGroupRow)
@@ -35,17 +37,17 @@ export default defineComponent({
       //   return
       // }
       callBrige(callFnName.DeleteDataGroup, item.GId).then(() => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         getData()
       })
     }
     const enableClcik = (row: simpleTableColumn, item: DataGroupEntity) => {
       rowClick(row, item)
       callBrige(callFnName.EnableGroupConfig, item.GId).then(() => {
-        window.$message.success('操作成功')
+        window.$message.success(t('config.operationSuccess'))
         // getData()
         // getSysConfig()
-        dialog.create({ title: '提示', content: '应用新分组记得重新配置配方', positiveText: '确定' })
+        dialog.create({ title: t('config.prompt'), content: t('config.remind'), positiveText: t('config.confirm') })
       })
     }
     const addClick = (row: simpleTableColumn, item: DataGroupEntity) => {
@@ -65,7 +67,7 @@ export default defineComponent({
     const stateClick = (row: simpleTableColumn, item: DataGroupEntity) => {
       rowClick(row, item)
       callBrige(callFnName.SaveDataGroup, item).then((res: any) => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         getData()
       })
     }
@@ -83,7 +85,7 @@ export default defineComponent({
       data: [] as DataGroupEntity[],
       coloumns: [
         {
-          label: '数据名称', prop: 'DataName', flex: 2, btnFn: () => { }, isInput: true,
+          label: t('config.dataName'), prop: 'DataName', flex: 2, btnFn: () => { }, isInput: true,
           inputUpdateFn: (col, item) => {
             console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
             if (item) {
@@ -92,12 +94,12 @@ export default defineComponent({
             }
           }
         },
-        { label: '数据类型', prop: 'DataClass', flex: 2, isSelect: true, selectOption: [], btnFn: dataClassSelect, },
+        { label: t('config.dataType'), prop: 'DataClass', flex: 2, isSelect: true, selectOption: [], btnFn: dataClassSelect, },
         // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataGroupEntity) => { return ParamClassNameMap[item.ParamClass!] } },
         // { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: DataGroupEntity) => { return UnilateralNameList[item.Unilateral!] } },
         // { label: '精度', prop: 'Precision', flex: 1, },
         {
-          label: '单位', prop: 'Unit', flex: 1, isInput: true, inputUpdateFn: (col, item) => {
+          label: t('config.unit'), prop: 'Unit', flex: 1, isInput: true, inputUpdateFn: (col, item) => {
             if (item) {
               rowClick(col, item)
               updateRow({ Unit: curRow.value!.Unit })
@@ -105,8 +107,8 @@ export default defineComponent({
           },
         },
         {
-          label: '状态', prop: 'State', flex: 2, isSwitch: true, btnFn: stateClick,
-          mapFn: (col: any, item: DataGroupEntity) => { return item.State == 1 ? '启用' : '禁用' }
+          label: t('config.status'), prop: 'State', flex: 2, isSwitch: true, btnFn: stateClick,
+          mapFn: (col: any, item: DataGroupEntity) => { return item.State == 1 ? t('config.enabled') : t('config.disabled') }
         },
         // { label: '地址集合', prop: 'AddressIds', flex: 3, btnText: "查看", btnFn: adressClick },
 
@@ -164,7 +166,7 @@ export default defineComponent({
       callBrige(callFnName.SaveDataGroup, data).then((res: any[]) => {
         // console.log("🪵 [index.tsx:11] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         getData()
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         // otherData.showConnectComForm = false
       })
     }
@@ -175,6 +177,12 @@ export default defineComponent({
       }
     }, {
       immediate: true
+    })
+    watch(() => i18nStore.locale, () => {
+      alldata.coloumns[0].label = t('config.dataName')
+      alldata.coloumns[1].label = t('config.dataType')
+      alldata.coloumns[2].label = t('config.unit')
+      alldata.coloumns[3].label = t('config.status')
     })
 
     return () => {

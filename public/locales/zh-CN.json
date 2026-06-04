@@ -206,7 +206,15 @@
     "format": "格式",
     "confirmDeleteRule": "确认删除吗?",
     "moveUp": "上移",
-    "moveDown": "下移"
+    "moveDown": "下移",
+    "disabled": "禁用",
+    "back": "返回",
+    "select": "选择",
+    "area": "区域",
+    "selected": "已选中",
+    "deviceCheck": "设备勾选",
+    "viewDevice": "查看设备",
+    "addressCheck": "地址勾选"
   },
   "home": {
     "welcome": "欢迎！"

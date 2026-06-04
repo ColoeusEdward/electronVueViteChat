@@ -2,6 +2,7 @@ import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
 import { useMain } from "@/store";
 import { useConfigStore } from "@/store/config";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { getSysConfig } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
@@ -21,6 +22,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const store = useMain()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
@@ -48,68 +50,49 @@ export default defineComponent({
     }
     const deleteClick = ({ }, item: GroupConfigEntity) => {
       if (item.GId === curEnabledDataGroupId.value) {
-        window.$message.error('已应用的分组不能删除')
+        window.$message.error(t('config.cannotDeleteAppliedGroup'))
         return
       }
       callBrige(callFnName.DeleteGroupConfig, item.GId).then(() => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         getData()
       })
     }
     const enableClcik = (row: simpleTableColumn, item: GroupConfigEntity) => {
       rowClick(row, item)
       callBrige(callFnName.EnableGroupConfig, item.GId).then(() => {
-        window.$message.success('操作成功')
+        window.$message.success(t('config.operationSuccess'))
         // getData()
         getSysConfig()
-        dialog.create({ title: '提示', content: '应用新分组记得重新配置配方', positiveText: '确定' })
+        dialog.create({ title: t('config.prompt'), content: t('config.remind'), positiveText: t('config.confirm') })
       })
     }
     const addClick = (item: GroupConfigEntity) => {
       configStore.setDataGroupAddFromShow(true)
 
     }
+    const coloumns = ref<simpleTableColumn[]>([
+      {
+        label: t('config.groupName'), prop: 'GroupName', flex: 3, btnFn: () => { }, isInput: true,
+        inputUpdateFn: (col, item) => {
+          console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
+          if (item) {
+            configStore.setCurGroupConfigRow(item)
+            updateRow({ GroupName: curRow.value!.GroupName })
+          }
+        }
+      },
+      {
+        label: '', prop: 'op', btnText: t('config.apply2'), flex: 1, btnFn: enableClcik, mapFn: (col: any, item: any) => {
+          return item.GId == curEnabledDataGroupId.value ? t('config.applied') : t('config.apply2')
+        }
+      },
+    ])
     const alldata = reactive({
       form: {},
       curDialogIns: null as DialogReactive | null,
       curConnectRefType: null,
       data: [] as GroupConfigEntity[],
-      coloumns: [
-        {
-          label: '分组名称', prop: 'GroupName', flex: 3, btnFn: () => { }, isInput: true,
-          inputUpdateFn: (col, item) => {
-            console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
-            if (item) {
-              configStore.setCurGroupConfigRow(item)
-              updateRow({ GroupName: curRow.value!.GroupName })
-            }
-          }
-        },
-        //   label: '备注', prop: 'Note', flex: 3, isInput: true,
-        //   inputUpdateFn: (col, item) => {
-        //     if (item) {
-        //       configStore.setCurGroupConfigRow(item)
-        //       updateRow({ Note: curRow.value!.Note })
-        //     }
-        //   }
-        // },
-        // { label: '设备集合', prop: 'DeviceIds', flex: 3, btnText: "查看", btnFn: devClick },
-
-        // { label: '地址集合', prop: 'AddressIds', flex: 3, btnText: "查看", btnFn: adressClick },
-
-        // {
-        //   label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
-        //     // configStore.setAddressFormShow(true)
-        //     rowClick(col, item)
-        //   }
-        // },
-        {
-          label: '', prop: 'op', btnText: '应用', flex: 1, btnFn: enableClcik, mapFn: (col: any, item: any) => {
-            return item.GId == curEnabledDataGroupId.value ? '已应用' : '应用'
-          }
-        },
-        // { label: '', prop: 'op1', btnText: '删除', flex: 1, btnFn: deleteClick, btnType: 'danger' },
-      ] as simpleTableColumn[],
     })
 
     const getData = () => {
@@ -138,7 +121,7 @@ export default defineComponent({
       callBrige(callFnName.SaveGroupConfig, data).then((res: any[]) => {
         // console.log("🪵 [index.tsx:11] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
         getData()
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         // otherData.showConnectComForm = false
       })
     }
@@ -150,6 +133,10 @@ export default defineComponent({
     }, {
       immediate: true
     })
+    watch(() => i18nStore.langChangeCount, () => {
+      coloumns.value[0].label = t('config.groupName')
+      coloumns.value[1].btnText = t('config.apply2')
+    })
 
 
     return () => {
@@ -157,7 +144,7 @@ export default defineComponent({
         <div class={'w-full h-full  overflow-x-hidden -top-5 px-4 pr-2 text-lg bg-[#f5f6f6]'} style={{
           height: 'calc(100vh - 200px)'
         }}>
-          {/* <SimpleTable dat={alldata.data} col={alldata.coloumns} /> */}
+          {/* <SimpleTable dat={alldata.data} col={coloumns.value} /> */}
           <div class={'w-full h-full flex ' + classNames({
             'flex-col': !store.isLandscape
           })}
@@ -171,7 +158,7 @@ export default defineComponent({
                     addClick,
                     () => { },
                     deleteClick
-                  ]} isSmallPadding={true} dat={alldata.data} col={alldata.coloumns} />
+                  ]} isSmallPadding={true} dat={alldata.data} col={coloumns.value} />
 
               </div>
             </div>

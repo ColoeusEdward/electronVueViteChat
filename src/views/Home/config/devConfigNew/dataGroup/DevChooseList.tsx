@@ -1,4 +1,5 @@
 import { useConfigStore } from "@/store/config";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { DialogReactive, NButton, NSpace, NTag, useDialog } from "naive-ui";
 import { computed, defineComponent, reactive, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
@@ -13,18 +14,19 @@ export default defineComponent({
   name: 'DevChooseList',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const alldata = reactive({
       curDialogIns: null as DialogReactive | null,
       data: [],
       coloumns: [
-        { label: '设备名称', prop: 'Name', flex: 2, },
+        { label: t('config.deviceName'), prop: 'Name', flex: 2, },
       ] as simpleTableColumn[],
       form: {} as { DeviceIds: string[] },
       itemList: [
         {
-          type: 'checkbox', label: '设备勾选', prop: "DeviceIds", width: 24, checkboxList: [
+          type: 'checkbox', label: t('config.deviceCheck'), prop: "DeviceIds", width: 24, checkboxList: [
             // { label: 'Modbus Tcp Client', value: 'Modbus Tcp Client' },
           ], rule: ['mustArr']
         },
@@ -66,7 +68,7 @@ export default defineComponent({
           initDevChooseList()
           // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
           alldata.curDialogIns = dialog.create({
-            title: '查看设备',
+            title: t('config.viewDevice'),
             content: () => {
               return <div class={'min-h-[170px] max-h-[700px] overflow-auto'}>
                 {/* <MyFormWrap ref={myFormRef} optionMap={{}} hideBtn={true} form={alldata.form} itemList={alldata.itemList}></MyFormWrap> */}
@@ -84,15 +86,15 @@ export default defineComponent({
             style: { width: '800px', minHeight: '200px', },
             action: () => {
               return <div class={'flex justify-around items-center w-full'}>
-                <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>取消</NButton>
+                <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>
                 {/* <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
                   // console.log("🪵 [ConForm.tsx:65] ~ token ~ \x1b[0;myFormRef.value\x1b[0m = ", myFormRef.value!);
                   myFormRef.value?.submit(submit)
                 }}>确定</NButton> */}
               </div>
             },
-            positiveText: '确定',
-            negativeText: '取消',
+            positiveText: t('config.confirm'),
+            negativeText: t('config.cancel'),
             onPositiveClick: () => {
               hideForm()
             },

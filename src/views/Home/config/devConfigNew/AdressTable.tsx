@@ -10,6 +10,7 @@ import { DataClassEnum, DataClassNameMap, DeviceClassNameMap, ParamClassEnum, Pa
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { useConfigStore } from "@/store/config";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { AlarmTypeNameList, UnilateralNameList } from "../dataCofigNew/enum";
 import AdressForm from "./AdressForm";
 
@@ -41,6 +42,7 @@ export default defineComponent({
   setup(props, ctx) {
     const show = computed(() => props.show)
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
 
@@ -49,7 +51,7 @@ export default defineComponent({
     }
     const deleteClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       callBrige(callFnName.DeleteDataAddress, item.GId).then(() => {
-        window.$message.success('删除成功')
+        window.$message.success(t('config.deleteSuccess'))
         getData()
       })
     }
@@ -61,7 +63,7 @@ export default defineComponent({
     const stateClick = (row: simpleTableColumn, item: DataAddressEntity) => {
       rowClick(row, item)
       callBrige(callFnName.SaveDataAddress, item).then((res: any) => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         getData()
       })
     }
@@ -76,19 +78,19 @@ export default defineComponent({
       curConnectRefType: null,
       data: [] as DataAddressEntity[],
       coloumns: [
-        { label: '数据名', prop: 'Name', flex: 2, },
+        { label: t('config.dataName'), prop: 'Name', flex: 2, },
         // { label: '数据分类', prop: 'DeviceClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DeviceClassNameMap[item.DeviceClass] } },
         // { label: '数据类型', prop: 'DataClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return DataClassNameMap[item.DataClass] } },
         // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return ParamClassNameMap[item.ParamClass] } },
         // { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return UnilateralNameList[item.Unilateral] } },
         // // { label: '报警类型', prop: 'AlarmType', flex: 2, mapFn: (col: any, item: DataAddressEntity) => { return AlarmTypeNameList[item.AlarmType] } },
         // // { label: '从站地址', prop: 'SlaveId', flex: 1, },
-        { label: '读写权限', prop: 'Permission', flex: 1, mapFn: (col: any, item: DataAddressEntity) => { return PermissionNameList[item.Permission] } },
+        { label: t('config.readWritePermission'), prop: 'Permission', flex: 1, mapFn: (col: any, item: DataAddressEntity) => { return PermissionNameList[item.Permission] } },
         // { label: '精度', prop: 'Precision', flex: 1 },
         // { label: '单位', prop: 'Unit', flex: 1  },
         {
-          label: '状态', prop: 'State', flex: 1, isSwitch: true, btnFn: stateClick,
-          mapFn: (col: any, item: DataAddressEntity) => { return item.State == 1 ? '启用' : '禁用' }
+          label: t('config.status'), prop: 'State', flex: 1, isSwitch: true, btnFn: stateClick,
+          mapFn: (col: any, item: DataAddressEntity) => { return item.State == 1 ? t('config.enabled') : t('config.disabled') }
         },
         // {
         //   label: '', prop: 'op', btnText: '编辑', flex: 1, btnFn: (col: any, item: any) => {
@@ -132,6 +134,12 @@ export default defineComponent({
       }
     }, {
       immediate: true
+    })
+
+    watch(() => i18nStore.langChangeCount, () => {
+      alldata.coloumns[0].label = t('config.dataName')
+      alldata.coloumns[1].label = t('config.readWritePermission')
+      alldata.coloumns[2].label = t('config.status')
     })
 
     return () => {

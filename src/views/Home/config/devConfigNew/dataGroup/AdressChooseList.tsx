@@ -1,4 +1,5 @@
 import { useConfigStore } from "@/store/config";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { DialogReactive, NButton, NSpace, NTab, NTag, useDialog } from "naive-ui";
 import { computed, defineComponent, reactive, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
@@ -15,18 +16,19 @@ export default defineComponent({
   name: 'AdressChooseList',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
     const myFormRef = ref<MyFormWrapIns>()
     const alldata = reactive({
       curDialogIns: null as DialogReactive | null,
       data: [],
       coloumns: [
-        { label: '设备名称', prop: 'Name', flex: 2, },
+        { label: t('config.deviceName'), prop: 'Name', flex: 2, },
       ] as simpleTableColumn[],
       form: {} as { AddressIds: string[] },
       itemList: [
         {
-          type: 'checkbox', label: '地址勾选', prop: "AddressIds", width: 24, checkboxList: [
+          type: 'checkbox', label: t('config.addressCheck'), prop: "AddressIds", width: 24, checkboxList: [
             // { label: 'Modbus Tcp Client', value: 'Modbus Tcp Client' },
           ], rule: ['mustArr']
         },

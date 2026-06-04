@@ -206,7 +206,15 @@
     "format": "Format",
     "confirmDeleteRule": "Confirm delete?",
     "moveUp": "Move Up",
-    "moveDown": "Move Down"
+    "moveDown": "Move Down",
+    "disabled": "Disabled",
+    "back": "Back",
+    "select": "Select",
+    "area": "Area",
+    "selected": "Selected",
+    "deviceCheck": "Device Check",
+    "viewDevice": "View Device",
+    "addressCheck": "Address Check"
   },
   "home": {
     "welcome": "Hello!"

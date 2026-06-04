@@ -9,6 +9,7 @@ import { callFnName } from "@/utils/enum";
 import { commonMap2 } from "@/views/Home/config/proto/proto";
 import { commonFormItemListMap, propNameEnum } from "@/views/Home/config/devConfig/enum";
 import { DataClassNameMap } from "../../../enum";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export type ConnectFormIns = {
   myFormRef: Ref<MyFormWrapIns>,
@@ -31,6 +32,7 @@ export default defineComponent({
     const dialog = useDialog()
     // const show = computed(() => props.show)
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const myFormRef = ref<MyFormWrapIns>()
     const curRow = computed(() => configStore.curDevDataGroupRow)
     const changeShow = () => {
@@ -93,7 +95,7 @@ export default defineComponent({
       // data.AddressString = JSON.stringify(subItem)
 
       callBrige(callFnName.SaveDataGroup, data).then((res: any) => {
-        window.$message.success('保存成功')
+        window.$message.success(t('config.saveSuccess'))
         configStore.setDevDataGroupAddressFormShow(false)
         // if (!isAdressAddMore.value) {
         //   configStore.setAddressFormShow(false)

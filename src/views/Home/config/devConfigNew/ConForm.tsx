@@ -6,6 +6,7 @@ import { DeviceConfigEntity } from "~/me";
 import ConnectComForm, { ConnectFormIns } from "./connect/ConnectComForm";
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import ConnectTcpForm from "./connect/ConnectTcpForm";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'ConForm  ',
@@ -19,6 +20,7 @@ export default defineComponent({
   setup(props, ctx) {
     const show = computed(() => props.show)
     const dialog = useDialog()
+    const { t, i18nStore } = useMyI18n()
     const myFormRef = ref<MyFormWrapIns>()
     const alldata = reactive({
       form: {},
@@ -50,7 +52,7 @@ export default defineComponent({
       if (v) {
         // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
         alldata.curDialogIns = dialog.create({
-          title: '连接配置',
+          title: t('config.connectionConfiguration'),
           content: () => {
             return <div class={'min-h-[170px]'}>
               {/* <MyFormWrap ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap> */}
@@ -65,15 +67,15 @@ export default defineComponent({
           style: { width: '800px', minHeight: '200px', },
           action: () => {
             return <div class={'flex justify-around items-center w-full'}>
-              <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.updateShowFn && props.updateShowFn(false) }}>取消</NButton>
+              <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.updateShowFn && props.updateShowFn(false) }}>{t('config.cancel')}</NButton>
               <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
                 // console.log("🪵 [ConForm.tsx:65] ~ token ~ \x1b[0;myFormRef.value\x1b[0m = ", myFormRef.value!);
                 myFormRef.value?.submit(submit)
-              }}>确定</NButton>
+              }}>{t('config.confirm')}</NButton>
             </div>
           },
-          positiveText: '确定',
-          negativeText: '取消',
+          positiveText: t('config.confirm'),
+          negativeText: t('config.cancel'),
           onPositiveClick: () => {
             props.updateShowFn && props.updateShowFn(false)
           },
