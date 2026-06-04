@@ -762,4 +762,4 @@ interface simpleTableColumn {
   fixWidth?: number //百分比
 }
 
-type MyLangStr = 'zh-CN' | 'en-US' 
+type MyLangStr = 'zh-CN' | 'en-US' | 'vi-VN' | 'es-ES'

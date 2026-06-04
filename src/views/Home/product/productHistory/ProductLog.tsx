@@ -5,6 +5,7 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { NButton, NDatePicker, NInput, NSelect, NSpace, useMessage } from "naive-ui";
 import { computed, defineComponent, reactive, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ProductLogEntity, } from "~/me";
 import { LogTypeMap } from "./enum";
 import { useProductHistoryInnerDataStore } from "./innerData";
@@ -13,6 +14,7 @@ export default defineComponent({
   name: 'ProductLog',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const innerData = useProductHistoryInnerDataStore()
     const msg = useMessage()
     const cancel = () => {
@@ -27,13 +29,13 @@ export default defineComponent({
         // ,render: (row: ProductLogEntity) => {
         //   return LogTypeMap[row.LogType]
         // }
-        { key: 'ProductNo', title: '产品编号', resizable: true },
-        { key: 'LogType', title: '日志类型', resizable: true },
-        { key: 'LogOption', title: '日志选项', resizable: true },
-        { key: 'LogDetail', title: '日志详细', resizable: true },
-        { key: 'Length', title: '当前米数', resizable: true },
-        { key: 'Operator', title: '操作员', resizable: true },
-        { key: 'CreateTime', title: '创建时间', resizable: true },
+        { key: 'ProductNo', title: t('config.spoolNumber'), resizable: true },
+        { key: 'LogType', title: t('config.logType'), resizable: true },
+        { key: 'LogOption', title: t('config.logOption'), resizable: true },
+        { key: 'LogDetail', title: t('config.logDetail'), resizable: true },
+        { key: 'Length', title: t('config.currentLength'), resizable: true },
+        { key: 'Operator', title: t('config.operator'), resizable: true },
+        { key: 'CreateTime', title: t('config.createTime'), resizable: true },
       ],
       tdata: [] as ProductLogEntity[],
       rowProps: (row: ProductLogEntity) => {
@@ -86,6 +88,17 @@ export default defineComponent({
     }
     watch(() => innerData.curRow, (val) => {
       val && getTableData()
+    })
+
+    // 语言切换时更新 tableCfg 中的标题
+    watch(() => i18nStore.langChangeCount, () => {
+      tableCfg.columns[1].title = t('config.spoolNumber')
+      tableCfg.columns[2].title = t('config.logType')
+      tableCfg.columns[3].title = t('config.logOption')
+      tableCfg.columns[4].title = t('config.logDetail')
+      tableCfg.columns[5].title = t('config.currentLength')
+      tableCfg.columns[6].title = t('config.operator')
+      tableCfg.columns[7].title = t('config.createTime')
     })
 
     // getTableData()

@@ -46,7 +46,7 @@ export default defineComponent({
 
     // 语言切换时更新 tableCfg 中的标题
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         tableCfg.columns[1].title = t('config.sortPosition')
         tableCfg.columns[2].title = t('config.fieldType')
         tableCfg.columns[3].title = t('config.format')

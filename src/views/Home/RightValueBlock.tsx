@@ -79,7 +79,8 @@ export const ValueRow = defineComponent({
       stand: defStandValList.map(e => ({ ...e })),
       timeIns: null as ReturnType<typeof setInterval> | null,
       tol: { up: 0, down: 0 }, //上下公差
-      menuShow: true
+      menuShow: true,
+      langChangeCount: i18nStore.langChangeCount
     })
     const pdata = computed(() => props.data)
     // const curOption = ref<MenuOption>()
@@ -101,12 +102,17 @@ export const ValueRow = defineComponent({
       })
     }
 
-    watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+    watch(() => i18nStore.langChangeCount, (v) => {
+      sleep(500).then(() => {
         initTextData()
+
         alldata.stand.forEach((e, i) => e.title = defStandValList[i].title)
+        alldata.langChangeCount = v
+
       })
 
+    }, {
+      immediate: true
     })
 
 
@@ -202,10 +208,10 @@ export const ValueRow = defineComponent({
     const standVal = computed(() => {
       // data.value.stand[curStandIdx.value].value
       // console.log("🪵 [RightValueBlock.tsx:169] ~ token ~ \x1b[0;32mdata.value.stand[curStandIdx.value].value\x1b[0m = ", data.value.stand);
-      let _ = i18nStore.langChangeCount
+      let _ = alldata.langChangeCount
 
       let val = alldata.stand[curStandIdx.value].value || 0
-      console.log("🪵 [RightValueBlock.tsx:204] ~ token ~ \x1b[0;32malldata.stand\x1b[0m = ", alldata.stand);
+      // console.log("🪵 [RightValueBlock.tsx:204] ~ token ~ \x1b[0;32malldata.stand\x1b[0m = ", alldata.stand);
       let res = alldata.stand[curStandIdx.value].title + ' : ' + val.toFixed(props.data?.Precision || 3)
       return res
     })

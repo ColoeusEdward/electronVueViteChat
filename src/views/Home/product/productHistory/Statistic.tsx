@@ -4,6 +4,7 @@ import { callSpc } from "@/utils/call";
 import { callFnName } from "@/utils/enum";
 import { useMessage } from "naive-ui";
 import { defineComponent, reactive, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ProductStatisticEntity } from "~/me";
 import { useProductHistoryInnerDataStore } from "./innerData";
 
@@ -11,6 +12,7 @@ export default defineComponent({
   name: 'Statistic',  //线轴统计数据
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const innerData = useProductHistoryInnerDataStore()
     const msg = useMessage()
     const cancel = () => {
@@ -26,15 +28,15 @@ export default defineComponent({
         //   return LogTypeMap[row.LogType]
         // }
         // { key: 'ProductNo', title: '产品编号', resizable: true },
-        { key: 'Name', title: '名称', resizable: true },
-        { key: 'Unit', title: '单位', resizable: true },
-        { key: 'Standard', title: '标准值', resizable: true },
-        { key: 'USL', title: '上限', resizable: true },
-        { key: 'LSL', title: '下限', resizable: true },
-        { key: 'Average', title: '平均值', resizable: true },
-        { key: 'Max', title: '最大值', resizable: true },
-        { key: 'Min', title: '最小值', resizable: true },
-        { key: 'StdDeviation', title: '标准差', resizable: true },
+        { key: 'Name', title: t('config.name'), resizable: true },
+        { key: 'Unit', title: t('config.unit'), resizable: true },
+        { key: 'Standard', title: t('data.standard2'), resizable: true },
+        { key: 'USL', title: t('data.limitHeight'), resizable: true },
+        { key: 'LSL', title: t('data.limitLow'), resizable: true },
+        { key: 'Average', title: t('data.average'), resizable: true },
+        { key: 'Max', title: t('data.max'), resizable: true },
+        { key: 'Min', title: t('data.min'), resizable: true },
+        { key: 'StdDeviation', title: t('data.standardDeviation'), resizable: true },
         { key: 'Ca', title: 'CA', resizable: true },
         { key: 'Cp', title: 'CP', resizable: true },
         { key: 'Cpk', title: 'CPK', resizable: true },
@@ -91,6 +93,19 @@ export default defineComponent({
     }
     watch(() => innerData.curRow, (val) => {
       val && getTableData()
+    })
+
+    // 语言切换时更新 tableCfg 中的标题
+    watch(() => i18nStore.langChangeCount, () => {
+      tableCfg.columns[1].title = t('config.name')
+      tableCfg.columns[2].title = t('config.unit')
+      tableCfg.columns[3].title = t('data.standard2')
+      tableCfg.columns[4].title = t('data.limitHeight')
+      tableCfg.columns[5].title = t('data.limitLow')
+      tableCfg.columns[6].title = t('data.average')
+      tableCfg.columns[7].title = t('data.max')
+      tableCfg.columns[8].title = t('data.min')
+      tableCfg.columns[9].title = t('data.standardDeviation')
     })
 
     // getTableData()

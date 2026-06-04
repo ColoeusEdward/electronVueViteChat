@@ -278,7 +278,17 @@
     "noRefresh": "No Refresh",
     "autoRefresh": "Auto Refresh",
     "probability": "Probability",
-    "count": "Count"
+    "count": "Count",
+    "logType": "Log Type",
+    "logOption": "Log Option",
+    "logDetail": "Log Detail",
+    "currentLength": "Current Length",
+    "createTime": "Create Time",
+    "operation": "Operation",
+    "startCollect": "Start Collect",
+    "stopCollect": "Stop Collect",
+    "exceedUpper": "Exceed Upper",
+    "exceedLower": "Exceed Lower"
   },
   "home": {
     "welcome": "Hello!"

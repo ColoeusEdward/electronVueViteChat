@@ -146,7 +146,7 @@ export default defineComponent({
       immediate: true
     })
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         // 刷新 DeviceClassNameMap 的国际化文本
         refreshDevConfigNewEnums()
         coloumns.value[0].label = t('config.deviceName')

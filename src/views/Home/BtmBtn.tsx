@@ -250,6 +250,8 @@ export default defineComponent({
               children: [
                 { label: '简体中文', key: 'lang-' + 'zh-CN' },
                 { label: 'English', key: 'lang-' + 'en-US' },
+                { label: 'Tiếng Việt', key: 'lang-' + 'vi-VN' },
+                { label: 'Español', key: 'lang-' + 'es-ES' },
               ]
             },
             { label: t('menu.exit'), key: 'shutdown' },

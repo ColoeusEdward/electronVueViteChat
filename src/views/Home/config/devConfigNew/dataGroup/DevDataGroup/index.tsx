@@ -180,7 +180,7 @@ export default defineComponent({
       immediate: true
     })
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         alldata.coloumns[0].label = t('config.dataName')
         alldata.coloumns[1].label = t('config.dataType')
         alldata.coloumns[2].label = t('config.unit')

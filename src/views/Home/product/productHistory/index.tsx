@@ -7,7 +7,8 @@ import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
 import { NButton, NDatePicker, NDivider, NInput, NSelect, NSpace, NTabPane, NTabs, useMessage } from "naive-ui";
-import { computed, defineComponent, reactive } from "vue";
+import { computed, defineComponent, reactive, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ProductHistoryEntity } from "~/me";
 import { useProductHistoryInnerDataStore } from "./innerData";
 import activeImg from '@/assets/LineDspButton_inactive.png'
@@ -18,6 +19,7 @@ export default defineComponent({
   name: 'ProductHistory',
   setup(props, ctx) {
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const store = useMain()
     const innerData = useProductHistoryInnerDataStore()
     const msg = useMessage()
@@ -54,23 +56,23 @@ export default defineComponent({
         //   type: 'selection',
         //   multiple: false,
         // },
-        { key: 'ProductNo', title: '线轴编号', resizable: true, align: 'center' },
-        { key: 'PN', title: '线材型号', resizable: true },
+        { key: 'ProductNo', title: t('config.spoolNumber'), resizable: true, align: 'center' },
+        { key: 'PN', title: t('config.wireModel'), resizable: true },
         // { key: 'Note', title: '物料注释', resizable: true },
-        { key: 'StartTime', title: '开始时间', resizable: true },
-        { key: 'EndTime', title: '结束时间', resizable: true },
-        { key: 'Operator', title: '操作员', resizable: true },
-        { key: 'ExcelPath', title: 'Excel导出路径', resizable: true, },
-        { key: 'PdfPath', title: 'PDF导出路径', resizable: true },
+        { key: 'StartTime', title: t('config.startTime'), resizable: true },
+        { key: 'EndTime', title: t('config.endTime'), resizable: true },
+        { key: 'Operator', title: t('config.operator'), resizable: true },
+        { key: 'ExcelPath', title: t('config.excelExportPath'), resizable: true, },
+        { key: 'PdfPath', title: t('config.pdfExportPath'), resizable: true },
         {
-          key: 'op', title: '其他', resizable: true, render: (row: ProductHistoryEntity) => {
+          key: 'op', title: t('config.other'), resizable: true, render: (row: ProductHistoryEntity) => {
             return (
               <NSpace justify="center">
                 <div class={'border border-solid border-gray-500 p-1 text-lg cursor-pointer'} onClick={() => { jumpStatic(row) }} >
-                  统计数据
+                  {t('config.statisticalData')}
                 </div>
                 <div class={'border border-solid border-gray-500 p-1 text-lg cursor-pointer'} onClick={() => { jumpLog(row) }}>
-                  产品日志
+                  {t('config.productLog')}
                 </div>
               </NSpace>
             )
@@ -127,7 +129,7 @@ export default defineComponent({
       callBrige(callFnName.GetProductHistorys, [data.startTime, data.endTime, commonData.filterText], true).then((res: ProductHistoryEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
         if (res.length == 0) {
-          msg.warning('暂无数据')
+          msg.warning(t('config.noData'))
         }
         tableCfg.tdata = res
       })
@@ -137,6 +139,19 @@ export default defineComponent({
       // curTabValue.value = value
       alldata.curTabValue = value
     }
+
+    // 语言切换时更新 tableCfg 中的标题
+    watch(() => i18nStore.langChangeCount, () => {
+      tableCfg.columns[0].title = t('config.spoolNumber')
+      tableCfg.columns[1].title = t('config.wireModel')
+      tableCfg.columns[2].title = t('config.startTime')
+      tableCfg.columns[3].title = t('config.endTime')
+      tableCfg.columns[4].title = t('config.operator')
+      tableCfg.columns[5].title = t('config.excelExportPath')
+      tableCfg.columns[6].title = t('config.pdfExportPath')
+      tableCfg.columns[7].title = t('config.other')
+    })
+
     // getTableData()
 
 
@@ -144,7 +159,7 @@ export default defineComponent({
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-[#f5f6f6] overflow-hidden'}>
           <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
-            <NTabPane displayDirective="show:lazy" name={"product"} tab="产品历史" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'product' ? alldata.activeStyle : {} } }}>
+            <NTabPane displayDirective="show:lazy" name={"product"} tab={t('config.productHistory')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'product' ? alldata.activeStyle : {} } }}>
               <div class={' h-full shrink '}>
                 {/* <SysConfig /> */}
                 <div class={classNames('flex-shrink flex h-full w-full', { 'flex-col': !store.isLandscape })}>
@@ -152,10 +167,10 @@ export default defineComponent({
                     <div class={'p-3'}>
                       <NSpace>
                         <NSelect class={'w-32'} v-model:value={commonData.selectProps} options={commonData.selectOpt}></NSelect>
-                        <NInput v-model:value={commonData.filterText} placeholder={`请输入`} clearable ></NInput>
+                        <NInput v-model:value={commonData.filterText} placeholder={t('config.pleaseInput')} clearable ></NInput>
 
                         <NDatePicker v-model:value={commonData.range} type="daterange" clearable />
-                        <NButton secondary strong={true} type="primary" size={'medium'} class={' w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => { getTableData(true) }}>查询</NButton>
+                        <NButton secondary strong={true} type="primary" size={'medium'} class={' w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => { getTableData(true) }}>{t('config.query')}</NButton>
                       </NSpace>
                     </div>
                     <div class={'flex-shrink'}>
@@ -180,10 +195,10 @@ export default defineComponent({
                 </div>
               </div>
             </NTabPane>
-            <NTabPane displayDirective="show:lazy" name={"statistic"} tab="统计数据" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'statistic' ? alldata.activeStyle : {} } }}>
+            <NTabPane displayDirective="show:lazy" name={"statistic"} tab={t('config.statisticalData')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'statistic' ? alldata.activeStyle : {} } }}>
 
             </NTabPane>
-            <NTabPane displayDirective="show:lazy" name={"productLog"} tab="产品日志" tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'productLog' ? alldata.activeStyle : {} } }}>
+            <NTabPane displayDirective="show:lazy" name={"productLog"} tab={t('config.productLog')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'productLog' ? alldata.activeStyle : {} } }}>
 
             </NTabPane>
 

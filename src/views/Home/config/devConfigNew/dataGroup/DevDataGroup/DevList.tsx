@@ -113,7 +113,7 @@ export default defineComponent({
     }
 
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         alldata.coloumns[0].label = t('config.deviceName')
         alldata.coloumns[1].label = t('config.deviceType')
         alldata.coloumns[2].btnText = t('config.select')

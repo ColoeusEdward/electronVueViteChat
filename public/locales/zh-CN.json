@@ -278,7 +278,17 @@
     "noRefresh": "不刷新",
     "autoRefresh": "自动刷新",
     "probability": "概率",
-    "count": "计数"
+    "count": "计数",
+    "logType": "日志类型",
+    "logOption": "日志选项",
+    "logDetail": "日志详细",
+    "currentLength": "当前米数",
+    "createTime": "创建时间",
+    "operation": "操作",
+    "startCollect": "开始采集",
+    "stopCollect": "停止采集",
+    "exceedUpper": "超过上限",
+    "exceedLower": "超过下限"
   },
   "home": {
     "welcome": "欢迎！"

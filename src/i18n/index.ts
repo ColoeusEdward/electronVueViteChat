@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n'
 import { ref } from 'vue'
 
 // 支持的语言列表
-export const SUPPORTED_LOCALES = ['zh-CN', 'en-US'] as const
+export const SUPPORTED_LOCALES = ['zh-CN', 'en-US', 'vi-VN', 'es-ES'] as const
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number]
 
 // 当前语言

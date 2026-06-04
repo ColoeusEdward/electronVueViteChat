@@ -51,7 +51,7 @@ export default defineComponent({
 
     // 语言切换时更新 formCfg 中的标签
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         formCfg.itemList[0].label = t('config.fieldType')
         formCfg.itemList[1].label = t('config.format')
         formCfg.saveText = t('config.add')

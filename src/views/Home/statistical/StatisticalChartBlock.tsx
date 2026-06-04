@@ -348,7 +348,7 @@ export default defineComponent({
 
     // 语言切换时重新初始化图表
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         initEchart()
         if (alldata.curDisItem) {
           setChartData(alldata.curDisItem)

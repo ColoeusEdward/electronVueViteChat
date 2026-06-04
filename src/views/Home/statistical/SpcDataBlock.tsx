@@ -56,7 +56,7 @@ export default defineComponent({
 
     // 语言切换时更新 spcLabelList 中的标签
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         spcLabelList[0].label = t('data.average')
         spcLabelList[1].label = t('data.limitLow')
         spcLabelList[2].label = t('data.standardDeviation')
