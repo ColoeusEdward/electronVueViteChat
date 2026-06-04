@@ -357,12 +357,15 @@ export default defineComponent({
             </div> */}
           </div>
           {
-            chartShow.value && <div class={'w-full h-full shrink flex justify-center items-center'} id="ecc-con">
-              <div id="ecc-chart" class={'w-full h-full aspect-square max-w-full max-h-full'}
-                style={{
-                  height: alldata.chartHeight + 'px',
-                  width: alldata.chartHeight + 'px'
-                }} ></div>
+            <div class={'w-full h-full shrink flex justify-center items-end'} id="ecc-con">
+              {
+                chartShow.value && <div id="ecc-chart" class={'w-full h-full aspect-square max-w-full max-h-full'}
+                  style={{
+                    height: alldata.chartHeight + 'px',
+                    width: alldata.chartHeight + 'px'
+                  }} ></div>
+              }
+
             </div>
           }
           {/* <MenuBtn /> */}

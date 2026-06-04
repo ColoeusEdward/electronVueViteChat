@@ -33,7 +33,8 @@
     "realTimeData": "实时数据",
     "menu": "菜单",
     "shape": "外形",
-    "notSupportShape": "该数据不支持绘制外形"
+    "notSupportShape": "该数据不支持绘制外形",
+    "chooseData": "选择数据"
   },
   "data": {
     "averageLine": "平均线径",

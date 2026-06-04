@@ -27,6 +27,7 @@ import { usei18nStore } from "@/store/i18n";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import Ecc from "../ecc";
 import { DeviceClassEnum, DeviceClassHasShapeList, DeviceClassNameMap } from "../config/devConfigNew/enum";
+import LineShape from "../LineShape";
 
 let defCfgData: DataConfigEntity[] = [
   {
@@ -644,6 +645,12 @@ export default defineComponent({
             chartType.value == 1 && curChartDeviceType.value == DeviceClassEnum.Ecc &&
             <div class={'h-full shrink mt-2 overflow-visible relative '}  >
               <Ecc />
+            </div>
+          }
+          {
+            chartType.value == 1 && curChartDeviceType.value == DeviceClassEnum.OD &&
+            <div class={'h-full shrink mt-2 overflow-visible relative '}  >
+              <LineShape />
             </div>
           }
           {curDataType.value == DataTypeEnum.FFT && <FFT />}
