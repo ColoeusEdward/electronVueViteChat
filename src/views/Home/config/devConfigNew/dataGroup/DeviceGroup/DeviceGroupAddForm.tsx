@@ -5,7 +5,7 @@ import { useConfigStore } from "@/store/config";
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { deviceClassOptions } from "../../enum";
+import { deviceClassOptions, refreshDeviceClassOptions } from "../../enum";
 import { useMyI18n } from "@/hooks/useMyI18n";
 // import { } from "./enum";
 // import { defaultConnectComModel } from "../devConfig/enum";
@@ -56,6 +56,8 @@ export default defineComponent({
       console.log("🪵 [DeviceGroupAddForm.tsx:49] ~ token ~ \x1b[0;32mv\x1b[0m = ", v);
 
       if (v) {
+        // 刷新 deviceClassOptions 的国际化文本
+        refreshDeviceClassOptions()
         // connectStr.value && (alldata.form = JSON.parse(connectStr.value))
         alldata.curDialogIns = dialog.create({
           title: t('config.addDevice'),

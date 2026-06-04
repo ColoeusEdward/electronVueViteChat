@@ -758,7 +758,8 @@ interface simpleTableColumn {
   isSelect?: boolean,
   isRadio?: boolean,
   selectOption?: { label: string, value: string | number }[],
-  selectChangeFn?: (row: any, item: any) => void
+  selectChangeFn?: (row: any, item: any) => void,
+  fixWidth?: number //百分比
 }
 
 type MyLangStr = 'zh-CN' | 'en-US' 

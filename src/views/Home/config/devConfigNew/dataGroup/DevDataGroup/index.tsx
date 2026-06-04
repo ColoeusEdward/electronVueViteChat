@@ -12,6 +12,7 @@ import { DataClassNameMap, dataClassOptions, DeviceClassEnum, DeviceClassNameMap
 import AdressFromCon from "./AdressFromCon";
 import DevList from "./DevList";
 import { useMyI18n } from "@/hooks/useMyI18n";
+import { sleep } from "@/utils/utils";
 
 export default defineComponent({
   name: 'DevDataGroup',
@@ -85,7 +86,7 @@ export default defineComponent({
       data: [] as DataGroupEntity[],
       coloumns: [
         {
-          label: t('config.dataName'), prop: 'DataName', flex: 2, btnFn: () => { }, isInput: true,
+          label: t('config.dataName'), prop: 'DataName', flex: 1, btnFn: () => { }, isInput: true,
           inputUpdateFn: (col, item) => {
             console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32m otherData.curRow\x1b[0m = ", curRow.value);
             if (item) {
@@ -94,7 +95,7 @@ export default defineComponent({
             }
           }
         },
-        { label: t('config.dataType'), prop: 'DataClass', flex: 2, isSelect: true, selectOption: [], btnFn: dataClassSelect, },
+        { label: t('config.dataType'), prop: 'DataClass', flex: 2, fixWidth: 32, isSelect: true, selectOption: [], btnFn: dataClassSelect, },
         // { label: '参数类型', prop: 'ParamClass', flex: 2, mapFn: (col: any, item: DataGroupEntity) => { return ParamClassNameMap[item.ParamClass!] } },
         // { label: '是否单边数据', prop: 'Unilateral', flex: 2, mapFn: (col: any, item: DataGroupEntity) => { return UnilateralNameList[item.Unilateral!] } },
         // { label: '精度', prop: 'Precision', flex: 1, },
@@ -178,11 +179,14 @@ export default defineComponent({
     }, {
       immediate: true
     })
-    watch(() => i18nStore.locale, () => {
-      alldata.coloumns[0].label = t('config.dataName')
-      alldata.coloumns[1].label = t('config.dataType')
-      alldata.coloumns[2].label = t('config.unit')
-      alldata.coloumns[3].label = t('config.status')
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        alldata.coloumns[0].label = t('config.dataName')
+        alldata.coloumns[1].label = t('config.dataType')
+        alldata.coloumns[2].label = t('config.unit')
+        alldata.coloumns[3].label = t('config.status')
+      })
+
     })
 
     return () => {

@@ -15,6 +15,7 @@ import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'StatisticalChartBlock',
@@ -35,6 +36,7 @@ export default defineComponent({
     const trendStore = useTrendStore()
     const staticalStore = useStatisticalStore()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const paramItem = computed(() => {
       return configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.dataSourceItem?.GId)
     })
@@ -154,7 +156,7 @@ export default defineComponent({
         },
         yAxis: [{
           type: 'value',
-          name: '概率',
+          name: t('config.probability'),
           // max: function (value: any) {
           //   return value.max + 1
           // },
@@ -171,7 +173,7 @@ export default defineComponent({
         },
         {
           type: 'value',
-          name: '计数',
+          name: t('config.count'),
           // max: function (value: any) {
           //   return value.max + 1
           // },
@@ -217,22 +219,22 @@ export default defineComponent({
             },
             data: [
               {
-                name: '下限',
+                name: t('data.limitLow'),
                 xAxis: lowValue, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
                 // label: { formatter: '下限' + ` (${lowValue})` }
-                label: { formatter: '下限' }
+                label: { formatter: t('data.limitLow') }
               },
               {
-                name: '标准值',
+                name: t('data.standard2'),
                 xAxis: paramItem.value?.Standard, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
                 // label: { formatter: '标准值' + ` (${paramItem.value?.Standard})` },
-                label: { formatter: '标准值' },
+                label: { formatter: t('data.standard2') },
                 lineStyle: { color: 'green' },
               },
               {
-                name: '上限',
+                name: t('data.limitHeight'),
                 xAxis: upValue, // 对应 xAxis 数据里的值
-                label: { formatter: '上限' }
+                label: { formatter: t('data.limitHeight') }
                 // label: { formatter: '上限' + ` (${upValue})` }
               }
             ]
@@ -343,6 +345,17 @@ export default defineComponent({
     watch(conHW, () => {
       myChart && myChart.resize()
     })
+
+    // 语言切换时重新初始化图表
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        initEchart()
+        if (alldata.curDisItem) {
+          setChartData(alldata.curDisItem)
+        }
+      })
+    })
+
     onMounted(() => {
       // setTimeout(() => {
 

@@ -8,7 +8,7 @@ import { DataGroupEntity, DeviceConfigEntity, DeviceGroupEntity, DataAddressEnti
 import { DataClassEnum, DataClassNameMap, DeviceClassNameMap, ParamClassNameMap } from "../../enum";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { AreaList, DataTypeList } from "../../../devConfig/enum";
+import { AreaList, DataTypeList, refreshAreaList, refreshDataTypeList } from "../../../devConfig/enum";
 import { ajaxPromiseAll, sleep } from "@/utils/utils";
 import { useMyI18n } from "@/hooks/useMyI18n";
 
@@ -125,6 +125,13 @@ export default defineComponent({
     })
     watch(devDataGroupDevListShow, (val) => {
       if (val) {
+        // 刷新 AreaList 和 DataTypeList 的国际化文本
+        refreshAreaList()
+        refreshDataTypeList()
+        // 更新 adressColoumns 的 mapFn 以使用最新的翻译
+        alldata.adressColoumns[1].mapFn = (col: any, item: DataAddressEntity) => { return AreaList.find(a => a.value == item.adressItem?.Area)?.label! }
+        alldata.adressColoumns[2].mapFn = (col: any, item: DataAddressEntity) => { return DataTypeList.find(a => a.value == item.adressItem?.DataType)?.label! }
+
         alldata.curDev = null
         getDevList()
         getCurDataClass()
@@ -138,19 +145,23 @@ export default defineComponent({
                   alldata.curDev && <NButton style={{ width: '160px', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { backDevChoose() }}>{t('config.back')}</NButton>
                 }
               </div>
-              {
-                //@ts-ignore
-                !alldata.curDev ? <SimpleTable
-                  originMode={true} dat={alldata.data} col={alldata.coloumns}></SimpleTable>
-                  :
+              <div class={' max-h-[530px] h-full overflow-auto'}>
+                {
                   //@ts-ignore
-                  <SimpleTable originMode={true} dat={alldata.adressData} col={alldata.adressColoumns}></SimpleTable>
-              }
+                  !alldata.curDev ? <SimpleTable
+                    isSmallPadding={true}
+                    originMode={true} dat={alldata.data} col={alldata.coloumns}></SimpleTable>
+                    :
+                    //@ts-ignore
+                    <SimpleTable originMode={true} isSmallPadding={true} dat={alldata.adressData} col={alldata.adressColoumns}></SimpleTable>
+                }
+              </div>
+
 
             </div>
           },
           maskClosable: false,
-          style: { width: '800px', minHeight: '200px', },
+          style: { width: '840px', minHeight: '200px', },
           action: () => {
             return <div class={'flex justify-around items-center w-full'}>
               <NButton style={{ width: '45%', height: '40px', fontSize: '24px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>

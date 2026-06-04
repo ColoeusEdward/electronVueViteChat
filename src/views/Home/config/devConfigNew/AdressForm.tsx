@@ -79,7 +79,7 @@ export default defineComponent({
               {getAdressForm(curDevRow.value?.DriverName || '')}
             </div>
           },
-          style: { width: '800px', minHeight: '200px', },
+          style: { width: '900px', minHeight: '200px', },
           action: () => {
             return <div class={'flex justify-around items-center w-full'}>
               <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { hideForm() }}>{t('config.cancel')}</NButton>

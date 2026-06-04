@@ -1,8 +1,8 @@
 
 import { formListItem } from "@/components/MyFormWrap/MyFormWrap";
-import { AlarmTypeList, limitRadioList, UnilateralList } from "../dataCofigNew/enum";
-import { AreaList, DataTypeList, propNameEnum } from "../devConfig/enum";
-import { dataClassOptions, deviceClassOptions, paramClassOptions } from "../devConfigNew/enum";
+import { AlarmTypeList, limitRadioList, UnilateralList, refreshDataCofigNewEnums } from "../dataCofigNew/enum";
+import { AreaList, DataTypeList, propNameEnum, refreshAreaList, refreshDataTypeList } from "../devConfig/enum";
+import { dataClassOptions, deviceClassOptions, paramClassOptions, refreshDataClassOptions, refreshDeviceClassOptions, refreshParamClassOptions } from "../devConfigNew/enum";
 export const commonLHpostion32 = ['3412', '1234', '2143', '4321']
 export const commonLHpostionStr = ['12', '21']
 export const commonBaudrate = ["4800", "9600", "19200", "38400", "57600", "115200"]
@@ -265,3 +265,25 @@ const proto: Record<string, typeof ModbusTCPMaster> = {
 }
 
 export default proto
+
+// 刷新 commonMap2 的国际化文本
+export const refreshCommonMap2 = () => {
+  // 刷新各个枚举的国际化文本
+  refreshDeviceClassOptions()
+  refreshDataClassOptions()
+  refreshParamClassOptions()
+  refreshDataCofigNewEnums()
+  refreshAreaList()
+  refreshDataTypeList()
+
+  // 更新 commonMap2 中的引用
+  commonMap2[propNameEnum.DeviceClass] = deviceClassOptions
+  commonMap2[propNameEnum.DataClass] = dataClassOptions
+  commonMap2[propNameEnum.ParamClass] = paramClassOptions
+  commonMap2[propNameEnum.Unilateral] = UnilateralList
+  commonMap2[propNameEnum.AlarmType] = AlarmTypeList
+  commonMap2[propNameEnum.Permission] = limitRadioList
+  commonMap2[propNameEnum.Exchange] = DataTypeList
+  commonMap2[propNameEnum.DataType] = DataTypeList
+  commonMap2[propNameEnum.Area] = AreaList
+}

@@ -1,4 +1,7 @@
 import { DataConfigEntity } from "~/me";
+import i18n from "@/i18n";
+
+const t = i18n.global.t
 
 export const categoryClassObj: Record<string, string> = {
   "Value": "数据值",
@@ -54,28 +57,34 @@ export const dataTypeEnumList = DataTypeEnumKeyList.slice(0, DataTypeEnumKeyList
     value: Number(e)
   }
 })
-export const UnilateralNameList = ['标准', '没有下偏差', '没有上偏差']
-export const UnilateralList = UnilateralNameList.map((e, i) => {
+export const getUnilateralNameList = () => [t('config.standard'), t('config.noLowerDeviation'), t('config.noUpperDeviation')]
+export const UnilateralNameList = getUnilateralNameList()
+export const getUnilateralList = () => getUnilateralNameList().map((e, i) => {
   return {
     label: e,
     value: i
   }
 })
-export const AlarmTypeNameList = ['离散点', '上升沿', '下降沿']
-export const AlarmTypeList = AlarmTypeNameList.map((e, i) => {
+export const UnilateralList = getUnilateralList()
+export const getAlarmTypeNameList = () => [t('config.discretePoint'), t('config.risingEdge'), t('config.fallingEdge')]
+export const AlarmTypeNameList = getAlarmTypeNameList()
+export const getAlarmTypeList = () => getAlarmTypeNameList().map((e, i) => {
   return {
     label: e,
     value: i
   }
 })
+export const AlarmTypeList = getAlarmTypeList()
 
-export const limitList = ['只读', '只写', '读写']
-export const limitRadioList = limitList.map((e, i) => {
+export const getLimitList = () => [t('config.readOnly'), t('config.writeOnly'), t('config.readWrite')]
+export const limitList = getLimitList()
+export const getLimitRadioList = () => getLimitList().map((e, i) => {
   return {
     label: e,
     value: i
   }
 })
+export const limitRadioList = getLimitRadioList()
 
 export const defaultDataConfigForm: DataConfigEntity = {
   State: 0,
@@ -87,4 +96,37 @@ export const defaultDataConfigForm: DataConfigEntity = {
   Precision: 0,
   DataType: 1,
   Distance: 0
+}
+
+// 刷新所有国际化文本的函数
+export const refreshDataCofigNewEnums = () => {
+  // 刷新 UnilateralNameList
+  const newUnilateralNameList = getUnilateralNameList()
+  UnilateralNameList.length = 0
+  UnilateralNameList.push(...newUnilateralNameList)
+
+  // 刷新 UnilateralList
+  const newUnilateralList = getUnilateralList()
+  UnilateralList.length = 0
+  UnilateralList.push(...newUnilateralList)
+
+  // 刷新 AlarmTypeNameList
+  const newAlarmTypeNameList = getAlarmTypeNameList()
+  AlarmTypeNameList.length = 0
+  AlarmTypeNameList.push(...newAlarmTypeNameList)
+
+  // 刷新 AlarmTypeList
+  const newAlarmTypeList = getAlarmTypeList()
+  AlarmTypeList.length = 0
+  AlarmTypeList.push(...newAlarmTypeList)
+
+  // 刷新 limitList
+  const newLimitList = getLimitList()
+  limitList.length = 0
+  limitList.push(...newLimitList)
+
+  // 刷新 limitRadioList
+  const newLimitRadioList = getLimitRadioList()
+  limitRadioList.length = 0
+  limitRadioList.push(...newLimitRadioList)
 }

@@ -1,4 +1,7 @@
 import { ConnectComModel } from "~/me";
+import i18n from "@/i18n";
+
+const t = i18n.global.t
 
 export const tabNameEnum = {
   devConfigNew: 'devConfigNew',
@@ -107,47 +110,51 @@ export enum ParamClassEnum {
   Ltol = 4,
 }
 
-export const DeviceClassNameMap: Record<number, string> = {
-  [DeviceClassEnum.OD]: '线径仪',
-  [DeviceClassEnum.Cap]: '电容仪',
-  [DeviceClassEnum.Ecc]: '偏心仪',
-  [DeviceClassEnum.Con]: '凹凸仪',
-  [DeviceClassEnum.Meter]: '计米',
-  [DeviceClassEnum.Control]: '控制',
-  [DeviceClassEnum.Alarm]: '报警',
-};
+export const getDeviceClassNameMap = (): Record<number, string> => ({
+  [DeviceClassEnum.OD]: t('config.diameterGauge'),
+  [DeviceClassEnum.Cap]: t('config.capacitanceMeter'),
+  [DeviceClassEnum.Ecc]: t('config.eccentricityGauge'),
+  [DeviceClassEnum.Con]: t('config.convexConcaveGauge'),
+  [DeviceClassEnum.Meter]: t('config.meter'),
+  [DeviceClassEnum.Control]: t('config.control'),
+  [DeviceClassEnum.Alarm]: t('config.alarm'),
+})
+export const DeviceClassNameMap: Record<number, string> = getDeviceClassNameMap()
 
-export const DataClassNameMap: Record<number, string> = {
-  [DataClassEnum.OD]: '平均线径',
-  [DataClassEnum.ODX]: '线径X',
-  [DataClassEnum.ODY]: '线径Y',
-  [DataClassEnum.OVAL]: '椭圆',
-  [DataClassEnum.CAP]: '电容',
-  [DataClassEnum.ECC]: '偏心度',
-  [DataClassEnum.ANGLE]: '偏心角',
-  [DataClassEnum.CONCEN]: '同心度',
-  [DataClassEnum.CON]: '凹凸总数',
-  [DataClassEnum.CUOD]: '导体线径',
-  [DataClassEnum.CONC]: '凹计数',
-  [DataClassEnum.CONV]: '凸计数',
-  [DataClassEnum.LENGTH]: '计米',
-  [DataClassEnum.LSPEED]: '线速',
-  [DataClassEnum.SWITCH]: '开关',
-  [DataClassEnum.SHAFT]: '换轴',
-  [DataClassEnum.CLEAR]: '清零',
-  [DataClassEnum.START]: '启动',
-  [DataClassEnum.STOP]: '停止',
-};
+export const getDataClassNameMap = (): Record<number, string> => ({
+  [DataClassEnum.OD]: t('config.averageDiameter'),
+  [DataClassEnum.ODX]: t('config.diameterX'),
+  [DataClassEnum.ODY]: t('config.diameterY'),
+  [DataClassEnum.OVAL]: t('config.ellipse'),
+  [DataClassEnum.CAP]: t('config.capacitance'),
+  [DataClassEnum.ECC]: t('config.eccentricity'),
+  [DataClassEnum.ANGLE]: t('config.eccentricityAngle'),
+  [DataClassEnum.CONCEN]: t('config.concentricity'),
+  [DataClassEnum.CON]: t('config.convexConcaveTotal'),
+  [DataClassEnum.CUOD]: t('config.conductorDiameter'),
+  [DataClassEnum.CONC]: t('config.concaveCount'),
+  [DataClassEnum.CONV]: t('config.convexCount'),
+  [DataClassEnum.LENGTH]: t('config.meter'),
+  [DataClassEnum.LSPEED]: t('config.lineSpeed'),
+  [DataClassEnum.SWITCH]: t('config.switch'),
+  [DataClassEnum.SHAFT]: t('menu.switchShaft'),
+  [DataClassEnum.CLEAR]: t('config.clear'),
+  [DataClassEnum.START]: t('menu.start'),
+  [DataClassEnum.STOP]: t('menu.stop'),
+})
+export const DataClassNameMap: Record<number, string> = getDataClassNameMap()
 
-export const ParamClassNameMap: Record<number, string> = {
-  [ParamClassEnum.Value]: '实际值',
-  [ParamClassEnum.Std]: '设定值',
-  [ParamClassEnum.Tol]: '公差',
-  [ParamClassEnum.Utol]: '上公差',
-  [ParamClassEnum.Ltol]: '下公差',
-};
+export const getParamClassNameMap = (): Record<number, string> => ({
+  [ParamClassEnum.Value]: t('config.actualValue'),
+  [ParamClassEnum.Std]: t('config.setValue'),
+  [ParamClassEnum.Tol]: t('data.tolerance'),
+  [ParamClassEnum.Utol]: t('data.toleranceUp'),
+  [ParamClassEnum.Ltol]: t('data.toleranceDwon'),
+})
+export const ParamClassNameMap: Record<number, string> = getParamClassNameMap()
 // export const UnilateralNameList = ['否', '没有下偏差', '没有上偏差']
-export const PermissionNameList = ['只读', '只写', '读写']
+export const getPermissionNameList = () => [t('config.readOnly'), t('config.writeOnly'), t('config.readWrite')]
+export const PermissionNameList = getPermissionNameList()
 
 export const deviceClassOptions = Object.keys(DeviceClassEnum)
   .filter((key) => isNaN(Number(key))) // 过滤掉数字键，只保留字符串定义的 Key
@@ -172,6 +179,62 @@ export const dataClassOptions = Object.keys(DataClassEnum)
     label: DataClassNameMap[DataClassEnum[key as keyof typeof DataClassEnum]],
     value: DataClassEnum[key as keyof typeof DataClassEnum],
   }));
+
+// 刷新所有国际化文本的函数
+export const refreshDevConfigNewEnums = () => {
+  // 刷新 DeviceClassNameMap
+  const newDeviceClassNameMap = getDeviceClassNameMap()
+  Object.keys(newDeviceClassNameMap).forEach(key => {
+    DeviceClassNameMap[Number(key)] = newDeviceClassNameMap[Number(key)]
+  })
+
+  // 刷新 DataClassNameMap
+  const newDataClassNameMap = getDataClassNameMap()
+  Object.keys(newDataClassNameMap).forEach(key => {
+    DataClassNameMap[Number(key)] = newDataClassNameMap[Number(key)]
+  })
+
+  // 刷新 ParamClassNameMap
+  const newParamClassNameMap = getParamClassNameMap()
+  Object.keys(newParamClassNameMap).forEach(key => {
+    ParamClassNameMap[Number(key)] = newParamClassNameMap[Number(key)]
+  })
+
+  // 刷新 PermissionNameList
+  const newPermissionNameList = getPermissionNameList()
+  PermissionNameList.length = 0
+  PermissionNameList.push(...newPermissionNameList)
+}
+
+// 刷新 deviceClassOptions
+export const refreshDeviceClassOptions = () => {
+  const newMap = getDeviceClassNameMap()
+  deviceClassOptions.forEach(item => {
+    if (newMap[item.value] !== undefined) {
+      item.label = newMap[item.value]
+    }
+  })
+}
+
+// 刷新 paramClassOptions
+export const refreshParamClassOptions = () => {
+  const newMap = getParamClassNameMap()
+  paramClassOptions.forEach(item => {
+    if (newMap[item.value] !== undefined) {
+      item.label = newMap[item.value]
+    }
+  })
+}
+
+// 刷新 dataClassOptions
+export const refreshDataClassOptions = () => {
+  const newDataClassNameMap = getDataClassNameMap()
+  dataClassOptions.forEach(item => {
+    if (newDataClassNameMap[item.value] !== undefined) {
+      item.label = newDataClassNameMap[item.value]
+    }
+  })
+}
 
 
 // export const defConnectComForm: ConnectComModel = {

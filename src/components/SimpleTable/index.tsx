@@ -3,6 +3,7 @@ import { NButton, NCheckbox, NPopconfirm, NSelect, NSwitch } from "naive-ui";
 import { computed, defineComponent, PropType, reactive, StyleValue, watch } from "vue";
 import { simpleTableColumn } from "~/me";
 import SimpleRadio from "../SimpleRadio";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 let defData = [{
   interface: 'Serial',
@@ -71,6 +72,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const { t, i18nStore } = useMyI18n()
     // 1. 定义列配置 (label: 标题, prop: 数据键名, flex: 宽度权重)
     const columns = computed(() => {
       let list: simpleTableColumn[] = props.col || defCol
@@ -108,7 +110,8 @@ export default defineComponent({
         justifyContent: 'center',
         minHeight: '30px',
         fontSize: '22px',
-        width: '100%'
+        width: '100%',
+        flexShrink: 0
       },
       cellIsChoose: {
         // backgroundColor: 'transparent',
@@ -155,7 +158,7 @@ export default defineComponent({
                   }
                   {columns.value.map((col, i) => {
                     let res = (
-                      <div key={col.prop} class={classNames('z-50', { 'invisible': item.isNewRow && i != 0 })} style={{
+                      <div key={col.prop} class={classNames('z-50 shrink-0', { 'invisible': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell,
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
                       }} onClick={() => {
@@ -176,7 +179,7 @@ export default defineComponent({
                           onClick={() => {
                             col.btnFn && col.btnFn(col, item)
                           }}
-                          class={classNames('bg-transparent', { 'invisible': item.isNewRow && i != 0, })}
+                          class={classNames('bg-transparent  shrink-0', { 'invisible': item.isNewRow && i != 0, })}
                           key={col.prop}
                           onChange={(e: any) => {
                             item[col.prop] = e.target.value
@@ -184,6 +187,7 @@ export default defineComponent({
                           }} style={{
                             flex: col.flex, ...styles.cell,
                             textAlign: 'center',
+                            width: col.fixWidth ? `${col.fixWidth}%` : '100%',
                             ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
                           }} value={buildContent(col)} />
                       )
@@ -192,11 +196,11 @@ export default defineComponent({
                       res = <NPopconfirm placement="right" title=""
                         v-slots={{
                           default: () => {
-                            return <div>确定吗?</div>
+                            return <div>{t('config.confirmDelete')}</div>
                           },
                           trigger: () => {
                             return <div
-                              class={classNames({ 'invisible': item.isNewRow && i != 0 })}
+                              class={classNames({ 'invisible  shrink-0': item.isNewRow && i != 0 })}
                               key={col.prop} style={{
                                 flex: col.flex,
                                 ...styles.cell,
@@ -218,7 +222,7 @@ export default defineComponent({
                     }
                     if (col.isSwitch) {
                       let text = col.mapFn && col.mapFn(col, item)
-                      res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{
+                      res = <div key={col.prop} class={classNames(' shrink-0', { 'invisible ': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell,
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
                       }}>
@@ -231,7 +235,7 @@ export default defineComponent({
                     }
 
                     if (col.isRadio) {
-                      res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{
+                      res = <div key={col.prop} class={classNames(' shrink-0', { 'invisible': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell, backgroundColor: !!item[col.prop] ? '#456e9c' : '#fff', color: !!item[col.prop] ? '#fff' : '#333',
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
                       }} onClick={() => { col.btnFn && col.btnFn(col, item) }}>
@@ -241,10 +245,10 @@ export default defineComponent({
 
                     if (col.isSelect) {
                       // let text = col.mapFn && col.mapFn(col, item)
-                      res = <div key={col.prop} class={classNames({ 'invisible': item.isNewRow && i != 0 })} style={{
+                      res = <div key={col.prop} class={classNames(' shrink-0', { 'invisible': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell, padding: '0', border: 'none',
-                        ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
-
+                        ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {}),
+                        width: col.fixWidth ? `${col.fixWidth}%` : '100%',
                       }}> <NSelect style={{ height: '100%' }} v-model:value={item[col.prop]} size="large" onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} options={col.selectOption} ></NSelect>
                       </div>
                     }
@@ -280,7 +284,7 @@ export default defineComponent({
                   let fn = props.addAndEditAndDelFn[0];
                   fn && fn({}, alldata.curRow)
                 }}>
-                新增
+                {t('config.add')}
               </span>
             }
 
@@ -288,13 +292,13 @@ export default defineComponent({
               !!props.btnShowList[1] && <span class={'w-[22%] max-w-[120px] text-center mr-2  py-2  bg-white text-black border border-gray-500 border-solid'}
                 onClick={() => {
                   if (!alldata.curRow) {
-                    window.$message.error('请选择一行')
+                    window.$message.error(t('config.pleaseSelectOneRow'))
                     return
                   }
                   let fn = props.addAndEditAndDelFn[1];
                   fn && fn({}, alldata.curRow)
                 }}>
-                编辑
+                {t('config.edit')}
               </span>
             }
 
@@ -302,17 +306,17 @@ export default defineComponent({
               !!props.btnShowList[2] && <NPopconfirm placement="right" title=""
                 v-slots={{
                   default: () => {
-                    return <div>确定吗?</div>
+                    return <div>{t('config.confirmDelete')}</div>
                   },
                   trigger: () => {
                     return <span class={'w-[22%] max-w-[120px] text-center mr-2  py-2  bg-white text-black border border-gray-500 border-solid'}>
-                      删除
+                      {t('config.delete')}
                     </span>
                   }
                 }}
                 onPositiveClick={() => {
                   if (!alldata.curRow) {
-                    window.$message.error('请选择一行')
+                    window.$message.error(t('config.pleaseSelectOneRow'))
                     return
                   }
                   let fn = props.addAndEditAndDelFn[2];
@@ -331,8 +335,8 @@ export default defineComponent({
               }}
 
                 v-slots={{
-                  checked: () => { return <div >表格编辑</div> },
-                  unchecked: () => { return <div class={'text-black'}>表格编辑</div> }
+                  checked: () => { return <div >{t('config.tableEdit')}</div> },
+                  unchecked: () => { return <div class={'text-black'}>{t('config.tableEdit')}</div> }
                 }}
                 size='large'
               ></NSwitch>

@@ -1,6 +1,9 @@
 import { NTable, NTbody } from "naive-ui";
-import { defineComponent, onBeforeUnmount, PropType, reactive, watch } from "vue";
+import { computed, defineComponent, onBeforeUnmount, PropType, reactive, watch } from "vue";
 import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
+import { useMyI18n } from "@/hooks/useMyI18n";
+import { sleep } from "@/utils/utils";
+import { useMain } from "@/store";
 
 export default defineComponent({
   name: 'SpcDataBlock',
@@ -9,18 +12,20 @@ export default defineComponent({
     adressItem: Object as PropType<DataGroupEntity>
   },
   setup(props, ctx) {
+    const { t, i18nStore, locale } = useMyI18n()
+    const store = useMain()
     const spcLabelList: { label: string, key: string, value?: any, noUnit?: boolean }[] = [
-      { label: '平均值', key: 'Avg' },
-      { label: '下限', key: 'Lsl' },
-      { label: '标准偏差', key: 'Sigma' },
-      { label: '标称值', key: 'Std' },
-      { label: '最小值', key: 'Min' },
-      { label: '上限', key: 'Usl' },
-      { label: '最大值', key: 'Max' },
+      { label: t('data.average'), key: 'Avg' },
+      { label: t('data.limitLow'), key: 'Lsl' },
+      { label: t('data.standardDeviation'), key: 'Sigma' },
+      { label: t('data.standard'), key: 'Std' },
+      { label: t('data.min'), key: 'Min' },
+      { label: t('data.limitHeight'), key: 'Usl' },
+      { label: t('data.max'), key: 'Max' },
       // { label: 'CP', key: '4', noUnit: true },
       // { label: '分组计数', key: 'Group', noUnit: true },
       // { label: 'CPK', key: '4', noUnit: true },
-      { label: '精准度', key: 'Decimals', noUnit: true },
+      { label: t('config.accuracy'), key: 'Decimals', noUnit: true },
     ]
     const alldata = reactive({
       tableList: [] as typeof spcLabelList[0][][],
@@ -49,6 +54,28 @@ export default defineComponent({
       }
     }, { immediate: true })
 
+    // 语言切换时更新 spcLabelList 中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        spcLabelList[0].label = t('data.average')
+        spcLabelList[1].label = t('data.limitLow')
+        spcLabelList[2].label = t('data.standardDeviation')
+        spcLabelList[3].label = t('data.standard')
+        spcLabelList[4].label = t('data.min')
+        spcLabelList[5].label = t('data.limitHeight')
+        spcLabelList[6].label = t('data.max')
+        spcLabelList[7].label = t('config.accuracy')
+        // 重新初始化数据以更新显示
+        if (props.dataItem) {
+          initData(props.dataItem)
+        }
+      })
+
+
+    })
+    const valWidth = computed(() => {
+      return locale.value == 'zh-CN' ? 460 : 660
+    })
     onBeforeUnmount(() => {
       alldata.watchInstance()
     })
@@ -67,14 +94,14 @@ export default defineComponent({
       //todo spc值从realtime数据中根据key获取
       return (
         <div class={'flex justify-center px-8 py-1'}>
-          <div class={'w-[460px]'}>
+          <div class={`w-[${valWidth.value}px]`}>
             <NTable bordered={false} singleLine={true} singleColumn={true} size={'small'} style={{ backgroundColor: 'transparent' }} >
               <NTbody>
                 {alldata.tableList.map((list, i) => {
                   return (
                     <tr class={'bg-transparent'} >
                       {list.map((e, i) => {
-                        return [<td style={{ padding: 0, backgroundColor: 'transparent' }}  >{e.label}</td>, <td style={{ padding: 0, backgroundColor: 'transparent' }} class={' text-center bg-transparent'}><span class={'float-left'}>:</span> {`${e.value} ${e.noUnit ? '' : props.adressItem?.Unit}`}</td>]
+                        return [<td style={{ padding: 0, backgroundColor: 'transparent' }}  >{e.label}</td>, <td style={{ padding: 0, backgroundColor: 'transparent', margin: "0 10px" }} class={' text-center bg-transparent'}><span class={'float-left'}>:</span> {`${e.value} ${e.noUnit ? '' : props.adressItem?.Unit}`}</td>]
                       })}
                     </tr>
                   )

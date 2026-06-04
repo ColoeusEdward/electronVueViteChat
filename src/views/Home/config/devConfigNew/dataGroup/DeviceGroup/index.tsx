@@ -9,7 +9,7 @@ import classNames from "classnames";
 import { DialogReactive, NPopconfirm, useDialog } from "naive-ui";
 import { computed, defineComponent, Transition, ref, watch, reactive, onMounted } from "vue";
 import { DeviceGroupEntity, simpleTableColumn } from "~/me";
-import { DeviceClassEnum, DeviceClassNameMap, tabNameEnum } from "../../enum";
+import { DeviceClassEnum, DeviceClassNameMap, tabNameEnum, refreshDevConfigNewEnums } from "../../enum";
 import DeviceGroupAddForm from "./DeviceGroupAddForm";
 import { sleep } from "@/utils/utils";
 
@@ -88,7 +88,7 @@ export default defineComponent({
           }
         }
       },
-      { label: t('config.deviceType'), prop: 'DeviceClass', flex: 3, btnText: "", mapFn: (col: any, item: any) => { return DeviceClassNameMap[item.DeviceClass] }, btnFn: classSelect, isSelect: true, selectOption: Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item })) },
+      { label: t('config.deviceType'), prop: 'DeviceClass', flex: 3,  btnText: "", mapFn: (col: any, item: any) => { return DeviceClassNameMap[item.DeviceClass] }, btnFn: classSelect, isSelect: true, selectOption: Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item })) },
       {
         label: t('config.status'), prop: 'State', flex: 2, isSwitch: true, btnFn: stateClick,
         mapFn: (col: any, item: DeviceGroupEntity) => { return item.State == 1 ? t('config.enabled') : t('config.disabled') }
@@ -147,15 +147,22 @@ export default defineComponent({
     })
     watch(() => i18nStore.langChangeCount, () => {
       sleep(50).then(() => {
+        // 刷新 DeviceClassNameMap 的国际化文本
+        refreshDevConfigNewEnums()
         coloumns.value[0].label = t('config.deviceName')
         coloumns.value[1].label = t('config.deviceType')
         coloumns.value[2].label = t('config.status')
+        // 更新 selectOption 以使用最新的翻译
+        coloumns.value[1].selectOption = Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item }))
       })
-      
+
     })
 
     onMounted(() => {
-        // getData()
+        // 刷新 DeviceClassNameMap 的国际化文本
+        refreshDevConfigNewEnums()
+        // 更新 coloumns 的 selectOption 以使用最新的翻译
+        coloumns.value[1].selectOption = Object.keys(DeviceClassNameMap).map((item: any) => ({ label: DeviceClassNameMap[item], value: item }))
     })
 
     return () => {

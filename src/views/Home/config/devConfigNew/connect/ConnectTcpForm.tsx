@@ -2,9 +2,9 @@ import { DialogReactive, NButton, SelectProps, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, onUpdated, reactive, Ref, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
-import { commonMap2 } from "../../proto/proto";
+import { commonMap2, refreshCommonMap2 } from "../../proto/proto";
 import { ConnectComModel } from "~/me";
-import { commonFormItemListMap, propNameEnum } from "../../devConfig/enum";
+import { commonFormItemListMap, propNameEnum, refreshCommonFormItemListMap } from "../../devConfig/enum";
 
 export type ConnectFormIns = {
   myFormRef: Ref<MyFormWrapIns>,
@@ -137,6 +137,24 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      // 刷新 commonMap2 和 commonFormItemListMap 的国际化文本
+      refreshCommonMap2()
+      refreshCommonFormItemListMap()
+      // 更新 optionMap 以使用最新的翻译后的选项
+      Object.keys(commonMap2).forEach(key => {
+        optionMap[key] = commonMap2[key]
+      })
+      // 重新构建 itemList 以获取最新的翻译标签
+      itemList.value = [
+        commonFormItemListMap[propNameEnum.Host],
+        commonFormItemListMap[propNameEnum.Port],
+        commonFormItemListMap[propNameEnum.SlaveId],
+        commonFormItemListMap[propNameEnum.Cycle],
+        commonFormItemListMap[propNameEnum.Timeout],
+        commonFormItemListMap[propNameEnum.Endian32bit],
+        commonFormItemListMap[propNameEnum.Endian16bit],
+        commonFormItemListMap[propNameEnum.EndianString],
+      ]
       props.getFormRefFn && props.getFormRefFn(myFormRef)
     })
 

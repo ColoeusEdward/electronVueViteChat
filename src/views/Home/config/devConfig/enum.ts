@@ -2,10 +2,14 @@ import { formListItem } from "@/components/MyFormWrap/MyFormWrap"
 import { generateUUID } from "@/utils/utils"
 import { ConnectComModel, ConnectFFTModel, ConnectSiemensModel, ConnectSikoraComModel, ConnectSikoraTcpModel, ConnectTcpModel, ConnectZumbachComModel, ConnectZumbachTcpModel, DriverAddressType, DriverConnectType, DriverInfo, ModbusAddressModel } from "~/me"
 import { useDevCfgInnerData } from "./innerData"
+import i18n from "@/i18n"
+
+const t = i18n.global.t
+console.log("🪵 [enum.ts:7] ~ token ~ \x1b[0;32mt\x1b[0m = ", "enum执行");
 
 export const adressSubmitFn = (form: DriverAddressType, innerData: ReturnType<typeof useDevCfgInnerData>) => {
   if (!form.Id && !innerData.checkAddressDataListNotSame(form.DataName)) {
-    window.$message.warning('该数据名称已存在')
+    window.$message.warning(t('config.theDataNameAlreadyExists'))
     return
   }
   if (!form.Id) {
@@ -20,10 +24,11 @@ export const adressSubmitFn = (form: DriverAddressType, innerData: ReturnType<ty
   innerData.setAddressCfgFormShow(false)
 }
 
-export const devStateList = [
-  '不可用',
-  '可用',
+export const getDevStateList = () => [
+  t('config.unavailable'),
+  t('config.available'),
 ]
+export const devStateList = getDevStateList()
 
 export const Endian32BitList = [
   '3412',
@@ -36,15 +41,16 @@ export const Endian32BitList = [
 }))
 
 const AreaValueList = [0, 1, 3, 4]
-export const AreaList = [
-  "[0区]线圈状态",
-  "[1区]输入状态",
-  "[3区]输入寄存器",
-  "[4区]保持寄存器"
+export const getAreaList = () => [
+  t('config.coilStatus0'),
+  t('config.inputStatus1'),
+  t('config.inputRegister3'),
+  t('config.holdingRegister4')
 ].map((e, i) => ({
   label: e,
   value: AreaValueList[i]
 }))
+export const AreaList = getAreaList()
 
 export const PortNameList = [
   'COM1', 'COM2', 'COM3', 'COM4',
@@ -60,11 +66,26 @@ export const PlcModelList = [
   value: e
 }))
 
-export const DataTypeList = ["[16位]无符号整数", "[16位]有符号整数", "[32位]无符号整数", "[32位]有符号整数", "[32位]浮点数", "[8位]ASCII字符", "[1位]布尔型"]
+export const getDataTypeList = () => [t('config.unsignedInt16'), t('config.signedInt16'), t('config.unsignedInt32'), t('config.signedInt32'), t('config.float32'), t('config.asciiChar'), t('config.boolean')]
   .map((e, i) => ({
     label: e,
     value: i
   }))
+export const DataTypeList = getDataTypeList()
+
+// 刷新 AreaList 的国际化文本
+export const refreshAreaList = () => {
+  const newList = getAreaList()
+  AreaList.length = 0
+  AreaList.push(...newList)
+}
+
+// 刷新 DataTypeList 的国际化文本
+export const refreshDataTypeList = () => {
+  const newList = getDataTypeList()
+  DataTypeList.length = 0
+  DataTypeList.push(...newList)
+}
 
 export const defaultConnectTcpModel: ConnectTcpModel = {
   Host: `127.0.0.1`,
@@ -134,16 +155,17 @@ export const defaultConnectZumbachTcpModel: ConnectZumbachTcpModel = {
   ReadBuffSize: 11,
   Split: '0D 0A'
 }
-export const defaultModbusAddressModel: ModbusAddressModel = {
-  Area: "[4区]保持寄存器",
-  DataType: "[16位]无符号整数",
-  ExchangeData: "[32位]浮点数",
+export const getDefaultModbusAddressModel = (): ModbusAddressModel => ({
+  Area: t('config.holdingRegister4'),
+  DataType: t('config.unsignedInt16'),
+  ExchangeData: t('config.float32'),
   EndianBit: "",
   Index: 0,
   Length: 1,
   CountFormula: "",
   DataName: ""
-}
+})
+export const defaultModbusAddressModel: ModbusAddressModel = getDefaultModbusAddressModel()
 export const defaultData: Record<string, DriverConnectType | DriverAddressType> = {
   defaultConnectTcpModel, defaultModbusAddressModel, defaultConnectFFTModel, defaultConnectSiemensModel
 }
@@ -222,56 +244,56 @@ export enum propNameEnum {
   Exchange = 'Exchange',
   Rate = 'Rate'
 }
-export const propNameMap: Record<string, string> = {
+export const getPropNameMap = (): Record<string, string> => {
+  const map: Record<string, string> = {}
+  map[propNameEnum.Host] = t('config.ipAddress')
+  map[propNameEnum.Port] = t('config.port')
+  map[propNameEnum.SlaveId] = t('config.stationNumber')
+  map[propNameEnum.Endian32bit] = t('config.bit32ByteOrder')
+  map[propNameEnum.Cycle] = t('config.acquisitionPeriod')
+  map[propNameEnum.Timeout] = t('config.communicationTimeout')
+  map[propNameEnum.DataName] = t('config.dataName')
+  map[propNameEnum.Area] = t('config.registerArea')
+  map[propNameEnum.Index] = t('config.startAddress')
+  map[propNameEnum.Length] = t('config.registerCount')
+  map[propNameEnum.DataType] = t('config.dataType')
+  map[propNameEnum.CountFormula] = t('config.dataConversionFormula')
+  map[propNameEnum.ExchangeData] = t('config.transformedType')
+  map[propNameEnum.EndianBit] = t('config.swapDataEndian')
+  map[propNameEnum.Endian16bit] = t('config.bit16ByteOrder')
+  map[propNameEnum.PortName] = t('config.serialPortName')
+  map[propNameEnum.BaudRate] = t('config.baudRate')
+  map[propNameEnum.DataBits] = t('config.dataBits')
+  map[propNameEnum.StopBits] = t('config.stopBits')
+  map[propNameEnum.Parity] = t('config.parity')
+  map[propNameEnum.EndianString] = t('config.stringByteOrder')
+  map[propNameEnum.Frequency] = t('config.frequency')
+  map[propNameEnum.PlcModel] = t('config.plcModel')
+  map[propNameEnum.Slot] = t('config.slot')
+  map[propNameEnum.Rack] = t('config.rack')
+  map[propNameEnum.Address] = t('config.startAddress')
+  map[propNameEnum.Offset] = t('config.dataOffset')
+  map[propNameEnum.CountMark] = t('config.countMark')
+  map[propNameEnum.ReadBuffSize] = t('config.readDataLength')
+  map[propNameEnum.Split] = t('config.delimiter')
+
+  map[propNameEnum.DeviceClass] = t('config.deviceType')
+  map[propNameEnum.DataClass] = t('config.dataType')
+  map[propNameEnum.ParamClass] = t('config.paramType')
+  map[propNameEnum.Unit] = t('config.unit')
+  map[propNameEnum.Precision] = t('config.precision')
+  map[propNameEnum.Unilateral] = t('config.unilateral')
+  map[propNameEnum.AlarmType] = t('config.alarmType')
+  map[propNameEnum.Permission] = t('config.permission')
+  map[propNameEnum.State] = t('config.status')
+
+  map[propNameEnum.Exchange] = t('config.dataConversion')
+  map[propNameEnum.Rate] = t('config.dataMultiplier')
+  map[propNameEnum.Name] = map[propNameEnum.DataName]
+
+  return map
 }
-propNameMap[propNameEnum.Host] = 'IP地址'
-propNameMap[propNameEnum.Port] = '端口'
-propNameMap[propNameEnum.SlaveId] = '站点号'
-propNameMap[propNameEnum.Endian32bit] = '32位高低位'
-propNameMap[propNameEnum.Cycle] = '采集周期'
-propNameMap[propNameEnum.Timeout] = '通讯接口超时'
-propNameMap[propNameEnum.DataName] = '数据名称'
-propNameMap[propNameEnum.Area] = '寄存器区域'
-propNameMap[propNameEnum.Index] = '起始地址'
-propNameMap[propNameEnum.Length] = '寄存器个数'
-propNameMap[propNameEnum.DataType] = '数据类型'
-propNameMap[propNameEnum.CountFormula] = '数据转换公式'
-propNameMap[propNameEnum.ExchangeData] = '变换后的类型'
-propNameMap[propNameEnum.EndianBit] = '交换数据高低位'
-propNameMap[propNameEnum.Endian16bit] = '16位高低位'
-propNameMap[propNameEnum.PortName] = '串口名'
-propNameMap[propNameEnum.BaudRate] = '波特率'
-propNameMap[propNameEnum.DataBits] = '数据位'
-propNameMap[propNameEnum.StopBits] = '停止位'
-propNameMap[propNameEnum.Parity] = '校验位'
-propNameMap[propNameEnum.EndianString] = '字符串高低位'
-propNameMap[propNameEnum.Frequency] = '频率'
-propNameMap[propNameEnum.PlcModel] = 'PLC型号'
-propNameMap[propNameEnum.Slot] = '槽位'
-propNameMap[propNameEnum.Rack] = '机架'
-propNameMap[propNameEnum.Address] = '起始地址'
-propNameMap[propNameEnum.Offset] = '数据偏移量'
-propNameMap[propNameEnum.CountMark] = '计算标志'
-propNameMap[propNameEnum.ReadBuffSize] = '读数据长度'
-propNameMap[propNameEnum.Split] = '分隔符'
-
-propNameMap[propNameEnum.DeviceClass] = '设备类型'
-propNameMap[propNameEnum.DataClass] = '数据类型'
-propNameMap[propNameEnum.ParamClass] = '参数类型'
-propNameMap[propNameEnum.Unit] = '单位'
-propNameMap[propNameEnum.Precision] = '精度'
-propNameMap[propNameEnum.Unilateral] = '单边属性'
-propNameMap[propNameEnum.AlarmType] = '报警类型'
-propNameMap[propNameEnum.Permission] = '权限'
-propNameMap[propNameEnum.State] = '状态'
-
-propNameMap[propNameEnum.Exchange] = '数据转换'
-propNameMap[propNameEnum.Rate] = '数据倍率'
-propNameMap[propNameEnum.Name] = propNameMap[propNameEnum.DataName]
-
-
-// propNameMap[propNameEnum.AddressString] = '地址'
-// propNameMap[propNameEnum.CreateTime] = '创建时间'
+export const propNameMap: Record<string, string> = getPropNameMap()
 
 
 
@@ -326,6 +348,23 @@ commonFormItemListMap[propNameEnum.Unit] = { type: 'input', ...mapLabelAndProp(p
 commonFormItemListMap[propNameEnum.Exchange] = { type: 'select', ...mapLabelAndProp(propNameEnum.Exchange), width: 12, rule: ['mustNum'] }
 commonFormItemListMap[propNameEnum.Rate] = { type: 'input', ...mapLabelAndProp(propNameEnum.Rate), width: 12, rule: ['must'] }
 commonFormItemListMap[propNameEnum.Precision] = { type: 'input', ...mapLabelAndProp(propNameEnum.Precision), width: 12, rule: ['must'] }
+
+// 刷新 propNameMap 和 commonFormItemListMap 的国际化文本
+export const refreshCommonFormItemListMap = () => {
+  // 重新生成 propNameMap
+  const newPropNameMap = getPropNameMap()
+  Object.keys(newPropNameMap).forEach(key => {
+    propNameMap[key] = newPropNameMap[key]
+  })
+
+  // 重新生成 commonFormItemListMap 中的 label
+  Object.keys(commonFormItemListMap).forEach(key => {
+    const item = commonFormItemListMap[key]
+    if (item && propNameMap[key]) {
+      item.label = propNameMap[key]
+    }
+  })
+}
 
 
 

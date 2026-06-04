@@ -70,7 +70,7 @@ export default defineComponent({
 
     // 语言切换时更新 exitChooseList 中的标签
     watch(() => i18nStore.langChangeCount, () => {
-      sleep(50).then(() => {
+      sleep(100).then(() => {
         alldata.exitChooseList[0].label = t('config.exitApplication')
         alldata.exitChooseList[1].label = t('config.restartApplication')
         alldata.exitChooseList[2].label = t('config.shutdown')

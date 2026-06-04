@@ -10,17 +10,12 @@ import niotLogo from '@/assets/login_logos.png';
 import { useConfigStore } from "@/store/config";
 import { buildMenuOpt, sleep } from "@/utils/utils";
 import { useMyI18n } from "@/hooks/useMyI18n";
-const defMenu = [{
-  label: '数据源', key: 'dataSource', children: [
-    { label: '全部清除', key: 'cleanAll' },
-    // { label: '直径1', key: 'diameter1', },
-    // { label: '热外径', key: 'heat', },
-    // { label: '冷外径', key: 'cold', },
-    // { label: '壁厚', key: 'wall', },
-    // { label: '偏心', key: 'ecc', },
-    // { label: '同心度', key: 'concentricity', },
-    // { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+import i18n from "@/i18n";
 
+const t = i18n.global.t
+const defMenu = [{
+  label: () => t('menu.dataSource'), key: 'dataSource', children: [
+    { label: () => t('menu.cleanAll'), key: 'cleanAll' },
   ]
 },]
 
@@ -113,19 +108,19 @@ export default defineComponent({
           e.children.forEach((ee: any, i: number) => {
             if (i > 0 && i < 4) {
               ee.children = [
-                { label: '直径(平均值)', key: ee.key + '-' + 'avg', },
-                { label: '椭圆度', key: ee.key + '-' + 'ellipse', },
-                { label: '直径X(平均值)', key: ee.key + '-' + 'diameterX', },
-                { label: '直径Y(平均值)', key: ee.key + '-' + 'diameterY', },
+                { label: t('config.diameterAvg'), key: ee.key + '-' + 'avg', },
+                { label: t('config.ellipse'), key: ee.key + '-' + 'ellipse', },
+                { label: t('config.diameterXAvg'), key: ee.key + '-' + 'diameterX', },
+                { label: t('config.diameterYAvg'), key: ee.key + '-' + 'diameterY', },
               ]
             }
           })
         }
         if (e.key == 'wall') {
           e.children = [
-            { label: '壁厚(平均值)', key: 'wall-avg', },
-            { label: '壁厚(最大值)', key: 'wall-max', },
-            { label: '壁厚(最小值)', key: 'wall-min', },
+            { label: t('config.wallAvg'), key: 'wall-avg', },
+            { label: t('config.wallMax'), key: 'wall-max', },
+            { label: t('config.wallMin'), key: 'wall-min', },
           ]
         }
         if (e.children) {
@@ -135,22 +130,22 @@ export default defineComponent({
       })
     }
     const originDisplayOption: DropdownProps['options'] = addProp([ //两种显示方式外形和数字显示, 显示方式是针对数字显示的选项
-      { label: '不刷新', key: 'statistical' },
-      { label: '自动刷新', key: 'onlineStatistical' },
+      { label: t('config.noRefresh'), key: 'statistical' },
+      { label: t('config.autoRefresh'), key: 'onlineStatistical' },
     ])
     const displayOption = ref<DropdownProps['options']>(JSON.parse(JSON.stringify(originDisplayOption)))
 
     const originMaintainOption: DropdownProps['options'] = addProp([
       {
-        label: '数据源', key: 'dataSource', children: [
-          { label: '全部清除', key: 'cleanAll' },
-          { label: '直径1', key: 'diameter1', },
-          { label: '热外径', key: 'heat', },
-          { label: '冷外径', key: 'cold', },
-          { label: '壁厚', key: 'wall', },
-          { label: '偏心', key: 'ecc', },
-          { label: '同心度', key: 'concentricity', },
-          { label: '冷电容', key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
+        label: t('menu.dataSource'), key: 'dataSource', children: [
+          { label: t('menu.cleanAll'), key: 'cleanAll' },
+          { label: t('config.diameter1'), key: 'diameter1', },
+          { label: t('config.heatOuterDiameter'), key: 'heat', },
+          { label: t('config.coldOuterDiameter'), key: 'cold', },
+          { label: t('config.wallThickness'), key: 'wall', },
+          { label: t('config.eccentricity'), key: 'ecc', },
+          { label: t('config.concentricity'), key: 'concentricity', },
+          { label: t('config.coldCapacitance'), key: 'coldCap', },   //电容,壁厚只有趋势图,只有平均值, 因此displayoption在选中电容后要隐藏
 
         ]
       },
@@ -159,7 +154,7 @@ export default defineComponent({
 
     const originZoneOption: DropdownProps['options'] = addProp([
       {
-        label: '显示数据', key: 'isShowData',
+        label: t('config.showData'), key: 'isShowData',
       },
       // {
       //   label: '线宽', key: 'lineWidth', children: [
@@ -237,6 +232,37 @@ export default defineComponent({
         commonData.menuShow = true
       })
       return opt
+    })
+
+    // 语言切换时更新静态选项数组
+    watch(() => i18nStore.langChangeCount, () => {
+      // 更新 displayOption
+      //@ts-ignore
+      displayOption.value = addProp([
+        { label: t('config.noRefresh'), key: 'statistical' },
+        { label: t('config.autoRefresh'), key: 'onlineStatistical' },
+      ])
+      // 更新 maintainOption
+      maintainOption.value = addProp([
+        {
+          label: t('menu.dataSource'), key: 'dataSource', children: [
+            { label: t('menu.cleanAll'), key: 'cleanAll' },
+            { label: t('config.diameter1'), key: 'diameter1', },
+            { label: t('config.heatOuterDiameter'), key: 'heat', },
+            { label: t('config.coldOuterDiameter'), key: 'cold', },
+            { label: t('config.wallThickness'), key: 'wall', },
+            { label: t('config.eccentricity'), key: 'ecc', },
+            { label: t('config.concentricity'), key: 'concentricity', },
+            { label: t('config.coldCapacitance'), key: 'coldCap', },
+          ]
+        },
+      ])
+      // 更新 zoneOption
+      zoneOption.value = addProp([
+        {
+          label: t('config.showData'), key: 'isShowData',
+        },
+      ])
     })
     // const { dataSource, displayChart } = storeToRefs(store)
     // watch(dataSource, (nv) => {

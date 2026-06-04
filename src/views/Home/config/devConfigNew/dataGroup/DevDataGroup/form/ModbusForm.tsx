@@ -6,8 +6,8 @@ import { ConnectComModel, DataGroupEntity, ModbusAdressRow, ModbusAdressSubItem 
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { commonMap2 } from "@/views/Home/config/proto/proto";
-import { commonFormItemListMap, propNameEnum } from "@/views/Home/config/devConfig/enum";
+import { commonMap2, refreshCommonMap2 } from "@/views/Home/config/proto/proto";
+import { commonFormItemListMap, propNameEnum, refreshCommonFormItemListMap } from "@/views/Home/config/devConfig/enum";
 import { DataClassNameMap } from "../../../enum";
 import { useMyI18n } from "@/hooks/useMyI18n";
 
@@ -140,6 +140,23 @@ export default defineComponent({
     watch(() => curRow.value, (v) => {
       // console.log("🪵 [index.tsx:44] ~ token ~ \x1b[0;curDevConfigRow\x1b[0m = ", configStore.curDevConfigRow);
       if (v) {
+        refreshCommonMap2()
+        refreshCommonFormItemListMap()
+        // 重新构建 itemList 以获取最新的翻译标签
+        itemList.value = [
+          commonFormItemListMap[propNameEnum.DataName],
+          commonFormItemListMap[propNameEnum.DataClass],
+          commonFormItemListMap[propNameEnum.ParamClass],
+          commonFormItemListMap[propNameEnum.Unilateral],
+          commonFormItemListMap[propNameEnum.AlarmType],
+          commonFormItemListMap[propNameEnum.State],
+          commonFormItemListMap[propNameEnum.Unit],
+          commonFormItemListMap[propNameEnum.Precision],
+        ]
+        // 更新 optionMap 以使用最新的翻译后的选项
+        Object.keys(commonMap2).forEach(key => {
+          optionMap[key] = commonMap2[key]
+        })
         buildCurDataClassOpt()
         // ?.toString() as unknown as number
         alldata.form = { ...v, DataClass: v.DataClass }
@@ -151,6 +168,8 @@ export default defineComponent({
       immediate: true
     })
     onMounted(() => {
+      // 刷新 commonMap2 的国际化文本（包含 commonFormItemListMap）
+
       props.getFormRefFn && props.getFormRefFn(myFormRef)
       props.getSubmitFn && props.getSubmitFn(submit)
     })
