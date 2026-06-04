@@ -11,6 +11,7 @@ import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { DataValue, FormulaParamEntity } from "~/me";
 import classNames from "classnames";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 export default defineComponent({
   name: 'LineShape',
@@ -19,6 +20,7 @@ export default defineComponent({
     let myChart: echarts.ECharts
     const lineShapeStore = useLineShapeStore()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const isLandscape = computed(() => store.isLandscape)
     const alldata = reactive({
       show: true,
@@ -52,6 +54,27 @@ export default defineComponent({
       },
       timeInstance: null as NodeJS.Timer | null,
       chartHeight: 0
+    })
+
+    // 动态获取 datList 的 labels，确保语言切换时能及时刷新
+    const datListLabels = computed(() => {
+      // 依赖 i18nStore.langChangeCount 以在语言切换时重新计算
+      const _ = i18nStore.langChangeCount
+      return {
+        OD: t('data.averageLine') + ':',
+        DiameterX: t('config.diameterX') + ':',
+        DiameterY: t('config.diameterY') + ':'
+      }
+    })
+
+    // 动态获取图例和 series 的 names，确保语言切换时能及时刷新
+    const chartNames = computed(() => {
+      const _ = i18nStore.langChangeCount
+      return {
+        average: t('data.average'),
+        upperLimit: t('data.limitHeight'),
+        lowerLimit: t('data.limitLow')
+      }
     })
 
     const chartShow = computed(() => {
@@ -101,25 +124,25 @@ export default defineComponent({
             fontSize: 20,
             color: '#333'
           },
-          icon: 'path://m0.010277,5.945418l24.979446,0l0,2.109164l-24.979446,0l0,-2.109164z', // 
+          icon: 'path://m0.010277,5.945418l24.979446,0l0,2.109164l-24.979446,0l0,-2.109164z', //
           lineStyle: {
             width: 3             // 【核心】直接在这里定义全局图例线条的粗细！
           },
           data: [
             {
-              name: '平均值',
+              name: chartNames.value.average,
               itemStyle: {
                 color: '#8fdbf8'
               },
             },
             {
-              name: '上限',
+              name: chartNames.value.upperLimit,
               itemStyle: {
                 color: '#00C853'
               },
             },
             {
-              name: '下限',
+              name: chartNames.value.lowerLimit,
               itemStyle: {
                 color: '#FF1744'
               },
@@ -181,7 +204,7 @@ export default defineComponent({
         series: [
           // 天蓝色圆形（基于平均线径）
           {
-            name: '平均值',
+            name: chartNames.value.average,
             type: 'custom',
             renderItem: function (params: any, api: any) {
               let length = alldata.valObj.OD
@@ -231,34 +254,9 @@ export default defineComponent({
             zlevel: -2,
             data: [[0, 0]]
           },
-          // 平均值圆形
-          // {
-          //   // name: '平均值',
-          //   type: 'custom',
-          //   renderItem: function (params: any, api: any) {
-          //     let radius = alldata.valObj.OD / 2
-          //     var size = api.size([radius, radius]);
-          //     return {
-          //       type: 'circle',
-          //       transition: ['shape'],
-          //       shape: {
-          //         cx: api.coord([0, 0])[0],
-          //         cy: api.coord([0, 0])[1],
-          //         r: size[0] / 2
-          //       },
-          //       style: api.style({
-          //         fill: 'none',
-          //         stroke: '#4A90E2',
-          //         lineWidth: 2
-          //       })
-          //     };
-          //   },
-          //   zlevel: -1,
-          //   data: [[0, 0]]
-          // },
           // 上限圆形
           {
-            name: '上限',
+            name: chartNames.value.upperLimit,
             type: 'custom',
             renderItem: function (params: any, api: any) {
               let upperTol = curODParam.value?.UpperTol ? Number(curODParam.value.UpperTol) : 0
@@ -285,7 +283,7 @@ export default defineComponent({
           },
           // 下限圆形
           {
-            name: '下限',
+            name: chartNames.value.lowerLimit,
             type: 'custom',
             renderItem: function (params: any, api: any) {
               let lowerTol = curODParam.value?.LowerTol ? Number(curODParam.value.LowerTol) : 0
@@ -370,6 +368,17 @@ export default defineComponent({
       })
     })
 
+    // 监听语言切换，重新初始化图表
+    watch(() => i18nStore.langChangeCount, () => {
+      if (chartShow.value && myChart) {
+        sleep(50).then(() => {
+          // 重新初始化图表以更新图例和 series 的 name
+          initChart()
+        })
+
+      }
+    })
+
     onMounted(() => {
       getConShortSize()
       sleep(50).then(() => {
@@ -399,7 +408,7 @@ export default defineComponent({
                 {
                   alldata.datList.map((e, i) => {
                     return <div class={'text-lg flex items-center relative'} key={i}>
-                      <span class={'mr-2'}>{e.label}</span>
+                      <span class={'mr-2'}>{datListLabels.value[e.prop as keyof typeof datListLabels.value]}</span>
                       <MenuBtn propName={e.prop} />
                       <span class={'absolute right-2 top-10 text-xl w-[110px] text-center ' + classNames({
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
