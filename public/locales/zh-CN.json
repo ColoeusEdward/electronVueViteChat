@@ -171,7 +171,7 @@
     "dataConversion": "数据转换",
     "dataMultiplier": "数据倍率",
     "dataOffset": "数据偏移量",
-    "ConfigHasrefreshed": "配置已刷新",
+    "configHasRefreshed": "配置已刷新",
     "pleaseSelectOneRow": "请选择一行",
     "operationFailed": "操作失败",
     "theDataNameAlreadyExists": "该数据名称已存在",

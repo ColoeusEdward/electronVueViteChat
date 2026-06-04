@@ -171,7 +171,25 @@
     "dataConversion": "Data Conversion",
     "dataMultiplier": "Data Multiplier",
     "dataOffset": "Data Offset",
-    "ConfigHasrefreshed": "Config Has Refreshed"
+    "configHasRefreshed": "Config Has Refreshed",
+    "pleaseSelectOneRow": "Please Select One Row",
+    "operationFailed": "Operation Failed",
+    "theDataNameAlreadyExists": "The Data Name Already Exists",
+    "saveSuccess": "Save Success",
+    "deleteSuccess": "Delete Success",
+    "cannotDeleteAppliedGroup": "Cannot Delete Applied Group",
+    "operationSuccess": "Operation Success",
+    "applicationSuccess": "Application Success",
+    "pleaseSelectTheRecipeToBeDeleted": "Please Select The Recipe To Be Deleted",
+    "pleaseEnterTheActivationCode": "Please Enter The Activation Code",
+    "activationSuccess": "Activation Success",
+    "pleaseStartAcquisition": "Please Start Acquisition First",
+    "prompt": "Prompt",
+    "addDevice": "Add Device",
+    "continueAdd": "Continue Add",
+    "remind": "Remind To Reconfigure Recipe After Applying New Group",
+    "data": "Data",
+    "addData": "Add Data"
   },
   "home": {
     "welcome": "Hello!"
