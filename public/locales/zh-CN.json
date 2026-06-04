@@ -34,7 +34,8 @@
     "menu": "菜单",
     "shape": "外形",
     "notSupportShape": "该数据不支持绘制外形",
-    "chooseData": "选择数据"
+    "chooseData": "选择数据",
+    "storage": "存储"
   },
   "data": {
     "averageLine": "平均线径",
@@ -48,9 +49,12 @@
     "max": "最大值",
     "min": "最小值",
     "standard": "标称值",
+    "standard2": "标准值",
     "accuracy": "精准度",
     "deviationMius": "偏差",
-    "tolerance": "公差"
+    "tolerance": "公差",
+    "toleranceUp": "上公差",
+    "toleranceDwon": "下公差"
   },
   "config": {
     "advancedSettings": "高级设置",
@@ -90,9 +94,13 @@
     "allowPrintingStatisticalData": "允许打印统计数据",
     "printerUsed": "使用的打印机",
     "groupName": "分组名称",
+    "name": "名称",
+    "group": "分组",
     "default": "默认",
     "applied": "已应用",
     "add": "新增",
+    "add2": "新建",
+    "addRecipe": "新增配方",
     "delete": "删除",
     "tableEdit": "表格编辑",
     "deviceName": "设备名称",
@@ -163,7 +171,25 @@
     "dataConversion": "数据转换",
     "dataMultiplier": "数据倍率",
     "dataOffset": "数据偏移量",
-    "ConfigHasrefreshed": "配置已刷新"
+    "ConfigHasrefreshed": "配置已刷新",
+    "pleaseSelectOneRow": "请选择一行",
+    "operationFailed": "操作失败",
+    "theDataNameAlreadyExists": "该数据名称已存在",
+    "saveSuccess": "保存成功",
+    "deleteSuccess": "删除成功",
+    "cannotDeleteAppliedGroup": "已应用的分组不能删除",
+    "operationSuccess": "操作成功",
+    "applicationSuccess": "应用成功",
+    "pleaseSelectTheRecipeToBeDeleted": "请先选择要删除的配方",
+    "pleaseEnterTheActivationCode": "请输入激活码",
+    "activationSuccess": "激活成功",
+    "pleaseStartAcquisition": "请先开始采集数据再查看",
+    "prompt": "提示",
+    "addDevice": "新增设备",
+    "continueAdd": "连续添加",
+    "remind": "应用新分组记得重新配置配方",
+    "data": "数据",
+    "addData": "新增数据"
   },
   "home": {
     "welcome": "欢迎！"

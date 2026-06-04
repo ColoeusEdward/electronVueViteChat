@@ -34,7 +34,8 @@
     "menu": "Menu",
     "shape": "Shape",
     "notSupportShape": "This data does not support shape drawing",
-    "chooseData": "Choose Data"
+    "chooseData": "Choose Data",
+    "storage": "Save"
   },
   "data": {
     "averageLine": "Average Diameter",
@@ -48,9 +49,12 @@
     "max": "Maximum",
     "min": "Minimum",
     "standard": "Nominal Value",
+    "standard2": "Nominal Value",
     "accuracy": "Accuracy",
     "deviationMius": "Deviation",
-    "tolerance": "Tolerance"
+    "tolerance": "Tolerance",
+    "toleranceUp": "Upper Tolerance",
+    "toleranceDwon": "Lower Tolerance"
   },
   "config": {
     "advancedSettings": "Advanced Settings",
@@ -90,9 +94,13 @@
     "allowPrintingStatisticalData": "Allow Printing Statistical Data",
     "printerUsed": "Printer Used",
     "groupName": "Group Name",
+    "name": "Name",
+    "group": "Group",
     "default": "Default",
     "applied": "Applied",
     "add": "Add",
+    "addRecipe": "Add Recipe",
+    "add2": "Add",
     "delete": "Delete",
     "tableEdit": "Table Edit",
     "deviceName": "Device Name",

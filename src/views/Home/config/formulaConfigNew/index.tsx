@@ -42,7 +42,7 @@ export default defineComponent({
       addFormCfg: {
         itemList: [
           { type: 'input', label: '名称', prop: 'PN', width: 24, rule: 'must' },
-          { type: 'input', label: '备注', prop: 'Note', width: 24, },
+          // { type: 'input', label: '备注', prop: 'Note', width: 24, },
         ] as formListItem[],
         hideBtn: true,
         form: {},
