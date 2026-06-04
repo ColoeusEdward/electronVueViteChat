@@ -3,10 +3,11 @@ import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { showKeyBoard } from "@/utils/utils";
+import { showKeyBoard, sleep } from "@/utils/utils";
 import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me";
 import AcCode from "./AcCode";
 import { formDivideStyle, noKeyBoardInputClass, optionMap } from "./enum";
@@ -18,6 +19,7 @@ export default defineComponent({
     getSysConfig()
     const myFormRef = ref<MyFormWrapIns>()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const loading = ref(false)
     const msg = useMessage()
     const alldata = reactive({
@@ -41,9 +43,9 @@ export default defineComponent({
       itemList: [
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '设备信息', width: 24 },
-            { type: 'input', label: '公司名称', prop: 'CompanyName', width: 12 },
-            { type: 'input', label: '设备编号', prop: 'MachineCode', width: 12 },
+            { type: 'divider', label: t('config.deviceInformation'), width: 24 },
+            { type: 'input', label: t('config.companyName'), prop: 'CompanyName', width: 12 },
+            { type: 'input', label: t('config.deviceNumber'), prop: 'MachineCode', width: 12 },
           ]
         },
         // {
@@ -58,14 +60,14 @@ export default defineComponent({
         // },
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '其他配置', width: 24 },
+            { type: 'divider', label: t('config.otherConfiguration'), width: 24 },
             // { type: 'input', label: '激活码', prop: 'Cdkey', width: 12 },
             {
-              type: 'free', label: '激活码', renderComp: () => {
+              type: 'free', label: t('config.enterActivationCode'), renderComp: () => {
                 return <AcCode v-model:value={alldata.cfgData.Cdkey} />
               }, width: 12
             },
-            { type: 'switch', label: '触控键盘输入', prop: 'InputType', checkedValue: 1, uncheckedValue: 0, defaultValue: 1, width: 12 },
+            { type: 'switch', label: t('config.touchKeyboardInput'), prop: 'InputType', checkedValue: 1, uncheckedValue: 0, defaultValue: 1, width: 12 },
             // { type: 'text', label: '', prop: 'InputType', text: '', width: 24 },
             // { type: 'text', label: '', prop: 'Version', text: '', width: 24 },
           ]
@@ -78,6 +80,41 @@ export default defineComponent({
       }
       return e
     })
+
+    // 语言切换时更新 formOpt 中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        formOpt.itemList.forEach((e) => {
+          if (e.type === 'box' && e.childCompList) {
+            e.childCompList.forEach((child) => {
+              if (child.type === 'divider') {
+                if (child.label === '设备信息' || child.label === t('config.deviceInformation')) {
+                  child.label = t('config.deviceInformation')
+                } else if (child.label === '其他配置' || child.label === t('config.otherConfiguration')) {
+                  child.label = t('config.otherConfiguration')
+                }
+              } else if (child.type === 'input') {
+                if (child.prop === 'CompanyName') {
+                  child.label = t('config.companyName')
+                } else if (child.prop === 'MachineCode') {
+                  child.label = t('config.deviceNumber')
+                }
+              } else if (child.type === 'switch') {
+                if (child.prop === 'InputType') {
+                  child.label = t('config.touchKeyboardInput')
+                }
+              } else if (child.type === 'free') {
+                if (child.prop === 'Cdkey' || child.label === '激活码' || child.label === t('config.enterActivationCode')) {
+                  child.label = t('config.enterActivationCode')
+                }
+              }
+            })
+          }
+        })
+      })
+
+    })
+
     const submit = () => {
       loading.value = true
       // let oriSysConfig = configStore.originSysConfig
@@ -92,7 +129,7 @@ export default defineComponent({
       console.log("🪵 [index.tsx:134] ~ token ~ \x1b[0;32malldata.cfgData\x1b[0m = ", alldata.cfgData);
       callBrige(callFnName.SaveSysConfig, alldata.cfgData)
         .then((e: number) => {
-          msg.success('保存完成')
+          msg.success(t('config.saveComplete'))
           configStore.setSysConfig(alldata.cfgData)
         }).finally(() => {
           loading.value = false

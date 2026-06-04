@@ -3,10 +3,11 @@ import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { showKeyBoard } from "@/utils/utils";
+import { showKeyBoard, sleep } from "@/utils/utils";
 import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me";
 import AcCode from "./AcCode";
 import { formDivideStyle, noKeyBoardInputClass, optionMap } from "./enum";
@@ -18,6 +19,7 @@ export default defineComponent({
     getSysConfig()
     const myFormRef = ref<MyFormWrapIns>()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const loading = ref(false)
     const msg = useMessage()
     const alldata = reactive({
@@ -41,22 +43,22 @@ export default defineComponent({
       itemList: [
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '数据展示', width: 24 },
-            { type: 'select', label: '默认小数位数', prop: 'Precision', width: 12 },
-            { type: 'select', label: '单屏曲线数量', prop: 'MaxChartNum', width: 12 },
-            { type: 'input', label: '统计最小点数', prop: 'CpkMinPonitNum', width: 12 },
-            { type: 'input', label: '统计数据周期', prop: 'CpkInterval', width: 12, suffix: 'ms' },
-            { type: 'input', label: '图形刷新周期', prop: 'RefreshInterval', width: 12, suffix: 'ms' },
-            { type: 'input', label: '最大显示点数', prop: 'MaxPonitNum', width: 12 },
+            { type: 'divider', label: t('config.dataDisplay'), width: 24 },
+            { type: 'select', label: t('config.defaultDecimalPlaces'), prop: 'Precision', width: 12 },
+            { type: 'select', label: t('config.curvesPerScreen'), prop: 'MaxChartNum', width: 12 },
+            { type: 'input', label: t('config.minimumStatisticalPoints'), prop: 'CpkMinPonitNum', width: 12 },
+            { type: 'input', label: t('config.statisticalDataPeriod'), prop: 'CpkInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: t('config.graphRefreshPeriod'), prop: 'RefreshInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: t('config.maximumDisplayPoints'), prop: 'MaxPonitNum', width: 12 },
           ]
         },
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '数据采集', width: 24 },
-            { type: 'input', label: '控制信号间隔', prop: 'ControlInterval', width: 12, suffix: 'ms' },
-            { type: 'input', label: '数据采集间隔', prop: 'ColloctInterval', width: 12, suffix: 'ms' },
-            { type: 'input', label: '报警信号间隔', prop: 'AlarmInterval', width: 12, suffix: 'ms' },
-            { type: 'switch', label: '报警信息写入数据库', prop: 'AlarmToDb', width: 12, checkedValue: 1, uncheckedValue: 0, },
+            { type: 'divider', label: t('config.dataAcquisition'), width: 24 },
+            { type: 'input', label: t('config.controlSignalInterval'), prop: 'ControlInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: t('config.dataAcquisitionInterval'), prop: 'ColloctInterval', width: 12, suffix: 'ms' },
+            { type: 'input', label: t('config.alarmSignalInterval'), prop: 'AlarmInterval', width: 12, suffix: 'ms' },
+            { type: 'switch', label: t('config.writeAlarmInfoToDatabase'), prop: 'AlarmToDb', width: 12, checkedValue: 1, uncheckedValue: 0, },
           ]
         },
         // {
@@ -104,6 +106,53 @@ export default defineComponent({
       }
       return e
     })
+
+    // 语言切换时更新 formOpt 中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        formOpt.itemList.forEach((e) => {
+          if (e.type === 'box' && e.childCompList) {
+            e.childCompList.forEach((child) => {
+              if (child.type === 'divider') {
+                if (child.label === '数据展示' || child.label === t('config.dataDisplay')) {
+                  child.label = t('config.dataDisplay')
+                } else if (child.label === '数据采集' || child.label === t('config.dataAcquisition')) {
+                  child.label = t('config.dataAcquisition')
+                }
+              } else if (child.type === 'select') {
+                if (child.prop === 'Precision') {
+                  child.label = t('config.defaultDecimalPlaces')
+                } else if (child.prop === 'MaxChartNum') {
+                  child.label = t('config.curvesPerScreen')
+                }
+              } else if (child.type === 'input') {
+                if (child.prop === 'CpkMinPonitNum') {
+                  child.label = t('config.minimumStatisticalPoints')
+                } else if (child.prop === 'CpkInterval') {
+                  child.label = t('config.statisticalDataPeriod')
+                } else if (child.prop === 'RefreshInterval') {
+                  child.label = t('config.graphRefreshPeriod')
+                } else if (child.prop === 'MaxPonitNum') {
+                  child.label = t('config.maximumDisplayPoints')
+                } else if (child.prop === 'ControlInterval') {
+                  child.label = t('config.controlSignalInterval')
+                } else if (child.prop === 'ColloctInterval') {
+                  child.label = t('config.dataAcquisitionInterval')
+                } else if (child.prop === 'AlarmInterval') {
+                  child.label = t('config.alarmSignalInterval')
+                }
+              } else if (child.type === 'switch') {
+                if (child.prop === 'AlarmToDb') {
+                  child.label = t('config.writeAlarmInfoToDatabase')
+                }
+              }
+            })
+          }
+        })
+      })
+
+    })
+
     const submit = () => {
       loading.value = true
       // let oriSysConfig = configStore.originSysConfig
@@ -118,7 +167,7 @@ export default defineComponent({
       console.log("🪵 [index.tsx:134] ~ token ~ \x1b[0;32malldata.cfgData\x1b[0m = ", alldata.cfgData);
       callBrige(callFnName.SaveSysConfig, alldata.cfgData)
         .then((e: number) => {
-          msg.success('保存完成')
+          msg.success(t('config.saveComplete'))
           configStore.setSysConfig(alldata.cfgData)
         }).finally(() => {
           loading.value = false

@@ -3,10 +3,11 @@ import { useConfigStore } from "@/store/config";
 import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { showKeyBoard } from "@/utils/utils";
+import { showKeyBoard, sleep } from "@/utils/utils";
 import { NButton, NDialogProvider, NModal, NScrollbar, NTag, useMessage } from "naive-ui";
 import { mapState } from "pinia";
 import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me";
 import AcCode from "./AcCode";
 import { formDivideStyle, noKeyBoardInputClass, optionMap } from "./enum";
@@ -18,6 +19,7 @@ export default defineComponent({
     getSysConfig()
     const myFormRef = ref<MyFormWrapIns>()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const loading = ref(false)
     const msg = useMessage()
     const alldata = reactive({
@@ -42,13 +44,13 @@ export default defineComponent({
 
         {
           type: 'box', label: '', width: 24, childCompList: [
-            { type: 'divider', label: '统计报表', width: 24 },
-            { type: 'switch', label: '允许实时数据导出', prop: 'EnableExportReal', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
+            { type: 'divider', label: t('config.statisticalReport'), width: 24 },
+            { type: 'switch', label: t('config.allowRealTimeDataExport'), prop: 'EnableExportReal', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
             // { type: 'select', label: '报表文件类型', prop: 'ExportRealType', width: 12 },
-            { type: 'switch', label: '允许统计数据导出', prop: 'EnableExportStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, suffix: 'ms' },
+            { type: 'switch', label: t('config.allowStatisticalDataExport'), prop: 'EnableExportStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, suffix: 'ms' },
             // { type: 'select', label: '曲线文件类型', prop: 'ExportStatiType', width: 12 },
             {
-              type: 'input', label: '导出路径', prop: 'ExportPath', class: noKeyBoardInputClass, width: 12, suffix: () => {
+              type: 'input', label: t('config.exportPath'), prop: 'ExportPath', class: noKeyBoardInputClass, width: 12, suffix: () => {
                 return <label onClick={(e) => {
                   e.stopImmediatePropagation()
                   e.stopPropagation()
@@ -57,13 +59,13 @@ export default defineComponent({
                     e && (alldata.cfgData.ExportPath = e)
                   })
                 }} class={'z-50 relative -right-2'} >
-                  <NTag bordered={false} >选择目录</NTag>
+                  <NTag bordered={false} >{t('config.selectDirectory')}</NTag>
                 </label>
               }
             },
             // { type: 'text', },
-            { type: 'switch', label: '允许打印统计数据', prop: 'EnablePrintStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
-            { type: 'select', label: '使用的打印机', prop: 'ReportPrinter', width: 12 },
+            { type: 'switch', label: t('config.allowPrintingStatisticalData'), prop: 'EnablePrintStati', checkedValue: 1, uncheckedValue: 0, defaultValue: 0, width: 12, },
+            { type: 'select', label: t('config.printerUsed'), prop: 'ReportPrinter', width: 12 },
           ]
         },
         // {
@@ -85,6 +87,41 @@ export default defineComponent({
       }
       return e
     })
+
+    // 语言切换时更新 formOpt 中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        formOpt.itemList.forEach((e) => {
+          if (e.type === 'box' && e.childCompList) {
+            e.childCompList.forEach((child) => {
+              if (child.type === 'divider') {
+                if (child.label === '统计报表' || child.label === t('config.statisticalReport')) {
+                  child.label = t('config.statisticalReport')
+                }
+              } else if (child.type === 'switch') {
+                if (child.prop === 'EnableExportReal') {
+                  child.label = t('config.allowRealTimeDataExport')
+                } else if (child.prop === 'EnableExportStati') {
+                  child.label = t('config.allowStatisticalDataExport')
+                } else if (child.prop === 'EnablePrintStati') {
+                  child.label = t('config.allowPrintingStatisticalData')
+                }
+              } else if (child.type === 'input') {
+                if (child.prop === 'ExportPath') {
+                  child.label = t('config.exportPath')
+                }
+              } else if (child.type === 'select') {
+                if (child.prop === 'ReportPrinter') {
+                  child.label = t('config.printerUsed')
+                }
+              }
+            })
+          }
+        })
+      })
+
+    })
+
     const submit = () => {
       loading.value = true
       // let oriSysConfig = configStore.originSysConfig
@@ -99,7 +136,7 @@ export default defineComponent({
       console.log("🪵 [index.tsx:134] ~ token ~ \x1b[0;32malldata.cfgData\x1b[0m = ", alldata.cfgData);
       callBrige(callFnName.SaveSysConfig, alldata.cfgData)
         .then((e: number) => {
-          msg.success('保存完成')
+          msg.success(t('config.saveComplete'))
           configStore.setSysConfig(alldata.cfgData)
         }).finally(() => {
           loading.value = false

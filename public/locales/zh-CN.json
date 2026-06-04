@@ -182,7 +182,6 @@
     "operationSuccess": "操作成功",
     "applicationSuccess": "应用成功",
     "pleaseSelectTheRecipeToBeDeleted": "请先选择要删除的配方",
-    "pleaseEnterTheActivationCode": "请输入激活码",
     "activationSuccess": "激活成功",
     "pleaseStartAcquisition": "请先开始采集数据再查看",
     "prompt": "提示",
@@ -193,7 +192,21 @@
     "addData": "新增数据",
     "pleaseStartCollecting": "请先开始采集",
     "pleaseApplyGroupInConfig": "请先前往配置页面应用分组",
-    "confirmDelete": "确定吗?"
+    "confirmDelete": "确定吗?",
+    "saveComplete": "保存完成",
+    "activated": "已激活",
+    "pleaseEnterActivationCode": "请输入激活码!",
+    "copySuccess": "复制成功",
+    "currentMachineCode": "当前机器码",
+    "copy": "复制",
+    "activationCode": "激活码",
+    "submit": "提交",
+    "sortPosition": "排序位置",
+    "fieldType": "字段类型",
+    "format": "格式",
+    "confirmDeleteRule": "确认删除吗?",
+    "moveUp": "上移",
+    "moveDown": "下移"
   },
   "home": {
     "welcome": "欢迎！"

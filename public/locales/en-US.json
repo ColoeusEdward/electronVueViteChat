@@ -182,7 +182,6 @@
     "operationSuccess": "Operation Success",
     "applicationSuccess": "Application Success",
     "pleaseSelectTheRecipeToBeDeleted": "Please Select The Recipe To Be Deleted",
-    "pleaseEnterTheActivationCode": "Please Enter The Activation Code",
     "activationSuccess": "Activation Success",
     "pleaseStartAcquisition": "Please Start Acquisition First",
     "prompt": "Prompt",
@@ -193,7 +192,21 @@
     "addData": "Add Data",
     "pleaseStartCollecting": "Please start collecting first",
     "pleaseApplyGroupInConfig": "Please go to config page to apply group first",
-    "confirmDelete": "Are you sure?"
+    "confirmDelete": "Are you sure?",
+    "saveComplete": "Save Complete",
+    "activated": "Activated",
+    "pleaseEnterActivationCode": "Please enter activation code!",
+    "copySuccess": "Copy Success",
+    "currentMachineCode": "Current Machine Code",
+    "copy": "Copy",
+    "activationCode": "Activation Code",
+    "submit": "Submit",
+    "sortPosition": "Sort Position",
+    "fieldType": "Field Type",
+    "format": "Format",
+    "confirmDeleteRule": "Confirm delete?",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down"
   },
   "home": {
     "welcome": "Hello!"

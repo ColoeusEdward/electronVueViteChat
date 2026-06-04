@@ -3,9 +3,10 @@ import MyNTable from "@/components/MyNTable";
 import { callSpc } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { ajaxPromiseAll } from "@/utils/utils";
+import { ajaxPromiseAll, sleep } from "@/utils/utils";
 import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
-import { defineComponent, onMounted, reactive, Transition } from "vue";
+import { defineComponent, onMounted, reactive, Transition, watch } from "vue";
+import { useMyI18n } from "@/hooks/useMyI18n";
 import { SerialNoEntity } from "~/me";
 import { FieldTypeList, originFieldTypeList } from "./enum";
 import { useSysCfgInnerDataStore } from "./innderData";
@@ -14,6 +15,7 @@ import SerialRuleForm from "./SerialRuleForm";
 export default defineComponent({
   name: 'SerialNoRule',  //编码规则
   setup(props, ctx) {
+    const { t, i18nStore } = useMyI18n()
     const innerData = useSysCfgInnerDataStore()
     const msg = useMessage()
     const commonData = reactive({
@@ -25,13 +27,13 @@ export default defineComponent({
           type: 'selection',
           multiple: false,
         },
-        { key: 'SortNum', title: '排序位置', resizable: true },
+        { key: 'SortNum', title: t('config.sortPosition'), resizable: true },
         {
-          key: 'FieldType', title: '字段类型', resizable: true, render: (row: SerialNoEntity) => {
+          key: 'FieldType', title: t('config.fieldType'), resizable: true, render: (row: SerialNoEntity) => {
             return originFieldTypeList[row.FieldType]
           }
         },
-        { key: 'Format', title: '格式', resizable: true },
+        { key: 'Format', title: t('config.format'), resizable: true },
       ],
       data: [] as SerialNoEntity[],
       rowProps: (row: SerialNoEntity) => {
@@ -41,13 +43,24 @@ export default defineComponent({
       },
       rowKey: (row: SerialNoEntity) => row.GId
     })
+
+    // 语言切换时更新 tableCfg 中的标题
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        tableCfg.columns[1].title = t('config.sortPosition')
+        tableCfg.columns[2].title = t('config.fieldType')
+        tableCfg.columns[3].title = t('config.format')
+      })
+
+    })
+
     const rowClick = (row: SerialNoEntity) => {
       innerData.setCurRowKey([row.GId!])
       innerData.setCurRow(row)
     }
     const moveUp = () => {
       if (!innerData.curRow) {
-        msg.warning('请选择一行数据')
+        msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
       let idx = tableCfg.data.findIndex(row => row.GId === innerData.curRow?.GId)
@@ -65,7 +78,7 @@ export default defineComponent({
     }
     const moveDown = () => {
       if (!innerData.curRow) {
-        msg.warning('请选择一行数据')
+        msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
       let idx = tableCfg.data.findIndex(row => row.GId === innerData.curRow?.GId)
@@ -95,7 +108,7 @@ export default defineComponent({
     innerData.setGetTbDataFn(getTbData)
     const delItem = () => {
       if (!innerData.curRow) {
-        msg.warning('请选择一行数据')
+        msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
       callBrige(callFnName.DeleteSerialNo, innerData.curRow).then(() => {
@@ -118,16 +131,16 @@ export default defineComponent({
           <div class={"w-2/5 h-full flex pl-2"}>
             <div class={'border border-solid border-gray-200 rounded-md h-full p-2 flex-shrink-0'}>
               <NSpace>
-                <NButton size='large' onClick={addItem} >添加</NButton>
+                <NButton size='large' onClick={addItem} >{t('config.add')}</NButton>
                 <NPopconfirm onPositiveClick={delItem} placement={'top'} v-slots={{
-                  trigger: () => <NButton size='large' type={'error'} >删除</NButton>
+                  trigger: () => <NButton size='large' type={'error'} >{t('config.delete')}</NButton>
                 }}>
-                  确认删除吗?
+                  {t('config.confirmDeleteRule')}
                 </NPopconfirm>
               </NSpace>
               <NSpace class={'mt-2'}>
-                <NButton size='large' disabled={commonData.moveLoading} onClick={moveUp}>上移</NButton>
-                <NButton size='large' disabled={commonData.moveLoading} onClick={moveDown} >下移</NButton>
+                <NButton size='large' disabled={commonData.moveLoading} onClick={moveUp}>{t('config.moveUp')}</NButton>
+                <NButton size='large' disabled={commonData.moveLoading} onClick={moveDown} >{t('config.moveDown')}</NButton>
               </NSpace>
             </div>
             <Transition name={'full-pop'}>
