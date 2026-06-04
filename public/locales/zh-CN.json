@@ -190,7 +190,10 @@
     "continueAdd": "连续添加",
     "remind": "应用新分组记得重新配置配方",
     "data": "数据",
-    "addData": "新增数据"
+    "addData": "新增数据",
+    "pleaseStartCollecting": "请先开始采集",
+    "pleaseApplyGroupInConfig": "请先前往配置页面应用分组",
+    "confirmDelete": "确定吗?"
   },
   "home": {
     "welcome": "欢迎！"

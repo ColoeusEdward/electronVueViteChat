@@ -1,6 +1,6 @@
 import { NButton, useDialog, DialogReactive, NRadioGroup, NRadio } from "naive-ui";
 import type { DropdownProps } from 'naive-ui'
-import { defineComponent, onUnmounted, ref, computed, reactive } from "vue";
+import { defineComponent, onUnmounted, ref, computed, reactive, watch } from "vue";
 import { Tool } from '@vicons/tabler'
 import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled, HistoryOutlined } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
@@ -15,6 +15,7 @@ import { usei18nStore } from "@/store/i18n";
 import { MyLangStr } from "~/me";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 import { useMyI18n } from "@/hooks/useMyI18n";
+import { sleep } from "@/utils/utils";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -52,20 +53,31 @@ export default defineComponent({
       curDialogIns: null as DialogReactive | null,
       curSubmitFn: () => { },
       exitChooseList: [{
-        label: '退出应用',
+        label: t('config.exitApplication'),
         key: 'shutdownApp',
       },
       {
-        label: '重启应用',
+        label: t('config.restartApplication'),
         key: 'restartApp',
       },
       {
-        label: '关机',
+        label: t('config.shutdown'),
         key: 'shutdown',
       }],
       curExitType: 'shutdownApp',
       trandChartStart: false
     })
+
+    // 语言切换时更新 exitChooseList 中的标签
+    watch(() => i18nStore.langChangeCount, () => {
+      sleep(50).then(() => {
+        alldata.exitChooseList[0].label = t('config.exitApplication')
+        alldata.exitChooseList[1].label = t('config.restartApplication')
+        alldata.exitChooseList[2].label = t('config.shutdown')
+      })
+
+    })
+
     const shutdownConfirm = () => {
       let exitMapFn: Record<string, () => void> = {
         shutdownApp: () => {
@@ -95,7 +107,7 @@ export default defineComponent({
           // callBrige(callFnName.CloseApp, `true`).then(() => {
           // })
           alldata.curDialogIns = dialog.create({
-            title: '退出选项',
+            title: t('config.exitOptions'),
             content: () => {
               return <div class={'exit-menu min-h-[170px] h-full relative flex flex-col items-center justify-center'}>
                 <NRadioGroup class={"h-full"} style={{
@@ -112,14 +124,14 @@ export default defineComponent({
             style: { width: '400px', minHeight: '200px', },
             action: () => {
               return <div class={'flex justify-around items-center w-full'}>
-                <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { alldata.curDialogIns?.destroy() }}>取消</NButton>
+                <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { alldata.curDialogIns?.destroy() }}>{t('config.cancel')}</NButton>
                 <NButton style={{ width: '45%', height: '40px', fontSize: '22px', backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => {
                   shutdownConfirm()
-                }}>确定</NButton>
+                }}>{t('config.confirm')}</NButton>
               </div>
             },
-            positiveText: '确定',
-            negativeText: '取消',
+            positiveText: t('config.confirm'),
+            negativeText: t('config.cancel'),
             maskClosable: true,
             onPositiveClick: () => {
             },
@@ -171,7 +183,7 @@ export default defineComponent({
         },
         shaftCollect: () => {
           if (!curCevInnerData.isGetting) {
-            window.$message.warning('请先开始采集')
+            window.$message.warning(t('config.pleaseStartCollecting'))
             return
           }
           curCevInnerData.shaftColFn && curCevInnerData.shaftColFn()
@@ -181,7 +193,7 @@ export default defineComponent({
           if (sysConfig.value.CurrentGroupId) {
             formulaStore.setFormulaShow(true)
           } else {
-            dialog.warning({ title: '提示', content: '请先前往配置页面应用分组', positiveText: '确定' })
+            dialog.warning({ title: t('config.prompt'), content: t('config.pleaseApplyGroupInConfig'), positiveText: t('config.confirm') })
             // window.$message.warning('请先前往配置页面应用分组')
           }
         }

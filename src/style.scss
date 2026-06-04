@@ -454,10 +454,16 @@ body {
     height: 100%;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     transform: scale(1.5);
     .n-radio {
       margin-top: 8px;
+      width: 100%;
+    }
+    .n-radio__label {
+      text-align: center;
+      width: 100%;
+      margin-left: 20px;
     }
   }
 }
