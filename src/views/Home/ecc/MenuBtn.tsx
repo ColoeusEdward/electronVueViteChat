@@ -12,6 +12,7 @@ import { useConfigStore } from "@/store/config";
 import { buildMenuOpt, sleep } from "@/utils/utils";
 import { RightValueType } from "../RightValueBlock";
 import { DeviceClassEnum, DeviceClassHasShapeList } from "../config/devConfigNew/enum";
+import { useMyI18n } from "@/hooks/useMyI18n";
 
 
 export default defineComponent({
@@ -27,6 +28,7 @@ export default defineComponent({
     const eccStore = useEccStore()
     const configStore = useConfigStore()
     const realtimeStore = useRealTimeStore()
+    const { t, i18nStore } = useMyI18n()
     const alldata = reactive({
       menuOpt: [] as DropdownProps['options'],
       menuShow: true,
@@ -44,6 +46,12 @@ export default defineComponent({
         alldata.menuShow = true
       })
     }
+
+    // 强制依赖 langChangeCount 以在语言切换时重新计算
+    const langKey = computed(() => {
+      const _ = i18nStore.langChangeCount
+      return i18nStore.language
+    })
     const dataSourceList = computed(() => configStore.showDataAdressList.filter(e => Number(e.DeviceClass) == DeviceClassEnum.Ecc).map(e => {
       let res = {
         ...buildMenuOpt(e, configStore, true),
@@ -98,7 +106,7 @@ export default defineComponent({
 
 
     return () => {
-
+      const _ = langKey.value
 
       return (
         <div>
@@ -112,7 +120,7 @@ export default defineComponent({
               }
             }}
             trigger="click" onSelect={handleMenuSelect} size={'large'} class={'text-lg'}  >
-            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 w-[110px] shrink mr-2 '} >   <span class={'text-lg text-ellipsis overflow-hidden'}>{alldata.curOption.label || '选择数据'}</span>
+            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 w-[110px] shrink mr-2 '} >   <span class={'text-lg text-ellipsis overflow-hidden'}>{alldata.curOption.label || t('menu.chooseData')}</span>
             </NButton>
             {/* <div class={'p-2 border border-gray-400 border-solid'}>
               <span class={'text-lg'}>选择数据</span>

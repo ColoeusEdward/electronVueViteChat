@@ -14,6 +14,7 @@ import * as echarts from 'echarts';
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { DataValue, FormulaParamEntity } from "~/me";
+import { useMyI18n } from "@/hooks/useMyI18n";
 // import DiameterDataChart from "./DiameterDataChart";
 // import OutToleranceChart from "./OutToleranceChart";
 export default defineComponent({
@@ -23,6 +24,7 @@ export default defineComponent({
     let myChart: echarts.ECharts
     const eccStore = useEccStore()
     const configStore = useConfigStore()
+    const { t, i18nStore } = useMyI18n()
     const isLandscape = computed(() => store.isLandscape)
     const alldata = reactive({
       show: true,
@@ -64,6 +66,18 @@ export default defineComponent({
       },
       timeInstance: null as NodeJS.Timer | null,
       chartHeight: 0
+    })
+
+    // 动态获取 datList 的 labels，确保语言切换时能及时刷新
+    const datListLabels = computed(() => {
+      // 依赖 i18nStore.langChangeCount 以在语言切换时重新计算
+      const _ = i18nStore.langChangeCount
+      return {
+        OD: t('data.averageLine') + ':',
+        Ecc: t('data.deviation') + ':',
+        Angel: t('data.deviationAngle') + ':',
+        CUOD: t('data.guideLine') + ':'
+      }
     })
     const chartShow = computed(() => {
       return eccStore.curEccMenuOption.OD && eccStore.curEccMenuOption.Ecc && eccStore.curEccMenuOption.CUOD && eccStore.curEccMenuOption.Angel
@@ -335,10 +349,10 @@ export default defineComponent({
               })}>
                 {
                   alldata.datList.map((e, i) => {
-                    return <div class={'text-lg flex  items-center relative'} >
-                      <span class={'mr-2'}>{e.label}</span>
+                    return <div class={'text-lg flex  items-center relative'} key={i}>
+                      <span class={'mr-2'}>{datListLabels.value[e.prop as keyof typeof datListLabels.value]}</span>
                       <MenuBtn propName={e.prop} />
-                      <span class={'absolute right-2 top-10 text-xl w-[110px] text-center ' + classNames({
+                      <span class={'absolute right-2 top-14 text-xl w-[110px] text-center ' + classNames({
 
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
                         'text-[#ff0000]': e.param && e.diff < -(e.param.LowerTol || 0),
