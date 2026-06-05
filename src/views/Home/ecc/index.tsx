@@ -267,7 +267,7 @@ export default defineComponent({
       })
     }
     const updateChart = () => {
-      myChart.setOption({
+      myChart && myChart.setOption({
         series: [
           { data: [0, 0] }
         ]
@@ -309,11 +309,14 @@ export default defineComponent({
     })
     watch(() => chartShow.value, (v) => {
       if (v) {
-        initMoreChart()
-        getData()
-        alldata.timeInstance = setInterval(() => {
+        sleep(100).then(() => {
+          initChart()
           getData()
-        }, configStore.sysConfig.ColloctInterval || 1000)
+          alldata.timeInstance = setInterval(() => {
+            getData()
+          }, configStore.sysConfig.ColloctInterval || 1000)
+        })
+
       }
     })
     watch(() => configStore.showDataAdressList, () => {
@@ -326,8 +329,8 @@ export default defineComponent({
     onMounted(() => {
       getConShortSize()
       sleep(50).then(() => {
-        initChart()
         if (chartShow.value) {
+          initChart()
           initMoreChart()
           getData()
           alldata.timeInstance = setInterval(() => {
@@ -359,7 +362,9 @@ export default defineComponent({
                       <span class={'mr-2'}>{datListLabels.value[e.prop as keyof typeof datListLabels.value]}</span>
                       <MenuBtn propName={e.prop} />
                       <span class={'absolute right-2 top-12 text-xl w-[110px] text-center ' + classNames({
-
+                        'top-12': locale.value == 'zh-CN',
+                        'top-14': locale.value != 'zh-CN',
+                        'invisible': !chartShow.value,
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
                         'text-[#ff0000]': e.param && e.diff < -(e.param.LowerTol || 0),
                         'text-[#ff8d3f]': e.param && e.diff > (e.param.UpperTol || 0),

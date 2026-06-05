@@ -120,7 +120,7 @@ export default defineComponent({
               }
             }}
             trigger="click" onSelect={handleMenuSelect} size={'large'} class={'text-lg'}  >
-            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 w-[110px] shrink mr-2 '} >   <span class={'text-lg text-ellipsis overflow-hidden'}>{alldata.curOption.label || t('menu.chooseData')}</span>
+            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 min-w-[110px] shrink mr-2 '} >   <span class={'text-lg text-ellipsis overflow-hidden'}>{alldata.curOption.label || t('menu.chooseData')}</span>
             </NButton>
             {/* <div class={'p-2 border border-gray-400 border-solid'}>
               <span class={'text-lg'}>选择数据</span>

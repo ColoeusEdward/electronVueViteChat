@@ -77,7 +77,7 @@ export default defineComponent({
               }
             }}
             trigger="click" onSelect={handleMenuSelect} size={'large'} class={'text-lg'}>
-            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 w-[110px] shrink mr-2'}>
+            <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} type="default" size={'large'} class={'h-10 min-w-[110px] shrink mr-2'}>
               <span class={'text-lg text-ellipsis overflow-hidden'}>{alldata.curOption.label || t('menu.chooseData')}</span>
             </NButton>
           </NDropdown>
