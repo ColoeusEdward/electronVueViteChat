@@ -64,6 +64,7 @@ export default defineComponent({
         Angel: 0,
         CUOD: 0
       },
+      wallThicknessList: [] as { Angle: number, Thickness: number }[],
       timeInstance: null as NodeJS.Timer | null,
       chartHeight: 0
     })
@@ -280,9 +281,48 @@ export default defineComponent({
       alldata.chartHeight = size - 20
     }
 
-    const maxWidth = computed(() => {
-      return store.isLandscape ? '100%' : '100%'
-    })
+    const getWallThickness = (od: number, ecc: number, angel: number, cuod: number) => {
+      if (od === 0 || ecc === 0 || angel === 0 || cuod === 0) return
+      callBrige(callFnName.CalcWallThickness, [od, ecc, angel, cuod].map(e => Number(e)), true).then((res: any[]) => {
+        alldata.wallThicknessList = res
+        //示例
+        //         [
+        //     {
+        //         "Angle": 0,
+        //         "Thickness": 0.2344
+        //     },
+        //     {
+        //         "Angle": 45,
+        //         "Thickness": 0.2431
+        //     },
+        //     {
+        //         "Angle": 90,
+        //         "Thickness": 0.2411
+        //     },
+        //     {
+        //         "Angle": 135,
+        //         "Thickness": 0.2294
+        //     },
+        //     {
+        //         "Angle": 180,
+        //         "Thickness": 0.2141
+        //     },
+        //     {
+        //         "Angle": 225,
+        //         "Thickness": 0.2044
+        //     },
+        //     {
+        //         "Angle": 270,
+        //         "Thickness": 0.2067
+        //     },
+        //     {
+        //         "Angle": 315,
+        //         "Thickness": 0.2194
+        //     }
+        // ]
+      })
+    }
+
     watch(() => curParamList.value, (v) => {
       if (v && v.length > 0 && chartShow.value) {
         alldata.datList[0].param = curParamList.value!.find(e => e.DataGroupId === eccStore.curEccMenuOption.OD?.GId) as FormulaParamEntity
@@ -301,6 +341,8 @@ export default defineComponent({
       alldata.datList[1].value = alldata.valObj.Ecc
       alldata.datList[2].value = alldata.valObj.Angel
       alldata.datList[3].value = alldata.valObj.CUOD
+
+      getWallThickness(alldata.valObj.OD, alldata.valObj.Ecc, alldata.valObj.Angel, alldata.valObj.CUOD)
 
       alldata.datList.forEach(e => {
         e.diff = e.value - (e.param?.Standard || 0)

@@ -80,8 +80,10 @@ enum callFnName {
   RestartApp = `RestartApp`,
   ShutdownPc = `ShutdownPc`,
   SaveFormulaConfig = `SaveFormulaConfig`, activeFormulaConfig = 'activeFormulaConfig', GetProductHistorys = 'GetProductHistorys', StopCollect = "StopCollect",
+  CalcWallThickness = `CalcWallThickness`,
   getSpanCollectPoints = `getSpanCollectPoints`, getNormalDistribution = 'getNormalDistribution', ClearCollect = 'ClearCollect',
-  getFFT = `getFFT`, showKeyBoard = `showKeyBoard`, initKeyboardConfig = `initKeyboardConfig`, checkRegister = `checkRegister`, getMachineCode = `getMachineCode`, getRegisterState = `getRegisterState`, getRegisterCode = `getRegisterCode`, KeyPress = `KeyPress`, KeyDown = `KeyDown`, KeyUp = `KeyUp`, getLastPoint = `getLastPoint`
+  getFFT = `getFFT`, showKeyBoard = `showKeyBoard`, initKeyboardConfig = `initKeyboardConfig`, checkRegister = `checkRegister`, getMachineCode = `getMachineCode`, getRegisterState = `getRegisterState`, getRegisterCode = `getRegisterCode`, KeyPress = `KeyPress`, KeyDown = `KeyDown`, KeyUp = `KeyUp`, getLastPoint = `getLastPoint`,
+  GetWallThickness = "GetWallThickness"
 }
 
 export {
