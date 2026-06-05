@@ -371,7 +371,7 @@ export default defineComponent({
     // 监听语言切换，重新初始化图表
     watch(() => i18nStore.langChangeCount, () => {
       if (chartShow.value && myChart) {
-        sleep(50).then(() => {
+        sleep(500).then(() => {
           // 重新初始化图表以更新图例和 series 的 name
           initChart()
         })
@@ -401,7 +401,7 @@ export default defineComponent({
         <div class={'w-full h-full px-2 flex flex-col'}>
           <div class={"flex justify-center flex-shrink-0 "}>
             {
-              alldata.show && <div class={'flex max-w-[800px] w-full justify-between ' + classNames({
+              alldata.show && <div class={'flex max-w-[900px] w-full justify-between ' + classNames({
                 'ml-[10px]': isLandscape.value,
                 'ml-2': !isLandscape.value
               })}>
@@ -410,7 +410,7 @@ export default defineComponent({
                     return <div class={'text-lg flex items-center relative'} key={i}>
                       <span class={'mr-2'}>{datListLabels.value[e.prop as keyof typeof datListLabels.value]}</span>
                       <MenuBtn propName={e.prop} />
-                      <span class={'absolute right-2 top-10 text-xl w-[110px] text-center ' + classNames({
+                      <span class={'absolute right-2 top-12 text-xl w-[110px] text-center ' + classNames({
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
                         'text-[#ff0000]': e.param && e.diff < -(e.param.LowerTol || 0),
                         'text-[#ff8d3f]': e.param && e.diff > (e.param.UpperTol || 0),

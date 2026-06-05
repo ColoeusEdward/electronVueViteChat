@@ -220,20 +220,20 @@ export default defineComponent({
             data: [
               {
                 name: t('data.limitLow'),
-                xAxis: lowValue, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
+                xAxis: lowValue || 1, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
                 // label: { formatter: '下限' + ` (${lowValue})` }
                 label: { formatter: t('data.limitLow') }
               },
               {
                 name: t('data.standard2'),
-                xAxis: paramItem.value?.Standard, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
+                xAxis: paramItem.value?.Standard || 1, // 对应 xAxis 数据里的值（如果是数值轴则直接写数字）
                 // label: { formatter: '标准值' + ` (${paramItem.value?.Standard})` },
                 label: { formatter: t('data.standard2') },
                 lineStyle: { color: 'green' },
               },
               {
                 name: t('data.limitHeight'),
-                xAxis: upValue, // 对应 xAxis 数据里的值
+                xAxis: upValue || 1, // 对应 xAxis 数据里的值
                 label: { formatter: t('data.limitHeight') }
                 // label: { formatter: '上限' + ` (${upValue})` }
               }
@@ -357,15 +357,15 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      // setTimeout(() => {
+      setTimeout(() => {
+        initEchart()
 
-      // }, 0);
-      initEchart()
-
-      getDisData()
-      alldata.timeIns = setInterval(() => {
         getDisData()
-      }, configStore.sysConfig.CpkInterval || 500)
+        alldata.timeIns = setInterval(() => {
+          getDisData()
+        }, configStore.sysConfig.CpkInterval || 500)
+      }, 0);
+
 
     })
 

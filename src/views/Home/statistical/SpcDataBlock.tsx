@@ -25,7 +25,7 @@ export default defineComponent({
       // { label: 'CP', key: '4', noUnit: true },
       // { label: '分组计数', key: 'Group', noUnit: true },
       // { label: 'CPK', key: '4', noUnit: true },
-      { label: t('config.accuracy'), key: 'Decimals', noUnit: true },
+      { label: t('data.accuracy'), key: 'Decimals', noUnit: true },
     ]
     const alldata = reactive({
       tableList: [] as typeof spcLabelList[0][][],
@@ -64,7 +64,7 @@ export default defineComponent({
         spcLabelList[4].label = t('data.min')
         spcLabelList[5].label = t('data.limitHeight')
         spcLabelList[6].label = t('data.max')
-        spcLabelList[7].label = t('config.accuracy')
+        spcLabelList[7].label = t('data.accuracy')
         // 重新初始化数据以更新显示
         if (props.dataItem) {
           initData(props.dataItem)

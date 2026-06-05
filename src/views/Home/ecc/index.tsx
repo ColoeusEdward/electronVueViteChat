@@ -24,7 +24,7 @@ export default defineComponent({
     let myChart: echarts.ECharts
     const eccStore = useEccStore()
     const configStore = useConfigStore()
-    const { t, i18nStore } = useMyI18n()
+    const { t, i18nStore, locale } = useMyI18n()
     const isLandscape = computed(() => store.isLandscape)
     const alldata = reactive({
       show: true,
@@ -279,6 +279,10 @@ export default defineComponent({
       console.log("🪵 [index.tsx:262] ~ token ~ \x1b[0;32msize\x1b[0m = ", size);
       alldata.chartHeight = size - 20
     }
+
+    const maxWidth = computed(() => {
+      return store.isLandscape ? '100%' : '100%'
+    })
     watch(() => curParamList.value, (v) => {
       if (v && v.length > 0 && chartShow.value) {
         alldata.datList[0].param = curParamList.value!.find(e => e.DataGroupId === eccStore.curEccMenuOption.OD?.GId) as FormulaParamEntity
@@ -343,16 +347,18 @@ export default defineComponent({
         <div class={'w-full h-full px-2 flex flex-col'}>
           <div class={"flex justify-center flex-shrink-0 "}>
             {
-              alldata.show && <div class={'flex max-w-[800px]  w-full justify-between ' + classNames({
-                'ml-[10px]': isLandscape.value,
-                'ml-2 ': !isLandscape.value
+              alldata.show && <div class={'flex   w-full justify-between ' + classNames({
+                'ml-[10px] max-w-[1300px]': isLandscape.value && locale.value !== 'zh-CN',
+                'ml-[10px] max-w-[900px]': isLandscape.value && locale.value == 'zh-CN',
+                'ml-2 max-w-[100%]': !isLandscape.value && locale.value !== 'zh-CN',
+                'ml-2 max-w-[800px]': !isLandscape.value && locale.value == 'zh-CN'
               })}>
                 {
                   alldata.datList.map((e, i) => {
                     return <div class={'text-lg flex  items-center relative'} key={i}>
                       <span class={'mr-2'}>{datListLabels.value[e.prop as keyof typeof datListLabels.value]}</span>
                       <MenuBtn propName={e.prop} />
-                      <span class={'absolute right-2 top-14 text-xl w-[110px] text-center ' + classNames({
+                      <span class={'absolute right-2 top-12 text-xl w-[110px] text-center ' + classNames({
 
                         'text-[#003a62]': !e.param || (e.diff <= (e.param.UpperTol || 0) && e.diff >= -(e.param.LowerTol || 0)),
                         'text-[#ff0000]': e.param && e.diff < -(e.param.LowerTol || 0),
