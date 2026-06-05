@@ -2,9 +2,9 @@ import { DialogReactive, NButton, SelectProps, useDialog } from "naive-ui";
 import { computed, defineComponent, onMounted, onUpdated, reactive, Ref, ref, watch } from "vue";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
-import { commonMap2 } from "../../proto/proto";
+import { commonMap2, refreshCommonMap2 } from "../../proto/proto";
 import { ConnectComModel, DataAddressEntity, ModbusAdressSubItem } from "~/me";
-import { commonFormItemListMap, propNameEnum } from "../../devConfig/enum";
+import { commonFormItemListMap, propNameEnum, refreshCommonFormItemListMap } from "../../devConfig/enum";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
@@ -43,9 +43,11 @@ export default defineComponent({
       subItem: null
     })
     const isAdd = computed(() => configStore.addressFormIsAdd)
-    const optionMap: any = reactive({
-      ...commonMap2
-    })
+    // const optionMap: any = reactive({
+    //   ...commonMap2
+    // })
+    const optionMap: any = ref({})
+
     const itemList = ref<formListItem[]>([
       commonFormItemListMap[propNameEnum.Name],
       // commonFormItemListMap[propNameEnum.DeviceClass],
@@ -148,6 +150,33 @@ export default defineComponent({
     })
 
     onMounted(() => {
+
+      refreshCommonFormItemListMap()
+      // Object.keys(commonMap2).forEach(key => {
+      //   optionMap[key] = commonMap2[key]
+      // })
+      optionMap.value = refreshCommonMap2()
+      itemList.value = [
+        commonFormItemListMap[propNameEnum.Name],
+        // commonFormItemListMap[propNameEnum.DeviceClass],
+        // commonFormItemListMap[propNameEnum.DataClass],
+        // commonFormItemListMap[propNameEnum.ParamClass],
+        // commonFormItemListMap[propNameEnum.Unilateral],
+        // commonFormItemListMap[propNameEnum.AlarmType],
+        commonFormItemListMap[propNameEnum.Permission],
+        commonFormItemListMap[propNameEnum.State],
+        // commonFormItemListMap[propNameEnum.Unit],
+        commonFormItemListMap[propNameEnum.SlaveId],
+        commonFormItemListMap[propNameEnum.Area],
+        commonFormItemListMap[propNameEnum.Index],
+        commonFormItemListMap[propNameEnum.Length],
+        commonFormItemListMap[propNameEnum.DataType],
+        // commonFormItemListMap[propNameEnum.CountFormula],
+        commonFormItemListMap[propNameEnum.Exchange],
+        commonFormItemListMap[propNameEnum.Rate],
+        commonFormItemListMap[propNameEnum.Offset],
+        // commonFormItemListMap[propNameEnum.Endian32bit],
+      ]
       props.getFormRefFn && props.getFormRefFn(myFormRef)
       props.getSubmitFn && props.getSubmitFn(submit)
     })
@@ -155,7 +184,7 @@ export default defineComponent({
     return () => {
       return (
         // <div class={'w-[400px] h-[600px] bg-white absolute '}>
-        <MyFormWrap ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
+        <MyFormWrap ref={myFormRef} optionMap={optionMap.value} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
       )
     }
   }

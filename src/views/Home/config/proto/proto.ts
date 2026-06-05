@@ -286,4 +286,6 @@ export const refreshCommonMap2 = () => {
   commonMap2[propNameEnum.Exchange] = DataTypeList
   commonMap2[propNameEnum.DataType] = DataTypeList
   commonMap2[propNameEnum.Area] = AreaList
+
+  return commonMap2
 }
