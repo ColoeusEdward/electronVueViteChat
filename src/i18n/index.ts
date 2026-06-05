@@ -22,11 +22,18 @@ export const getLanguage = (): SupportedLocale => {
   return 'zh-CN' // 默认语言
 }
 
+// 使用 import.meta.env.BASE_URL 拼接 locales 绝对路径
+// 解决 file:// 协议 + WebView2 base address 导致相对路径解析异常的问题
+// dev: BASE_URL=/, locales 在 public/ 下被 Vite 映射为根路径
+// 构建: BASE_URL=./, locales/ 与 index.html 同级
+// const localesBase = `${import.meta.env.BASE_URL}locales/`
+const localesBase = `/locales/`
+console.log("🪵 [index.ts:29] ~ token ~ \x1b[0;32mlocalesBase\x1b[0m = ", import.meta.env.BASE_URL);
+
 // 动态加载语言包
 const loadLocaleMessages = async (locale: SupportedLocale): Promise<any> => {
   try {
-    // 从 public/locales 目录加载 JSON 文件
-    const response = await fetch(`/locales/${locale}.json`)
+    const response = await fetch(`${localesBase}${locale}.json`)
     if (!response.ok) {
       throw new Error(`Failed to load locale: ${locale}`)
     }

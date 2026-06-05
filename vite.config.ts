@@ -14,7 +14,7 @@ import * as path from 'path';
 import { viteSingleFile } from "vite-plugin-singlefile"
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -35,8 +35,8 @@ export default defineConfig({
     strictPort: true, // * 固定端口(如果端口被占用则中止)
     host: true, // 0.0.0.0
     port: 3920, // 指定启动端口
-    watch:{
-      ignored:['public/datav/**/*']
+    watch: {
+      ignored: ['public/datav/**/*']
     }
   },
 });
