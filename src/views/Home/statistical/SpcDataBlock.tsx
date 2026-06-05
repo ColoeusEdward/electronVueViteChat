@@ -4,6 +4,7 @@ import { DataGroupEntity, DistributionEntity, ModbusAdressRow } from "~/me";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { sleep } from "@/utils/utils";
 import { useMain } from "@/store";
+import classNames from "classnames";
 
 export default defineComponent({
   name: 'SpcDataBlock',
@@ -74,7 +75,7 @@ export default defineComponent({
 
     })
     const valWidth = computed(() => {
-      return locale.value == 'zh-CN' ? 460 : 660
+      return locale.value == 'zh-CN' ? '460px' : '100%'
     })
     onBeforeUnmount(() => {
       alldata.watchInstance()
@@ -94,14 +95,15 @@ export default defineComponent({
       //todo spc值从realtime数据中根据key获取
       return (
         <div class={'flex justify-center px-8 py-1'}>
-          <div class={`w-[${valWidth.value}px]`}>
+          <div class={classNames({ 'w-[460px]': locale.value == 'zh-CN', 'w-[660px]': locale.value != 'zh-CN' })}>
             <NTable bordered={false} singleLine={true} singleColumn={true} size={'small'} style={{ backgroundColor: 'transparent' }} >
               <NTbody>
                 {alldata.tableList.map((list, i) => {
                   return (
                     <tr class={'bg-transparent'} >
                       {list.map((e, i) => {
-                        return [<td style={{ padding: 0, backgroundColor: 'transparent' }}  >{e.label}</td>, <td style={{ padding: 0, backgroundColor: 'transparent', margin: "0 10px" }} class={' text-center bg-transparent'}><span class={'float-left'}>:</span> {`${e.value} ${e.noUnit ? '' : props.adressItem?.Unit}`}</td>]
+                        return [<td style={{ padding: 0, paddingLeft: '20px', backgroundColor: 'transparent' }}  >{e.label}</td>,
+                        <td style={{ padding: 0, backgroundColor: 'transparent', margin: "0 10px" }} class={' text-center bg-transparent'}><span class={'float-left'}>:</span> {`${e.value} ${e.noUnit ? '' : props.adressItem?.Unit}`}</td>]
                       })}
                     </tr>
                   )
