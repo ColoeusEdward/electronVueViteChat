@@ -258,17 +258,17 @@ export default defineComponent({
                 <div class={'h-2/3'}>
                   <div class={"w-full h-[14px] bg-[#39393b] absolute top-[51px] z-[8]"}></div>
                   <NTabs type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'home-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={'curcev'} >
-                    <NTabPane displayDirective="if" name="curcev" tab="实时数据" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
+                    <NTabPane displayDirective="if" name="curcev" tab={t('menu.realTimeData')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'curcev' ? activeStyle : {} } }}>
                       <div class={' h-full'}>
                         <Curcev />
                       </div>
                     </NTabPane>
-                    <NTabPane displayDirective="if" name="multiCurcev" tab="趋势图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
+                    <NTabPane displayDirective="if" name="multiCurcev" tab={t('menu.trendChart')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'multiCurcev' ? activeStyle : {} } }}>
                       <div class={'h-full'}>
                         <MultiCurcev />
                       </div>
                     </NTabPane>
-                    <NTabPane displayDirective="if" name="summary" tab="统计图" tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
+                    <NTabPane displayDirective="if" name="summary" tab={t('menu.statisticsChart')} tabProps={{ style: { ...commonStyle, ...curTabValue.value == 'summary' ? activeStyle : {} } }}>
                       <div class={'h-full'}>
                         <Statistical />
                       </div>

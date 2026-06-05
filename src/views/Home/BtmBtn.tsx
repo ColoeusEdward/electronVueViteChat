@@ -16,9 +16,12 @@ import { MyLangStr } from "~/me";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { sleep } from "@/utils/utils";
+import classNames from "classnames";
+import { useMain } from "@/store";
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
+    const store = useMain()
     const nowTime = ref(new Date().toLocaleString());
     const interval = setInterval(() => {
       nowTime.value = new Date().toLocaleString();
@@ -28,11 +31,14 @@ const TimeBlock = defineComponent({
     })
     return () => {
       return (
-        <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} >
-          <span class={'text-xl'}>{
-            nowTime.value
-          }</span>
-        </NButton>
+        <div class={'shrink '}>
+          <NButton secondary strong={true} type="primary" size={'large'} class={'h-16 w-full p-0  ' + classNames({ ' px-4': store.isLandscape, "px-1": !store.isLandscape })} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} >
+            <span class={'' + classNames({ 'text-xl': store.isLandscape, "text-lg": !store.isLandscape })}>{
+              nowTime.value
+            }</span>
+          </NButton>
+        </div>
+
       )
     }
   }
@@ -293,7 +299,7 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'w-full h-24 mt-auto  flex items-center  px-2 '}  >
+        <div class={'w-full h-24 mt-auto  flex items-center px-2 flex-1 pb-2  '}  >
           {popSelectList.value.map((item, index) => {
             return (
               //@ts-ignore

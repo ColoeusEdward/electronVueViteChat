@@ -94,13 +94,13 @@ export default defineComponent({
     return () => {
       //todo spc值从realtime数据中根据key获取
       return (
-        <div class={'flex justify-center px-8 py-1'}>
-          <div class={classNames({ 'w-[460px]': locale.value == 'zh-CN', 'w-[660px]': locale.value != 'zh-CN' })}>
-            <NTable bordered={false} singleLine={true} singleColumn={true} size={'small'} style={{ backgroundColor: 'transparent' }} >
+        <div class={'flex justify-center px-1 py-1 '}>
+          <div class={classNames({ 'w-[460px]': locale.value == 'zh-CN', 'w-[100%]': locale.value != 'zh-CN' })}>
+            <NTable bordered={false} singleLine={true} singleColumn={true} size={'small'} style={{ backgroundColor: 'transparent', width: '100%' }} >
               <NTbody>
                 {alldata.tableList.map((list, i) => {
                   return (
-                    <tr class={'bg-transparent'} >
+                    <tr class={'bg-transparent ' + classNames({ ' text-sm': locale.value != 'zh-CN' && !store.isLandscape })} >
                       {list.map((e, i) => {
                         return [<td style={{ padding: 0, paddingLeft: '20px', backgroundColor: 'transparent' }}  >{e.label}</td>,
                         <td style={{ padding: 0, backgroundColor: 'transparent', margin: "0 10px" }} class={' text-center bg-transparent'}><span class={'float-left'}>:</span> {`${e.value} ${e.noUnit ? '' : props.adressItem?.Unit}`}</td>]

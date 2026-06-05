@@ -18,6 +18,7 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useMain()
     let myChart: echarts.ECharts
+    let resizeObserver: ResizeObserver | null = null
     const lineShapeStore = useLineShapeStore()
     const configStore = useConfigStore()
     const { t, i18nStore, locale } = useMyI18n()
@@ -53,7 +54,9 @@ export default defineComponent({
         DiameterY: 0
       },
       timeInstance: null as NodeJS.Timer | null,
-      chartHeight: 0
+      chartHeight: 0,
+      chartWidth: 0,
+      gridLeft: 230
     })
 
     // 动态获取 datList 的 labels，确保语言切换时能及时刷新
@@ -151,7 +154,7 @@ export default defineComponent({
           ]
         },
         grid: {
-          left: 230,
+          left: alldata.gridLeft,
           right: 30,
           top: 30,
           bottom: 30,
@@ -328,9 +331,30 @@ export default defineComponent({
     }
 
     const getConShortSize = () => {
-      let { offsetHeight, offsetWidth } = document.getElementById('line-shape-con') as HTMLDivElement
-      let size = offsetHeight - offsetWidth > 0 ? offsetWidth : offsetHeight
-      alldata.chartHeight = size - 60
+      let container = document.getElementById('line-shape-con') as HTMLDivElement
+      if (!container) return
+      let cW = container.offsetWidth
+      let cH = container.offsetHeight
+      console.log("🪵 [index.tsx:331] ~ token ~ \x1b[0;32m offsetHeight, offsetWidth\x1b[0m = ", cH, cW)
+
+      // Grid 内边距（与 initChart 中 grid 配置保持一致）
+      const gridTop = 30
+      const gridBottom = 30
+      const gridRight = 30
+      // 窄容器（竖屏）时减小左侧边距，避免绘图区被压扁
+      const gridLeft = cW < 500 ? Math.max(80, cW * 0.25) : 230
+
+      // 绘图区可用空间
+      const availW = cW - gridLeft - gridRight
+      const availH = cH - gridTop - gridBottom
+
+      // 绘图区强制正方形，取宽高中较小的一方
+      const plotSize = Math.max(50, Math.min(availW, availH))
+
+      // 图表容器尺寸 = 绘图区 + grid 占用
+      alldata.chartHeight = plotSize + gridTop + gridBottom
+      alldata.chartWidth = plotSize + gridLeft + gridRight
+      alldata.gridLeft = gridLeft
     }
 
     watch(() => curParamList.value, (v) => {
@@ -387,6 +411,23 @@ export default defineComponent({
 
     onMounted(() => {
       getConShortSize()
+
+      // 监听容器尺寸变化（横竖屏切换等），动态保持绘图区正方形
+      resizeObserver = new ResizeObserver(() => {
+        const prevGridLeft = alldata.gridLeft
+        getConShortSize()
+        if (myChart) {
+          sleep(80).then(() => {
+            myChart.resize()
+            if (alldata.gridLeft !== prevGridLeft) {
+              myChart.setOption({ grid: { left: alldata.gridLeft } })
+            }
+          })
+        }
+      })
+      const conEl = document.getElementById('line-shape-con')
+      if (conEl) resizeObserver.observe(conEl)
+
       sleep(50).then(() => {
         initChart()
         if (chartShow.value) {
@@ -400,6 +441,7 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       alldata.timeInstance && clearInterval(alldata.timeInstance)
+      resizeObserver?.disconnect()
     })
 
     return () => {
@@ -431,13 +473,16 @@ export default defineComponent({
             }
           </div>
 
-          <div class={'w-full h-full shrink flex justify-center items-end'} id="line-shape-con">
+          <div class={'w-full h-full shrink flex justify-center items-end mt-[40px] '} id="line-shape-con"
+            style={{
+              height: "calc(100% - 80px)"
+            }}
+          >
             {
-              <div id={lineShapeChartId} class={'w-full h-full aspect-square max-w-full max-h-full relative'}
+              <div id={lineShapeChartId} class={'w-full h-full max-w-full max-h-full relative'}
                 style={{
                   height: alldata.chartHeight + 'px',
-                  width: alldata.chartHeight + 200 + 'px',
-                  left: '-100px'
+                  width: alldata.chartWidth + 'px',
                 }} ></div>
             }
 
