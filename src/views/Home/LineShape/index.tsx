@@ -357,7 +357,7 @@ export default defineComponent({
     watch(() => chartShow.value, (v) => {
       if (v) {
         sleep(100).then(() => {
-          initChart()
+          // initChart()
           getData()
           alldata.timeInstance = setInterval(() => {
             getData()
@@ -388,8 +388,8 @@ export default defineComponent({
     onMounted(() => {
       getConShortSize()
       sleep(50).then(() => {
+        initChart()
         if (chartShow.value) {
-          initChart()
           getData()
           alldata.timeInstance = setInterval(() => {
             getData()
@@ -433,7 +433,7 @@ export default defineComponent({
 
           <div class={'w-full h-full shrink flex justify-center items-end'} id="line-shape-con">
             {
-              chartShow.value && <div id={lineShapeChartId} class={'w-full h-full aspect-square max-w-full max-h-full relative'}
+              <div id={lineShapeChartId} class={'w-full h-full aspect-square max-w-full max-h-full relative'}
                 style={{
                   height: alldata.chartHeight + 'px',
                   width: alldata.chartHeight + 200 + 'px',
