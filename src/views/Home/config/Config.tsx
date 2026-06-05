@@ -142,7 +142,7 @@ export default defineComponent({
                   return {
                     style: {
                       fontSize: '1.2rem',
-                      width: '14vw'
+                      minWidth: '14vw'
                     }
                   }
                 }}

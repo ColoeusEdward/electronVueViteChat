@@ -13,6 +13,7 @@ import { useConfigStore } from "@/store/config";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { AlarmTypeNameList, UnilateralNameList } from "../dataCofigNew/enum";
 import AdressForm from "./AdressForm";
+import { sleep } from "@/utils/utils";
 
 const defSubAdressItem: ModbusAdressSubItem = {
   Area: 0,
@@ -137,9 +138,12 @@ export default defineComponent({
     })
 
     watch(() => i18nStore.langChangeCount, () => {
-      alldata.coloumns[0].label = t('config.dataName')
-      alldata.coloumns[1].label = t('config.readWritePermission')
-      alldata.coloumns[2].label = t('config.status')
+      sleep(100).then(() => {
+        alldata.coloumns[0].label = t('config.dataName')
+        alldata.coloumns[1].label = t('config.readWritePermission')
+        alldata.coloumns[2].label = t('config.status')
+      })
+
     })
 
     return () => {
