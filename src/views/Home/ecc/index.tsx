@@ -66,7 +66,8 @@ export default defineComponent({
       },
       wallThicknessList: [] as { Angle: number, Thickness: number }[],
       timeInstance: null as NodeJS.Timer | null,
-      chartHeight: 0
+      chartHeight: 0,
+      bhParam: {} as FormulaParamEntity | undefined
     })
 
     // 动态获取 datList 的 labels，确保语言切换时能及时刷新
@@ -391,6 +392,19 @@ export default defineComponent({
           silent: true,
         })
 
+        // 壁厚公差检测：根据 bhParam 的标准值与公差判断壁厚是否超差
+        let textColor = '#00aa00' // 绿色：在公差范围内
+        const bhParam = alldata.bhParam
+        if (bhParam?.Standard != null) {
+          const upperLimit = bhParam.Standard + (bhParam.UpperTol || 0)
+          const lowerLimit = bhParam.Standard - (bhParam.LowerTol || 0)
+          if (item.Thickness > upperLimit) {
+            textColor = '#FF8C00' // 橙色：超过上公差
+          } else if (item.Thickness < lowerLimit) {
+            textColor = '#ff0000' // 红色：超过下公差
+          }
+        }
+
         // Text label (offset outward from label position)
         const textOffset = 14
         const textPxX = labelPx[0] + textOffset * cosA
@@ -416,7 +430,7 @@ export default defineComponent({
             text: item.Thickness.toFixed(5),
             textAlign,
             textVerticalAlign,
-            fill: '#FF8C00',
+            fill: textColor,
             font: 'bold 18px sans-serif',
           },
           silent: true,
@@ -448,6 +462,10 @@ export default defineComponent({
         alldata.datList[2].param = curParamList.value!.find(e => e.DataGroupId === eccStore.curEccMenuOption.Angel?.GId) as FormulaParamEntity
         alldata.datList[3].param = curParamList.value!.find(e => e.DataGroupId === eccStore.curEccMenuOption.CUOD?.GId) as FormulaParamEntity
 
+        alldata.bhParam = curParamList.value!.find(e => {
+          if (!e.DataGroupId || e.DataGroupId.search(/\*/) == -1) return false
+          return e.DataGroupId.split('*')[1] == 'bh'
+        })
 
       }
     }, {

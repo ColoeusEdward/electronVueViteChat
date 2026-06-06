@@ -7,7 +7,8 @@ import { ajaxPromiseAll, safeJsonParse, sleep, getAllDataUnderGroup } from "@/ut
 import { NTabPane, NTabs } from "naive-ui";
 import { computed, defineComponent, Transition, ref, watch, reactive } from "vue";
 import { useMyI18n } from "@/hooks/useMyI18n";
-import { DataGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
+import { DataGroupEntity, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, GroupConfigEntity, ModbusAdressRow } from "~/me";
+import { DeviceClassEnum } from "../devConfigNew/enum";
 
 export default defineComponent({
   name: 'FormulaParam',
@@ -52,6 +53,9 @@ export default defineComponent({
         // },
       },
       formMap: {} as Record<string, FormulaParamEntity>,
+      otherCalcParamNameMap: {
+        'bh': '壁厚'
+      } as Record<string, string>,
     })
 
     // 语言切换时更新 reactive 对象中的标签
@@ -91,7 +95,7 @@ export default defineComponent({
             getData(row)
           })
         } else {
-          if (res.length < alldata.adressList.length) {
+          if (res.filter(e => e.DataGroupId && e.DataGroupId.search(/\*/) == -1).length < alldata.adressList.length) {
             let itemList = alldata.adressList.filter(e => !res.find(item => item.DataGroupId == e.GId)).map(e => {
               let item: FormulaParamEntity = { DataGroupId: e.GId, FormulaId: row.GId }
               return item
@@ -105,8 +109,44 @@ export default defineComponent({
 
           // }
         }
+
+
+
+
       })
     }
+    // const getOtherCalcParam = (v: DeviceGroupEntity) => {
+    //   callBrige(callFnName.GetFormulaParams, v.).then((res: FormulaParamEntity[]) => {
+
+    //   })
+    // }
+    watch(() => curDeviceGroupRow.value, (v: DeviceGroupEntity | null | undefined) => {
+      if (!v) return
+      // console.log("🪵 [FormulaParam.tsx:126] ~ token ~ \x1b[0;32mcurParamList.value.find(item => item.DataGroupId == (v.GId + '*' + 'bh'))\x1b[0m = ", curParamList.value, v.DeviceClass == DeviceClassEnum.Ecc.toString());
+
+      if (v.DeviceClass == DeviceClassEnum.Ecc.toString() && !alldata.paramList.find(item => item.DataGroupId == (v.GId + '*' + 'bh'))) {
+        let dat: FormulaParamEntity = {
+          // GId: v.GId + '*' + 'bh',
+          FormulaId: curFormulaConfigRow.value?.GId,
+          DataGroupId: v.GId + '*' + 'bh',
+        }
+        // console.log("🪵 [FormulaParam.tsx:128] ~ token ~ \x1b[0;32mdat\x1b[0m = ", dat);
+        callBrige(callFnName.SaveFormulaParams, [dat]).then((res: FormulaParamEntity[]) => {
+          getData(curFormulaConfigRow.value)
+        })
+      }
+      // if(!alldata.formMap[curParamList.value[0].FormulaId + '*' + 'bh']){
+      //   let dat:FormulaParamEntity = {
+      //     GId:v.GId+'-'+'bh',
+      //     FormulaId: curParamList.value[0].FormulaId,
+      //     DataGroupId: v.GId+'-'+'bh',
+      //   }
+      //   alldata.formMap[curParamList.value[0].FormulaId + '*' + 'bh']y = {
+      //     FormulaId: curParamList.value[0].FormulaId,
+
+      //   }
+      // }
+    })
     watch(() => curFormulaConfigRow.value, (v: FormulaConfigEntity | null) => {
       getData(v)
       sleep(50).then(() => {
@@ -131,7 +171,14 @@ export default defineComponent({
     })
 
     const curParamList = computed(() => {
-      return pararmListWidthAdress.value.filter(item => item.AdressItem?.DeviceGroupId == curDeviceGroupRow.value?.GId)
+      return pararmListWidthAdress.value.filter(item => {
+        let DeviceGroupId = ''
+        if (item.DataGroupId && item.DataGroupId?.search(/\*/) > -1) {
+          DeviceGroupId = item.DataGroupId?.split('*')[0]!
+          console.log("🪵 [FormulaParam.tsx:177] ~ token ~ \x1b[0;32mDeviceGroupId\x1b[0m = ", DeviceGroupId);
+        }
+        return item.AdressItem?.DeviceGroupId == curDeviceGroupRow.value?.GId || DeviceGroupId == curDeviceGroupRow.value?.GId
+      })
     })
     watch(() => curParamList.value, (v) => {
       if (!v.length) return
@@ -160,6 +207,16 @@ export default defineComponent({
               if (!alldata.formMap[totalId]) {
                 alldata.formMap[totalId] = item
               }
+              if (!item.AdressItem) {
+                let prop = item.DataGroupId?.split('*')[1]
+                if (prop) {
+                  let name = alldata.otherCalcParamNameMap[prop]
+                  item.AdressItem = {
+                    DataName: name
+                  }
+                }
+
+              }
               return (
                 <NTabPane displayDirective="show:lazy" name={item.DataGroupId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataGroupId ? alldata.activeStyle : {} } }}>
                   <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border border-gray-600 border-solid '}>
@@ -176,6 +233,22 @@ export default defineComponent({
               )
             })
           }
+
+          {/* {
+            //壁厚属于计算值而非采集值,单独添加
+            curDeviceGroupRow.value 
+            && curDeviceGroupRow.value.DeviceClass == DeviceClassEnum.Ecc.toString() 
+            && !curParamList.value.find(item => item.DataGroupId == curDeviceGroupRow.value?.GId + '*' + 'bh') 
+            &&
+            <NTabPane displayDirective="show:lazy" name={curDeviceGroupRow.value.GId + '*' + 'bh'} tab={"壁厚"} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'bh' ? alldata.activeStyle : {} } }}>
+              <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border border-gray-600 border-solid '}>
+                <div class={'w-full h-full py-6 pl-4 '}>
+                  <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', maxWidth: '450px', marginRight: '10px', textAlign: 'center' }} {...alldata.formCfg} form={alldata.formMap[curDeviceGroupRow.value.GId + '*' + 'bh']} />
+                </div>
+
+              </div>
+            </NTabPane>
+          } */}
 
         </NTabs>
 
