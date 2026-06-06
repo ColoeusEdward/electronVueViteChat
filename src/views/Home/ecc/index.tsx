@@ -1,4 +1,4 @@
-import { NButton, NPopselect, NIcon, NDropdown, DropdownProps } from "naive-ui";
+import { NButton, NPopselect, NIcon, NDropdown, NSwitch, DropdownProps } from "naive-ui";
 import type { PopselectProps } from "naive-ui";
 import { defineComponent, reactive, ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
@@ -64,7 +64,9 @@ export default defineComponent({
         Angel: 0,
         CUOD: 0
       },
-      wallThicknessList: [] as { Angle: number, Thickness: number }[],
+      wallThicknessList: [] as { Angle: number, Thickness: number, Concentricity: number }[],
+      concentricityList: [] as { Angle: number, Thickness: number, Concentricity: number }[],
+      showConcentricity: false,
       timeInstance: null as NodeJS.Timer | null,
       chartHeight: 0,
       bhParam: {} as FormulaParamEntity | undefined
@@ -79,6 +81,14 @@ export default defineComponent({
         Ecc: t('data.deviation') + ':',
         Angel: t('data.deviationAngle') + ':',
         CUOD: t('data.guideLine') + ':'
+      }
+    })
+    // 壁厚/同心度开关标签，依赖 langChangeCount 确保语言切换时刷新
+    const switchLabels = computed(() => {
+      const _ = i18nStore.langChangeCount
+      return {
+        concentricity: t('config.concentricity'),
+        wallThickness: t('config.wallThickness')
       }
     })
     const chartShow = computed(() => {
@@ -277,7 +287,8 @@ export default defineComponent({
     }
     const updateWallThicknessLabels = () => {
       if (!myChart) return
-      const list = alldata.wallThicknessList
+      const isConcentricity = alldata.showConcentricity
+      const list = isConcentricity ? alldata.concentricityList : alldata.wallThicknessList
       if (!list || list.length === 0) {
         myChart.setOption({ graphic: { elements: [] } })
         return
@@ -392,16 +403,23 @@ export default defineComponent({
           silent: true,
         })
 
-        // 壁厚公差检测：根据 bhParam 的标准值与公差判断壁厚是否超差
-        let textColor = '#00aa00' // 绿色：在公差范围内
-        const bhParam = alldata.bhParam
-        if (bhParam?.Standard != null) {
-          const upperLimit = bhParam.Standard + (bhParam.UpperTol || 0)
-          const lowerLimit = bhParam.Standard - (bhParam.LowerTol || 0)
-          if (item.Thickness > upperLimit) {
-            textColor = '#FF8C00' // 橙色：超过上公差
-          } else if (item.Thickness < lowerLimit) {
-            textColor = '#ff0000' // 红色：超过下公差
+        // 文字颜色：
+        // - 同心度模式：深蓝色
+        // - 壁厚模式：根据 bhParam 公差检测，正常绿色 / 超上公差橙色 / 超下公差红色
+        let textColor: string
+        if (isConcentricity) {
+          textColor = '#003a62' // 深蓝色：同心度
+        } else {
+          textColor = '#00aa00' // 绿色：壁厚在公差范围内
+          const bhParam = alldata.bhParam
+          if (bhParam?.Standard != null) {
+            const upperLimit = bhParam.Standard + (bhParam.UpperTol || 0)
+            const lowerLimit = bhParam.Standard - (bhParam.LowerTol || 0)
+            if (item.Thickness > upperLimit) {
+              textColor = '#FF8C00' // 橙色：壁厚超过上公差
+            } else if (item.Thickness < lowerLimit) {
+              textColor = '#ff0000' // 红色：壁厚超过下公差
+            }
           }
         }
 
@@ -427,7 +445,7 @@ export default defineComponent({
           left: textPxX - 30,
           top: textPxY,
           style: {
-            text: item.Thickness.toFixed(5),
+            text: !isConcentricity ? item.Thickness.toFixed(5) : item.Concentricity.toFixed(2),
             textAlign,
             textVerticalAlign,
             fill: textColor,
@@ -452,6 +470,14 @@ export default defineComponent({
       if (od === 0 || ecc === 0 || angel === 0 || cuod === 0) return
       callBrige(callFnName.CalcWallThickness, [od, ecc, angel, cuod].map(e => Number(e)), true).then((res: any[]) => {
         alldata.wallThicknessList = res
+        alldata.concentricityList = res
+      })
+    }
+
+    const getConcentricity = (od: number, ecc: number, angel: number, cuod: number) => {
+      if (od === 0 || ecc === 0 || angel === 0 || cuod === 0) return
+      callBrige(callFnName.CalcWallThickness, [od, ecc, angel, cuod].map(e => Number(e)), true).then((res: any[]) => {
+        alldata.concentricityList = res
       })
     }
 
@@ -479,6 +505,7 @@ export default defineComponent({
       alldata.datList[3].value = alldata.valObj.CUOD
 
       getWallThickness(alldata.valObj.OD, alldata.valObj.Ecc, alldata.valObj.Angel, alldata.valObj.CUOD)
+      // getConcentricity(alldata.valObj.OD, alldata.valObj.Ecc, alldata.valObj.Angel, alldata.valObj.CUOD)
 
       alldata.datList.forEach(e => {
         e.diff = e.value - (e.param?.Standard || 0)
@@ -486,6 +513,12 @@ export default defineComponent({
       // console.log("🪵 [index.tsx:255] ~ token ~ \x1b[0;32malldata.datList\x1b[0m = ", alldata.datList);
     })
     watch(() => alldata.wallThicknessList, () => {
+      if (!alldata.showConcentricity) updateWallThicknessLabels()
+    })
+    watch(() => alldata.concentricityList, () => {
+      if (alldata.showConcentricity) updateWallThicknessLabels()
+    })
+    watch(() => alldata.showConcentricity, () => {
       updateWallThicknessLabels()
     })
     watch(() => chartShow.value, (v) => {
@@ -565,7 +598,7 @@ export default defineComponent({
             </div> */}
           </div>
           {
-            <div class={'w-full h-full shrink flex justify-center items-end'} id="ecc-con">
+            <div class={'w-full h-full shrink flex justify-center items-end relative'} id="ecc-con">
               {
                 <div id="ecc-chart" class={'w-full h-full aspect-square max-w-full max-h-full'}
                   style={{
@@ -573,7 +606,10 @@ export default defineComponent({
                     width: alldata.chartHeight + 'px'
                   }} ></div>
               }
-
+              <div class={'absolute bottom-6 right-6 flex items-center gap-2'}>
+                <span class={'text-2xl text-gray-500'}>{alldata.showConcentricity ? switchLabels.value.concentricity : switchLabels.value.wallThickness}</span>
+                <NSwitch value={alldata.showConcentricity} onUpdate:value={(v: boolean) => { alldata.showConcentricity = v }} size="large" />
+              </div>
             </div>
           }
           {/* <MenuBtn /> */}

@@ -54,7 +54,7 @@ export default defineComponent({
       },
       formMap: {} as Record<string, FormulaParamEntity>,
       otherCalcParamNameMap: {
-        'bh': '壁厚'
+        'bh': t('config.wallThickness')
       } as Record<string, string>,
     })
 
@@ -63,6 +63,7 @@ export default defineComponent({
       alldata.formCfg.itemList[0].label = t('data.standard2')
       alldata.formCfg.itemList[1].label = t('data.toleranceUp')
       alldata.formCfg.itemList[2].label = t('data.toleranceDwon')
+      alldata.otherCalcParamNameMap['bh'] = t('config.wallThickness')
     })
 
     const curDeviceGroupRow = computed(() => formulaStore.curDeviceGroupRow)
@@ -196,6 +197,16 @@ export default defineComponent({
     }
     formulaStore.setGetParamFormMapFn(getFormMap)
 
+    // 获取tab标签的展示名称, 对计算参数(如壁厚)使用i18n翻译, 并依赖 langChangeCount 确保语言切换时刷新
+    const getTabDisplayName = (item: FormulaParamEntity & { AdressItem?: DataGroupEntity }) => {
+      const _ = i18nStore.langChangeCount
+      const prop = item.DataGroupId?.split('*')[1]
+      if (prop && alldata.otherCalcParamNameMap[prop]) {
+        return alldata.otherCalcParamNameMap[prop]
+      }
+      return item.AdressItem?.DataName || prop || ''
+    }
+
     return () => {
       return (
         <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full  formula-param-tab my-formula-tab '} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
@@ -218,7 +229,7 @@ export default defineComponent({
 
               }
               return (
-                <NTabPane displayDirective="show:lazy" name={item.DataGroupId} tab={item.AdressItem?.DataName} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataGroupId ? alldata.activeStyle : {} } }}>
+                <NTabPane displayDirective="show:lazy" name={item.DataGroupId} tab={getTabDisplayName(item)} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == item.DataGroupId ? alldata.activeStyle : {} } }}>
                   <div style={{ height: `calc(100vh - ${alldata.calcHeight}px)` }} class={'w-full h-full p-2 border border-gray-600 border-solid '}>
                     <div class={'w-full h-full py-6 pl-4 '}>
                       <MyFormWrap labelWidth={360} fontSize={32} labelAlign="left" inputStyle={{ marginLeft: 'auto', width: '450px', marginRight: '10px', textAlign: 'center' }} {...alldata.formCfg} form={alldata.formMap[totalId]} />
