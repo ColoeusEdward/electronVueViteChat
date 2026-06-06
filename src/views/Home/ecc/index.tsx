@@ -274,10 +274,117 @@ export default defineComponent({
         ]
       })
     }
+    const updateWallThicknessLabels = () => {
+      if (!myChart) return
+      const list = alldata.wallThicknessList
+      if (!list || list.length === 0) {
+        myChart.setOption({ graphic: { elements: [] } })
+        return
+      }
+
+      const axisMin = curODParamUpAndLow.value.lower || -1
+      const axisMax = curODParamUpAndLow.value.upper || 1
+      const maxRange = Math.max(Math.abs(axisMin), Math.abs(axisMax))
+      const arrowInnerRadius = maxRange * 1.025 * 0.85
+      const labelRadius = maxRange * 1.09 * 0.85
+
+      const centerPx = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [0, 0])
+      if (!centerPx) return
+
+      const elements: any[] = []
+
+      for (const item of list) {
+        const angleRad = item.Angle * Math.PI / 180
+        const cosA = Math.cos(angleRad)
+        const sinA = Math.sin(angleRad)
+
+        const labelPos = [labelRadius * cosA, labelRadius * sinA]
+        const arrowInnerPos = [arrowInnerRadius * cosA, arrowInnerRadius * sinA]
+
+        const labelPx = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, labelPos)
+        const arrowEndPx = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, arrowInnerPos)
+
+        if (!labelPx || !arrowEndPx || isNaN(labelPx[0])) continue
+
+        // Arrow line (from label position toward center)
+        elements.push({
+          type: 'line',
+          shape: {
+            x1: labelPx[0], y1: labelPx[1],
+            x2: arrowEndPx[0], y2: arrowEndPx[1],
+          },
+          style: {
+            stroke: '#FF8C00',
+            lineWidth: 2,
+          },
+          silent: true,
+        })
+
+        // Arrowhead triangle at the inner end of the line
+        const arrowSize = 9
+        const dirX = -cosA
+        const dirY = sinA
+        const perpX = -dirY
+        const perpY = dirX
+
+        const tipX = arrowEndPx[0]
+        const tipY = arrowEndPx[1]
+        const baseLeftX = arrowEndPx[0] + perpX * arrowSize / 2 - dirX * arrowSize * 0.6
+        const baseLeftY = arrowEndPx[1] + perpY * arrowSize / 2 - dirY * arrowSize * 0.6
+        const baseRightX = arrowEndPx[0] - perpX * arrowSize / 2 - dirX * arrowSize * 0.6
+        const baseRightY = arrowEndPx[1] - perpY * arrowSize / 2 - dirY * arrowSize * 0.6
+
+        elements.push({
+          type: 'polygon',
+          shape: {
+            points: [[tipX, tipY], [baseLeftX, baseLeftY], [baseRightX, baseRightY]],
+          },
+          style: {
+            fill: '#FF8C00',
+          },
+          silent: true,
+        })
+
+        // Text label (offset outward from label position)
+        const textOffset = 14
+        const textPxX = labelPx[0] + textOffset * cosA
+        // 上方三个文字额外向上偏移12px（像素Y为负方向）
+        const topExtraOffset = sinA > 0.3 ? -12 : 0
+        const textPxY = labelPx[1] - textOffset * sinA + topExtraOffset
+
+        let textAlign: string
+        let textVerticalAlign: string
+        if (cosA > 0.3) textAlign = 'left'
+        else if (cosA < -0.3) textAlign = 'right'
+        else textAlign = 'center'
+
+        if (sinA > 0.3) textVerticalAlign = 'bottom'
+        else if (sinA < -0.3) textVerticalAlign = 'top'
+        else textVerticalAlign = 'middle'
+
+        elements.push({
+          type: 'text',
+          left: textPxX - 30,
+          top: textPxY,
+          style: {
+            text: item.Thickness.toFixed(5),
+            textAlign,
+            textVerticalAlign,
+            fill: '#FF8C00',
+            font: 'bold 18px sans-serif',
+          },
+          silent: true,
+        })
+      }
+
+      myChart.setOption({
+        graphic: { elements },
+      })
+    }
     const getConShortSize = () => {
       let { offsetHeight, offsetWidth } = document.getElementById('ecc-con') as HTMLDivElement
       let size = offsetHeight - offsetWidth > 0 ? offsetWidth : offsetHeight
-      console.log("🪵 [index.tsx:262] ~ token ~ \x1b[0;32msize\x1b[0m = ", size);
+      // console.log("🪵 [index.tsx:262] ~ token ~ \x1b[0;32msize\x1b[0m = ", size);
       alldata.chartHeight = size - 20
     }
 
@@ -285,41 +392,6 @@ export default defineComponent({
       if (od === 0 || ecc === 0 || angel === 0 || cuod === 0) return
       callBrige(callFnName.CalcWallThickness, [od, ecc, angel, cuod].map(e => Number(e)), true).then((res: any[]) => {
         alldata.wallThicknessList = res
-        //示例
-        //         [
-        //     {
-        //         "Angle": 0,
-        //         "Thickness": 0.2344
-        //     },
-        //     {
-        //         "Angle": 45,
-        //         "Thickness": 0.2431
-        //     },
-        //     {
-        //         "Angle": 90,
-        //         "Thickness": 0.2411
-        //     },
-        //     {
-        //         "Angle": 135,
-        //         "Thickness": 0.2294
-        //     },
-        //     {
-        //         "Angle": 180,
-        //         "Thickness": 0.2141
-        //     },
-        //     {
-        //         "Angle": 225,
-        //         "Thickness": 0.2044
-        //     },
-        //     {
-        //         "Angle": 270,
-        //         "Thickness": 0.2067
-        //     },
-        //     {
-        //         "Angle": 315,
-        //         "Thickness": 0.2194
-        //     }
-        // ]
       })
     }
 
@@ -349,11 +421,15 @@ export default defineComponent({
       })
       // console.log("🪵 [index.tsx:255] ~ token ~ \x1b[0;32malldata.datList\x1b[0m = ", alldata.datList);
     })
+    watch(() => alldata.wallThicknessList, () => {
+      updateWallThicknessLabels()
+    })
     watch(() => chartShow.value, (v) => {
       if (v) {
         sleep(100).then(() => {
           // initChart()
           getData()
+          alldata.timeInstance && clearInterval(alldata.timeInstance)
           alldata.timeInstance = setInterval(() => {
             getData()
           }, configStore.sysConfig.ColloctInterval || 1000)
@@ -374,6 +450,7 @@ export default defineComponent({
         initChart()
         if (chartShow.value) {
           initMoreChart()
+          alldata.timeInstance && clearInterval(alldata.timeInstance)
           getData()
           alldata.timeInstance = setInterval(() => {
             getData()
