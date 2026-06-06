@@ -293,6 +293,52 @@ export default defineComponent({
 
       const elements: any[] = []
 
+      // ── 扇形光束：根据偏心角 Angel 从圆心射出 ──
+      const fanCenterAngle = alldata.valObj.Angel
+      const fanHalfAngle = 25  // 半角 15°，总宽 30°
+      const fanSliceCount = 50
+      const fanOuterRadius = alldata.valObj.OD / 2
+
+      if (fanCenterAngle !== 0) {
+        const angleStartRad = (fanCenterAngle - fanHalfAngle) * Math.PI / 180
+        const angleEndRad = (fanCenterAngle + fanHalfAngle) * Math.PI / 180
+
+        for (let i = 0; i < fanSliceCount; i++) {
+          const a1 = angleStartRad + (i / fanSliceCount) * (angleEndRad - angleStartRad)
+          const a2 = angleStartRad + ((i + 1) / fanSliceCount) * (angleEndRad - angleStartRad)
+
+          // 颜色插值：中轴橙 → 边缘深蓝
+          const midAngleDeg = fanCenterAngle - fanHalfAngle + ((i + 0.5) / fanSliceCount) * (fanHalfAngle * 2)
+          const t = Math.abs(midAngleDeg - fanCenterAngle) / fanHalfAngle
+          const r = Math.round(255 * (1 - t))
+          const g = Math.round(140 * (1 - t) + 58 * t)
+          const b = Math.round(98 * t)
+          const opacity = 0.7 * (1 - t * 0.5)
+
+          const c1 = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [0, 0])
+          const c2 = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [0, 0])
+          const c3 = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [fanOuterRadius * Math.cos(a2), fanOuterRadius * Math.sin(a2)])
+          const c4 = myChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [fanOuterRadius * Math.cos(a1), fanOuterRadius * Math.sin(a1)])
+
+          if (!c1 || !c2 || !c3 || !c4 || isNaN(c1[0])) continue
+
+          elements.push({
+            type: 'polygon',
+            shape: {
+              points: [[c1[0], c1[1]], [c2[0], c2[1]], [c3[0], c3[1]], [c4[0], c4[1]]],
+            },
+            // transition: ['shape'],
+
+            style: {
+              fill: `rgb(${r},${g},${b})`,
+              opacity,
+            },
+            silent: true,
+            zlevel: -2,
+          })
+        }
+      }
+
       for (const item of list) {
         const angleRad = item.Angle * Math.PI / 180
         const cosA = Math.cos(angleRad)
