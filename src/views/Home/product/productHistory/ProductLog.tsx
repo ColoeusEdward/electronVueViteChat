@@ -106,7 +106,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'flex-shrink'}>
+        <div class={' w-full h-full'}>
           {/* @ts-ignore */}
           <MyNTable {...tableCfg} data={tableCfg.tdata} />
         </div>

@@ -6,7 +6,7 @@ import { callSpc } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import classNames from "classnames";
-import { NButton, NDatePicker, NDivider, NInput, NSelect, NSpace, NTabPane, NTabs, useMessage } from "naive-ui";
+import { NButton, NDatePicker, NDivider, NDrawer, NDrawerContent, NInput, NSelect, NSpace, NTabPane, NTabs, useMessage } from "naive-ui";
 import { computed, defineComponent, reactive, watch } from "vue";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { ProductHistoryEntity } from "~/me";
@@ -48,7 +48,8 @@ export default defineComponent({
 
     }
     const jumpLog = (row: ProductHistoryEntity) => {
-
+      innerData.setCurRow(row)
+      alldata.showLog = true
     }
     const tableCfg = reactive({
       columns: [
@@ -158,28 +159,48 @@ export default defineComponent({
     return () => {
       return (
         <div class={' w-screen h-screen absolute  flex flex-col z-10 bg-[#f5f6f6] overflow-hidden'}>
-          <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
+          {/* <NTabs value={alldata.curTabValue} type="card" animated size="large" barWidth={1148} pane-class={'shrink-0 h-full'} class={'config-tab h-full w-full'} onUpdateValue={handleTabChange} defaultValue={alldata.defaultTab} >
             <NTabPane displayDirective="show:lazy" name={"product"} tab={t('config.productHistory')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'product' ? alldata.activeStyle : {} } }}>
-              <div class={' h-full shrink '}>
-                {/* <SysConfig /> */}
-                <div class={classNames('flex-shrink flex h-full w-full', { 'flex-col': !store.isLandscape })}>
-                  <div class={classNames("flex flex-col ", { 'w-full': store.isLandscape, 'h-1/2': !store.isLandscape })}>
-                    <div class={'p-3'}>
-                      <NSpace>
-                        <NSelect class={'w-32'} v-model:value={commonData.selectProps} options={commonData.selectOpt}></NSelect>
-                        <NInput v-model:value={commonData.filterText} placeholder={t('config.pleaseInput')} clearable ></NInput>
+              
+            </NTabPane>
 
-                        <NDatePicker v-model:value={commonData.range} type="daterange" clearable />
-                        <NButton secondary strong={true} type="primary" size={'medium'} class={' w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => { getTableData(true) }}>{t('config.query')}</NButton>
-                      </NSpace>
-                    </div>
-                    <div class={'flex-shrink'}>
-                      {/* @ts-ignore */}
-                      <MyNTable {...tableCfg} data={ftdata.value} />
-                    </div>
-                  </div>
+          </NTabs> */}
+          <div class={' h-full shrink '}>
+            {/* <SysConfig /> */}
+            <div class={classNames('flex-shrink flex h-full w-full', { 'flex-col': !store.isLandscape })}>
+              <div class={classNames("flex flex-col ", { 'w-full': store.isLandscape, 'h-1/2': !store.isLandscape })}>
+                <div class={'p-3 flex justify-between items-center'}>
+                  <NSpace>
+                    <NSelect class={'w-32'} v-model:value={commonData.selectProps} options={commonData.selectOpt}></NSelect>
+                    <NInput v-model:value={commonData.filterText} placeholder={t('config.pleaseInput')} clearable ></NInput>
 
-                  {/* <div class={classNames(' border-0 border-l border-gray-200 border-solid', { 'w-1/2': store.isLandscape, 'h-1/2': !store.isLandscape })}>
+                    <NDatePicker v-model:value={commonData.range} type="daterange" clearable />
+                    <NButton secondary strong={true} type="primary" size={'medium'} class={' w-full shrink mr-2 flex-1'} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => { getTableData(true) }}>{t('config.query')}</NButton>
+                  </NSpace>
+                  <NSpace>
+                    <NButton secondary strong={true} type="primary" size={'medium'} class={'  shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => {
+                      if (!innerData.curRow) {
+                        msg.warning(t('config.pleaseSelectOneRow'))
+                        return
+                      }
+                      alldata.showStatic = true
+                    }}>{t('config.statisticalData')}</NButton>
+                    <NButton secondary strong={true} type="primary" size={'medium'} class={'  shrink mr-2 '} style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} onClick={() => {
+                      if (!innerData.curRow) {
+                        msg.warning(t('config.pleaseSelectOneRow'))
+                        return
+                      }
+                      alldata.showLog = true
+                    }}>{t('config.productLog')}</NButton>
+                  </NSpace>
+                </div>
+                <div class={'flex-shrink'}>
+                  {/* @ts-ignore */}
+                  <MyNTable {...tableCfg} data={ftdata.value} />
+                </div>
+              </div>
+
+              {/* <div class={classNames(' border-0 border-l border-gray-200 border-solid', { 'w-1/2': store.isLandscape, 'h-1/2': !store.isLandscape })}>
               <div class={classNames('h-1/2 flex flex-col',)}>
                 <NDivider titlePlacement="left" >线轴统计数据</NDivider >
                 <Statistic />
@@ -192,21 +213,22 @@ export default defineComponent({
             </div> */}
 
 
-                </div>
-              </div>
-            </NTabPane>
-            <NTabPane displayDirective="show:lazy" name={"statistic"} tab={t('config.statisticalData')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'statistic' ? alldata.activeStyle : {} } }}>
-
-            </NTabPane>
-            <NTabPane displayDirective="show:lazy" name={"productLog"} tab={t('config.productLog')} tabProps={{ style: { ...alldata.commonStyle, ...alldata.curTabValue == 'productLog' ? alldata.activeStyle : {} } }}>
-
-            </NTabPane>
-
-          </NTabs>
+            </div>
+          </div>
 
 
 
           <AbsBottomBtn cancelFn={cancel} />
+          <NDrawer v-model:show={alldata.showStatic} placement="right" width="80%" >
+            <NDrawerContent title={t('config.statisticalData')} closable>
+              <Statistic />
+            </NDrawerContent>
+          </NDrawer>
+          <NDrawer v-model:show={alldata.showLog} placement="right" width="80%" >
+            <NDrawerContent title={t('config.productLog')} closable>
+              <ProductLog />
+            </NDrawerContent>
+          </NDrawer>
         </div>
       )
     }

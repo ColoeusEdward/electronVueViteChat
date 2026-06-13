@@ -49,7 +49,9 @@ export default defineComponent({
         }
       },
       rowKey: (row: ProductStatisticEntity) => row.GId,
-      virtualScroll: true
+      virtualScroll: true,
+      isSimpleStyle: true
+
     })
     var sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -93,7 +95,7 @@ export default defineComponent({
     }
     watch(() => innerData.curRow, (val) => {
       val && getTableData()
-    })
+    }, { immediate: true })
 
     // 语言切换时更新 tableCfg 中的标题
     watch(() => i18nStore.langChangeCount, () => {
@@ -113,7 +115,7 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'flex-shrink'}>
+        <div class={' w-full h-full'}>
           {/* @ts-ignore */}
           <MyNTable {...tableCfg} data={tableCfg.tdata} />
         </div>

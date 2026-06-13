@@ -13,6 +13,7 @@ import { noKeyBoardInputClass } from "@/views/Home/config/sysConfig/enum";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+
 const isLowResolution = () => {
   return screen.width <= 1440 || window.innerWidth <= 1440
 }
