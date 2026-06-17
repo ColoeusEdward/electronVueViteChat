@@ -215,123 +215,180 @@ body {
   opacity: 0;
 }
 
-/* ── Modern Bright Keyboard ──────────────────────────────────── */
+/* ── Frosted-Glass Tech Keyboard ────────────────────────────── */
 .simple-keyboard.hg-theme-default.myTheme {
   background: transparent;
-  padding: 6px 8px 10px;
+  padding: 4px 5px 6px;
   border-radius: 0;
 
   .hg-row {
-    gap: 5px;
-    margin-bottom: 5px;
-    &:last-child { margin-bottom: 0; }
+    gap: 0px;
+    margin-bottom: 6px;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
+  /* 普通按键 — 不透明亮白键帽（顶部实心高光 + 柔和落影 = 玻璃质感，零 blur） */
   .hg-button {
-    background: linear-gradient(175deg, #ffffff 0%, #f3f5fc 100%);
-    color: #2d3348;
-    border: 1px solid rgba(180, 190, 220, 0.6);
-    border-radius: 9px;
+    background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 100%);
+    color: #2b3340;
+    border: 1px solid #d6e0ec;
+    border-radius: 12px;
     box-shadow:
-      0 2px 0 rgba(140, 155, 200, 0.35),
-      0 3px 6px rgba(100, 115, 170, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    font-size: 26px;
+      0 6px 14px rgba(30, 50, 90, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 #ffffff;
+    font-size: 24px;
     font-weight: 600;
-    transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.08s ease, border-color 0.1s ease;
+    letter-spacing: 0.02em;
+    // padding: 24px 0;
+    height: 50px;
+    transition:
+      box-shadow 0.12s ease,
+      transform 0.08s ease,
+      background 0.12s ease;
 
     &:hover {
-      background: linear-gradient(175deg, #ffffff 0%, #eaedfa 100%);
-      border-color: rgba(140, 158, 230, 0.75);
+      background: linear-gradient(180deg, #ffffff 0%, #f1f6fc 100%);
       box-shadow:
-        0 3px 0 rgba(120, 140, 200, 0.3),
-        0 5px 10px rgba(100, 115, 170, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
+        0 8px 18px rgba(30, 50, 90, 0.16),
+        0 0 0 1px rgba(56, 189, 248, 0.3),
+        inset 0 1px 0 #ffffff;
     }
 
     &:active {
-      background: linear-gradient(175deg, #e8ecfb 0%, #dce2f8 100%);
-      border-color: rgba(100, 130, 220, 0.7);
+      background: linear-gradient(180deg, #e4ecf4 0%, #d6e0ea 100%);
       box-shadow:
-        0 0px 0 rgba(120, 140, 200, 0.2),
-        0 1px 3px rgba(100, 115, 170, 0.18),
-        0 0 10px rgba(99, 102, 241, 0.18);
-      transform: translateY(1px) scale(0.97);
+        0 2px 6px rgba(30, 50, 90, 0.1),
+        inset 0 2px 5px rgba(30, 50, 90, 0.18);
+      transform: translateY(1px);
     }
   }
 
-  /* Enter — vivid blue */
+  /* Enter — 主操作，实色青蓝玻璃辉光 */
   .hg-button[data-skbtn="{enter}"] {
-    background: linear-gradient(155deg, #3b82f6 0%, #2255d0 100%);
-    color: #fff;
-    border-color: rgba(59, 130, 246, 0.5);
+    background: linear-gradient(160deg, #38bdf8 0%, #2563eb 100%);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.45);
     box-shadow:
-      0 2px 0 rgba(29, 78, 180, 0.55),
-      0 4px 10px rgba(37, 99, 235, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      0 6px 18px rgba(37, 99, 235, 0.4),
+      0 0 0 1px rgba(56, 189, 248, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(12, 40, 90, 0.35);
     &:hover {
-      background: linear-gradient(155deg, #5295f7 0%, #3470e8 100%);
+      background: linear-gradient(160deg, #4cc6fa 0%, #3b78f0 100%);
       box-shadow:
-        0 3px 0 rgba(29, 78, 180, 0.5),
-        0 6px 14px rgba(37, 99, 235, 0.4);
+        0 8px 22px rgba(37, 99, 235, 0.5),
+        0 0 0 1px rgba(56, 189, 248, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
     &:active {
-      background: linear-gradient(155deg, #2563eb 0%, #1a44b8 100%);
-      transform: translateY(1px) scale(0.97);
+      background: linear-gradient(160deg, #2aa6e6 0%, #1e54cc 100%);
+      box-shadow:
+        0 2px 8px rgba(37, 99, 235, 0.35),
+        inset 0 2px 6px rgba(12, 40, 90, 0.3);
+      transform: translateY(1px);
     }
   }
 
-  /* Backspace — coral-red */
+  /* Backspace ← — 次级，浅青键 */
   .hg-button[data-skbtn="{bksp2}"] {
-    background: linear-gradient(155deg, #fb7185 0%, #f43f5e 100%);
-    color: #fff;
-    border-color: rgba(244, 63, 94, 0.45);
+    background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 100%);
+    color: #0c4a6e;
+    border-color: #a5d8f5;
     box-shadow:
-      0 2px 0 rgba(200, 30, 60, 0.45),
-      0 4px 10px rgba(244, 63, 94, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      0 6px 14px rgba(14, 116, 180, 0.22),
+      0 0 0 1px rgba(56, 189, 248, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
     &:hover {
-      background: linear-gradient(155deg, #fc8595 0%, #f55070 100%);
+      background: linear-gradient(180deg, #c4ecff 0%, #8cdaff 100%);
+      box-shadow:
+        0 8px 18px rgba(14, 116, 180, 0.28),
+        0 0 0 1px rgba(56, 189, 248, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
-    &:active { transform: translateY(1px) scale(0.97); }
+    &:active {
+      background: linear-gradient(180deg, #8cd3f5 0%, #6ec3f0 100%);
+      box-shadow:
+        0 2px 6px rgba(14, 116, 180, 0.2),
+        inset 0 2px 5px rgba(14, 116, 180, 0.25);
+      transform: translateY(1px);
+    }
   }
 
-  /* CapsLock / Shift — violet-indigo */
+  /* CapsLock / Shift — 修饰键，淡蓝键 */
   .hg-button[data-skbtn="{lock}"],
   .hg-button[data-skbtn="{shift}"] {
-    background: linear-gradient(155deg, #a5b4fc 0%, #818cf8 100%);
-    color: #fff;
-    border-color: rgba(129, 140, 248, 0.5);
+    background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e3a5f;
+    border-color: #c2d8f5;
     box-shadow:
-      0 2px 0 rgba(79, 70, 229, 0.4),
-      0 4px 10px rgba(99, 102, 241, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    &:active { transform: translateY(1px) scale(0.97); }
+      0 6px 14px rgba(37, 99, 235, 0.16),
+      0 0 0 1px rgba(99, 152, 240, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    &:hover {
+      background: linear-gradient(180deg, #e4f0ff 0%, #cce4ff 100%);
+      box-shadow:
+        0 8px 18px rgba(37, 99, 235, 0.2),
+        0 0 0 1px rgba(99, 152, 240, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+    &:active {
+      background: linear-gradient(180deg, #bfdbfe 0%, #a7caf8 100%);
+      box-shadow:
+        0 2px 6px rgba(37, 99, 235, 0.16),
+        inset 0 2px 5px rgba(37, 99, 235, 0.2);
+      transform: translateY(1px);
+    }
   }
 
-  /* 123 / abc toggle */
+  /* 123 / abc — 中性切换，冷石板键 */
   .hg-button[data-skbtn="{123}"],
   .hg-button[data-skbtn="{abc}"] {
-    background: linear-gradient(155deg, #a5b4fc 0%, #818cf8 100%);
-    color: #fff;
-    border-color: rgba(129, 140, 248, 0.5);
+    background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+    color: #eef2f7;
+    border-color: #5a6b80;
     box-shadow:
-      0 2px 0 rgba(79, 70, 229, 0.4),
-      0 4px 10px rgba(99, 102, 241, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    &:active { transform: translateY(1px) scale(0.97); }
+      0 6px 14px rgba(30, 41, 59, 0.28),
+      0 0 0 1px rgba(148, 163, 184, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    text-shadow: 0 1px 2px rgba(15, 23, 42, 0.4);
+    &:hover {
+      background: linear-gradient(180deg, #74849c 0%, #55647a 100%);
+      box-shadow:
+        0 8px 18px rgba(30, 41, 59, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    &:active {
+      background: linear-gradient(180deg, #55647a 0%, #3c495c 100%);
+      box-shadow:
+        0 2px 6px rgba(30, 41, 59, 0.24),
+        inset 0 2px 6px rgba(15, 23, 42, 0.3);
+      transform: translateY(1px);
+    }
   }
 
-  /* Space bar — quiet wide key */
+  /* Space — 宽键，不透明亮白 */
   .hg-button[data-skbtn="{space}"] {
-    background: linear-gradient(175deg, #f8f9ff 0%, #eceffe 100%);
-    border-color: rgba(180, 188, 222, 0.55);
-    &:active { transform: translateY(1px) scale(0.99); }
+    background: linear-gradient(180deg, #f8fbfe 0%, #e8eff6 100%);
+    border-color: #d6e0ec;
+    box-shadow:
+      0 6px 14px rgba(30, 50, 90, 0.1),
+      inset 0 1px 0 #ffffff;
+    &:active {
+      box-shadow:
+        0 2px 6px rgba(30, 50, 90, 0.08),
+        inset 0 2px 5px rgba(30, 50, 90, 0.16);
+      transform: translateY(1px);
+    }
   }
 }
 
 .simple-keyboard.hg-layout-default .hg-button {
-  font-size: 26px;
+  font-size: 24px;
   padding: 18px;
 }
 
