@@ -215,32 +215,128 @@ body {
   opacity: 0;
 }
 
+/* ── Modern Bright Keyboard ──────────────────────────────────── */
 .simple-keyboard.hg-theme-default.myTheme {
-  // border: 5px solid rgb(255, 0, 0, 0.7);
-  // border-radius: 10px;
-  // margin: 10px;
-  // width: calc(100% - 20px);
+  background: transparent;
+  padding: 6px 8px 10px;
+  border-radius: 0;
+
+  .hg-row {
+    gap: 5px;
+    margin-bottom: 5px;
+    &:last-child { margin-bottom: 0; }
+  }
+
   .hg-button {
-    background: url("./assets/LineDspButton_inactive_shu.png");
-    background-size: 100% 100%;
+    background: linear-gradient(175deg, #ffffff 0%, #f3f5fc 100%);
+    color: #2d3348;
+    border: 1px solid rgba(180, 190, 220, 0.6);
+    border-radius: 9px;
+    box-shadow:
+      0 2px 0 rgba(140, 155, 200, 0.35),
+      0 3px 6px rgba(100, 115, 170, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    font-size: 26px;
+    font-weight: 600;
+    transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.08s ease, border-color 0.1s ease;
+
+    &:hover {
+      background: linear-gradient(175deg, #ffffff 0%, #eaedfa 100%);
+      border-color: rgba(140, 158, 230, 0.75);
+      box-shadow:
+        0 3px 0 rgba(120, 140, 200, 0.3),
+        0 5px 10px rgba(100, 115, 170, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    }
+
+    &:active {
+      background: linear-gradient(175deg, #e8ecfb 0%, #dce2f8 100%);
+      border-color: rgba(100, 130, 220, 0.7);
+      box-shadow:
+        0 0px 0 rgba(120, 140, 200, 0.2),
+        0 1px 3px rgba(100, 115, 170, 0.18),
+        0 0 10px rgba(99, 102, 241, 0.18);
+      transform: translateY(1px) scale(0.97);
+    }
   }
-  .hg-button:active {
-    background: #868788;
+
+  /* Enter — vivid blue */
+  .hg-button[data-skbtn="{enter}"] {
+    background: linear-gradient(155deg, #3b82f6 0%, #2255d0 100%);
+    color: #fff;
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow:
+      0 2px 0 rgba(29, 78, 180, 0.55),
+      0 4px 10px rgba(37, 99, 235, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    &:hover {
+      background: linear-gradient(155deg, #5295f7 0%, #3470e8 100%);
+      box-shadow:
+        0 3px 0 rgba(29, 78, 180, 0.5),
+        0 6px 14px rgba(37, 99, 235, 0.4);
+    }
+    &:active {
+      background: linear-gradient(155deg, #2563eb 0%, #1a44b8 100%);
+      transform: translateY(1px) scale(0.97);
+    }
   }
-}
-.simple-keyboard.myTheme {
+
+  /* Backspace — coral-red */
+  .hg-button[data-skbtn="{bksp2}"] {
+    background: linear-gradient(155deg, #fb7185 0%, #f43f5e 100%);
+    color: #fff;
+    border-color: rgba(244, 63, 94, 0.45);
+    box-shadow:
+      0 2px 0 rgba(200, 30, 60, 0.45),
+      0 4px 10px rgba(244, 63, 94, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    &:hover {
+      background: linear-gradient(155deg, #fc8595 0%, #f55070 100%);
+    }
+    &:active { transform: translateY(1px) scale(0.97); }
+  }
+
+  /* CapsLock / Shift — violet-indigo */
+  .hg-button[data-skbtn="{lock}"],
+  .hg-button[data-skbtn="{shift}"] {
+    background: linear-gradient(155deg, #a5b4fc 0%, #818cf8 100%);
+    color: #fff;
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow:
+      0 2px 0 rgba(79, 70, 229, 0.4),
+      0 4px 10px rgba(99, 102, 241, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    &:active { transform: translateY(1px) scale(0.97); }
+  }
+
+  /* 123 / abc toggle */
+  .hg-button[data-skbtn="{123}"],
+  .hg-button[data-skbtn="{abc}"] {
+    background: linear-gradient(155deg, #a5b4fc 0%, #818cf8 100%);
+    color: #fff;
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow:
+      0 2px 0 rgba(79, 70, 229, 0.4),
+      0 4px 10px rgba(99, 102, 241, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    &:active { transform: translateY(1px) scale(0.97); }
+  }
+
+  /* Space bar — quiet wide key */
+  .hg-button[data-skbtn="{space}"] {
+    background: linear-gradient(175deg, #f8f9ff 0%, #eceffe 100%);
+    border-color: rgba(180, 188, 222, 0.55);
+    &:active { transform: translateY(1px) scale(0.99); }
+  }
 }
 
 .simple-keyboard.hg-layout-default .hg-button {
-  font-size: 40px;
-  padding: 30px;
+  font-size: 26px;
+  padding: 18px;
 }
+
 .simple-keyboard.hg-layout-default .hg-button.no-grow-style {
-  // background: rgb(255, 0, 0, 0.7);
-  // color: white;
-  // width:120px;
   flex-grow: 0;
-  // padding: 0 8px;
 }
 
 .simple-keyboard {

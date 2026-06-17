@@ -10,6 +10,11 @@ export const callBrige = (cb: string, data?: any, multi: boolean = false) => {
   // if (cb == callFnName.InitService) {
   //   console.error('callm.ts:16 ~ callBrige ~ cb', cb);
   // }
+  if (!window.chrome || !window.chrome.webview) {
+    return new Promise((resolve, reject) => {
+      reject(null)
+    })
+  }
   const bridge = window.chrome.webview.hostObjects.JsBridge;
   // console.log("🪵 [callm.ts:10] ~ token ~ \x1b[0;32mbridge\x1b[0m = ", bridge);
   let str = null;

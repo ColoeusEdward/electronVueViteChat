@@ -293,12 +293,10 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value}) `, left: leftMove.value + 'px' }} class={classnames(' absolute bottom-40 p-1 pt-1 bg-[#f5f6f6] border border-solid border-gray-400 rounded-md  h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[1000px]': !commonData.isNum })} v-show={keyborardShow.value}>
-                {/* <div class={'w-full h-14 border border-solid border-gray-400 rounded-md p-2 bg-white global-keyboard-value'} ref={showTextRef}>
-                  {keyBoardAngle.value}
-                </div> */}
-                <div class={'w-full h-8 0 rounded-md  global-keyboard-value flex justify-end items-center'} ref={showTextRef}>
-                  <div class={'p-[6px] px-4 flex justify-center items-center text-2xl bg-red-400 rounded  text-white'} onClick={closeKeyboard}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, transform: `scale(${winScale.value})`, left: leftMove.value + 'px', background: 'linear-gradient(160deg, #f0f4ff 0%, #e8edff 100%)', border: '1px solid rgba(180, 195, 240, 0.7)', borderRadius: '16px', boxShadow: '0 8px 32px rgba(100, 120, 200, 0.18), 0 2px 8px rgba(80, 100, 180, 0.12), inset 0 1px 0 rgba(255,255,255,0.9)', padding: '6px 8px 12px' }} class={classnames('absolute bottom-40 h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[1000px]': !commonData.isNum })} v-show={keyborardShow.value}>
+                <div class={'w-full h-10 global-keyboard-value flex justify-between items-center mb-1'} style={{ borderBottom: '1px solid rgba(160, 175, 225, 0.3)', paddingBottom: '6px' }} ref={showTextRef}>
+                  <span style={{ color: 'rgba(130, 145, 200, 0.6)', fontSize: '11px', letterSpacing: '0.12em', paddingLeft: '4px', userSelect: 'none' }}>⠿ KEYBOARD</span>
+                  <div style={{ background: 'linear-gradient(135deg, #fb7185, #f43f5e)', border: '1px solid rgba(244, 63, 94, 0.4)', borderRadius: '8px', boxShadow: '0 2px 6px rgba(244, 63, 94, 0.3)', color: 'white', cursor: 'pointer' }} class={'p-[5px] px-3 flex justify-center items-center'} onClick={closeKeyboard}>
                     <NIcon size={'large'}>  <CloseTwotone /> </NIcon>
                   </div>
                 </div>

@@ -137,7 +137,7 @@ export const listenAllInputFocus = (store: ReturnType<typeof useMain>, configSto
       console.log('用户点击或选中了一个输入框。');
       //@ts-ignore
       console.log('被选中的元素 ID 是:', targetElement.id || '无ID');
-      if (configStore.sysConfig.InputType) {
+      if (configStore.sysConfig.InputType || window.location.host.includes('localhost')) {
         store.setGlobalKeyBoardShow(true)
       }
     }
