@@ -215,7 +215,7 @@ body {
   opacity: 0;
 }
 
-/* ── Frosted-Glass Tech Keyboard ────────────────────────────── */
+/* ── Skeuomorphic Keyboard ───────────────────────────────────── */
 .simple-keyboard.hg-theme-default.myTheme {
   background: transparent;
   padding: 4px 5px 6px;
@@ -223,168 +223,196 @@ body {
 
   .hg-row {
     gap: 0px;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
     &:last-child {
       margin-bottom: 0;
     }
   }
 
-  /* 普通按键 — 不透明亮白键帽（顶部实心高光 + 柔和落影 = 玻璃质感，零 blur） */
+  /* 普通按键 — 奶油键帽，厚底边营造 3D 凸起感 */
   .hg-button {
-    background: linear-gradient(180deg, #ffffff 0%, #eaf1f8 100%);
-    color: #2b3340;
-    border: 1px solid #d6e0ec;
-    border-radius: 12px;
+    background: linear-gradient(180deg, #fefcf8 0%, #f2ede2 45%, #e6e0d2 100%);
+    color: #2a1f10;
+    border: 1px solid #c4b99e;
+    border-bottom: 3px solid #9e9080;
+    border-radius: 8px;
     box-shadow:
-      0 6px 14px rgba(30, 50, 90, 0.12),
-      0 1px 2px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 #ffffff;
+      0 4px 0 rgba(0, 0, 0, 0.22),
+      0 6px 14px rgba(60, 40, 10, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.92),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.35);
     font-size: 24px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    // padding: 24px 0;
     height: 50px;
     transition:
-      box-shadow 0.12s ease,
-      transform 0.08s ease,
-      background 0.12s ease;
+      box-shadow 0.08s ease,
+      transform 0.06s ease,
+      background 0.08s ease;
 
     &:hover {
-      background: linear-gradient(180deg, #ffffff 0%, #f1f6fc 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f7f2e8 45%, #ece6d8 100%);
       box-shadow:
-        0 8px 18px rgba(30, 50, 90, 0.16),
-        0 0 0 1px rgba(56, 189, 248, 0.3),
-        inset 0 1px 0 #ffffff;
+        0 4px 0 rgba(0, 0, 0, 0.24),
+        0 7px 16px rgba(60, 40, 10, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
     }
 
     &:active {
-      background: linear-gradient(180deg, #e4ecf4 0%, #d6e0ea 100%);
+      background: linear-gradient(180deg, #dedad0 0%, #e8e2d4 100%);
+      border-top: 3px solid #9e9080;
+      border-bottom: 1px solid #c4b99e;
       box-shadow:
-        0 2px 6px rgba(30, 50, 90, 0.1),
-        inset 0 2px 5px rgba(30, 50, 90, 0.18);
-      transform: translateY(1px);
+        0 1px 0 rgba(0, 0, 0, 0.12),
+        0 2px 4px rgba(60, 40, 10, 0.14),
+        inset 0 2px 6px rgba(80, 60, 20, 0.22);
+      transform: translateY(2px);
     }
   }
 
-  /* Enter — 主操作，实色青蓝玻璃辉光 */
+  /* Enter — 鲜绿主操作键 */
   .hg-button[data-skbtn="{enter}"] {
-    background: linear-gradient(160deg, #38bdf8 0%, #2563eb 100%);
+    background: linear-gradient(180deg, #81c784 0%, #4caf50 45%, #388e3c 100%);
     color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.45);
+    border: 1px solid #2e7d32;
+    border-bottom: 3px solid #1b5e20;
     box-shadow:
-      0 6px 18px rgba(37, 99, 235, 0.4),
-      0 0 0 1px rgba(56, 189, 248, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    text-shadow: 0 1px 2px rgba(12, 40, 90, 0.35);
+      0 4px 0 rgba(0, 0, 0, 0.28),
+      0 6px 14px rgba(27, 94, 32, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    text-shadow: 0 1px 2px rgba(0, 50, 0, 0.5);
     &:hover {
-      background: linear-gradient(160deg, #4cc6fa 0%, #3b78f0 100%);
+      background: linear-gradient(180deg, #94d196 0%, #57bb5a 45%, #43a047 100%);
       box-shadow:
-        0 8px 22px rgba(37, 99, 235, 0.5),
-        0 0 0 1px rgba(56, 189, 248, 0.7),
+        0 5px 0 rgba(0, 0, 0, 0.3),
+        0 7px 16px rgba(27, 94, 32, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    &:active {
+      background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%);
+      border-top: 3px solid #1b5e20;
+      border-bottom: 1px solid #2e7d32;
+      box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 6px rgba(0, 50, 0, 0.35);
+      transform: translateY(2px);
+    }
+  }
+
+  /* Backspace ← — 暖红键 */
+  .hg-button[data-skbtn="{bksp2}"] {
+    background: linear-gradient(180deg, #ef9a9a 0%, #ef5350 45%, #c62828 100%);
+    color: #ffffff;
+    border: 1px solid #b71c1c;
+    border-bottom: 3px solid #7f0000;
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.28),
+      0 6px 14px rgba(127, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(80, 0, 0, 0.5);
+    &:hover {
+      background: linear-gradient(180deg, #ffaaaa 0%, #f05e5b 45%, #d32f2f 100%);
+      box-shadow:
+        0 5px 0 rgba(0, 0, 0, 0.3),
+        0 7px 16px rgba(127, 0, 0, 0.38),
         inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
     &:active {
-      background: linear-gradient(160deg, #2aa6e6 0%, #1e54cc 100%);
+      background: linear-gradient(180deg, #c62828 0%, #b71c1c 100%);
+      border-top: 3px solid #7f0000;
+      border-bottom: 1px solid #b71c1c;
       box-shadow:
-        0 2px 8px rgba(37, 99, 235, 0.35),
-        inset 0 2px 6px rgba(12, 40, 90, 0.3);
-      transform: translateY(1px);
+        0 1px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 6px rgba(80, 0, 0, 0.35);
+      transform: translateY(2px);
     }
   }
 
-  /* Backspace ← — 次级，浅青键 */
-  .hg-button[data-skbtn="{bksp2}"] {
-    background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 100%);
-    color: #0c4a6e;
-    border-color: #a5d8f5;
-    box-shadow:
-      0 6px 14px rgba(14, 116, 180, 0.22),
-      0 0 0 1px rgba(56, 189, 248, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-    &:hover {
-      background: linear-gradient(180deg, #c4ecff 0%, #8cdaff 100%);
-      box-shadow:
-        0 8px 18px rgba(14, 116, 180, 0.28),
-        0 0 0 1px rgba(56, 189, 248, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.75);
-    }
-    &:active {
-      background: linear-gradient(180deg, #8cd3f5 0%, #6ec3f0 100%);
-      box-shadow:
-        0 2px 6px rgba(14, 116, 180, 0.2),
-        inset 0 2px 5px rgba(14, 116, 180, 0.25);
-      transform: translateY(1px);
-    }
-  }
-
-  /* CapsLock / Shift — 修饰键，淡蓝键 */
+  /* CapsLock / Shift — 琥珀橙修饰键 */
   .hg-button[data-skbtn="{lock}"],
   .hg-button[data-skbtn="{shift}"] {
-    background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
-    color: #1e3a5f;
-    border-color: #c2d8f5;
+    background: linear-gradient(180deg, #ffcc80 0%, #ffa726 45%, #e65100 100%);
+    color: #ffffff;
+    border: 1px solid #bf360c;
+    border-bottom: 3px solid #8d2000;
     box-shadow:
-      0 6px 14px rgba(37, 99, 235, 0.16),
-      0 0 0 1px rgba(99, 152, 240, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+      0 4px 0 rgba(0, 0, 0, 0.26),
+      0 6px 14px rgba(141, 32, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    text-shadow: 0 1px 2px rgba(80, 20, 0, 0.5);
     &:hover {
-      background: linear-gradient(180deg, #e4f0ff 0%, #cce4ff 100%);
+      background: linear-gradient(180deg, #ffd596 0%, #ffb74d 45%, #f06000 100%);
       box-shadow:
-        0 8px 18px rgba(37, 99, 235, 0.2),
-        0 0 0 1px rgba(99, 152, 240, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        0 5px 0 rgba(0, 0, 0, 0.28),
+        0 7px 16px rgba(141, 32, 0, 0.36),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     &:active {
-      background: linear-gradient(180deg, #bfdbfe 0%, #a7caf8 100%);
+      background: linear-gradient(180deg, #e65100 0%, #bf360c 100%);
+      border-top: 3px solid #8d2000;
+      border-bottom: 1px solid #bf360c;
       box-shadow:
-        0 2px 6px rgba(37, 99, 235, 0.16),
-        inset 0 2px 5px rgba(37, 99, 235, 0.2);
-      transform: translateY(1px);
+        0 1px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 6px rgba(80, 20, 0, 0.35);
+      transform: translateY(2px);
     }
   }
 
-  /* 123 / abc — 中性切换，冷石板键 */
+  /* 123 / abc — 深石板切换键 */
   .hg-button[data-skbtn="{123}"],
   .hg-button[data-skbtn="{abc}"] {
-    background: linear-gradient(180deg, #64748b 0%, #475569 100%);
-    color: #eef2f7;
-    border-color: #5a6b80;
+    background: linear-gradient(180deg, #90a4ae 0%, #546e7a 45%, #37474f 100%);
+    color: #eceff1;
+    border: 1px solid #263238;
+    border-bottom: 3px solid #102027;
     box-shadow:
-      0 6px 14px rgba(30, 41, 59, 0.28),
-      0 0 0 1px rgba(148, 163, 184, 0.2),
+      0 4px 0 rgba(0, 0, 0, 0.32),
+      0 6px 14px rgba(16, 32, 39, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    text-shadow: 0 1px 2px rgba(15, 23, 42, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     &:hover {
-      background: linear-gradient(180deg, #74849c 0%, #55647a 100%);
+      background: linear-gradient(180deg, #9eb5be 0%, #607d8b 45%, #455a64 100%);
       box-shadow:
-        0 8px 18px rgba(30, 41, 59, 0.34),
+        0 5px 0 rgba(0, 0, 0, 0.34),
+        0 7px 16px rgba(16, 32, 39, 0.36),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
     &:active {
-      background: linear-gradient(180deg, #55647a 0%, #3c495c 100%);
+      background: linear-gradient(180deg, #37474f 0%, #263238 100%);
+      border-top: 3px solid #102027;
+      border-bottom: 1px solid #263238;
       box-shadow:
-        0 2px 6px rgba(30, 41, 59, 0.24),
-        inset 0 2px 6px rgba(15, 23, 42, 0.3);
-      transform: translateY(1px);
+        0 1px 0 rgba(0, 0, 0, 0.2),
+        inset 0 2px 6px rgba(0, 0, 0, 0.4);
+      transform: translateY(2px);
     }
   }
 
-  /* Space — 宽键，不透明亮白 */
+  /* Space — 加宽奶油键，底边更厚 */
   .hg-button[data-skbtn="{space}"] {
-    background: linear-gradient(180deg, #f8fbfe 0%, #e8eff6 100%);
-    border-color: #d6e0ec;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f0e6 45%, #ece6d8 100%);
+    border: 1px solid #c4b99e;
+    border-bottom: 4px solid #9e9080;
     box-shadow:
-      0 6px 14px rgba(30, 50, 90, 0.1),
-      inset 0 1px 0 #ffffff;
+      0 5px 0 rgba(0, 0, 0, 0.22),
+      0 7px 16px rgba(60, 40, 10, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
     &:active {
+      border-top: 4px solid #9e9080;
+      border-bottom: 1px solid #c4b99e;
       box-shadow:
-        0 2px 6px rgba(30, 50, 90, 0.08),
-        inset 0 2px 5px rgba(30, 50, 90, 0.16);
-      transform: translateY(1px);
+        0 1px 0 rgba(0, 0, 0, 0.12),
+        inset 0 2px 6px rgba(80, 60, 20, 0.2);
+      transform: translateY(2px);
     }
   }
+}
+
+/* 拖动中简化绘制：移除阴影和过渡，减少 CPU paint 压力 */
+.drag-dragging .simple-keyboard.hg-theme-default.myTheme .hg-button {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  transition: none !important;
 }
 
 .simple-keyboard.hg-layout-default .hg-button {
