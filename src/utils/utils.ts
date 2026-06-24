@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult, DataConfigEntity, DataGroupEntity, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
+import { ActualResult, DataConfigEntity, DataGroupEntity, DataValue, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -10,6 +10,7 @@ import { propNameMap } from "@/views/Home/config/devConfig/enum";
 import { callBrige } from "./callm";
 import { menuIdSplit, menuPropEnum } from "@/views/Home/curcev/enum";
 import { noKeyBoardInputClass } from "@/views/Home/config/sysConfig/enum";
+import * as echarts from 'echarts';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -301,14 +302,203 @@ export const getAllDataUnderGroup = (configStore: ReturnType<typeof useConfigSto
   })
 }
 
-export const initWinFn = () => {
-  const ExportRealtime = (dataGroupId: string) => {
+type ExportRealtimeArg = string | number | { id?: string, Id?: string }
 
+const exportChartWidth = 800
+const exportChartHeight = 450
+
+const parseExportDataGroupId = (arg: ExportRealtimeArg) => {
+  if (typeof arg == 'string' || typeof arg == 'number') {
+    return String(arg)
+  }
+  return arg?.id || arg?.Id || ''
+}
+
+const getSyncBridge = () => {
+  return window.chrome?.webview?.hostObjects?.sync?.JsBridge
+}
+
+const getChartDataForExport = (dataGroupId: string): DataValue[] => {
+  const syncBridge = getSyncBridge()
+  if (syncBridge?.GetChartData) {
+    const resObj = safeJsonParse(syncBridge.GetChartData(dataGroupId, exportChartWidth)) as ActualResult
+    if (resObj.Code == 0) {
+      return (resObj.Data || []) as DataValue[]
+    }
+    console.error(callFnName.GetChartData, resObj.Message || '操作失败')
+    return []
+  }
+
+  throw new Error('WebView2 sync JsBridge is unavailable')
+}
+
+const createExportChartContainer = () => {
+  const container = document.createElement('div')
+  container.style.position = 'fixed'
+  container.style.left = '-10000px'
+  container.style.top = '0'
+  container.style.width = exportChartWidth + 'px'
+  container.style.height = exportChartHeight + 'px'
+  container.style.backgroundColor = '#fff'
+  document.body.appendChild(container)
+  return container
+}
+
+const buildRealtimeExportOption = (
+  dataGroup: DataGroupEntity | undefined,
+  formulaParam: FormulaParamEntity | undefined,
+  chartData: DataValue[]
+) => {
+  let upValue: number = formulaParam?.UpperTol || 0.1
+  let downValue: number = formulaParam?.LowerTol || 0.1
+  if (formulaParam) {
+    const stand = Number(formulaParam.Standard || 0)
+    upValue = stand + Number(formulaParam.UpperTol || 0)
+    downValue = stand - Number(formulaParam.LowerTol || 0)
+  }
+
+  const list = chartData.map(e => {
+    return [new Date(e.Intime).getTime(), Number(e.Value)]
+  }).filter(e => !Number.isNaN(e[0]) && !Number.isNaN(e[1]))
+
+  return {
+    animation: false,
+    title: {
+      text: dataGroup?.DataName || '',
+      left: '48%'
+    },
+    tooltip: {
+      trigger: 'axis',
+      formatter: function (params: any) {
+        params = params[0]
+        return '  ' + params.value[1]
+      },
+      axisPointer: {
+        animation: false
+      }
+    },
+    xAxis: {
+      type: 'time',
+      splitLine: {
+        show: true
+      }
+    },
+    yAxis: {
+      type: 'value',
+      max: function (value: any) {
+        return (value.max + (formulaParam?.UpperTol || 0.1)).toFixed(3)
+      },
+      min: function (value: any) {
+        let min = value.min
+        if (min == -1) {
+          return 0
+        }
+        if (value.min == 0 && formulaParam) {
+          min = formulaParam?.Standard
+        }
+        return (min - (formulaParam?.LowerTol || 0.1)).toFixed(3)
+      },
+      splitLine: {
+        show: true
+      },
+      axisLabel: {
+        formatter: '{value} ' + (dataGroup?.Unit || '')
+      }
+    },
+    dataZoom: [
+      {
+        id: 'dataZoomX',
+        type: 'inside',
+        start: 0,
+        end: 100,
+        xAxisIndex: [0],
+        filterMode: 'none',
+        disabled: true
+      }
+    ],
+    series: {
+      name: dataGroup?.DataName,
+      type: 'line',
+      showSymbol: false,
+      symbol: 'none',
+      data: list,
+      smooth: false,
+      large: true,
+      largeThreshold: exportChartWidth,
+      sampling: 'lttb',
+      markArea: {
+        silent: true,
+        itemStyle: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+        data: [
+          [
+            {
+              yAxis: downValue
+            },
+            {
+              yAxis: upValue
+            }
+          ]
+        ]
+      }
+    },
+    grid: {
+      right: '14px',
+      left: '7%',
+      top: '30px'
+    }
+  }
+}
+
+const createRealtimeChartImage = (
+  dataGroup: DataGroupEntity | undefined,
+  formulaParam: FormulaParamEntity | undefined,
+  chartData: DataValue[]
+) => {
+  let chart: echarts.ECharts | null = null
+  const container = createExportChartContainer()
+  try {
+    chart = echarts.init(container, undefined, {
+      useDirtyRect: true
+    })
+    chart.setOption(buildRealtimeExportOption(dataGroup, formulaParam, chartData))
+    return chart.getDataURL({
+      type: 'png',
+      pixelRatio: 1.5,
+      backgroundColor: '#fff'
+    })
+  } finally {
+    chart?.dispose()
+    container.remove()
+  }
+}
+
+export const initWinFn = () => {
+  const ExportRealtime = (arg: ExportRealtimeArg) => {
+    try {
+      const dataGroupId = parseExportDataGroupId(arg)
+      if (!dataGroupId) {
+        console.error('exportRealtime missing dataGroupId', arg)
+        return ''
+      }
+      const configStore = useConfigStore()
+      const chartData = getChartDataForExport(dataGroupId)
+      if (!chartData || chartData.length == 0) {
+        return ''
+      }
+      const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
+      const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
+      return createRealtimeChartImage(dataGroup, formulaParam, chartData)
+    } catch (err) {
+      console.error('exportRealtime failed', err)
+      return ''
+    }
   }
   const ExportDistribution = (dataGroupId: string) => {
 
   }
 
-  window.ExportRealtime = ExportRealtime
-  window.ExportDistribution = ExportDistribution
+  window.exportRealtime = ExportRealtime
+  window.exportDistribution = ExportDistribution
 }

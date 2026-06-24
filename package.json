@@ -9,7 +9,7 @@
         "build": "npm-run-all build:vue",
         "builda": "npm-run-all build:vue build:tsc build:all",
         "preview": "cross-env NODE_ENV=production electron ./output/build/main.js",
-        "start": "kill-port 3920 && concurrently -k \"vite\" \"wait-on tcp:3920 && npm-run-all watch\"",
+        "start_fake": "kill-port 3920 && concurrently -k \"vite\" \"wait-on tcp:3920 && npm-run-all watch\"",
         "watch": "tsc-watch --noClear -p tsconfig.e.json --onSuccess \"npm-run-all start:ect\"",
         "start:ect": "cross-env NODE_ENV=development electron ./output/build/main.js",
         "build:vue": "vue-tsc --noEmit && vite build && cd ./output/dist && cp index.html D:/NTCode/NTSPC_M/SPC.M/SPC.Main/Resources/wwwroot && cp -r locales D:/NTCode/NTSPC_M/SPC.M/SPC.Main/Resources/wwwroot && echo 复制完成",

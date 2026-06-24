@@ -193,6 +193,25 @@ export default defineComponent({
     innerData.setStopColFn(stopCollect)
     const refresh = configStore.refreshAllConfigFn
 
+
+    const testBtn = () => {
+      const dataGroupId = configStore.curChartDataGroup?.GId
+      if (!dataGroupId) {
+        window.$message.warning('请先选择曲线数据源')
+        return
+      }
+      const picInfo = window.exportRealtime(dataGroupId)
+      console.log('exportRealtime test', {
+        dataGroupId,
+        length: typeof picInfo == 'string' ? picInfo.length : 0,
+        picInfo
+      })
+      if (typeof picInfo == 'string' && picInfo.startsWith('data:image')) {
+        window.$message.success('实时曲线截图生成成功')
+      } else {
+        window.$message.error('实时曲线截图生成失败')
+      }
+    }
     // (e?: any) => {
     //   // console.log("🪵 [index.tsx:183] ~ token ~ \x1b[0;32mrefresh\x1b[0m = ", refresh);
     //   return getSysConfig().then(() => {
@@ -518,6 +537,9 @@ export default defineComponent({
               } */}
 
               <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={refresh} size={'large'} >{t('menu.refreshConfig')}</NButton>
+
+
+              {window.location.port === '3920' && <NButton style={{ backgroundImage: `url(${activeImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} onClick={testBtn} size={'large'} >{t('测试')}</NButton>}
               {/* <NButton type={'warning'} style={{ backgroundImage: `url(${activeWarningImg})`, backgroundSize: '100% 100%', color: '#534d62' }} secondary strong={true} size={'large'} v-slots={{
                 icon: () => false && <NIcon><LayersClearOutlined /></NIcon>
               }} onClick={clearCollect} >清空数据</NButton> */}
