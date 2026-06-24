@@ -14,7 +14,7 @@ declare global {
     $message: MessageApiInjection,
     frontFn: Record<string, Function>,
     chrome: any,
-    exportRealtime: Function,
+    exportRealtime: (arg: string | number | { id?: string; Id?: string }) => Promise<string>,
     exportDistribution: Function
   }
 }

@@ -304,8 +304,8 @@ export const getAllDataUnderGroup = (configStore: ReturnType<typeof useConfigSto
 
 type ExportRealtimeArg = string | number | { id?: string, Id?: string }
 
-const exportChartWidth = 800
-const exportChartHeight = 450
+const exportChartWidth = 1440
+const exportChartHeight = 464
 
 const parseExportDataGroupId = (arg: ExportRealtimeArg) => {
   if (typeof arg == 'string' || typeof arg == 'number') {
@@ -314,22 +314,12 @@ const parseExportDataGroupId = (arg: ExportRealtimeArg) => {
   return arg?.id || arg?.Id || ''
 }
 
-const getSyncBridge = () => {
-  return window.chrome?.webview?.hostObjects?.sync?.JsBridge
-}
-
-const getChartDataForExport = (dataGroupId: string): DataValue[] => {
-  const syncBridge = getSyncBridge()
-  if (syncBridge?.GetChartData) {
-    const resObj = safeJsonParse(syncBridge.GetChartData(dataGroupId, exportChartWidth)) as ActualResult
-    if (resObj.Code == 0) {
-      return (resObj.Data || []) as DataValue[]
-    }
-    console.error(callFnName.GetChartData, resObj.Message || '操作失败')
-    return []
+const getChartDataForExport = async (dataGroupId: string): Promise<DataValue[]> => {
+  const res = await callBrige(callFnName.GetChartData, [dataGroupId, exportChartWidth], true)
+  if (!res) {
+    return [] as DataValue[]
   }
-
-  throw new Error('WebView2 sync JsBridge is unavailable')
+  return res as DataValue[]
 }
 
 const createExportChartContainer = () => {
@@ -475,21 +465,26 @@ const createRealtimeChartImage = (
 }
 
 export const initWinFn = () => {
-  const ExportRealtime = (arg: ExportRealtimeArg) => {
+  const ExportRealtime = async (arg: ExportRealtimeArg) => {
     try {
       const dataGroupId = parseExportDataGroupId(arg)
+      console.log('exportRealtime', arg, dataGroupId)
+
       if (!dataGroupId) {
         console.error('exportRealtime missing dataGroupId', arg)
         return ''
       }
       const configStore = useConfigStore()
-      const chartData = getChartDataForExport(dataGroupId)
+
+      const chartData = await getChartDataForExport(dataGroupId)
       if (!chartData || chartData.length == 0) {
         return ''
       }
       const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
       const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
-      return createRealtimeChartImage(dataGroup, formulaParam, chartData)
+      let res = createRealtimeChartImage(dataGroup, formulaParam, chartData)
+      console.log('exportRealtime res', res)
+      return res
     } catch (err) {
       console.error('exportRealtime failed', err)
       return ''

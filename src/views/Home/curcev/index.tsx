@@ -194,13 +194,13 @@ export default defineComponent({
     const refresh = configStore.refreshAllConfigFn
 
 
-    const testBtn = () => {
+    const testBtn = async () => {
       const dataGroupId = configStore.curChartDataGroup?.GId
       if (!dataGroupId) {
         window.$message.warning('请先选择曲线数据源')
         return
       }
-      const picInfo = window.exportRealtime(dataGroupId)
+      const picInfo = await window.exportRealtime(dataGroupId)
       console.log('exportRealtime test', {
         dataGroupId,
         length: typeof picInfo == 'string' ? picInfo.length : 0,
