@@ -138,18 +138,10 @@ export default defineComponent({
           max: function (value: any) {
             return (curODParamUpAndLow.value.upper || 1)
           },
-          axisLine: { onZero: true }, // 让 X 轴的轴线通过 Y 轴的 0 点
-          currentTransform: null,
-          // ❌ 隐藏 X 轴在垂直方向的分隔线
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: 'rgba(0, 0, 0, 0.1)', // 推荐使用 rgba，通过透明度让网格线显得更高级、不抢戏
-              width: 1,
-              type: 'solid'
-            }
-          }
-
+          axisLabel: { show: false },
+          axisLine: { onZero: true },
+          axisTick: { show: true },
+          splitLine: { show: false }
         },
         yAxis: {
           type: 'value',
@@ -159,16 +151,10 @@ export default defineComponent({
           max: function (value: any) {
             return (curODParamUpAndLow.value.upper || 1)
           },
-          axisLine: { onZero: true }, // 让 Y 轴的轴线通过 X 轴的 0 点
-          // ❌ 隐藏 X 轴在垂直方向的分隔线
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: 'rgba(0, 0, 0, 0.1)', // 推荐使用 rgba，通过透明度让网格线显得更高级、不抢戏
-              width: 1,
-              type: 'solid'
-            }
-          }
+          axisLabel: { show: false },
+          axisLine: { onZero: true },
+          axisTick: { show: true },
+          splitLine: { show: false }
         },
 
         series: [
@@ -607,8 +593,9 @@ export default defineComponent({
                   }} ></div>
               }
               <div class={'absolute bottom-6 right-6 flex items-center gap-2'}>
-                <span class={'text-2xl text-gray-500'}>{alldata.showConcentricity ? switchLabels.value.concentricity : switchLabels.value.wallThickness}</span>
+                <span class={'text-xl text-gray-500'}>{switchLabels.value.wallThickness}</span>
                 <NSwitch value={alldata.showConcentricity} onUpdate:value={(v: boolean) => { alldata.showConcentricity = v }} size="large" />
+                <span class={'text-xl text-gray-500'}>{switchLabels.value.concentricity}</span>
               </div>
             </div>
           }
