@@ -1,4 +1,4 @@
-import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, NMessageProvider, } from "naive-ui";
+import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, NMessageProvider, NSpin } from "naive-ui";
 import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition, watch } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
@@ -53,6 +53,7 @@ export default defineComponent({
     const { t } = useI18n()
     const i18nStore = usei18nStore()
     const curTabValue = ref('curcev')
+    const stopTrendLoading = ref(false)
     const width = store.isLandscape ? '11vw' : '18vw'
     // const maxWidth = store.isLandscape ? '14vw' : '25vw'
     const commonStyle = {
@@ -187,6 +188,9 @@ export default defineComponent({
       return (
         <div class={'w-full h-full flex flex-col overflow-hidden'} id={'indexCon'}>
           <GlobalKeyBoard2 />
+          {stopTrendLoading.value && <div class={'fixed inset-0 z-[9999] flex items-center justify-center bg-white/40'}>
+            <NSpin size={'large'} />
+          </div>}
           {/* <KeepAlive> */}
           {
             store.isLandscape ? <div class={'h-full flex overflow-hidden'}>
@@ -287,7 +291,7 @@ export default defineComponent({
           {/* </KeepAlive> */}
           {/* <GlobalKeyBoard /> */}
           <NDialogProvider>
-            <BtmBtn />
+            <BtmBtn setStopTrendLoading={(value: boolean) => { stopTrendLoading.value = value }} />
           </NDialogProvider>
           <Transition name='full-pop'>
             {configStore.isShowConfig && <Config />}

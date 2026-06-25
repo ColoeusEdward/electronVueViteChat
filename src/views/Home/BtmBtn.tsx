@@ -1,6 +1,6 @@
 import { NButton, useDialog, DialogReactive, NRadioGroup, NRadio } from "naive-ui";
 import type { DropdownProps } from 'naive-ui'
-import { defineComponent, onUnmounted, ref, computed, reactive, watch } from "vue";
+import { defineComponent, onUnmounted, ref, computed, reactive, watch, PropType } from "vue";
 import { Tool } from '@vicons/tabler'
 import { CandlestickChartRound, AreaChartOutlined, LocalPrintshopFilled, HistoryOutlined } from '@vicons/material'
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
@@ -12,12 +12,20 @@ import { useCurcevInnerDataStore } from "./curcev/innerData";
 import { useFormulaStore } from "@/store/formula";
 import btnActiveImg from '@/assets/LineDspButton_inactive.png'
 import { usei18nStore } from "@/store/i18n";
-import { MyLangStr } from "~/me";
+import { DataGroupEntity, DeviceGroupEntity, MyLangStr } from "~/me";
 import { DropdownMixedOption } from "naive-ui/es/dropdown/src/interface";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { sleep } from "@/utils/utils";
 import classNames from "classnames";
 import { useMain } from "@/store";
+
+type ExportImageMessage = {
+  Id: string
+  ProductNo: string
+  ChartType: 0 | 1
+  Chart: string
+}
+
 const TimeBlock = defineComponent({
   name: 'TimeBlock',
   setup() {
@@ -48,6 +56,9 @@ const TimeBlock = defineComponent({
 
 export default defineComponent({
   name: 'BtmBtn',  //底部按钮栏
+  props: {
+    setStopTrendLoading: Function as PropType<(value: boolean) => void>
+  },
   setup(props) {
     const curCevInnerData = useCurcevInnerDataStore()
     const configStore = useConfigStore()
@@ -73,6 +84,95 @@ export default defineComponent({
       curExitType: 'shutdownApp',
       trandChartStart: false
     })
+
+    const getChartDataGroupsForExport = async () => {
+      const currentGroupId = sysConfig.value.CurrentGroupId
+      if (!currentGroupId) {
+        return [] as DataGroupEntity[]
+      }
+
+      const deviceGroups = await callBrige(callFnName.GetDeviceGroups, currentGroupId) as DeviceGroupEntity[] | undefined
+      if (!deviceGroups?.length) {
+        return [] as DataGroupEntity[]
+      }
+
+      const dataGroupResults = await Promise.all(
+        deviceGroups
+          .map(item => item.GId)
+          .filter((id): id is string => !!id)
+          .map(id => callBrige(callFnName.GetChartDataGroups, id) as Promise<DataGroupEntity[] | undefined>)
+      )
+
+      const dataGroupMap = new Map<string, DataGroupEntity>()
+      dataGroupResults.forEach(list => {
+        list?.forEach(item => {
+          if (item.GId) {
+            dataGroupMap.set(item.GId, item)
+          }
+        })
+      })
+
+      return Array.from(dataGroupMap.values())
+    }
+
+    const buildExportImageMessages = async () => {
+      const productNo = (await callBrige(callFnName.GetSerialNo) as string | undefined) || curCevInnerData.curProductCode || ''
+      const dataGroups = await getChartDataGroupsForExport()
+      const exportImages: ExportImageMessage[] = []
+
+      for (const dataGroup of dataGroups) {
+        const dataGroupId = dataGroup.GId
+        if (!dataGroupId) {
+          continue
+        }
+
+        const realtimeChart = await window.exportRealtime(dataGroupId)
+        if (realtimeChart) {
+          exportImages.push({
+            Id: dataGroupId,
+            ProductNo: productNo,
+            ChartType: 0,
+            Chart: realtimeChart
+          })
+        }
+
+        const distributionChart = await window.exportDistribution(dataGroupId)
+        if (distributionChart) {
+          exportImages.push({
+            Id: dataGroupId,
+            ProductNo: productNo,
+            ChartType: 1,
+            Chart: distributionChart
+          })
+        }
+      }
+
+      return exportImages
+    }
+
+    const stopTrendCollection = async () => {
+      if (!alldata.trandChartStart) {
+        return
+      }
+
+      props.setStopTrendLoading?.(true)
+      await sleep(0)
+
+      try {
+        const exportImages = await buildExportImageMessages()
+        if (exportImages.length > 0) {
+          await callBrige(callFnName.SaveExportImage, JSON.stringify(exportImages))
+        }
+      } catch (err) {
+        console.error('collectStop export images failed', err)
+      } finally {
+        props.setStopTrendLoading?.(false)
+        let item = popSelectList.value[2]
+        alldata.trandChartStart = false
+        item.name = `${t('menu.trendChart')}(${t('menu.stopChart')})`
+        curCevInnerData.stopColFn && curCevInnerData.stopColFn()
+      }
+    }
 
     // 语言切换时更新 exitChooseList 中的标签
     watch(() => i18nStore.langChangeCount, () => {
@@ -178,10 +278,7 @@ export default defineComponent({
           curCevInnerData.startColFn && curCevInnerData.startColFn()
         },
         collectStop: () => {
-          let item = popSelectList.value[2]
-          alldata.trandChartStart = false
-          item.name = `${t('menu.trendChart')}(${t('menu.stopChart')})`
-          curCevInnerData.stopColFn && curCevInnerData.stopColFn()
+          stopTrendCollection()
         },
         collectClean: () => {
           curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()

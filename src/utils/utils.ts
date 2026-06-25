@@ -628,7 +628,7 @@ export const initWinFn = () => {
   const ExportRealtime = async (arg: ExportRealtimeArg) => {
     try {
       const dataGroupId = parseExportDataGroupId(arg)
-      console.log('exportRealtime', arg, dataGroupId)
+      // console.log('exportRealtime', arg, dataGroupId)
 
       if (!dataGroupId) {
         console.error('exportRealtime missing dataGroupId', arg)
@@ -643,7 +643,7 @@ export const initWinFn = () => {
       const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
       const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
       let res = createRealtimeChartImage(dataGroup, formulaParam, chartData)
-      console.log('exportRealtime res', res)
+      // console.log('exportRealtime res', res)
       return res
     } catch (err) {
       console.error('exportRealtime failed', err)
@@ -653,7 +653,7 @@ export const initWinFn = () => {
   const ExportDistribution = async (arg: ExportRealtimeArg) => {
     try {
       const dataGroupId = parseExportDataGroupId(arg)
-      console.log('exportDistribution', arg, dataGroupId)
+      // console.log('exportDistribution', arg, dataGroupId)
 
       if (!dataGroupId) {
         console.error('exportDistribution missing dataGroupId', arg)
@@ -667,7 +667,7 @@ export const initWinFn = () => {
       const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
       const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
       let res = createDistributionChartImage(dataGroup, formulaParam, distributionData)
-      console.log('exportDistribution res', res)
+      // console.log('exportDistribution res', res)
       return res
     } catch (err) {
       console.error('exportDistribution failed', err)

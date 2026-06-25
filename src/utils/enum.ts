@@ -27,6 +27,7 @@ enum callFnName {
   GetProductStatistics = "GetProductStatistics",
   GetProductLogs = "GetProductLogs",
   deleteProductHistory = "deleteProductHistory",
+  GetSerialNo = "GetSerialNo",
   GetSerialNos = "GetSerialNos",
   SaveSerialNo = "SaveSerialNo",
   DeleteSerialNo = "DeleteSerialNo",
