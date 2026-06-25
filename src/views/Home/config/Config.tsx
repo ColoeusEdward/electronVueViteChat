@@ -78,8 +78,10 @@ export default defineComponent({
       // backgroundImage: `url(${TabActiveImg})`,
       background: `#f5f6f6`,
       backgroundSize: 'cover',
-      borderBottom: "0px solid #58595a",
+      borderBottom: "1px solid #f5f6f6",
       color: '#000',
+      paddingBottom: '4px',
+      marginTop: '-4px',
       zIndex: 6
     }
     const defaultTab = 'sysConfig'

@@ -48,6 +48,8 @@ export default defineComponent({
       backgroundImage: `url(${activeImg})`,
       backgroundSize: 'cover',
       color: '#fff',
+      paddingBottom: '4px',
+      marginTop: '-4px',
       zIndex: 6
     }
     const { t } = useI18n()
