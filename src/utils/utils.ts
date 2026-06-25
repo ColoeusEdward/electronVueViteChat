@@ -1,5 +1,5 @@
 import { useConfigStore } from "@/store/config";
-import { ActualResult, DataConfigEntity, DataGroupEntity, DataValue, DeviceGroupEntity, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
+import { ActualResult, DataConfigEntity, DataGroupEntity, DataValue, DeviceGroupEntity, DistributionModel, FormulaConfigEntity, FormulaParamEntity, ModbusAdressRow } from "~/me";
 import { v4 as uuidv4 } from 'uuid';
 import { callSpc } from "./call";
 import { callFnName } from "./enum";
@@ -464,6 +464,166 @@ const createRealtimeChartImage = (
   }
 }
 
+type ExportDistributionData = DistributionModel & {
+  X?: number[]
+  Y?: number[]
+}
+
+const getDistributionDataForExport = async (dataGroupId: string): Promise<ExportDistributionData | null> => {
+  const res = await callBrige(callFnName.GetDistributionData, dataGroupId)
+  return res ? res as ExportDistributionData : null
+}
+
+const buildDistributionData = (xList: number[] = [], yList: number[] = []) => {
+  return xList.map((e, i) => {
+    return [e, yList[i]]
+  }).filter(e => !Number.isNaN(Number(e[0])) && !Number.isNaN(Number(e[1])))
+}
+
+const buildDistributionExportOption = (
+  dataGroup: DataGroupEntity | undefined,
+  formulaParam: FormulaParamEntity | undefined,
+  distributionData: ExportDistributionData
+) => {
+  const standard = Number(formulaParam?.Standard ?? distributionData.Std ?? 0)
+  const lowValue = formulaParam
+    ? standard - Number(formulaParam.LowerTol || 0)
+    : Number(distributionData.Lsl || 0)
+  const upValue = formulaParam
+    ? standard + Number(formulaParam.UpperTol || 0)
+    : Number(distributionData.Usl || 0)
+  const barX = distributionData.X || distributionData.NdX || []
+  const barY = distributionData.Y || distributionData.NdY || []
+
+  return {
+    animation: false,
+    title: {
+      text: dataGroup?.DataName || '',
+      left: 'center',
+    },
+    color: ['#5470c6', '#91cc75'],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false
+      }
+    },
+    xAxis: {
+      type: 'value',
+      splitLine: {
+        show: true
+      },
+      max: function (value: any) {
+        return value.max
+      },
+      min: function (value: any) {
+        return value.min
+      },
+    },
+    yAxis: [
+      {
+        type: 'value',
+        name: '概率',
+        min: function () {
+          return 0
+        },
+        boundaryGap: ['5%', '5%'],
+        splitLine: {
+          show: true
+        },
+        axisLabel: {
+          formatter: '{value} '
+        }
+      },
+      {
+        type: 'value',
+        name: '数量',
+        min: function () {
+          return 0
+        },
+        boundaryGap: ['5%', '5%'],
+        splitLine: {
+          show: true
+        },
+        axisLabel: {
+          formatter: '{value} 次'
+        }
+      },
+    ],
+    series: [
+      {
+        name: 'gass',
+        type: 'line',
+        showSymbol: false,
+        data: buildDistributionData(distributionData.GaussX, distributionData.GaussY),
+        smooth: true,
+        markLine: {
+          symbol: ['none', 'none'],
+          label: { show: true, position: 'end' },
+          lineStyle: {
+            type: 'dashed',
+            color: 'red',
+            width: 2
+          },
+          data: [
+            {
+              name: '下限',
+              xAxis: lowValue || 1,
+              label: { formatter: '下限' }
+            },
+            {
+              name: '标准值',
+              xAxis: standard || 1,
+              label: { formatter: '标准值' },
+              lineStyle: { color: 'green' },
+            },
+            {
+              name: '上限',
+              xAxis: upValue || 1,
+              label: { formatter: '上限' }
+            }
+          ]
+        }
+      },
+      {
+        name: 'Distribution',
+        type: 'bar',
+        showSymbol: false,
+        data: buildDistributionData(barX, barY),
+        smooth: true,
+      },
+    ],
+    grid: {
+      right: '10%',
+      left: '10%',
+      bottom: '24px',
+    }
+  }
+}
+
+const createDistributionChartImage = (
+  dataGroup: DataGroupEntity | undefined,
+  formulaParam: FormulaParamEntity | undefined,
+  distributionData: ExportDistributionData
+) => {
+  let chart: echarts.ECharts | null = null
+  const container = createExportChartContainer()
+  try {
+    chart = echarts.init(container, undefined, {
+      useDirtyRect: true
+    })
+    chart.setOption(buildDistributionExportOption(dataGroup, formulaParam, distributionData))
+    return chart.getDataURL({
+      type: 'png',
+      pixelRatio: 1.5,
+      backgroundColor: '#fff'
+    })
+  } finally {
+    chart?.dispose()
+    container.remove()
+  }
+}
+
 export const initWinFn = () => {
   const ExportRealtime = async (arg: ExportRealtimeArg) => {
     try {
@@ -490,8 +650,29 @@ export const initWinFn = () => {
       return ''
     }
   }
-  const ExportDistribution = (dataGroupId: string) => {
+  const ExportDistribution = async (arg: ExportRealtimeArg) => {
+    try {
+      const dataGroupId = parseExportDataGroupId(arg)
+      console.log('exportDistribution', arg, dataGroupId)
 
+      if (!dataGroupId) {
+        console.error('exportDistribution missing dataGroupId', arg)
+        return ''
+      }
+      const configStore = useConfigStore()
+      const distributionData = await getDistributionDataForExport(dataGroupId)
+      if (!distributionData) {
+        return ''
+      }
+      const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
+      const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
+      let res = createDistributionChartImage(dataGroup, formulaParam, distributionData)
+      console.log('exportDistribution res', res)
+      return res
+    } catch (err) {
+      console.error('exportDistribution failed', err)
+      return ''
+    }
   }
 
   window.exportRealtime = ExportRealtime

@@ -15,7 +15,7 @@ declare global {
     frontFn: Record<string, Function>,
     chrome: any,
     exportRealtime: (arg: string | number | { id?: string; Id?: string }) => Promise<string>,
-    exportDistribution: Function
+    exportDistribution: (arg: string | number | { id?: string; Id?: string }) => Promise<string>
   }
 }
 
