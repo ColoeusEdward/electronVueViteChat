@@ -87,6 +87,7 @@
     "alarmSignalInterval": "Alarm Signal Interval",
     "writeAlarmInfoToDatabase": "Write Alarm Info To Database",
     "statisticalReport": "Statistical Report",
+    "serialNoRule": "Serial No Rule",
     "allowRealTimeDataExport": "Allow Real Time Data Export",
     "allowStatisticalDataExport": "Allow Statistical Data Export",
     "exportPath": "Export Path",

@@ -87,6 +87,7 @@
     "alarmSignalInterval": "报警信号间隔",
     "writeAlarmInfoToDatabase": "报警信息写入数据库",
     "statisticalReport": "统计报表",
+    "serialNoRule": "编码规则",
     "allowRealTimeDataExport": "允许实时数据导出",
     "allowStatisticalDataExport": "允许统计数据导出",
     "exportPath": "导出路径",

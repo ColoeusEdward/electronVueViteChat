@@ -68,16 +68,16 @@ export default defineComponent({
             { type: 'select', label: t('config.printerUsed'), prop: 'ReportPrinter', width: 12 },
           ]
         },
-        // {
-        //   type: 'box', label: '', width: 24, childCompList: [
-        //     { type: 'divider', label: '编码规则', width: 24 },
-        //     {
-        //       type: 'free', label: '编码规则', renderComp: () => {
-        //         return <SerialNoRule />
-        //       }, width: 24
-        //     },
-        //   ]
-        // },
+        {
+          type: 'box', label: '', width: 24, childCompList: [
+            { type: 'divider', label: t('config.serialNoRule'), width: 24 },
+            {
+              type: 'free', label: t('config.serialNoRule'), renderComp: () => {
+                return <SerialNoRule />
+              }, width: 24
+            },
+          ]
+        },
 
       ] as formListItem[]
     })
@@ -97,6 +97,8 @@ export default defineComponent({
               if (child.type === 'divider') {
                 if (child.label === '统计报表' || child.label === t('config.statisticalReport')) {
                   child.label = t('config.statisticalReport')
+                } else if (child.label === '编码规则' || child.label === t('config.serialNoRule')) {
+                  child.label = t('config.serialNoRule')
                 }
               } else if (child.type === 'switch') {
                 if (child.prop === 'EnableExportReal') {

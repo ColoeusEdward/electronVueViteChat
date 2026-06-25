@@ -87,6 +87,7 @@
     "alarmSignalInterval": "Intervalo de señal de alarma",
     "writeAlarmInfoToDatabase": "Escribir información de alarma en base de datos",
     "statisticalReport": "Informe estadístico",
+    "serialNoRule": "Regla de número de serie",
     "allowRealTimeDataExport": "Permitir exportación de datos en tiempo real",
     "allowStatisticalDataExport": "Permitir exportación de datos estadísticos",
     "exportPath": "Ruta de exportación",

@@ -4,7 +4,7 @@ import { callSpc } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { ajaxPromiseAll, sleep } from "@/utils/utils";
-import { NButton, NPopconfirm, NSpace, useMessage } from "naive-ui";
+import { NButton, NPopconfirm, useMessage } from "naive-ui";
 import { defineComponent, onMounted, reactive, Transition, watch } from "vue";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { SerialNoEntity } from "~/me";
@@ -58,20 +58,29 @@ export default defineComponent({
       innerData.setCurRowKey([row.GId!])
       innerData.setCurRow(row)
     }
+    const restoreSelection = (gid: string) => {
+      const restored = tableCfg.data.find(row => row.GId === gid)
+      if (restored) {
+        innerData.setCurRowKey([restored.GId!])
+        innerData.setCurRow(restored)
+      }
+    }
     const moveUp = () => {
       if (!innerData.curRow) {
         msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
-      let idx = tableCfg.data.findIndex(row => row.GId === innerData.curRow?.GId)
+      const savedGId = innerData.curRow.GId
+      let idx = tableCfg.data.findIndex(row => row.GId === savedGId)
       if (idx > 0) {
         commonData.moveLoading = true
-        tableCfg.data[idx - 1].SortNum++;
-        tableCfg.data[idx].SortNum--;
+        const temp = tableCfg.data[idx - 1].SortNum
+        tableCfg.data[idx - 1].SortNum = tableCfg.data[idx].SortNum
+        tableCfg.data[idx].SortNum = temp
         ajaxPromiseAll([callBrige(callFnName.SaveSerialNo, tableCfg.data[idx - 1]), callBrige(callFnName.SaveSerialNo, tableCfg.data[idx])])
-          .then(() => {
-            return getTbData()
-          }).finally(() => {
+          .then(() => getTbData())
+          .then(() => restoreSelection(savedGId!))
+          .finally(() => {
             commonData.moveLoading = false
           })
       }
@@ -81,16 +90,17 @@ export default defineComponent({
         msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
-      let idx = tableCfg.data.findIndex(row => row.GId === innerData.curRow?.GId)
+      const savedGId = innerData.curRow.GId
+      let idx = tableCfg.data.findIndex(row => row.GId === savedGId)
       if (idx < tableCfg.data.length - 1) {
         commonData.moveLoading = true
-
-        tableCfg.data[idx + 1].SortNum--;
-        tableCfg.data[idx].SortNum++;
+        const temp = tableCfg.data[idx + 1].SortNum
+        tableCfg.data[idx + 1].SortNum = tableCfg.data[idx].SortNum
+        tableCfg.data[idx].SortNum = temp
         ajaxPromiseAll([callBrige(callFnName.SaveSerialNo, tableCfg.data[idx + 1]), callBrige(callFnName.SaveSerialNo, tableCfg.data[idx])])
-          .then(() => {
-            return getTbData()
-          }).finally(() => {
+          .then(() => getTbData())
+          .then(() => restoreSelection(savedGId!))
+          .finally(() => {
             commonData.moveLoading = false
           })
       }
@@ -124,24 +134,20 @@ export default defineComponent({
 
     return () => {
       return (
-        <div class={'w-full h-full flex min-h-[380px]'}>
-          <div class={"w-3/5 h-full"}>
+        <div class={'w-full flex min-h-[300px] bg-white rounded-lg p-3'}>
+          <div class={"flex-1 min-w-0"}>
             <MyNTable v-model:checked-row-keys={innerData.curRowKey}  {...tableCfg} />
           </div>
-          <div class={"w-2/5 h-full flex pl-2"}>
-            <div class={'border border-solid border-gray-200 rounded-md h-full p-2 flex-shrink-0'}>
-              <NSpace>
-                <NButton size='large' onClick={addItem} >{t('config.add')}</NButton>
-                <NPopconfirm onPositiveClick={delItem} placement={'top'} v-slots={{
-                  trigger: () => <NButton size='large' type={'error'} >{t('config.delete')}</NButton>
-                }}>
-                  {t('config.confirmDeleteRule')}
-                </NPopconfirm>
-              </NSpace>
-              <NSpace class={'mt-2'}>
-                <NButton size='large' disabled={commonData.moveLoading} onClick={moveUp}>{t('config.moveUp')}</NButton>
-                <NButton size='large' disabled={commonData.moveLoading} onClick={moveDown} >{t('config.moveDown')}</NButton>
-              </NSpace>
+          <div class={"flex pl-3 gap-2"}>
+            <div class={'flex flex-col gap-2 flex-shrink-0'} style={{ width: '80px' }}>
+              <NButton size='large' block onClick={addItem}>{t('config.add')}</NButton>
+              <NPopconfirm onPositiveClick={delItem} placement={'top'} v-slots={{
+                trigger: () => <NButton size='large' block type={'error'}>{t('config.delete')}</NButton>
+              }}>
+                {t('config.confirmDeleteRule')}
+              </NPopconfirm>
+              <NButton size='large' block disabled={commonData.moveLoading} onClick={moveUp}>{t('config.moveUp')}</NButton>
+              <NButton size='large' block disabled={commonData.moveLoading} onClick={moveDown}>{t('config.moveDown')}</NButton>
             </div>
             <Transition name={'full-pop'}>
               <SerialRuleForm v-show={innerData.addFormShow} />

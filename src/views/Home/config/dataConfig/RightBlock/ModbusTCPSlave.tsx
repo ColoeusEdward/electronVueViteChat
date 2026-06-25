@@ -13,8 +13,7 @@ export default defineComponent({
       backgroundImage: `url(${TabActiveImg})`,
       backgroundSize: 'cover',
       color: '#fff',
-      paddingBottom: '4px',
-      marginTop: '-4px'
+      borderBottom: "0",
     }
     const curTabValue = ref('dataMap')
     const commonStyle = {

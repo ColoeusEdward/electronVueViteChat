@@ -33,10 +33,8 @@ export default defineComponent({
       activeStyle: {
         background: `#f5f6f6`,
         backgroundSize: 'cover',
-        borderBottom: "1px solid #f5f6f6",
+        borderBottom: "0",
         color: '#000',
-        paddingBottom: '4px',
-        marginTop: '-4px',
         zIndex: 6
       },
       showStatic: false,

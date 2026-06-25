@@ -87,6 +87,7 @@
     "alarmSignalInterval": "Khoảng tín hiệu cảnh báo",
     "writeAlarmInfoToDatabase": "Ghi thông tin cảnh báo vào cơ sở dữ liệu",
     "statisticalReport": "Báo cáo thống kê",
+    "serialNoRule": "Quy tắc mã số",
     "allowRealTimeDataExport": "Cho phép xuất dữ liệu thời gian thực",
     "allowStatisticalDataExport": "Cho phép xuất dữ liệu thống kê",
     "exportPath": "Đường dẫn xuất",
