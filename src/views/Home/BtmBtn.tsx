@@ -284,12 +284,24 @@ export default defineComponent({
           curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
 
         },
-        shaftCollect: () => {
+        shaftCollect: async () => {
           if (!curCevInnerData.isGetting) {
             window.$message.warning(t('config.pleaseStartCollecting'))
             return
           }
-          curCevInnerData.shaftColFn && curCevInnerData.shaftColFn()
+          props.setStopTrendLoading?.(true)
+          await sleep(0)
+          try {
+            const exportImages = await buildExportImageMessages()
+            if (exportImages.length > 0) {
+              await callBrige(callFnName.SaveExportImage, JSON.stringify(exportImages))
+            }
+            curCevInnerData.shaftColFn && await curCevInnerData.shaftColFn()
+          } catch (err) {
+            console.error('shaftCollect export images failed', err)
+          } finally {
+            props.setStopTrendLoading?.(false)
+          }
         },
         formulaCfg: () => {
           // console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);
