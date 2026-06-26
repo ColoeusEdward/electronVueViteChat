@@ -130,7 +130,7 @@ export const MyFormWrap = defineComponent({
     const submit = (propSubmit: typeof props.submitFn) => {
       console.log("🪵 [MyFormWrap.tsx:100] ~ token ~ \x1b[0;32mprops.form \x1b[0m = ", props.form);
       return validForm().then(() => {
-        propSubmit && propSubmit({ ...props.form })
+        return propSubmit && propSubmit({ ...props.form })
       })
     }
     const isAddMoreUpdate = (val: boolean) => {

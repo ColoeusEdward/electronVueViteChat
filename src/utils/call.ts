@@ -5,7 +5,7 @@ import { callFnName } from "./enum"
 
 export const resultProcess = (res: ActualResult, cb: string) => {
   if (res.Code == 0) {
-    return res.Data
+    return res.Data == null ? 1 : res.Data
   } else {
     if (cb == callFnName.GetRealtimeData || cb == callFnName.GetChartData || cb == callFnName.GetDistributionData) {
       console.error(cb, res.Message || '操作失败')

@@ -46,20 +46,20 @@ export const CPKEntityPropName = {
 
 export const menuOptList: DropdownProps['options'] = [
   { label: '数据源', key: 'dataSource', children: [] },
-  { label: '上传当前曲线图', key: 'uploadLineShot' }
+  // { label: '上传当前曲线图', key: 'uploadLineShot' }
 ]
 export const getMenuOptList1 = (t: ReturnType<typeof useI18n>['t']): DropdownProps['options'] => {
   return [
     { label: t('menu.trendChart'), key: 'trendChart', },
     { label: t('menu.shape'), key: 'shape', },
     { label: t('menu.dataSource'), key: 'dataSource', children: [] },
-    { label: t('menu.uploadLineShot'), key: 'uploadLineShot' }
+    // { label: t('menu.uploadLineShot'), key: 'uploadLineShot' }
   ]
 }
 export const getMenuOptList = (t: ReturnType<typeof useI18n>['t']): DropdownProps['options'] => {
   return [
     { label: t('menu.dataSource'), key: 'dataSource', children: [] },
-    { label: t('menu.uploadLineShot'), key: 'uploadLineShot' }
+    // { label: t('menu.uploadLineShot'), key: 'uploadLineShot' }
   ]
 }
 export const menuPropEnum = {

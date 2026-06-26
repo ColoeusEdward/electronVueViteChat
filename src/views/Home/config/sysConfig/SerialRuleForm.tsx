@@ -28,6 +28,7 @@ export default defineComponent({
       ] as formListItem[],
       hideBtn: false,
       noLargeBtn: true,
+      loading: false,
       btnStyleStr: `margin-right: 8px;margin-bottom:8px;`,
       saveText: t('config.add'),
       renderToBtn: () => {
@@ -38,13 +39,17 @@ export default defineComponent({
       submitFn: (form: SerialNoEntity) => {
         console.log("🚀 ~ file: index.tsx:179 ~ setup ~ form:", form)
         form.SortNum = innerData.tableLength + 1
-        callBrige(callFnName.SaveSerialNo, form).then((res: number) => {
+        formCfg.loading = true
+        return callBrige(callFnName.SaveSerialNo, form).then((res: number) => {
           if (res) {
             msg.success(t('config.saveSuccess'))
-            innerData.setAddFormShow(false)
-            innerData.getTbDataFn()
-            formCfg.form = { ...serialNoFormDefault } as SerialNoEntity
+            return innerData.getTbDataFn().then(() => {
+              innerData.setAddFormShow(false)
+              formCfg.form = { ...serialNoFormDefault } as SerialNoEntity
+            })
           }
+        }).finally(() => {
+          formCfg.loading = false
         })
       },
     })

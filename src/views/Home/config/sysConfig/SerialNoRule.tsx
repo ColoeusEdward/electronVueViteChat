@@ -121,7 +121,7 @@ export default defineComponent({
         msg.warning(t('config.pleaseSelectOneRow'))
         return
       }
-      callBrige(callFnName.DeleteSerialNo, innerData.curRow).then(() => {
+      callBrige(callFnName.DeleteSerialNo, innerData.curRow.GId).then(() => {
         getTbData()
       })
     }
