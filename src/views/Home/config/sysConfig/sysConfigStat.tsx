@@ -56,7 +56,11 @@ export default defineComponent({
                   e.stopPropagation()
                   e.preventDefault()
                   chooseFolder().then((e) => {
-                    e && (alldata.cfgData.ExportPath = e)
+                    if (e && alldata.cfgData.ExportPath == 'Export') {
+                      alldata.cfgData.ExportPath = e
+                    } else {
+                      e && e != 'C:\\' && (alldata.cfgData.ExportPath = e)
+                    }
                   })
                 }} class={'z-50 relative -right-2'} >
                   <NTag bordered={false} >{t('config.selectDirectory')}</NTag>

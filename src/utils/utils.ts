@@ -307,6 +307,10 @@ type ExportRealtimeArg = string | number | { id?: string, Id?: string }
 const exportChartWidth = 1440
 const exportChartHeight = 464
 
+const removeDataUrlPrefix = (dataUrl: string) => {
+  return dataUrl.replace(/^data:image\/\w+;base64,/, '')
+}
+
 const parseExportDataGroupId = (arg: ExportRealtimeArg) => {
   if (typeof arg == 'string' || typeof arg == 'number') {
     return String(arg)
@@ -453,11 +457,11 @@ const createRealtimeChartImage = (
       useDirtyRect: true
     })
     chart.setOption(buildRealtimeExportOption(dataGroup, formulaParam, chartData))
-    return chart.getDataURL({
+    return removeDataUrlPrefix(chart.getDataURL({
       type: 'png',
       pixelRatio: 1.5,
       backgroundColor: '#fff'
-    })
+    }))
   } finally {
     chart?.dispose()
     container.remove()
@@ -613,11 +617,11 @@ const createDistributionChartImage = (
       useDirtyRect: true
     })
     chart.setOption(buildDistributionExportOption(dataGroup, formulaParam, distributionData))
-    return chart.getDataURL({
+    return removeDataUrlPrefix(chart.getDataURL({
       type: 'png',
       pixelRatio: 1.5,
       backgroundColor: '#fff'
-    })
+    }))
   } finally {
     chart?.dispose()
     container.remove()

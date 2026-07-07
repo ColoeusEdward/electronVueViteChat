@@ -1,4 +1,4 @@
-import { NButton, NPopselect, NIcon, NDropdown, NSwitch, DropdownProps } from "naive-ui";
+import { NButton, NPopselect, NIcon, NDropdown, NRadioGroup, NRadioButton, DropdownProps } from "naive-ui";
 import type { PopselectProps } from "naive-ui";
 import { defineComponent, reactive, ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import PopBtnComp from "@/components/PopBtnComp/PopBtnComp";
@@ -593,9 +593,14 @@ export default defineComponent({
                   }} ></div>
               }
               <div class={'absolute bottom-6 right-6 flex items-center gap-2'}>
-                <span class={'text-xl text-gray-500'}>{switchLabels.value.wallThickness}</span>
-                <NSwitch value={alldata.showConcentricity} onUpdate:value={(v: boolean) => { alldata.showConcentricity = v }} size="large" />
-                <span class={'text-xl text-gray-500'}>{switchLabels.value.concentricity}</span>
+                <NRadioGroup value={alldata.showConcentricity} onUpdate:value={(v: boolean) => { alldata.showConcentricity = v }} size="large">
+                  <NRadioButton value={false}>
+                    {switchLabels.value.wallThickness}
+                  </NRadioButton>
+                  <NRadioButton value={true}>
+                    {switchLabels.value.concentricity}
+                  </NRadioButton>
+                </NRadioGroup>
               </div>
             </div>
           }
