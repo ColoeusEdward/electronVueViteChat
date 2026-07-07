@@ -1,6 +1,6 @@
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import { useConfigStore } from "@/store/config";
-import { callSpc, chooseFolder, getPrinterList, getSysConfig, } from "@/utils/call";
+import { callSpc, chooseFolder, getPrinterList, getSysConfig, setSavedSysConfig, } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { showKeyBoard, sleep } from "@/utils/utils";
@@ -16,7 +16,6 @@ import SerialNoRule from "./SerialNoRule";
 export default defineComponent({
   name: 'SysConfig',
   setup(props, ctx) {
-    getSysConfig()
     const myFormRef = ref<MyFormWrapIns>()
     const configStore = useConfigStore()
     const { t, i18nStore } = useMyI18n()
@@ -29,6 +28,7 @@ export default defineComponent({
       return configStore.sysConfig
     })
     watch(() => cfgData.value, () => {
+      if (loading.value) return
       alldata.cfgData = { ...cfgData.value }
     }, {
       immediate: true
@@ -165,10 +165,11 @@ export default defineComponent({
       // })
       // console.log("🪵 [index.tsx:124] ~ token ~ \x1b[0;32moriSysConfig\x1b[0m = ", oriSysConfig);
       console.log("🪵 [index.tsx:134] ~ token ~ \x1b[0;32malldata.cfgData\x1b[0m = ", alldata.cfgData);
-      callBrige(callFnName.SaveSysConfig, alldata.cfgData)
+      const saveData = { ...alldata.cfgData }
+      callBrige(callFnName.SaveSysConfig, saveData)
         .then((e: number) => {
           msg.success(t('config.saveComplete'))
-          configStore.setSysConfig(alldata.cfgData)
+          setSavedSysConfig(saveData)
         }).finally(() => {
           loading.value = false
         })
@@ -188,6 +189,7 @@ export default defineComponent({
       myFormRef.value?.submit(submit)
     })
     watch(() => configStore.configTab, (val) => {
+      if (val != 'sysConfigCollect') return
       getSysConfig()
     }, {
       immediate: true

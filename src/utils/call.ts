@@ -3,6 +3,14 @@ import { ActualResult, SysConfigEntity, SysConfigModel } from "~/me"
 import { callBrige } from "./callm"
 import { callFnName } from "./enum"
 
+let sysConfigRequestSeq = 0
+
+export const setSavedSysConfig = (data: SysConfigModel) => {
+  const configStore = useConfigStore()
+  sysConfigRequestSeq++
+  configStore.setSysConfig({ ...data })
+}
+
 export const resultProcess = (res: ActualResult, cb: string) => {
   if (res.Code == 0) {
     return res.Data == null ? 1 : res.Data
@@ -59,6 +67,7 @@ export const getPrinterList = (): Promise<string[]> => {
 
 export const getSysConfig = () => {
   const configStore = useConfigStore()
+  const requestSeq = ++sysConfigRequestSeq
   return callBrige(callFnName.GetSysConfig).then((res: SysConfigModel) => {
     // console.log("🪵 [call.ts:58] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
     let list: SysConfigEntity[] = [];
@@ -74,8 +83,10 @@ export const getSysConfig = () => {
     //   })
     // })
     // console.log("🪵 [call.ts:61] ~ token ~ \x1b[0;32mlist\x1b[0m = ", list);
-    configStore.setOriginSysConfig(list)
-    configStore.setSysConfig(data)
+    if (requestSeq == sysConfigRequestSeq) {
+      configStore.setOriginSysConfig(list)
+      configStore.setSysConfig(data)
+    }
     // console.log("🚀 ~ file: utils.ts:42 ~ data:", data)
     return new Promise((resolve, reject) => {
       resolve(data)
