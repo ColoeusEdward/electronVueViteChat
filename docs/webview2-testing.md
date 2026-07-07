@@ -103,9 +103,46 @@ Invoke-RestMethod -Uri 'http://[::1]:9223/json/list' | ConvertTo-Json -Depth 6
 
 如果 `url` 不是 `http://localhost:3920/#/`，说明 WebView2 当前可能没有加载本项目源码 dev server，需要先确认 C# 项目的 WebView2 地址配置。
 
+## 通过 Python Playwright 操作真实 WebView2 页面
+
+本机安装 Python Playwright 后，优先使用仓库中的探测脚本连接真实 WebView2。这个方式仍然连接 C# 宿主暴露的 `9223` 端口，不会启动 Electron，也不会新开普通 Chrome 页面作为验证对象。
+
+安装依赖：
+
+```powershell
+py -m pip install playwright
+py -m playwright install chromium
+```
+
+确认 C# Debug 已启动、WebView2 已启用远程调试端口后，运行：
+
+```powershell
+py scripts/webview2_playwright_probe.py --cdp "http://[::1]:9223" --url-contains "localhost:3920"
+```
+
+脚本会：
+
+1. 通过 Playwright 的 `chromium.connect_over_cdp()` 连接 `http://[::1]:9223`。
+2. 从现有 browser contexts 中选择 URL 包含 `localhost:3920` 的页面。
+3. 输出页面标题、URL、正文预览、按钮列表和输入框列表。
+4. 如果没有找到匹配页面，列出观察到的页面 URL 并停止，避免误测普通 Chrome 或 Electron 页面。
+
+可选截图：
+
+```powershell
+py scripts/webview2_playwright_probe.py `
+  --cdp "http://[::1]:9223" `
+  --url-contains "localhost:3920" `
+  --screenshot "$env:TEMP\webview2-playwright-probe.png"
+```
+
+如果本机设置了 `HTTP_PROXY` / `HTTPS_PROXY`，脚本会自动为本地 CDP 地址补充 `NO_PROXY` / `no_proxy` 的 `localhost,127.0.0.1,::1,[::1]` 绕过项，避免 Playwright 访问 `http://[::1]:9223/json/version` 时被代理转发并返回 502。
+
+如果机器上没有 Python Playwright 包，可继续使用下面的 Node 内置 `WebSocket` + CDP 方式。
+
 ## 通过 CDP 操作真实 WebView2 页面
 
-本机如果没有 Python/Node Playwright 包，也可以直接用 Node 内置 `WebSocket` 连接 Chrome DevTools Protocol。下面脚本会读取当前页面文本、按钮、输入框等信息：
+如果机器上没有 Python Playwright 包，也可以直接用 Node 内置 `WebSocket` 连接 Chrome DevTools Protocol。下面脚本会读取当前页面文本、按钮、输入框等信息：
 
 ```powershell
 $code = @'
