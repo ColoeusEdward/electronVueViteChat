@@ -1,5 +1,5 @@
 import { } from "naive-ui";
-import { defineComponent, reactive, ref, computed, onMounted, watch, PropType, nextTick } from "vue";
+import { defineComponent, reactive, ref, computed, onMounted, onBeforeUnmount, watch, PropType, nextTick } from "vue";
 
 import { useRealTimeStore } from "@/store/realtime";
 import * as echarts from 'echarts';
@@ -53,6 +53,8 @@ export default defineComponent({
     let thisReMountedCount = innerData.reMountedCount
     // console.log("🚀 ~ file: CurcevChartRow.tsx:36 ~ setup ~ thisReMountedCount:", thisReMountedCount)
     let myChart: echarts.ECharts
+    const reloadKey = ref(0)
+    let loopVersion = 0
     let unit = `mm`
     const alldata = reactive({
       widthPixel: 800,
@@ -145,8 +147,8 @@ export default defineComponent({
             if (min == -1) {
               return 0
             }
-            if (value.min == 0 && para) {
-              min = para?.Standard
+            if (value.min <= 0 && para) {
+              min = (para?.Standard || 0) - (para?.LowerTol || 0.1)
             }
             // let val = (value.min - (para?.LowerTol || 0.1) - alldata.scalUpMove).toFixed(3)
 
@@ -273,14 +275,24 @@ export default defineComponent({
       alldata.widthPixel = width
     }
 
+    const disposeChart = () => {
+      loopVersion++
+      if (myChart && !myChart.isDisposed()) {
+        myChart.dispose()
+      }
+      myChart = undefined as any
+    }
+
     const loopGet = () => {
-      if (!myChart || !innerData.isGetting || !props.adressRow || thisReMountedCount != innerData.reMountedCount) return
+      const curLoopVersion = loopVersion
+      if (!myChart || !innerData.isGetting || !props.adressRow || curLoopVersion != loopVersion || thisReMountedCount != innerData.reMountedCount) return
       // callSpc(callFnName.getSpanCollectPoints, [props.dataConfig.GId, new Date(innerData.startTime)], true).then((res: CollectPointModel[]) => {
 
 
       // console.log("🪵 [CurcevChartRow.tsx:161] ~ token ~ \x1b[0;32malldata.widthPixel\x1b[0m = ", alldata.widthPixel);
       // new Promise<CollectPointModel[]>((resolve, reject) => { resolve([]) })
       callBrige(callFnName.GetChartData, [props.adressRow.GId, alldata.widthPixel], true).then((res: DataValue[]) => {
+        if (curLoopVersion != loopVersion || !myChart) return
         // console.log("🚀 ~ file: CurcevChartRow.tsx:135 ~ callSpc ~ res:", res)
         // let maxCount = configStore.sysConfig.maxDataCount.Value
         // maxCount && (res = res.slice(-maxCount))
@@ -292,7 +304,9 @@ export default defineComponent({
         // filter((e,i) => i % 2 == 0)
         if (!res) {
           return sleep(1000).then(() => {
-            loopGet()
+            if (curLoopVersion == loopVersion) {
+              loopGet()
+            }
           })
         }
         let paramItem = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == props.adressRow?.GId)
@@ -357,9 +371,25 @@ export default defineComponent({
         let time = configStore.sysConfig.RefreshInterval
         return sleep(time ? Number(time) : 1000)
       }).then(() => {
-        loopGet()
+        if (curLoopVersion == loopVersion) {
+          loopGet()
+        }
       }).catch((err: any) => {
         console.log("🪵 [CurcevChartRow.tsx:182] ~ token ~ \x1b[0;32merr\x1b[0m = ", err);
+      })
+    }
+    const reloadChart = () => {
+      disposeChart()
+      resetSysValue()
+      alldata.isAuto = true
+      alldata.isZoom = false
+      reloadKey.value++
+      nextTick(() => {
+        initEchart()
+        getWidthPixel()
+        if (innerData.isGetting) {
+          loopGet()
+        }
       })
     }
     const getChartIns = () => {
@@ -368,6 +398,11 @@ export default defineComponent({
     watch(() => innerData.isGetting, (val) => {
       if (val) {
         loopGet()
+      }
+    })
+    watch(() => props.adressRow?.GId, (val, oldVal) => {
+      if (val && oldVal && val != oldVal) {
+        reloadChart()
       }
     })
     watch(() => innerData.curDataZoomInfo, (val: any) => {
@@ -523,6 +558,9 @@ export default defineComponent({
     //     },
     //   });
     // })
+    onBeforeUnmount(() => {
+      disposeChart()
+    })
     onMounted(() => {
       setTimeout(() => {
         initEchart()
@@ -535,7 +573,7 @@ export default defineComponent({
     })
     return () => {
       return (
-        <div class={'h-full shrink mt-2 overflow-visible relative my-index-chart'} style={{ ...(props.height ? { height: props.height } : {}) }} >
+        <div key={reloadKey.value} class={'h-full shrink mt-2 overflow-visible relative my-index-chart'} style={{ ...(props.height ? { height: props.height } : {}) }} >
           {/* <CpkBlock dataConfig={props.dataConfig} /> */}
           <div class={' h-full w-full  '} style={{}} id={(props.chartId || 'trendChart') + props.i} >
           </div>
