@@ -189,7 +189,7 @@ export default defineComponent({
                     btnShowList={[1, 1, 1]}
                     addAndEditAndDelFn={[addClick, editClick, deleteClick]}
                     isSmallPadding={true}
-                    dat={childData.value}
+                    dat={childData.value as any}
                     col={alldata.coloumns} />
                 </div>
               )

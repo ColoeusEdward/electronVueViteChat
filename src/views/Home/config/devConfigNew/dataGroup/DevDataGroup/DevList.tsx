@@ -150,10 +150,20 @@ export default defineComponent({
                   //@ts-ignore
                   !alldata.curDev ? <SimpleTable
                     isSmallPadding={true}
-                    originMode={true} dat={alldata.data} col={alldata.coloumns}></SimpleTable>
+                    originMode={true}
+                    defIsEditing={false}
+                    rowClickBtnProp="op"
+                    dat={alldata.data}
+                    col={alldata.coloumns}></SimpleTable>
                     :
                     //@ts-ignore
-                    <SimpleTable originMode={true} isSmallPadding={true} dat={alldata.adressData} col={alldata.adressColoumns}></SimpleTable>
+                    <SimpleTable
+                      originMode={true}
+                      isSmallPadding={true}
+                      defIsEditing={false}
+                      rowClickBtnProp="isChoose"
+                      dat={alldata.adressData}
+                      col={alldata.adressColoumns}></SimpleTable>
                 }
               </div>
 

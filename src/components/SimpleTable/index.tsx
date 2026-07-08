@@ -51,7 +51,7 @@ export default defineComponent({
     },
     addAndEditAndDelFn: {
       type: Object as PropType<[Function, Function, Function]>,
-      required: true
+      required: false
     },
     btnShowList: {
       type: Array as PropType<number[]>,
@@ -60,7 +60,11 @@ export default defineComponent({
     },
     rowClickFn: {
       type: Function as PropType<(e: any, row: any) => void>,
-      required: true
+      required: false
+    },
+    rowClickBtnProp: {
+      type: String,
+      required: false
     },
     originMode: {
       type: Boolean,
@@ -80,8 +84,22 @@ export default defineComponent({
     })
     const alldata = reactive({
       curRow: null as Record<string, string | number | boolean | object> | null,
-      isEditing: props.originMode || props.defIsEditing
+      isEditing: props.defIsEditing
     })
+
+    const getRowClickBtnColumn = () => {
+      if (!props.rowClickBtnProp) return null
+      return columns.value.find(col => col.prop === props.rowClickBtnProp && col.btnFn) || null
+    }
+
+    const triggerRowClickBtn = (item: Record<string, string | number | boolean | object>) => {
+      const btnColumn = getRowClickBtnColumn()
+      btnColumn?.btnFn?.(btnColumn, item)
+    }
+
+    const stopRowClick = (e: MouseEvent) => {
+      e.stopPropagation()
+    }
 
     const data = computed(() => {
       let list: Record<string, string | number | boolean | object>[] = props.dat || defData
@@ -150,8 +168,8 @@ export default defineComponent({
 
                 <div style={styles.row} class={classNames(' relative overflow-visible', { 'is-selected': item.GId == alldata.curRow?.GId && !props.originMode })} onClick={() => {
                   alldata.curRow = item
-                  console.log("🪵 [index.tsx:139] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
                   props.rowClickFn && props.rowClickFn({}, item)
+                  triggerRowClickBtn(item)
                 }}>
                   {
                     !alldata.isEditing && <div class={'absolute w-full h-full bg-transparent  z-30'}></div>
@@ -161,7 +179,10 @@ export default defineComponent({
                       <div key={col.prop} class={classNames('z-50 shrink-0', { 'invisible': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell,
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
-                      }} onClick={() => {
+                      }} onClick={(e: MouseEvent) => {
+                        if (props.rowClickBtnProp && props.rowClickBtnProp === col.prop) {
+                          stopRowClick(e)
+                        }
                         col.btnFn && col.btnFn(col, item)
                       }}>
 
@@ -173,10 +194,11 @@ export default defineComponent({
                     //   return res
                     // }
 
-                    if (col.isInput && !item.isNewRow) {
+                    if (col.isInput && alldata.isEditing && !item.isNewRow) {
                       res = (
                         <input
-                          onClick={() => {
+                          onClick={(e: MouseEvent) => {
+                            stopRowClick(e)
                             col.btnFn && col.btnFn(col, item)
                           }}
                           class={classNames('bg-transparent  shrink-0', { 'invisible': item.isNewRow && i != 0, })}
@@ -205,7 +227,8 @@ export default defineComponent({
                                 flex: col.flex,
                                 ...styles.cell,
                                 ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
-                              }} onClick={() => {
+                              }} onClick={(e: MouseEvent) => {
+                                stopRowClick(e)
                                 // col.btnFn && col.btnFn(col, item)
                               }}>
 
@@ -218,7 +241,7 @@ export default defineComponent({
                       </NPopconfirm>
                     }
                     if (col.isCheckbox) {
-                      res = <NCheckbox v-model:checked={item[col.prop]} size="large" ></NCheckbox>
+                      res = <NCheckbox v-model:checked={item[col.prop]} onClick={stopRowClick} size="large" ></NCheckbox>
                     }
                     if (col.isSwitch) {
                       let text = col.mapFn && col.mapFn(col, item)
@@ -226,7 +249,7 @@ export default defineComponent({
                         flex: col.flex, ...styles.cell,
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
                       }}>
-                        <NSwitch v-model:value={item[col.prop]} onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} size="large" checkedValue={1} uncheckedValue={0} v-slots={{
+                        <NSwitch v-model:value={item[col.prop]} onClick={stopRowClick} onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} size="large" checkedValue={1} uncheckedValue={0} v-slots={{
                           checked: () => { return <div >{text}</div> },
                           unchecked: () => { return <div class={'text-black'}>{text}</div> }
                         }}  ></NSwitch>
@@ -238,7 +261,7 @@ export default defineComponent({
                       res = <div key={col.prop} class={classNames(' shrink-0', { 'invisible': item.isNewRow && i != 0 })} style={{
                         flex: col.flex, ...styles.cell, backgroundColor: !!item[col.prop] ? '#456e9c' : '#fff', color: !!item[col.prop] ? '#fff' : '#333',
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
-                      }} onClick={() => { col.btnFn && col.btnFn(col, item) }}>
+                      }} onClick={(e: MouseEvent) => { stopRowClick(e); col.btnFn && col.btnFn(col, item) }}>
                         {col.mapFn && col.mapFn(col, item)}
                       </div>
                     }
@@ -249,7 +272,7 @@ export default defineComponent({
                         flex: col.flex, ...styles.cell, padding: '0', border: 'none',
                         ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {}),
                         width: col.fixWidth ? `${col.fixWidth}%` : '100%',
-                      }}> <NSelect style={{ height: '100%' }} v-model:value={item[col.prop]} size="large" onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} options={col.selectOption} ></NSelect>
+                      }}> <NSelect style={{ height: '100%' }} onClick={stopRowClick} v-model:value={item[col.prop]} size="large" onUpdate:value={() => { col.btnFn && col.btnFn(col, item) }} options={col.selectOption} ></NSelect>
                       </div>
                     }
 
@@ -281,7 +304,7 @@ export default defineComponent({
               !!props.btnShowList[0] && <span class={' w-[22%] max-w-[120px] text-center mr-2  py-2  bg-white text-black border border-gray-500 border-solid'}
                 onClick={() => {
 
-                  let fn = props.addAndEditAndDelFn[0];
+                  let fn = props.addAndEditAndDelFn?.[0];
                   fn && fn({}, alldata.curRow)
                 }}>
                 {t('config.add')}
@@ -295,7 +318,7 @@ export default defineComponent({
                     window.$message.error(t('config.pleaseSelectOneRow'))
                     return
                   }
-                  let fn = props.addAndEditAndDelFn[1];
+                  let fn = props.addAndEditAndDelFn?.[1];
                   fn && fn({}, alldata.curRow)
                 }}>
                 {t('config.edit')}
@@ -319,7 +342,7 @@ export default defineComponent({
                     window.$message.error(t('config.pleaseSelectOneRow'))
                     return
                   }
-                  let fn = props.addAndEditAndDelFn[2];
+                  let fn = props.addAndEditAndDelFn?.[2];
                   fn && fn({}, alldata.curRow)
                 }}>
               </NPopconfirm>
