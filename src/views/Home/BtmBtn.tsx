@@ -126,7 +126,7 @@ export default defineComponent({
           continue
         }
 
-        const realtimeChart = await window.exportRealtime(dataGroupId)
+        const realtimeChart = await window.exportRealtime({ id: dataGroupId, dataGroup })
         if (realtimeChart) {
           exportImages.push({
             Id: dataGroupId,
@@ -136,7 +136,7 @@ export default defineComponent({
           })
         }
 
-        const distributionChart = await window.exportDistribution(dataGroupId)
+        const distributionChart = await window.exportDistribution({ id: dataGroupId, dataGroup })
         if (distributionChart) {
           exportImages.push({
             Id: dataGroupId,
@@ -160,6 +160,7 @@ export default defineComponent({
 
       try {
         const exportImages = await buildExportImageMessages()
+        console.log("🪵 [BtmBtn.tsx:162] ~ token ~ \x1b[0;32mexportImages\x1b[0m = ", exportImages);
         if (exportImages.length > 0) {
           await callBrige(callFnName.SaveExportImage, JSON.stringify(exportImages))
         }
@@ -167,9 +168,7 @@ export default defineComponent({
         console.error('collectStop export images failed', err)
       } finally {
         props.setStopTrendLoading?.(false)
-        let item = popSelectList.value[2]
         alldata.trandChartStart = false
-        item.name = `${t('menu.trendChart')}(${t('menu.stopChart')})`
         curCevInnerData.stopColFn && curCevInnerData.stopColFn()
       }
     }
@@ -272,9 +271,7 @@ export default defineComponent({
           // })
         },
         collectStart: () => {
-          let item = popSelectList.value[2]
           alldata.trandChartStart = true
-          item.name = `${t('menu.trendChart')}(${t('menu.startChart')})`
           curCevInnerData.startColFn && curCevInnerData.startColFn()
         },
         collectStop: () => {
@@ -412,7 +409,7 @@ export default defineComponent({
           {popSelectList.value.map((item, index) => {
             return (
               //@ts-ignore
-              <PopBtnComp clickFn={item.clickFn} disabled={!!item.clickFn} name={item.name} options={item.option} onSelect={handleOptClick}
+              <PopBtnComp clickFn={item.clickFn} disabled={!!item.clickFn} name={item.name} floatLabel={item.floatLabel} options={item.option} onSelect={handleOptClick}
                 v-slots={{
                   //@ts-ignore
                   icon: () => {

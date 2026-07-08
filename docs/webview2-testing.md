@@ -2,6 +2,8 @@
 
 本项目不是直接通过 Electron 启动来验证前端。真实运行方式是：C# 项目启动 WebView2，WebView2 加载本项目的 Vite dev server 页面。因此做运行验证时，应连接 C# 宿主中的 WebView2 实例。
 
+**必须严格使用「通过 Python Playwright 操作真实 WebView2 页面」一节中的 Python 包方式（`py scripts/webview2_playwright_probe.py --cdp ...`）进行测试，禁止使用 Claude Code 内置的 Playwright MCP 工具（`mcp__playwright__*`）。** 该 MCP 工具会自行管理一个独立的浏览器会话，默认连接的是用户日常使用的普通 Chrome（可能带有各种浏览器扩展和无关标签页），而不是 C# 宿主暴露的 WebView2 `9223` 调试端口，用它测试会得到完全无关的页面结果，且不会真实反映本项目改动。若本机没有 Python Playwright，退而使用下文「通过 CDP 操作真实 WebView2 页面」一节中的 Node 内置 `WebSocket` + CDP 方式，同样不要使用 Playwright MCP 工具。
+
 ## 适用场景
 
 - 验证 `src/` 下前端页面、组件、Pinia 状态、WebView2 bridge 调用相关改动。
@@ -36,72 +38,6 @@
    ```text
    --remote-debugging-port=9223
    ```
-
-## 探测 WebView2 进程和端口
-
-如果已知某个 WebView2 PID，例如 `23992`，可用下面命令查看关联进程和监听端口：
-
-```powershell
-$pidToInspect = 23992
-$proc = Get-CimInstance Win32_Process -Filter "ProcessId=$pidToInspect"
-$parent = $proc.ParentProcessId
-
-Get-CimInstance Win32_Process |
-  Where-Object {
-    $_.ProcessId -eq $parent -or
-    $_.ParentProcessId -eq $parent -or
-    $_.ParentProcessId -eq $pidToInspect -or
-    $_.ProcessId -eq $pidToInspect
-  } |
-  Select-Object ProcessId, ParentProcessId, Name,
-    @{Name='HasRemoteDebug';Expression={$_.CommandLine -like '*remote-debugging*'}},
-    CommandLine |
-  Format-List
-
-$pids = Get-CimInstance Win32_Process |
-  Where-Object {
-    $_.ProcessId -eq $parent -or
-    $_.ParentProcessId -eq $parent -or
-    $_.ParentProcessId -eq $pidToInspect -or
-    $_.ProcessId -eq $pidToInspect
-  } |
-  Select-Object -ExpandProperty ProcessId
-
-Get-NetTCPConnection -State Listen |
-  Where-Object { $pids -contains $_.OwningProcess } |
-  Select-Object LocalAddress, LocalPort, OwningProcess |
-  Format-Table -AutoSize
-```
-
-成功时通常会看到：
-
-```text
-LocalAddress LocalPort OwningProcess
------------- --------- -------------
-::1               9223         <browser-process-pid>
-```
-
-## 获取 DevTools target
-
-使用 WebView2 的 DevTools HTTP 接口列出页面：
-
-```powershell
-$ProgressPreference = 'SilentlyContinue'
-Invoke-RestMethod -Uri 'http://[::1]:9223/json/list' | ConvertTo-Json -Depth 6
-```
-
-期望结果中包含当前页面，例如：
-
-```json
-{
-  "title": "新杰电工",
-  "type": "page",
-  "url": "http://localhost:3920/#/",
-  "webSocketDebuggerUrl": "ws://[0000:...:0001]:9223/devtools/page/<id>"
-}
-```
-
-如果 `url` 不是 `http://localhost:3920/#/`，说明 WebView2 当前可能没有加载本项目源码 dev server，需要先确认 C# 项目的 WebView2 地址配置。
 
 ## 通过 Python Playwright 操作真实 WebView2 页面
 
@@ -139,6 +75,28 @@ py scripts/webview2_playwright_probe.py `
 如果本机设置了 `HTTP_PROXY` / `HTTPS_PROXY`，脚本会自动为本地 CDP 地址补充 `NO_PROXY` / `no_proxy` 的 `localhost,127.0.0.1,::1,[::1]` 绕过项，避免 Playwright 访问 `http://[::1]:9223/json/version` 时被代理转发并返回 502。
 
 如果机器上没有 Python Playwright 包，可继续使用下面的 Node 内置 `WebSocket` + CDP 方式。
+
+## 获取 DevTools target
+
+使用 WebView2 的 DevTools HTTP 接口列出页面：
+
+```powershell
+$ProgressPreference = 'SilentlyContinue'
+Invoke-RestMethod -Uri 'http://[::1]:9223/json/list' | ConvertTo-Json -Depth 6
+```
+
+期望结果中包含当前页面，例如：
+
+```json
+{
+  "title": "新杰电工",
+  "type": "page",
+  "url": "http://localhost:3920/#/",
+  "webSocketDebuggerUrl": "ws://[0000:...:0001]:9223/devtools/page/<id>"
+}
+```
+
+如果 `url` 不是 `http://localhost:3920/#/`，说明 WebView2 当前可能没有加载本项目源码 dev server，需要先确认 C# 项目的 WebView2 地址配置。
 
 ## 通过 CDP 操作真实 WebView2 页面
 
@@ -325,6 +283,6 @@ require("fs").writeFileSync(
 
 - 不要用 Electron 作为本项目真实运行验证入口。
 - 不要把普通 Chrome 页面当成 WebView2 页面来验证。
-- Playwright MCP 可能默认连接普通 Chrome 会话；如果它没有绑定 WebView2 的 `9223` 端口，就不要用它误测。
+- 禁止使用 Claude Code 内置的 Playwright MCP 工具（`mcp__playwright__*`）做本项目验证：它默认连接的是用户日常的普通 Chrome 会话，不会绑定 WebView2 的 `9223` 端口。必须使用本文档中的 Python 包方式（`py scripts/webview2_playwright_probe.py --cdp ...`），或退而使用 Node 内置 `WebSocket` + CDP 方式。
 - 如果 C# Debug 加载的是打包后的静态资源，而不是 Vite dev server，需要先确认资源已更新，否则源码改动不会体现在 WebView2 中。
 - 项目说明中明确：测试不需要执行 lint，也不需要执行 build。

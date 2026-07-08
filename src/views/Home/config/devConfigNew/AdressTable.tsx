@@ -6,7 +6,7 @@ import { DeviceConfigEntity, DataAddressEntity, ModbusAdressSubItem, simpleTable
 import ConnectComForm, { ConnectFormIns } from "./connect/ConnectComForm";
 import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
-import { DataClassEnum, DataClassNameMap, DeviceClassNameMap, ParamClassEnum, ParamClassNameMap, PermissionNameList, tabNameEnum } from "./enum";
+import { DataClassEnum, DataClassNameMap, DeviceClassNameMap, ParamClassEnum, ParamClassNameMap, PermissionNameList, refreshDevConfigNewEnums, tabNameEnum } from "./enum";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { useConfigStore } from "@/store/config";
@@ -130,6 +130,7 @@ export default defineComponent({
 
     watch(() => configStore.addressShow, (v) => {
       if (v) {
+        refreshDevConfigNewEnums()
         getData()
         configStore.setUpdateAdressRowFn(getData)
       }
@@ -139,6 +140,7 @@ export default defineComponent({
 
     watch(() => i18nStore.langChangeCount, () => {
       sleep(100).then(() => {
+        refreshDevConfigNewEnums()
         alldata.coloumns[0].label = t('config.dataName')
         alldata.coloumns[1].label = t('config.readWritePermission')
         alldata.coloumns[2].label = t('config.status')

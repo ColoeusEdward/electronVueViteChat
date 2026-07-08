@@ -1,6 +1,12 @@
 
 
 import { MessageApiInjection } from "naive-ui/es/message/src/MessageProvider";
+type ExportChartArg = string | number | (Partial<DataGroupEntity> & {
+  id?: string;
+  Id?: string;
+  dataGroup?: DataGroupEntity;
+})
+
 declare global {
   // ? 扩展window对象
   interface Window {
@@ -14,8 +20,8 @@ declare global {
     $message: MessageApiInjection,
     frontFn: Record<string, Function>,
     chrome: any,
-    exportRealtime: (arg: string | number | { id?: string; Id?: string }) => Promise<string>,
-    exportDistribution: (arg: string | number | { id?: string; Id?: string }) => Promise<string>
+    exportRealtime: (arg: ExportChartArg) => Promise<string>,
+    exportDistribution: (arg: ExportChartArg) => Promise<string>
   }
 }
 

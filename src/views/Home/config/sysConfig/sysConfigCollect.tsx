@@ -49,7 +49,7 @@ export default defineComponent({
             { type: 'input', label: t('config.minimumStatisticalPoints'), prop: 'CpkMinPonitNum', width: 12 },
             { type: 'input', label: t('config.statisticalDataPeriod'), prop: 'CpkInterval', width: 12, suffix: 'ms' },
             { type: 'input', label: t('config.graphRefreshPeriod'), prop: 'RefreshInterval', width: 12, suffix: 'ms' },
-            { type: 'input', label: t('config.maximumDisplayPoints'), prop: 'MaxPonitNum', width: 12 },
+            // { type: 'input', label: t('config.maximumDisplayPoints'), prop: 'MaxPonitNum', width: 12 },
           ]
         },
         {

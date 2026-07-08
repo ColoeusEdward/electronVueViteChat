@@ -302,7 +302,11 @@ export const getAllDataUnderGroup = (configStore: ReturnType<typeof useConfigSto
   })
 }
 
-type ExportRealtimeArg = string | number | { id?: string, Id?: string }
+type ExportRealtimeArg = string | number | (Partial<DataGroupEntity> & {
+  id?: string,
+  Id?: string,
+  dataGroup?: DataGroupEntity
+})
 
 const exportChartWidth = 1440
 const exportChartHeight = 464
@@ -315,7 +319,22 @@ const parseExportDataGroupId = (arg: ExportRealtimeArg) => {
   if (typeof arg == 'string' || typeof arg == 'number') {
     return String(arg)
   }
-  return arg?.id || arg?.Id || ''
+  return arg?.id || arg?.Id || arg?.GId || arg?.dataGroup?.GId || ''
+}
+
+const parseExportDataGroup = (arg: ExportRealtimeArg, configStore: ReturnType<typeof useConfigStore>, dataGroupId: string) => {
+  if (arg && typeof arg == 'object') {
+    if (arg.dataGroup) {
+      return arg.dataGroup
+    }
+    if (arg.GId || arg.DataName || arg.Unit || arg.Precision != undefined) {
+      return {
+        ...arg,
+        GId: arg.GId || dataGroupId
+      } as DataGroupEntity
+    }
+  }
+  return configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
 }
 
 const getChartDataForExport = async (dataGroupId: string): Promise<DataValue[]> => {
@@ -644,7 +663,7 @@ export const initWinFn = () => {
       if (!chartData || chartData.length == 0) {
         return ''
       }
-      const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
+      const dataGroup = parseExportDataGroup(arg, configStore, dataGroupId)
       const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
       let res = createRealtimeChartImage(dataGroup, formulaParam, chartData)
       // console.log('exportRealtime res', res)
@@ -668,7 +687,7 @@ export const initWinFn = () => {
       if (!distributionData) {
         return ''
       }
-      const dataGroup = configStore.chartDataGroupList.find(e => e.GId == dataGroupId)
+      const dataGroup = parseExportDataGroup(arg, configStore, dataGroupId)
       const formulaParam = configStore.curEnableFormulaParamList?.find(e => e.DataGroupId == dataGroupId)
       let res = createDistributionChartImage(dataGroup, formulaParam, distributionData)
       // console.log('exportDistribution res', res)

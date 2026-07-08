@@ -16,6 +16,20 @@ export type ConnectFormIns = {
 const defForm = {
 
 }
+const DATA_TYPE_LENGTH_MAP: Record<number, number> = {
+  0: 1,
+  1: 1,
+  2: 2,
+  3: 2,
+  4: 2,
+  6: 1,
+}
+const DATA_CONVERSION_RADIO_LIST = [
+  { label: '先乘后加', value: 0 },
+  { label: '先加后乘', value: 1 },
+]
+
+const getLengthByDataType = (dataType: unknown) => DATA_TYPE_LENGTH_MAP[Number(dataType)]
 export default defineComponent({
   name: 'ModbusForm',
   props: {
@@ -48,31 +62,29 @@ export default defineComponent({
     // })
     const optionMap: any = ref({})
 
-    const itemList = ref<formListItem[]>([
+    const buildExchangeItem = (): formListItem => ({
+      ...commonFormItemListMap[propNameEnum.Exchange],
+      type: 'radio',
+      radioType: 'btn',
+      radioList: DATA_CONVERSION_RADIO_LIST,
+      rule: ['mustNum'],
+    })
+
+    const buildItemList = (): formListItem[] => [
       commonFormItemListMap[propNameEnum.Name],
-      // commonFormItemListMap[propNameEnum.DeviceClass],
-      // commonFormItemListMap[propNameEnum.DataClass],
-      // commonFormItemListMap[propNameEnum.ParamClass],
-      // commonFormItemListMap[propNameEnum.Unilateral],
-      // commonFormItemListMap[propNameEnum.AlarmType],
       commonFormItemListMap[propNameEnum.Permission],
       commonFormItemListMap[propNameEnum.State],
-      // commonFormItemListMap[propNameEnum.Unit],
-
-      // { type: 'divider', label: '数据设定', prop: "divid", width: 24 },
-
       commonFormItemListMap[propNameEnum.SlaveId],
       commonFormItemListMap[propNameEnum.Area],
       commonFormItemListMap[propNameEnum.Index],
-      commonFormItemListMap[propNameEnum.Length],
       commonFormItemListMap[propNameEnum.DataType],
-      // commonFormItemListMap[propNameEnum.CountFormula],
-      commonFormItemListMap[propNameEnum.Exchange],
+      commonFormItemListMap[propNameEnum.Length],
+      buildExchangeItem(),
       commonFormItemListMap[propNameEnum.Rate],
       commonFormItemListMap[propNameEnum.Offset],
-      // commonFormItemListMap[propNameEnum.Endian32bit],
+    ]
 
-    ])
+    const itemList = ref<formListItem[]>(buildItemList())
     const submit = (data: any) => {
       console.log("🪵 [AdressForm.tsx:43] ~ token ~ \x1b[0;32mdata\x1b[0m = ", data);
       // if (isAdressAddMore.value) {
@@ -112,6 +124,7 @@ export default defineComponent({
       return {
         ...defForm,
         DeviceId: configStore.curDevConfigRow?.GId || '',
+        Exchange: 0,
       }
     }
 
@@ -135,7 +148,7 @@ export default defineComponent({
         if (isAdd.value) {
           alldata.form = { ...buildDefForm(), }
         } else {
-          alldata.form = { ...curRow.value, ...JSON.parse(v) }
+          alldata.form = { Exchange: 0, ...curRow.value, ...JSON.parse(v) }
         }
 
         console.log("🪵 [ModbusForm.tsx:132] ~ token ~ \x1b[0;32malldata.form\x1b[0m = ", alldata.form);
@@ -144,6 +157,15 @@ export default defineComponent({
       }
     }, {
       immediate: true
+    })
+
+    //@ts-ignore
+    watch(() => alldata.form.DataType, (dataType) => {
+      const length = getLengthByDataType(dataType)
+      if (length !== undefined) {
+        alldata.form.Length = length
+      }
+      itemList.value = buildItemList()
     })
     watch(() => show.value, (v) => {
 
@@ -156,27 +178,7 @@ export default defineComponent({
       //   optionMap[key] = commonMap2[key]
       // })
       optionMap.value = refreshCommonMap2()
-      itemList.value = [
-        commonFormItemListMap[propNameEnum.Name],
-        // commonFormItemListMap[propNameEnum.DeviceClass],
-        // commonFormItemListMap[propNameEnum.DataClass],
-        // commonFormItemListMap[propNameEnum.ParamClass],
-        // commonFormItemListMap[propNameEnum.Unilateral],
-        // commonFormItemListMap[propNameEnum.AlarmType],
-        commonFormItemListMap[propNameEnum.Permission],
-        commonFormItemListMap[propNameEnum.State],
-        // commonFormItemListMap[propNameEnum.Unit],
-        commonFormItemListMap[propNameEnum.SlaveId],
-        commonFormItemListMap[propNameEnum.Area],
-        commonFormItemListMap[propNameEnum.Index],
-        commonFormItemListMap[propNameEnum.Length],
-        commonFormItemListMap[propNameEnum.DataType],
-        // commonFormItemListMap[propNameEnum.CountFormula],
-        commonFormItemListMap[propNameEnum.Exchange],
-        commonFormItemListMap[propNameEnum.Rate],
-        commonFormItemListMap[propNameEnum.Offset],
-        // commonFormItemListMap[propNameEnum.Endian32bit],
-      ]
+      itemList.value = buildItemList()
       props.getFormRefFn && props.getFormRefFn(myFormRef)
       props.getSubmitFn && props.getSubmitFn(submit)
     })
