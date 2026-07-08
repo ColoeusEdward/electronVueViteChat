@@ -75,17 +75,17 @@ export default defineComponent({
             }
           }
         },
-        { label: t('config.dataType'), prop: 'DataClass', flex: 1, isSelect: true, selectOption: [], btnFn: dataClassSelect },
+        // { label: t('config.dataType'), prop: 'DataClass', flex: 1, isSelect: true, selectOption: [], btnFn: dataClassSelect },
         { label: t('config.paramType'), prop: 'ParamClass', flex: 1, isSelect: true, selectOption: [], btnFn: paramClassSelect },
-        {
-          label: t('config.unit'), prop: 'Unit', flex: 1, isInput: true,
-          inputUpdateFn: (col, item) => {
-            if (item) {
-              rowClick(col, item)
-              updateRow({ Unit: item.Unit })
-            }
-          }
-        },
+        // {
+        //   label: t('config.unit'), prop: 'Unit', flex: 1, isInput: true,
+        //   inputUpdateFn: (col, item) => {
+        //     if (item) {
+        //       rowClick(col, item)
+        //       updateRow({ Unit: item.Unit })
+        //     }
+        //   }
+        // },
       ] as simpleTableColumn[],
     })
     const show = computed({

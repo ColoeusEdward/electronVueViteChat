@@ -71,11 +71,7 @@ export default defineComponent({
       })
       itemList.value = isChildMode.value ? [
         cloneFormItem(commonFormItemListMap[propNameEnum.DataName]),
-        cloneFormItem(commonFormItemListMap[propNameEnum.DataClass]),
         paramClassItem,
-        cloneFormItem(commonFormItemListMap[propNameEnum.Unilateral]),
-        cloneFormItem(commonFormItemListMap[propNameEnum.Unit]),
-        cloneFormItem(commonFormItemListMap[propNameEnum.Precision]),
       ] : [
         cloneFormItem(commonFormItemListMap[propNameEnum.DataName]),
         cloneFormItem(commonFormItemListMap[propNameEnum.DataClass]),

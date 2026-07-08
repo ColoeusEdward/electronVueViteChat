@@ -196,22 +196,32 @@ export default defineComponent({
 
                     if (col.isInput && alldata.isEditing && !item.isNewRow) {
                       res = (
-                        <input
-                          onClick={(e: MouseEvent) => {
-                            stopRowClick(e)
-                            col.btnFn && col.btnFn(col, item)
-                          }}
-                          class={classNames('bg-transparent  shrink-0', { 'invisible': item.isNewRow && i != 0, })}
-                          key={col.prop}
-                          onChange={(e: any) => {
-                            item[col.prop] = e.target.value
-                            col.inputUpdateFn && col.inputUpdateFn(col, item)
-                          }} style={{
-                            flex: col.flex, ...styles.cell,
-                            textAlign: 'center',
-                            width: col.fixWidth ? `${col.fixWidth}%` : '100%',
-                            ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
-                          }} value={buildContent(col)} />
+                        <div key={col.prop} class={classNames('z-50 shrink-0', { 'invisible': item.isNewRow && i != 0, })} style={{
+                          flex: col.flex, ...styles.cell,
+                          width: col.fixWidth ? `${col.fixWidth}%` : '100%',
+                          ...(item.GId == alldata.curRow?.GId ? styles.cellIsChoose : {})
+                        }}>
+                          <input
+                            onClick={(e: MouseEvent) => {
+                              stopRowClick(e)
+                              col.btnFn && col.btnFn(col, item)
+                            }}
+                            class={'bg-transparent w-full'}
+                            onChange={(e: any) => {
+                              item[col.prop] = e.target.value
+                              col.inputUpdateFn && col.inputUpdateFn(col, item)
+                            }} style={{
+                              textAlign: 'center',
+                              border: 'none',
+                              outline: 'none',
+                              padding: 0,
+                              margin: 0,
+                              font: 'inherit',
+                              lineHeight: 'inherit',
+                              minWidth: 0,
+                              boxSizing: 'border-box'
+                            }} value={buildContent(col)} />
+                        </div>
                       )
                     }
                     if (col.btnType == 'danger') {
