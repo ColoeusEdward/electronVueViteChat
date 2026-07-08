@@ -345,7 +345,7 @@ export default defineComponent({
     //   // { option: maintainOption2.value, name: 'test', icon: <LocalPrintshopFilled /> },
     // ])
     const trendChartBtnText = computed(() => {
-      return alldata.trandChartStart ? `${t('menu.trendChart')}(${t('menu.startChart')})` : `${t('menu.trendChart')}(${t('menu.stopChart')})`
+      return alldata.trandChartStart ? `(${t('menu.startChart')})${t('menu.trendChart')}` : `(${t('menu.stopChart')})${t('menu.trendChart')}`
     })
 
     const popSelectList = computed(() => {
