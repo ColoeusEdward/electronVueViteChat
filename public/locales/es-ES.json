@@ -175,6 +175,7 @@
     "dataOffset": "Desplazamiento de datos",
     "configHasRefreshed": "Configuración actualizada",
     "pleaseSelectOneRow": "Por favor seleccione una fila",
+    "viewSubData": "Ver subdatos",
     "operationFailed": "Operación fallida",
     "theDataNameAlreadyExists": "El nombre de dato ya existe",
     "saveSuccess": "Guardado exitoso",

@@ -9,6 +9,7 @@ import { DataGroupEntity, simpleTableColumn } from "~/me";
 import { UnilateralNameList } from "../../../dataCofigNew/enum";
 import { DataClassNameMap, ParamClassEnum, tabNameEnum } from "../../enum";
 import AdressFromCon from "./AdressFromCon";
+import DevList from "./DevList";
 import SubDataDrawer from "./SubDataDrawer";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { sleep } from "@/utils/utils";
@@ -27,7 +28,16 @@ export default defineComponent({
     const rowClick = (row: simpleTableColumn, item: DataGroupEntity) => {
       console.log("🪵 [index.tsx:38] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
       configStore.setCurDevDataGroupRow(item)
-      alldata.subDrawerShow = !!item.GId
+    }
+    const viewSubDataClick = () => {
+      const gid = curRow.value?.GId
+      const stillSelected = !!gid && alldata.data.some(e => e.GId === gid)
+      if (!stillSelected) {
+        configStore.setCurDevDataGroupRow(null)
+        window.$message.error(t('config.pleaseSelectOneRow'))
+        return
+      }
+      alldata.subDrawerShow = true
     }
     const deleteClick = (row: simpleTableColumn, item: DataGroupEntity) => {
       console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
@@ -51,17 +61,7 @@ export default defineComponent({
       })
     }
     const addClick = (row: simpleTableColumn, item: DataGroupEntity) => {
-      const form: DataGroupEntity = {
-        DeviceGroupId: curDeviceGroupRow.value?.GId,
-        ParamClass: ParamClassEnum.Value,
-        State: 1,
-        AlarmType: 1,
-        Unilateral: 0,
-        Precision: 0,
-      }
-      configStore.setCurDevDataGroupRow(form as DataGroupEntity)
-      configStore.setDevDataGroupAddressFormShow(true)
-
+      configStore.setDevDataGroupDevListShow(true)
     }
 
 
@@ -209,7 +209,15 @@ export default defineComponent({
             isSmallPadding={true}
             dat={alldata.data} col={alldata.coloumns} />
 
+          <span
+            class={'absolute right-4 bottom-[70px] z-[100] py-2 px-3 text-center bg-white text-black border border-gray-500 border-solid cursor-pointer shadow-md'}
+            onClick={viewSubDataClick}
+          >
+            {t('config.viewSubData')}
+          </span>
+
           <AdressFromCon />
+          <DevList />
           <SubDataDrawer show={alldata.subDrawerShow} parentRow={curRow.value} data={alldata.allData} updateShowFn={(v: boolean) => { alldata.subDrawerShow = v }} />
         </div>
       )

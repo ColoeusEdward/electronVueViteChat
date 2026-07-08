@@ -175,6 +175,7 @@
     "dataOffset": "数据偏移量",
     "configHasRefreshed": "配置已刷新",
     "pleaseSelectOneRow": "请选择一行",
+    "viewSubData": "查看子数据",
     "operationFailed": "操作失败",
     "theDataNameAlreadyExists": "该数据名称已存在",
     "saveSuccess": "保存成功",

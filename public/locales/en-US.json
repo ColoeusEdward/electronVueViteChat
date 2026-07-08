@@ -175,6 +175,7 @@
     "dataOffset": "Data Offset",
     "configHasRefreshed": "Config Has Refreshed",
     "pleaseSelectOneRow": "Please Select One Row",
+    "viewSubData": "View Sub Data",
     "operationFailed": "Operation Failed",
     "theDataNameAlreadyExists": "The Data Name Already Exists",
     "saveSuccess": "Save Success",

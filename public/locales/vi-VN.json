@@ -175,6 +175,7 @@
     "dataOffset": "Độ dịch dữ liệu",
     "configHasRefreshed": "Cấu hình đã được làm mới",
     "pleaseSelectOneRow": "Vui lòng chọn một dòng",
+    "viewSubData": "Xem dữ liệu con",
     "operationFailed": "Thao tác thất bại",
     "theDataNameAlreadyExists": "Tên dữ liệu này đã tồn tại",
     "saveSuccess": "Lưu thành công",

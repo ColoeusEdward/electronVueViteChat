@@ -29,7 +29,8 @@ export default defineComponent({
       type: String as PropType<'parent' | 'child'>,
       default: 'parent'
     },
-    parentRow: Object as PropType<DataGroupEntity | null | undefined>
+    parentRow: Object as PropType<DataGroupEntity | null | undefined>,
+    editRow: Object as PropType<DataGroupEntity | null | undefined>
   },
   setup(props, ctx) {
     // const show = computed(() => props.show)
@@ -66,7 +67,7 @@ export default defineComponent({
       })
       filterParamClassOptions()
       const paramClassItem = cloneFormItem(commonFormItemListMap[propNameEnum.ParamClass], {
-        label: isChildMode.value ? '子数据类型' : commonFormItemListMap[propNameEnum.ParamClass].label
+        label: isChildMode.value ? t('config.paramType') : commonFormItemListMap[propNameEnum.ParamClass].label
       })
       itemList.value = isChildMode.value ? [
         cloneFormItem(commonFormItemListMap[propNameEnum.DataName]),
@@ -117,7 +118,11 @@ export default defineComponent({
       buildItemList()
       buildCurDataClassOpt().then(() => {
         if (isChildMode.value) {
-          alldata.form = { ...buildDefForm() }
+          alldata.form = props.editRow ? {
+            ...props.editRow,
+            Unilateral: props.editRow.Unilateral ?? 0,
+            Precision: props.editRow.Precision ?? 0,
+          } : { ...buildDefForm() }
           return
         }
         if (curRow.value) {
@@ -146,7 +151,9 @@ export default defineComponent({
           ParamId: props.parentRow?.GId,
           ParamClass: saveData.ParamClass ?? getDefaultParamClass(),
         }
-        delete saveData.GId
+        if (!props.editRow) {
+          delete saveData.GId
+        }
         delete saveData.State
         delete saveData.AlarmType
       } else {
@@ -181,7 +188,7 @@ export default defineComponent({
       // submit
     } as ConnectFormIns)
 
-    watch(() => [curRow.value, props.mode, props.parentRow?.GId, curDeviceGroupRow.value?.GId], () => {
+    watch(() => [curRow.value, props.mode, props.parentRow?.GId, props.editRow?.GId, curDeviceGroupRow.value?.GId], () => {
       initForm()
     }, {
       immediate: true
@@ -194,7 +201,7 @@ export default defineComponent({
     return () => {
       return (
         // <div class={'w-[400px] h-[600px] bg-white absolute '}>
-        <MyFormWrap key={props.mode + '-' + (props.parentRow?.GId || curRow.value?.GId || 'new')} ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
+        <MyFormWrap key={props.mode + '-' + (props.editRow?.GId || props.parentRow?.GId || curRow.value?.GId || 'new')} ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
       )
     }
   }
