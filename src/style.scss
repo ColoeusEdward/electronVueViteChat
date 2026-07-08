@@ -409,6 +409,78 @@ body {
   }
 }
 
+/* ── Pure White Keyboard variant ───────────────────────────────── */
+.simple-keyboard.hg-theme-default.myTheme.pureWhiteKeyboardTheme {
+  padding: 4px 5px 6px;
+
+  .hg-row {
+    margin-bottom: 7px;
+  }
+
+  .hg-button,
+  .hg-button[data-skbtn="{enter}"],
+  .hg-button[data-skbtn="{bksp2}"],
+  .hg-button[data-skbtn="{lock}"],
+  .hg-button[data-skbtn="{shift}"],
+  .hg-button[data-skbtn="{123}"],
+  .hg-button[data-skbtn="{abc}"],
+  .hg-button[data-skbtn="{space}"] {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 48%, #eef2f7 100%);
+    color: #243044;
+    border: 1px solid rgba(203, 211, 222, 0.98);
+    border-bottom: 3px solid rgba(174, 185, 200, 0.96);
+    border-radius: 9px;
+    box-shadow:
+      0 4px 0 rgba(148, 163, 184, 0.24),
+      0 7px 16px rgba(15, 23, 42, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+    text-shadow: none;
+
+    &:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 48%, #f2f5f9 100%);
+      border-color: rgba(188, 198, 212, 1);
+      box-shadow:
+        0 4px 0 rgba(148, 163, 184, 0.28),
+        0 8px 18px rgba(15, 23, 42, 0.13),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.86);
+    }
+
+    &:active {
+      background: linear-gradient(180deg, #e9edf3 0%, #f4f6f9 100%);
+      border-top: 3px solid rgba(174, 185, 200, 0.96);
+      border-bottom: 1px solid rgba(203, 211, 222, 0.98);
+      box-shadow:
+        0 1px 0 rgba(148, 163, 184, 0.16),
+        inset 0 2px 7px rgba(71, 85, 105, 0.18);
+      transform: translateY(2px);
+    }
+  }
+
+  .hg-button[data-skbtn="{enter}"] {
+    color: #0f5f8d;
+    background: linear-gradient(180deg, #ffffff 0%, #f3fbff 48%, #e5f4fb 100%);
+    border-color: rgba(176, 215, 232, 0.98);
+    border-bottom-color: rgba(135, 190, 214, 0.98);
+  }
+
+  .hg-button[data-skbtn="{bksp2}"] {
+    color: #a23b4c;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8f9 48%, #f7ecef 100%);
+    border-color: rgba(231, 200, 207, 0.98);
+    border-bottom-color: rgba(209, 169, 179, 0.98);
+  }
+
+  .hg-button[data-skbtn="{lock}"],
+  .hg-button[data-skbtn="{shift}"],
+  .hg-button[data-skbtn="{123}"],
+  .hg-button[data-skbtn="{abc}"] {
+    color: #526073;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 48%, #edf1f6 100%);
+  }
+}
+
 /* 拖动中简化绘制：移除阴影和过渡，减少 CPU paint 压力 */
 .drag-dragging .simple-keyboard.hg-theme-default.myTheme .hg-button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;

@@ -230,7 +230,7 @@ export default defineComponent({
       nextTick(() => {
         keyboardIns = new Keyboard({
           mergeDisplay: true,
-          theme: 'hg-theme-default hg-layout-default myTheme',
+          theme: 'hg-theme-default hg-layout-default myTheme pureWhiteKeyboardTheme',
           display: {
             '{bksp2}': '←',
             '{123}': '123',
@@ -293,17 +293,17 @@ export default defineComponent({
             isMounted.value &&
             // <Teleport to="#indexCon">
             <Transition name='slide-fade'>
-              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, willChange: 'transform', contain: 'layout style paint', transform: `scale(${winScale.value})`, left: leftMove.value + 'px', background: 'radial-gradient(rgba(180,160,120,0.12) 1px, transparent 1.5px) 0 0 / 12px 12px, linear-gradient(160deg, #f5f0e8 0%, #ede6d8 55%, #e4ddd0 100%)', border: '1px solid #c8bfaa', borderRadius: '16px', boxShadow: '0 20px 50px rgba(60,40,10,0.28), 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.85)', padding: '0 10px 14px' }} class={classnames('absolute bottom-40 h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[1000px]': !commonData.isNum })} v-show={keyborardShow.value}>
-                <div class={'w-full global-keyboard-value flex justify-between items-center'} style={{ background: 'linear-gradient(180deg, #faf6ee 0%, #ede6d6 100%)', borderRadius: '12px 12px 0 0', padding: '8px 12px', marginBottom: '8px', borderBottom: '1px solid #c8bfaa', boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.4)', cursor: 'move' }} ref={showTextRef}>
+              <div v-drag={'.global-keyboard-value'} style={{ zIndex: 3000, willChange: 'transform', contain: 'layout style paint', transform: `scale(${winScale.value})`, left: leftMove.value + 'px', background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(250,251,253,0.96) 100%)', border: '1px solid rgba(210,216,226,0.95)', borderRadius: '18px', boxShadow: '0 24px 60px rgba(15,23,42,0.18), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,1)', padding: '0 10px 14px', backdropFilter: 'blur(10px)' }} class={classnames('absolute bottom-40 h-[480px] flex flex-col items-center justify-end', { 'w-[354px]': commonData.isNum, 'w-[1000px]': !commonData.isNum })} v-show={keyborardShow.value}>
+                <div class={'w-full global-keyboard-value flex justify-between items-center'} style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(247,248,251,0.96) 100%)', borderRadius: '14px 14px 0 0', padding: '8px 12px', marginBottom: '8px', borderBottom: '1px solid rgba(218,223,232,0.95)', boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.95)', cursor: 'move' }} ref={showTextRef}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                     <span style={{ display: 'flex', gap: '5px' }}>
                       <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'linear-gradient(135deg,#ff6b6b,#e53935)', border: '1px solid #c62828', boxShadow: '0 1px 3px rgba(200,0,0,0.4), inset 0 1px 0 rgba(255,180,180,0.5)', display: 'inline-block' }}></span>
                       <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'linear-gradient(135deg,#ffd54f,#ffa000)', border: '1px solid #e65100', boxShadow: '0 1px 3px rgba(200,100,0,0.4), inset 0 1px 0 rgba(255,230,160,0.5)', display: 'inline-block' }}></span>
                       <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'linear-gradient(135deg,#81c784,#388e3c)', border: '1px solid #2e7d32', boxShadow: '0 1px 3px rgba(0,100,0,0.4), inset 0 1px 0 rgba(180,255,180,0.5)', display: 'inline-block' }}></span>
                     </span>
-                    <span style={{ color: 'rgba(100,80,40,0.7)', fontSize: '10px', letterSpacing: '0.18em', fontFamily: 'monospace', userSelect: 'none' as const }}>KEYBOARD</span>
+                    <span style={{ color: 'rgba(76,87,104,0.72)', fontSize: '10px', letterSpacing: '0.18em', fontFamily: 'monospace', userSelect: 'none' as const }}>KEYBOARD</span>
                   </div>
-                  <div style={{ background: 'linear-gradient(180deg,#fefcf8 0%,#ede6d4 100%)', border: '1px solid #c4b99e', borderBottom: '2px solid #9e9080', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 0 rgba(0,0,0,0.18), 0 4px 8px rgba(60,40,10,0.2), inset 0 1px 0 rgba(255,255,255,0.9)', cursor: 'pointer', color: '#7f0000', flexShrink: 0 }} onClick={closeKeyboard}>
+                  <div style={{ background: 'linear-gradient(180deg,#ffffff 0%,#f3f5f8 100%)', border: '1px solid rgba(203,211,222,0.95)', borderBottom: '2px solid rgba(178,188,202,0.95)', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 0 rgba(148,163,184,0.22), 0 5px 12px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)', cursor: 'pointer', color: '#64748b', flexShrink: 0 }} onClick={closeKeyboard}>
                     <NIcon size={16}>  <CloseTwotone /> </NIcon>
                   </div>
                 </div>
