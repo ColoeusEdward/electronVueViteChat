@@ -303,6 +303,9 @@ interface DataGroupEntity {
   /** 数据Id */
   DataId?: string;
 
+  /** 父参数Id，用于关联父数据 GId */
+  ParamId?: string;
+
   /** 数据名称 */
   DataName?: string;
 

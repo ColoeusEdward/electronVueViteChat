@@ -45,10 +45,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    // renderBtn: {
-    //   type: Function as PropType<() => void>,
-    //   required: true
-    // },
+    renderBtn: {
+      type: Function as PropType<() => JSX.Element>,
+      required: false
+    },
     addAndEditAndDelFn: {
       type: Object as PropType<[Function, Function, Function]>,
       required: true
@@ -328,7 +328,7 @@ export default defineComponent({
 
 
 
-            {/* {props.renderBtn && props.renderBtn()} */}
+            {props.renderBtn && props.renderBtn()}
             <div class={"ml-auto"}>
               <NSwitch value={alldata.isEditing} onUpdate:value={(v: boolean) => {
                 alldata.isEditing = v

@@ -1,18 +1,16 @@
-import { DialogReactive, NButton, SelectProps, useDialog } from "naive-ui";
-import { computed, defineComponent, onMounted, onUpdated, reactive, Ref, ref, watch } from "vue";
-import btnActiveImg from '@/assets/LineDspButton_inactive.png'
+import { computed, defineComponent, onMounted, PropType, reactive, Ref, ref, watch } from "vue";
 import { formListItem, MyFormWrap, MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
-import { ConnectComModel, DataGroupEntity, ModbusAdressRow, ModbusAdressSubItem } from "~/me";
+import { DataGroupEntity } from "~/me";
 import { useConfigStore } from "@/store/config";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
 import { commonMap2, refreshCommonMap2 } from "@/views/Home/config/proto/proto";
 import { commonFormItemListMap, propNameEnum, refreshCommonFormItemListMap } from "@/views/Home/config/devConfig/enum";
-import { DataClassNameMap } from "../../../enum";
+import { DataClassNameMap, ParamClassEnum } from "../../../enum";
 import { useMyI18n } from "@/hooks/useMyI18n";
 
 export type ConnectFormIns = {
-  myFormRef: Ref<MyFormWrapIns>,
+  myFormRef: Ref<MyFormWrapIns | undefined>,
   // submit: Function
 }
 const defForm = {
@@ -26,150 +24,169 @@ export default defineComponent({
     connectStr: String,
     updateParentFn: Function,
     getFormRefFn: Function,
-    getSubmitFn: Function
+    getSubmitFn: Function,
+    mode: {
+      type: String as PropType<'parent' | 'child'>,
+      default: 'parent'
+    },
+    parentRow: Object as PropType<DataGroupEntity | null | undefined>
   },
   setup(props, ctx) {
-    const dialog = useDialog()
     // const show = computed(() => props.show)
     const configStore = useConfigStore()
-    const { t, i18nStore } = useMyI18n()
+    const { t } = useMyI18n()
     const myFormRef = ref<MyFormWrapIns>()
     const curRow = computed(() => configStore.curDevDataGroupRow)
-    const changeShow = () => {
-      props.updateShowFn && props.updateShowFn(false)
-    }
     const curDeviceGroupRow = computed(() => configStore.curDeviceGroupRow)
-    const addressStr = computed(() => configStore.curAddressRow?.AddressString || '')
-    const isAdressAddMore = computed(() => configStore.isAdressAddMore)
+    const isChildMode = computed(() => props.mode === 'child')
     const alldata = reactive({
       form: {} as DataGroupEntity,
-      curDialogIns: null as DialogReactive | null,
-      subItem: null
     })
     const optionMap: any = reactive({
       ...commonMap2
     })
-    const itemList = ref<formListItem[]>([
-      commonFormItemListMap[propNameEnum.DataName],
-      // commonFormItemListMap[propNameEnum.DeviceClass],
-      commonFormItemListMap[propNameEnum.DataClass],
-      commonFormItemListMap[propNameEnum.ParamClass],
-      commonFormItemListMap[propNameEnum.Unilateral],
-      commonFormItemListMap[propNameEnum.AlarmType],
-      // commonFormItemListMap[propNameEnum.Permission],
-      commonFormItemListMap[propNameEnum.State],
-      commonFormItemListMap[propNameEnum.Unit],
-      commonFormItemListMap[propNameEnum.Precision],
+    const itemList = ref<formListItem[]>([])
 
+    const cloneFormItem = (item: formListItem, data?: Partial<formListItem>) => {
+      return { ...item, ...data }
+    }
 
-      // { type: 'divider', label: '数据设定', prop: "divid", width: 24 },
+    const filterParamClassOptions = () => {
+      const list = [...(commonMap2[propNameEnum.ParamClass] || [])]
+      optionMap[propNameEnum.ParamClass] = isChildMode.value
+        ? list.filter(e => e.value !== ParamClassEnum.Value)
+        : list.filter(e => e.value === ParamClassEnum.Value)
+    }
 
-      // commonFormItemListMap[propNameEnum.SlaveId],
-      // commonFormItemListMap[propNameEnum.Area],
-      // commonFormItemListMap[propNameEnum.Index],
-      // commonFormItemListMap[propNameEnum.Length],
-      // commonFormItemListMap[propNameEnum.DataType],
-      // // commonFormItemListMap[propNameEnum.CountFormula],
-      // commonFormItemListMap[propNameEnum.Exchange],
-      // commonFormItemListMap[propNameEnum.Rate],
-      // commonFormItemListMap[propNameEnum.Offset],
-      // commonFormItemListMap[propNameEnum.Endian32bit],
+    const buildItemList = () => {
+      refreshCommonMap2()
+      refreshCommonFormItemListMap()
+      Object.keys(commonMap2).forEach(key => {
+        optionMap[key] = commonMap2[key]
+      })
+      filterParamClassOptions()
+      const paramClassItem = cloneFormItem(commonFormItemListMap[propNameEnum.ParamClass], {
+        label: isChildMode.value ? '子数据类型' : commonFormItemListMap[propNameEnum.ParamClass].label
+      })
+      itemList.value = isChildMode.value ? [
+        cloneFormItem(commonFormItemListMap[propNameEnum.DataName]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.DataClass]),
+        paramClassItem,
+        cloneFormItem(commonFormItemListMap[propNameEnum.Unilateral]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.Unit]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.Precision]),
+      ] : [
+        cloneFormItem(commonFormItemListMap[propNameEnum.DataName]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.DataClass]),
+        paramClassItem,
+        cloneFormItem(commonFormItemListMap[propNameEnum.Unilateral]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.AlarmType]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.State]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.Unit]),
+        cloneFormItem(commonFormItemListMap[propNameEnum.Precision]),
+      ]
+    }
 
-    ])
-    const submit = (data: any) => {
-      console.log("🪵 [AdressForm.tsx:43] ~ token ~ \x1b[0;32mdata\x1b[0m = ", data);
-      // if (isAdressAddMore.value) {
+    const getDefaultParamClass = () => {
+      return isChildMode.value ? optionMap[propNameEnum.ParamClass]?.[0]?.value : ParamClassEnum.Value
+    }
 
-      //   return
-      // }
-      // let subItem: ModbusAdressSubItem = {
-      //   SlaveId: data.SlaveId,
-      //   Area: data.Area,
-      //   Index: data.Index,
-      //   Length: data.Length,
-      //   DataType: data.DataType,
-      //   Exchange: data.Exchange,
-      //   Rate: data.Rate,
-      //   Offset: data.Offset
-      // }
-      // data.AddressString = JSON.stringify(subItem)
+    const buildDefForm = (): DataGroupEntity => {
+      const baseForm: DataGroupEntity = isChildMode.value && props.parentRow ? { ...props.parentRow } : {}
+      delete baseForm.GId
+      delete baseForm.ParamId
+      delete baseForm.ParamClass
+      const form: DataGroupEntity = {
+        ...defForm,
+        ...baseForm,
+        DeviceGroupId: baseForm.DeviceGroupId || curDeviceGroupRow.value?.GId || '',
+        ParamClass: getDefaultParamClass(),
+        Unilateral: baseForm.Unilateral ?? 0,
+        AlarmType: baseForm.AlarmType ?? 1,
+        State: baseForm.State ?? 1,
+        Unit: baseForm.Unit ?? '',
+        Precision: baseForm.Precision ?? 0,
+      }
+      if (isChildMode.value) {
+        form.ParamId = props.parentRow?.GId
+      }
+      return form
+    }
 
-      callBrige(callFnName.SaveDataGroup, data).then((res: any) => {
+    const initForm = () => {
+      buildItemList()
+      buildCurDataClassOpt().then(() => {
+        if (isChildMode.value) {
+          alldata.form = { ...buildDefForm() }
+          return
+        }
+        if (curRow.value) {
+          alldata.form = {
+            ...curRow.value,
+            ParamClass: ParamClassEnum.Value,
+            AlarmType: curRow.value.AlarmType ?? 1,
+            State: curRow.value.State ?? 1,
+            Unilateral: curRow.value.Unilateral ?? 0,
+            Precision: curRow.value.Precision ?? 0,
+          }
+        } else {
+          alldata.form = { ...buildDefForm() }
+        }
+      })
+    }
+
+    const submit = (data: DataGroupEntity) => {
+      let saveData: DataGroupEntity = {
+        ...data,
+        DeviceGroupId: data.DeviceGroupId || curDeviceGroupRow.value?.GId,
+      }
+      if (isChildMode.value) {
+        saveData = {
+          ...saveData,
+          ParamId: props.parentRow?.GId,
+          ParamClass: saveData.ParamClass ?? getDefaultParamClass(),
+        }
+        delete saveData.GId
+        delete saveData.State
+        delete saveData.AlarmType
+      } else {
+        saveData = {
+          ...saveData,
+          ParamClass: ParamClassEnum.Value,
+          State: saveData.State ?? 1,
+          AlarmType: saveData.AlarmType ?? 1,
+          Unilateral: saveData.Unilateral ?? 0,
+          Precision: saveData.Precision ?? 0,
+        }
+      }
+      callBrige(callFnName.SaveDataGroup, saveData).then((res: any) => {
         window.$message.success(t('config.saveSuccess'))
-        configStore.setDevDataGroupAddressFormShow(false)
-        // if (!isAdressAddMore.value) {
-        //   configStore.setAddressFormShow(false)
-        // } else {
-        //   // let SlaveId = alldata.form.SlaveId || 0
-        //   // let Index = alldata.form.Index || 0
-        //   // let Length = alldata.form.Length || 0
-        //   // alldata.form.Index = Index * 1 + Length * 1
-        //   // alldata.form.DataName = ""
-        // }
+        if (!isChildMode.value) {
+          configStore.setDevDataGroupAddressFormShow(false)
+        }
         props.updateParentFn && props.updateParentFn()
         configStore.updateDevDataGroupRowFn && configStore.updateDevDataGroupRowFn()
       })
     }
 
     const buildCurDataClassOpt = () => {
-      if (!curDeviceGroupRow.value) return new Promise(resolve => resolve([]))
+      if (!curDeviceGroupRow.value) return Promise.resolve([])
       return callBrige(callFnName.GetDataClass, curDeviceGroupRow.value?.DeviceClass).then((res: number[]) => {
         optionMap.DataClass = res.map(e => { return { label: DataClassNameMap[e], value: e } })
       })
     }
-    const buildDefForm = (): any => {
-      return {
-        ...defForm,
-        DeviceId: configStore.curDevConfigRow?.GId || '',
-      }
-    }
-
-    const getData = () => {
-      // callBrige(callFnName.GetDataAddresses, configStore.curDevConfigRow?.GId).then((res: any[]) => {
-      //   console.log("🪵 [AdressTable.tsx:60] ~ token ~ \x1b[0;32mres\x1b[0m = ", res);
-      //   alldata.subItem = res
-      // })
-    }
-
 
     ctx.expose({
       myFormRef,
       // submit
     } as ConnectFormIns)
 
-    watch(() => curRow.value, (v) => {
-      // console.log("🪵 [index.tsx:44] ~ token ~ \x1b[0;curDevConfigRow\x1b[0m = ", configStore.curDevConfigRow);
-      if (v) {
-        refreshCommonMap2()
-        refreshCommonFormItemListMap()
-        // 重新构建 itemList 以获取最新的翻译标签
-        itemList.value = [
-          commonFormItemListMap[propNameEnum.DataName],
-          commonFormItemListMap[propNameEnum.DataClass],
-          commonFormItemListMap[propNameEnum.ParamClass],
-          commonFormItemListMap[propNameEnum.Unilateral],
-          commonFormItemListMap[propNameEnum.AlarmType],
-          commonFormItemListMap[propNameEnum.State],
-          commonFormItemListMap[propNameEnum.Unit],
-          commonFormItemListMap[propNameEnum.Precision],
-        ]
-        // 更新 optionMap 以使用最新的翻译后的选项
-        Object.keys(commonMap2).forEach(key => {
-          optionMap[key] = commonMap2[key]
-        })
-        buildCurDataClassOpt()
-        // ?.toString() as unknown as number
-        alldata.form = { ...v, DataClass: v.DataClass }
-        console.log("🪵 [ModbusForm.tsx:132] ~ token ~ \x1b[0;32malldata.form \x1b[0m = ", alldata.form);
-      } else {
-        alldata.form = { ...buildDefForm(), }
-      }
+    watch(() => [curRow.value, props.mode, props.parentRow?.GId, curDeviceGroupRow.value?.GId], () => {
+      initForm()
     }, {
       immediate: true
     })
     onMounted(() => {
-      // 刷新 commonMap2 的国际化文本（包含 commonFormItemListMap）
-
       props.getFormRefFn && props.getFormRefFn(myFormRef)
       props.getSubmitFn && props.getSubmitFn(submit)
     })
@@ -177,7 +194,7 @@ export default defineComponent({
     return () => {
       return (
         // <div class={'w-[400px] h-[600px] bg-white absolute '}>
-        <MyFormWrap ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
+        <MyFormWrap key={props.mode + '-' + (props.parentRow?.GId || curRow.value?.GId || 'new')} ref={myFormRef} optionMap={optionMap} hideBtn={true} form={alldata.form} itemList={itemList.value}></MyFormWrap>
       )
     }
   }

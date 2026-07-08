@@ -1,16 +1,15 @@
-import { MyFormWrapIns } from "@/components/MyFormWrap/MyFormWrap";
 import SimpleTable from "@/components/SimpleTable";
 import { useConfigStore } from "@/store/config";
 import { getSysConfig } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
-import { DialogReactive, useDialog } from "naive-ui";
-import { computed, defineComponent, Transition, ref, watch, reactive } from "vue";
+import { useDialog } from "naive-ui";
+import { computed, defineComponent, watch, reactive } from "vue";
 import { DataGroupEntity, simpleTableColumn } from "~/me";
 import { UnilateralNameList } from "../../../dataCofigNew/enum";
-import { DataClassNameMap, dataClassOptions, DeviceClassEnum, DeviceClassNameMap, ParamClassNameMap, tabNameEnum } from "../../enum";
+import { DataClassNameMap, ParamClassEnum, tabNameEnum } from "../../enum";
 import AdressFromCon from "./AdressFromCon";
-import DevList from "./DevList";
+import SubDataDrawer from "./SubDataDrawer";
 import { useMyI18n } from "@/hooks/useMyI18n";
 import { sleep } from "@/utils/utils";
 
@@ -20,7 +19,6 @@ export default defineComponent({
     const configStore = useConfigStore()
     const { t, i18nStore } = useMyI18n()
     const dialog = useDialog()
-    const myFormRef = ref<MyFormWrapIns>()
     const curDeviceGroupRow = computed(() => configStore.curDeviceGroupRow)
     const classSelect = (row: simpleTableColumn, item: DataGroupEntity) => {
       rowClick(row, item)
@@ -29,6 +27,7 @@ export default defineComponent({
     const rowClick = (row: simpleTableColumn, item: DataGroupEntity) => {
       console.log("🪵 [index.tsx:38] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
       configStore.setCurDevDataGroupRow(item)
+      alldata.subDrawerShow = !!item.GId
     }
     const deleteClick = (row: simpleTableColumn, item: DataGroupEntity) => {
       console.log("🪵 [index.tsx:30] ~ token ~ \x1b[0;32mitem\x1b[0m = ", item);
@@ -52,7 +51,16 @@ export default defineComponent({
       })
     }
     const addClick = (row: simpleTableColumn, item: DataGroupEntity) => {
-      configStore.setDevDataGroupDevListShow(true)
+      const form: DataGroupEntity = {
+        DeviceGroupId: curDeviceGroupRow.value?.GId,
+        ParamClass: ParamClassEnum.Value,
+        State: 1,
+        AlarmType: 1,
+        Unilateral: 0,
+        Precision: 0,
+      }
+      configStore.setCurDevDataGroupRow(form as DataGroupEntity)
+      configStore.setDevDataGroupAddressFormShow(true)
 
     }
 
@@ -83,7 +91,9 @@ export default defineComponent({
     const alldata = reactive({
 
       curConnectRefType: null,
+      allData: [] as DataGroupEntity[],
       data: [] as DataGroupEntity[],
+      subDrawerShow: false,
       coloumns: [
         {
           label: t('config.dataName'), prop: 'DataName', flex: 1, btnFn: () => { }, isInput: true,
@@ -153,7 +163,8 @@ export default defineComponent({
         //   // DeviceId: configStore.curDevConfigRow?.GId || '',
         //   isNewRow: true
         // })
-        alldata.data = res
+        alldata.allData = res
+        alldata.data = res.filter(e => !e.ParamId)
       })
     }
     configStore.setUpdateDevDataGroupRowFn(getData)
@@ -188,10 +199,9 @@ export default defineComponent({
       })
 
     })
-
     return () => {
       return (
-        <div class={'w-full h-full border border-gray-600 border-solid  overflow-hidden bg-white'}>
+        <div id="devDataGroupTableCon" class={'w-full h-full border border-gray-600 border-solid  overflow-hidden bg-white relative'}>
           <SimpleTable
             rowClickFn={rowClick}
             btnShowList={[1, 1, 1]}
@@ -199,8 +209,8 @@ export default defineComponent({
             isSmallPadding={true}
             dat={alldata.data} col={alldata.coloumns} />
 
-          <DevList />
           <AdressFromCon />
+          <SubDataDrawer show={alldata.subDrawerShow} parentRow={curRow.value} data={alldata.allData} updateShowFn={(v: boolean) => { alldata.subDrawerShow = v }} />
         </div>
       )
     }
