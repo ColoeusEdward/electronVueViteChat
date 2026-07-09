@@ -36,7 +36,7 @@ export default defineComponent({
     return () => {
       return (
         <div class={classNames('w-full h-full', { 'simple-style-table': otherProp.value.isSimpleStyle })} ref={MyNTableConRef}>
-          <NDataTable bordered={false} maxHeight={height.value} striped singleLine={false} {...otherProp.value} size={'large'} >
+          <NDataTable style={"height:100%"} bordered={false} maxHeight={height.value} striped singleLine={false} {...otherProp.value} size={'large'} >
           </NDataTable>
         </div>
       )

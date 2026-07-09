@@ -24,6 +24,10 @@ export default defineComponent({
     otherFnGroup: {
       type: Object,
       default: {} as any
+    },
+    showApply: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, ctx) {
@@ -70,6 +74,7 @@ export default defineComponent({
             <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.cancelFn() }} size={'large'}  >
               <span class={'text-2xl ml-2 '}>{t('config.cancel')}</span>
             </NButton>,
+            props.showApply &&
             <NButton class={'mr-3 h-16 w-[300px] shrink'} style={{ backgroundImage: `url(${btnActiveImg})`, backgroundSize: '100% 100%', color: '#534d62' }} strong={true} onClick={() => { props.confirmFn() }} size={'large'}  >
               <span class={'text-2xl ml-2 '}>{t('config.apply')}</span>
             </NButton>

@@ -9,6 +9,7 @@ import { useMyI18n } from "@/hooks/useMyI18n";
 import { ProductLogEntity, } from "~/me";
 import { LogTypeMap } from "./enum";
 import { useProductHistoryInnerDataStore } from "./innerData";
+import { callBrige } from "@/utils/callm";
 
 export default defineComponent({
   name: 'ProductLog',
@@ -22,13 +23,6 @@ export default defineComponent({
     }
     const tableCfg = reactive({
       columns: [
-        {
-          type: 'selection',
-          multiple: false,
-        },
-        // ,render: (row: ProductLogEntity) => {
-        //   return LogTypeMap[row.LogType]
-        // }
         { key: 'ProductNo', title: t('config.spoolNumber'), resizable: true },
         { key: 'LogType', title: t('config.logType'), resizable: true },
         { key: 'LogOption', title: t('config.logOption'), resizable: true },
@@ -44,14 +38,15 @@ export default defineComponent({
         }
       },
       rowKey: (row: ProductLogEntity) => row.GId,
-      virtualScroll: true
+      virtualScroll: true,
+      isSimpleStyle: true
     })
     var sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const commonData = reactive({
       filterText: '',
-      selectProps: tableCfg.columns[1].key,
-      selectOpt: [tableCfg.columns[1]].map(e => {
+      selectProps: tableCfg.columns[0].key,
+      selectOpt: [tableCfg.columns[0]].map(e => {
         return { label: e.title, value: e.key }
       }),
       range: [sevenDaysAgo.getTime(), Date.now()] as [number, number]
@@ -78,7 +73,7 @@ export default defineComponent({
       //   msg.warning('请输入编号')
       //   return
       // }
-      callSpc(callFnName.GetProductLogs, innerData.curRow?.ProductNo).then((res: ProductLogEntity[]) => {
+      callBrige(callFnName.GetProductLogs, innerData.curRow?.GId).then((res: ProductLogEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
         // if (res.length == 0) {
         //   msg.warning('暂无数据')
@@ -92,13 +87,13 @@ export default defineComponent({
 
     // 语言切换时更新 tableCfg 中的标题
     watch(() => i18nStore.langChangeCount, () => {
-      tableCfg.columns[1].title = t('config.spoolNumber')
-      tableCfg.columns[2].title = t('config.logType')
-      tableCfg.columns[3].title = t('config.logOption')
-      tableCfg.columns[4].title = t('config.logDetail')
-      tableCfg.columns[5].title = t('config.currentLength')
-      tableCfg.columns[6].title = t('config.operator')
-      tableCfg.columns[7].title = t('config.createTime')
+      tableCfg.columns[0].title = t('config.spoolNumber')
+      tableCfg.columns[1].title = t('config.logType')
+      tableCfg.columns[2].title = t('config.logOption')
+      tableCfg.columns[3].title = t('config.logDetail')
+      tableCfg.columns[4].title = t('config.currentLength')
+      tableCfg.columns[5].title = t('config.operator')
+      tableCfg.columns[6].title = t('config.createTime')
     })
 
     // getTableData()

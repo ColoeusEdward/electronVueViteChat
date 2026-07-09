@@ -163,6 +163,7 @@ body {
   .n-data-table-tr {
     margin-top: 4px;
     td {
+      position: relative;
       font-size: 20px;
       background: #ffffff;
       border: 1px #000 solid;
@@ -172,6 +173,24 @@ body {
   }
   .n-data-table.n-data-table--bottom-bordered .n-data-table-td.n-data-table-td--last-row {
     border-bottom: 1px #000 solid;
+  }
+
+  /* 仿照 .my-simple-table 的飞翼箭头方案标识选中行 */
+  /* 注意：::before 不能挂在 tr 上 —— tr 的子节点必须是 td/th(table-cell)，
+     浏览器会对不合法的子节点（如 inline 的 ::before）做匿名单元格修复，
+     在脱离文档流之前先占用一个真实的列位置，导致后面的 td 整体错位。
+     所以改为挂在第一个 td 上。 */
+  .n-data-table-tr.is-selected > td:first-child::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    bottom: 6px !important;
+    width: 18px;
+    background-color: #3b82f6;
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%, 40% 50%);
+    animation: flyIn 0.2s ease-out forwards;
+    z-index: 60;
   }
 }
 
@@ -432,7 +451,7 @@ body {
     border-radius: 9px;
     box-shadow:
       0 4px 0 rgba(148, 163, 184, 0.24),
-      0 7px 16px rgba(15, 23, 42, 0.10),
+      0 7px 16px rgba(15, 23, 42, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 1),
       inset 0 0 0 1px rgba(255, 255, 255, 0.72);
     text-shadow: none;

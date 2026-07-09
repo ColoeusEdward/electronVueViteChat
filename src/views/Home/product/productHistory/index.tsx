@@ -52,20 +52,26 @@ export default defineComponent({
       innerData.setCurRow(row)
       alldata.showLog = true
     }
+    const copyPath = (path?: string) => {
+      if (!path) return
+      navigator.clipboard.writeText(path)
+      msg.success(t('config.copySuccess'))
+    }
+    const renderCopyCell = (path?: string) => {
+      return (
+        <span class={'cursor-pointer'} onClick={() => copyPath(path)}>{path}</span>
+      )
+    }
     const tableCfg = reactive({
       columns: [
-        {
-          type: 'selection',
-          multiple: false,
-        },
-        { key: 'ProductNo', title: t('config.spoolNumber'), resizable: true, align: 'center' },
-        { key: 'PN', title: t('config.wireModel'), resizable: true },
+        { key: 'ProductNo', title: t('config.spoolNumber'), resizable: true, align: 'center', render: (row: ProductHistoryEntity) => renderCopyCell(row.ProductNo) },
+        { key: 'PN', title: t('config.wireModel'), resizable: true, render: (row: ProductHistoryEntity) => renderCopyCell(row.PN) },
         // { key: 'Note', title: '物料注释', resizable: true },
         { key: 'StartTime', title: t('config.startTime'), resizable: true },
         { key: 'EndTime', title: t('config.endTime'), resizable: true },
-        { key: 'Operator', title: t('config.operator'), resizable: true },
-        { key: 'ExcelPath', title: t('config.excelExportPath'), resizable: true, ellipsis: { tooltip: true } },
-        { key: 'PdfPath', title: t('config.pdfExportPath'), resizable: true, ellipsis: { tooltip: true } },
+        { key: 'Operator', title: t('config.operator'), resizable: true, width: 120 },
+        { key: 'ExcelPath', title: t('config.excelExportPath'), resizable: true, ellipsis: { tooltip: true }, render: (row: ProductHistoryEntity) => renderCopyCell(row.ExcelPath) },
+        { key: 'PdfPath', title: t('config.pdfExportPath'), resizable: true, ellipsis: { tooltip: true }, render: (row: ProductHistoryEntity) => renderCopyCell(row.PdfPath) },
         // {
         //   key: 'op', title: t('config.other'), resizable: true, render: (row: ProductHistoryEntity) => {
         //     return (
@@ -90,17 +96,20 @@ export default defineComponent({
           onClick: () => rowClick(row)
         }
       },
+      rowClassName: (row: ProductHistoryEntity) => {
+        return row.GId == innerData.curRow?.GId ? 'is-selected' : ''
+      },
       rowKey: (row: ProductHistoryEntity) => row.GId,
       virtualScroll: true,
       isSimpleStyle: true
     })
     var sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 3);
     const commonData = reactive({
       filterText: '',
-      selectProps: tableCfg.columns[2].key,
+      selectProps: tableCfg.columns[1].key,
       // tableCfg.columns[2]
-      selectOpt: [tableCfg.columns[2]].map(e => {
+      selectOpt: [tableCfg.columns[0], tableCfg.columns[1]].map(e => {
         return { label: e.title, value: e.key }
       }),
       range: [sevenDaysAgo.getTime(), Date.now()] as [number, number]
@@ -114,12 +123,13 @@ export default defineComponent({
       let isTrue = false
       if (!commonData.filterText) isTrue = true
       if (!commonData.selectProps) isTrue = true
-      let list = tableCfg.tdata.filter(item => {
-        if (isTrue) return true
-        let val = item[commonData.selectProps as keyof ProductHistoryEntity]
-        if (!val) return false
-        return val.toString().includes(commonData.filterText)
-      })
+      let list = tableCfg.tdata
+      // .filter(item => {
+      //   if (isTrue) return true
+      //   let val = item[commonData.selectProps as keyof ProductHistoryEntity]
+      //   if (!val) return false
+      //   return val.toString().includes(commonData.filterText)
+      // })
       return list
     })
     const getTableData = (isTimeRange?: boolean) => {
@@ -150,13 +160,13 @@ export default defineComponent({
 
     // 语言切换时更新 tableCfg 中的标题
     watch(() => i18nStore.langChangeCount, () => {
-      tableCfg.columns[1].title = t('config.spoolNumber')
-      tableCfg.columns[2].title = t('config.wireModel')
-      tableCfg.columns[3].title = t('config.startTime')
-      tableCfg.columns[4].title = t('config.endTime')
-      tableCfg.columns[5].title = t('config.operator')
-      tableCfg.columns[6].title = t('config.excelExportPath')
-      tableCfg.columns[7].title = t('config.pdfExportPath')
+      tableCfg.columns[0].title = t('config.spoolNumber')
+      tableCfg.columns[1].title = t('config.wireModel')
+      tableCfg.columns[2].title = t('config.startTime')
+      tableCfg.columns[3].title = t('config.endTime')
+      tableCfg.columns[4].title = t('config.operator')
+      tableCfg.columns[5].title = t('config.excelExportPath')
+      tableCfg.columns[6].title = t('config.pdfExportPath')
     })
 
     onMounted(() => {
@@ -203,9 +213,9 @@ export default defineComponent({
                     }}>{t('config.productLog')}</NButton>
                   </NSpace>
                 </div>
-                <div class={'flex-shrink'}>
+                <div class={'flex-1 min-h-0'}>
                   {/* @ts-ignore */}
-                  <MyNTable v-model:checked-row-keys={innerData.curRowKey} {...tableCfg} data={ftdata.value} />
+                  <MyNTable {...tableCfg} data={ftdata.value} />
                 </div>
               </div>
 
@@ -227,7 +237,7 @@ export default defineComponent({
 
 
 
-          <AbsBottomBtn cancelFn={cancel} />
+          <AbsBottomBtn cancelFn={cancel} showApply={false} />
           <NDrawer v-model:show={alldata.showStatic} placement="right" width="80%" >
             <NDrawerContent title={t('config.statisticalData')} closable>
               <Statistic />
