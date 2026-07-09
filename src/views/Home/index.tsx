@@ -1,4 +1,4 @@
-import { NTabs, NTabPane, useMessage, NIcon, NDialogProvider, NMessageProvider, NSpin } from "naive-ui";
+import { NTabs, NTabPane, useMessage, useNotification, NIcon, NDialogProvider, NMessageProvider, NNotificationProvider, NSpin } from "naive-ui";
 import { defineComponent, KeepAlive, onMounted, onUnmounted, ref, Transition, watch } from "vue";
 import BtmBtn from './BtmBtn'
 import PicPane from "./picPane/PicPane";
@@ -42,6 +42,14 @@ export default defineComponent({
     const configStore = useConfigStore()
     const formulaStore = useFormulaStore()
     window.$message = useMessage()
+    const notification = useNotification()
+    window.showError = (msg: string) => {
+      notification.error({
+        content: msg,
+        duration: 5000,
+        closable: true
+      })
+    }
     store.initDb()
     let startFetch = true
     const activeStyle = {

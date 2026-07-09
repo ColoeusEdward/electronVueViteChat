@@ -173,6 +173,40 @@ export default defineComponent({
       }
     }
 
+    const collectStart = () => {
+      alldata.trandChartStart = true
+      curCevInnerData.startColFn && curCevInnerData.startColFn()
+    }
+    const collectStop = () => {
+      stopTrendCollection()
+    }
+    const collectClean = () => {
+      curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
+    }
+    const shaftCollect = async () => {
+      if (!curCevInnerData.isGetting) {
+        window.$message.warning(t('config.pleaseStartCollecting'))
+        return
+      }
+      props.setStopTrendLoading?.(true)
+      await sleep(0)
+      try {
+        const exportImages = await buildExportImageMessages()
+        if (exportImages.length > 0) {
+          await callBrige(callFnName.SaveExportImage, JSON.stringify(exportImages))
+        }
+        curCevInnerData.shaftColFn && await curCevInnerData.shaftColFn()
+      } catch (err) {
+        console.error('shaftCollect export images failed', err)
+      } finally {
+        props.setStopTrendLoading?.(false)
+      }
+    }
+
+    window.spcStart = collectStart
+    window.spcStop = collectStop
+    window.spcClear = collectClean
+    window.spcShaft = shaftCollect
     // 语言切换时更新 exitChooseList 中的标签
     watch(() => i18nStore.langChangeCount, () => {
       sleep(100).then(() => {
@@ -271,34 +305,16 @@ export default defineComponent({
           // })
         },
         collectStart: () => {
-          alldata.trandChartStart = true
-          curCevInnerData.startColFn && curCevInnerData.startColFn()
+          collectStart()
         },
         collectStop: () => {
-          stopTrendCollection()
+          collectStop()
         },
         collectClean: () => {
-          curCevInnerData.cleanColFn && curCevInnerData.cleanColFn()
-
+          collectClean()
         },
-        shaftCollect: async () => {
-          if (!curCevInnerData.isGetting) {
-            window.$message.warning(t('config.pleaseStartCollecting'))
-            return
-          }
-          props.setStopTrendLoading?.(true)
-          await sleep(0)
-          try {
-            const exportImages = await buildExportImageMessages()
-            if (exportImages.length > 0) {
-              await callBrige(callFnName.SaveExportImage, JSON.stringify(exportImages))
-            }
-            curCevInnerData.shaftColFn && await curCevInnerData.shaftColFn()
-          } catch (err) {
-            console.error('shaftCollect export images failed', err)
-          } finally {
-            props.setStopTrendLoading?.(false)
-          }
+        shaftCollect: () => {
+          shaftCollect()
         },
         formulaCfg: () => {
           // console.log("🪵 [BtmBtn.tsx:120] ~ token ~ \x1b[0;32mformulaStore\x1b[0m = ", formulaStore);

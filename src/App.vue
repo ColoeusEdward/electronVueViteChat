@@ -14,8 +14,10 @@
       <!-- 侧边栏总组件 -->
       <!-- <navSider v-if="mainHeaderShow" /> -->
       <n-message-provider>
-        <RouterView>
-        </RouterView>
+        <n-notification-provider placement="top-right">
+          <RouterView>
+          </RouterView>
+        </n-notification-provider>
         <!-- <Home /> -->
       </n-message-provider>
       <!-- 窗口基础功能 ：关闭 最小化，最大化 -->

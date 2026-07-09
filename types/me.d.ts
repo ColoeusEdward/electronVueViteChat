@@ -21,7 +21,13 @@ declare global {
     frontFn: Record<string, Function>,
     chrome: any,
     exportRealtime: (arg: ExportChartArg) => Promise<string>,
-    exportDistribution: (arg: ExportChartArg) => Promise<string>
+    exportDistribution: (arg: ExportChartArg) => Promise<string>,
+    spcStart: () => void,
+    spcStop: () => void,
+    spcClear: () => void,
+    spcShaft: () => void,
+    /** 接收后端报错信息，通过右上角 Notification 弹出 */
+    showError: (msg: string) => void
   }
 }
 
