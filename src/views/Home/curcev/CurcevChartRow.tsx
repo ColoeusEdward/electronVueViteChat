@@ -144,11 +144,9 @@ export default defineComponent({
           },
           min: function (value: any) {
             let min = value.min
-            if (min == -1) {
-              return 0
-            }
             if (value.min <= 0 && para) {
-              min = (para?.Standard || 0) - (para?.LowerTol || 0.1)
+              min = (para?.Standard || 0) - (value.max + (para?.UpperTol || 0.1)).toFixed(3)
+              return min
             }
             // let val = (value.min - (para?.LowerTol || 0.1) - alldata.scalUpMove).toFixed(3)
 

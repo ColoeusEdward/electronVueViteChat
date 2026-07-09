@@ -403,11 +403,9 @@ const buildRealtimeExportOption = (
       },
       min: function (value: any) {
         let min = value.min
-        if (min == -1) {
-          return 0
-        }
-        if (value.min == 0 && formulaParam) {
-          min = formulaParam?.Standard
+        if (value.min <= 0 && formulaParam) {
+          min = (formulaParam?.Standard || 0) - (value.max + (formulaParam?.UpperTol || 0.1)).toFixed(3)
+          return min
         }
         return (min - (formulaParam?.LowerTol || 0.1)).toFixed(3)
       },
