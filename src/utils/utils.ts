@@ -194,6 +194,22 @@ export const safeJsonParse = (str: string) => {
   return res
 }
 
+export const formatDate = (time: string | number | undefined, fmt = 'yyyy-MM-dd HH:mm:ss') => {
+  if (!time) return ''
+  const date = new Date(time)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const map: Record<string, string> = {
+    yyyy: date.getFullYear().toString(),
+    MM: pad(date.getMonth() + 1),
+    dd: pad(date.getDate()),
+    HH: pad(date.getHours()),
+    mm: pad(date.getMinutes()),
+    ss: pad(date.getSeconds())
+  }
+  return fmt.replace(/yyyy|MM|dd|HH|mm|ss/g, matched => map[matched])
+}
+
 export const getRandomInt = (min: number, max: number) => {
   // Math.random() 生成 [0, 1) 之间的浮点数
   // (max - min + 1) 确定了范围内的整数个数

@@ -5,6 +5,7 @@ import { useConfigStore } from "@/store/config";
 import { callSpc } from "@/utils/call";
 import { callBrige } from "@/utils/callm";
 import { callFnName } from "@/utils/enum";
+import { formatDate } from "@/utils/utils";
 import classNames from "classnames";
 import { NButton, NDatePicker, NDivider, NDrawer, NDrawerContent, NInput, NSelect, NSpace, NTabPane, NTabs, useMessage } from "naive-ui";
 import { computed, defineComponent, reactive, watch } from "vue";
@@ -122,17 +123,23 @@ export default defineComponent({
       return list
     })
     const getTableData = (isTimeRange?: boolean) => {
-      let data: Record<string, number> = {}
+      let data: Record<string, string> = {}
       if (isTimeRange) {
-        data.startTime = commonData.range[0]!
-        data.endTime = commonData.range[1]!
+        data.startTime = formatDate(commonData.range[0])
+        data.endTime = formatDate(commonData.range[1])
       }
       callBrige(callFnName.GetProductHistorys, [data.startTime, data.endTime, commonData.filterText], true).then((res: ProductHistoryEntity[]) => {
         console.log("🚀 ~ file: index.tsx:48 ~ callSpc ~ res:", res)
         if (res.length == 0) {
           msg.warning(t('config.noData'))
         }
-        tableCfg.tdata = res
+        tableCfg.tdata = res.map(item => {
+          return {
+            ...item,
+            StartTime: formatDate(item.StartTime),
+            EndTime: formatDate(item.EndTime)
+          }
+        })
       })
     }
 
